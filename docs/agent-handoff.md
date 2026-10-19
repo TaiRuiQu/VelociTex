@@ -64,6 +64,14 @@ scratch/results/exports allocate; report managed and native costs honestly.
 
 ## Reproduction and reading
 
+GitHub Actions Lint, version-tag-triggered NuGet Trusted Publishing and automatic
+GitHub Release creation are configured
+in `.github/workflows/`; see [setup instructions](github-ci.md) and the
+[local CI verification record](verification/ci-2026-10-19.md). The user reports
+the `nuget` environment and NuGet trust policy are configured; hosted execution
+and actual publication remain unverified. CI configuration
+does not change the frozen candidate or establish the outstanding formal gates.
+
 Read requirements → package contract → P4/P5 records → validation → migration.
 Use `verify-p4.ps1` for the final mathematical/reference checks and
 `tools/Write-P5Evidence.ps1 -Check` to check the frozen local candidate evidence.

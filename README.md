@@ -34,6 +34,8 @@ Suggested reading order: handover → requirements → architecture → roadmap 
 
 ## Development verification
 
+GitHub Actions lint and NuGet Trusted Publishing setup: [CI and publishing](docs/github-ci.md) ([中文](docs/github-ci.zh-CN.md)).
+
 ```powershell
 ./verify-reference.ps1 -FullMatrix
 ./build.ps1 -Target All -Locked

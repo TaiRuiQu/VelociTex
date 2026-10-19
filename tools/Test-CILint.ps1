@@ -1,0 +1,41 @@
+# Source syntax and SDK compiler/analyzer checks. Does not reformat historical sources.
+[CmdletBinding()]
+param([switch]$SkipBuild)
+$ErrorActionPreference = 'Stop'
+Push-Location (Join-Path $PSScriptRoot '..')
+try {
+    $files = @(& git ls-files --cached --others --exclude-standard)
+    if ($LASTEXITCODE -ne 0) { throw 'Unable to enumerate repository sources.' }
+    foreach ($file in $files) {
+        if (!(Test-Path -LiteralPath $file -PathType Leaf)) { continue }
+        switch -Regex ($file) {
+            '\.ps1$' {
+                $tokens = $null
+                $parseErrors = $null
+                $null = [Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD $file), [ref]$tokens, [ref]$parseErrors)
+                if ($parseErrors.Count) { throw "$file`: $($parseErrors -join [Environment]::NewLine)" }
+            }
+            '\.(csproj|props|targets|slnx|xaml|manifest)$|(^|/)NuGet\.Config$' {
+                $null = [xml](Get-Content -LiteralPath $file -Raw)
+            }
+            '\.json$' { $null = Get-Content -LiteralPath $file -Raw | ConvertFrom-Json -AsHashtable -Depth 100 }
+            '\.mjs$' {
+                & node --check $file
+                if ($LASTEXITCODE -ne 0) { throw "JavaScript syntax check failed: $file" }
+            }
+            '\.py$' {
+                & python -c 'import ast, pathlib, sys; p = pathlib.Path(sys.argv[1]); ast.parse(p.read_text(encoding="utf-8-sig"), filename=str(p))' $file
+                if ($LASTEXITCODE -ne 0) { throw "Python syntax check failed: $file" }
+            }
+        }
+    }
+    if (!$SkipBuild) {
+        $env:MSBuildEnableWorkloadResolver = 'false'
+        & dotnet build VelociTex.slnx -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -warnaserror --nologo
+        if ($LASTEXITCODE -ne 0) { throw 'Compiler/analyzer lint failed.' }
+        & dotnet build tools/VelociTex.PackageInspection/VelociTex.PackageInspection.csproj -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -warnaserror --nologo
+        if ($LASTEXITCODE -ne 0) { throw 'Package inspection compiler/analyzer lint failed.' }
+    }
+    Write-Host 'Repository source lint passed.'
+}
+finally { Pop-Location }

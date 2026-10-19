@@ -34,6 +34,8 @@
 
 ## 开发验证
 
+GitHub Actions Lint 与 NuGet Trusted Publishing 的启用步骤见 [CI 与发布配置](docs/github-ci.zh-CN.md)。
+
 ```powershell
 ./verify-reference.ps1 -FullMatrix
 ./build.ps1 -Target All -Locked
