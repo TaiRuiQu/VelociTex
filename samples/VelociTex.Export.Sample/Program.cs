@@ -17,6 +17,7 @@ if (args.Contains("--expect-aot") && !nativeAot || args.Contains("--expect-jit")
     throw new InvalidOperationException("The consumer did not run in the requested runtime mode.");
 var report = new SampleRunReport
 {
+    PackageVersion = args.FirstOrDefault(a => a.StartsWith("--package-version=", StringComparison.Ordinal))?[18..] ?? "development",
     ProcessId = Environment.ProcessId, NativeAot = nativeAot,
     Framework = RuntimeInformation.FrameworkDescription, OperatingSystem = RuntimeInformation.OSDescription,
     CoreAssembly = typeof(MathEngine).Assembly.GetName().FullName!,
@@ -65,12 +66,19 @@ var inputs = new (string Id, string Source)[]
     ("cjk", @"\text{平均值}=\frac{1}{3}\sum_{i=1}^3x_i"),
     ("operator", @"\operatorname*{argmax}_{x\in X}f(x)"),
     ("accent-delimiter", @"\widehat{ABC}+\left\langle\frac{a}{b}\right\rangle"),
+    ("colors-transform", @"\colorbox{yellow}{$x+1$}+\textcolor{red}{\mathreflectbox{\mapsto}}"),
+    ("contextual", @"\text{Aनमस्तेB}+\text{กำ}"),
+    ("contextual-joiner", @"\text{क्‍ष}+\text{한}"),
+    ("transparent", @"\textcolor{red}{\phantom{xyz}}"),
 };
 var documents = inputs.Select(p => (p.Id, Document: Compile(p.Source))).ToArray();
 var retained = documents.Single(p => p.Id == "cjk").Document;
 Require(retained.TextGlyphs.Length == 3 && retained.Paths.Length > 0, "CJK fallback uses actual retained outlines");
 Require(retained.TextGlyphs.Span.ToArray().All(g => !string.IsNullOrWhiteSpace(g.FontFamily)), "actual fallback font family is reported");
 Require(retained.Options.TextShaper is null, "document does not retain the fallback provider");
+Require(documents.Where(p => p.Id.StartsWith("contextual", StringComparison.Ordinal)).All(p => p.Document.TextRuns.Length > 0), "complex script text retains actual contextual run provenance");
+Require(documents.Single(p => p.Id == "colors-transform").Document.PaintStates.Span.ToArray().Any(s => s.Color is not null), "formula colors are retained in ordered paint states");
+Require(documents.Single(p => p.Id == "transparent").Document.PaintStates.Length > 0 && documents.Single(p => p.Id == "transparent").Document.PaintCommands.Length == 0, "fully invisible formula keeps explicit empty ordered painting");
 var retainedMathMl = MathMlWriter.Write(retained);
 textShaper.Clear(); workspace.Dispose();
 Require(textShaper.Count == 0 && textShaper.EstimatedRetainedBytes == 0, "fallback outline cache can be cleared independently");
@@ -115,6 +123,16 @@ using (var renderer = new WindowsMathRenderer(fontDirectory))
     try { renderer.Draw(disposed, 0, MathDrawingColor.Black); throw new InvalidOperationException("Disposed preparation was accepted."); }
     catch (ObjectDisposedException) { report.Checks.Add("disposed native preparation is rejected"); }
 }
+var presentationOptions = new MathPresentationOptions { Compilation = options, ErrorColor = new(18, 52, 86) };
+var presentation = engine.CompileForPresentation(@"\undefinedConsumerCommand{x}", in presentationOptions, workspace);
+Require(presentation.IsErrorFallback && presentation.Document is not null && presentation.Diagnostic.IsError && presentation.Source == @"\undefinedConsumerCommand{x}", "presentation facade retains original source and structured failure");
+using (var errorRenderer = new WindowsMathRenderer())
+{
+    errorRenderer.WritePng(presentation.Document!, Path.Combine(output, "error-fallback.png"));
+    errorRenderer.WriteSvg(presentation.Document!, Path.Combine(output, "error-fallback.svg"));
+    File.WriteAllText(Path.Combine(output, "error-fallback.mathml"), MathMlWriter.Write(presentation.Document!));
+}
+Require(presentation.Document!.PaintStates.Span.ToArray().Any(s => s.Color is { R: 18, G: 52, B: 86 }), "literal fallback preserves the selected explicit error color");
 Require(report.Fonts.All(f => File.Exists(Path.Combine(fontDirectory, f.File))), "renderer preserves the caller-owned private font directory");
 // The default renderer independently extracts embedded fonts and releases its own native faces.
 using (var defaultRenderer = new WindowsMathRenderer()) defaultRenderer.WritePng(retained, Path.Combine(output, "default-font-owner.png"));
@@ -154,7 +172,7 @@ Console.WriteLine($"Public API consumer passed: {report.Checks.Count} checks, {r
 internal sealed class SampleRunReport
 {
     public int SchemaVersion { get; init; } = 1;
-    public string PackageVersion { get; init; } = "0.2.0-preview.1";
+    public string PackageVersion { get; init; } = "development";
     public int ProcessId { get; init; }
     public bool NativeAot { get; init; }
     public string Framework { get; init; } = "";

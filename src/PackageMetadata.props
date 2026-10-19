@@ -1,9 +1,14 @@
 <Project>
   <PropertyGroup>
     <IsPackable>true</IsPackable>
-    <Version>0.2.0-preview.1</Version>
+    <Version Condition="'$(Version)' == ''">0.4.0-preview.1</Version>
     <PackageVersion>$(Version)</PackageVersion>
     <Authors>VelociTex contributors</Authors>
+    <RepositoryUrl>https://github.com/TaiRuiQu/VelociTex</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/TaiRuiQu/VelociTex</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
     <PackageLicenseExpression>MIT AND OFL-1.1</PackageLicenseExpression>
     <PackageReadmeFile>PACKAGE-README.md</PackageReadmeFile>
     <PackageTags>math;TeX;NativeAOT;KaTeX;typesetting</PackageTags>
@@ -12,7 +17,8 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <DebugType>portable</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Description>Local preview of compact single-formula typesetting based on locked KaTeX 0.19.0. Compatibility and old-hardware acceptance remain in progress. Code is MIT; bundled fonts are OFL-1.1 with Reserved Font Names.</Description>
+    <EmbedAllSources>true</EmbedAllSources>
+    <Description>Single-formula native TeX typesetting using locked KaTeX 0.19.0 rules. Local validation artifacts define compatibility; old-hardware acceptance remains unverified. Code is MIT; unchanged bundled fonts are OFL-1.1 with Reserved Font Names.</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="/" />
@@ -25,5 +31,7 @@
     <None Include="$(MSBuildThisFileDirectory)../Directory.Packages.props" Pack="true" PackagePath="reference/" />
     <None Include="$(MSBuildThisFileDirectory)../global.json" Pack="true" PackagePath="reference/" />
     <None Include="$(MSBuildThisFileDirectory)../docs/package-contract.md" Pack="true" PackagePath="docs/" />
+    <None Include="$(MSBuildThisFileDirectory)../SECURITY.md" Pack="true" PackagePath="/" />
+    <None Include="$(MSBuildThisFileDirectory)../CHANGELOG.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

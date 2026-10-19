@@ -8,20 +8,25 @@ namespace VelociTex;
 /// </summary>
 internal static partial class MathLayout
 {
-    private readonly record struct Frame(int Node, byte Style, bool Complete);
-    private readonly record struct Placement(int Node, double X, double Y);
+    private readonly record struct Frame(int Node, LayoutContext Context, bool Complete);
+    private readonly record struct Placement(int Node, double X, double Y, int State = 0, bool Decorations = false);
     private struct Box
     {
         internal double Width, Height, Depth, Italic;
         internal MathAtom Atom;
         internal bool Character, Symbol;
+        internal bool NoAtom;
         internal int Font, GlyphIndex, FirstDecoration;
         internal double GlyphScale, GlyphY;
         internal double Skew;
         internal bool TextShaped;
         internal MathTextShape TextShape;
+        internal bool TextRunShaped;
+        internal MathTextRunShape TextRunShape;
+        internal string? RunText;
         internal MathPathSegment[]? Path;
         internal double PathX, PathY, PathScale, PathHeight;
+        internal bool DecorationsAfter;
     }
 
     private static ReadOnlySpan<byte> SupStyles => [4, 5, 4, 5, 6, 7, 6, 7];
@@ -33,23 +38,39 @@ internal static partial class MathLayout
     {
         int count = nodes.Length;
         var boxes = new Box[count];
-        var styles = new byte[count];
+        var styles = new LayoutContext[count];
+        var scriptBases=new bool[count];
+        for(int i=0;i<count;i++)if(nodes[i].Kind==NodeKind.Script&&nodes[i].FirstChild>=0)scriptBases[nodes[i].FirstChild]=true;
         var x = new double[count];
         var y = new double[count];
         var frames = new Frame[checked(count * 2 + 4)];
         var sequence = new int[count];
         var collectStack = new int[count];
         var atoms = new MathAtom[count];
+        var colors = new MathColor?[count];
+        var hidden = new bool[count];
+        var colorStack = new int[count]; int colorTop = 0;
+        colorStack[colorTop++] = root;
+        while (colorTop != 0)
+        {
+            int colorNode = colorStack[--colorTop]; ref readonly SemanticNode colored = ref nodes[colorNode];
+            if (colored.Kind == NodeKind.Color) colors[colorNode] = MathColorUtilities.TryParse(colored.Text2, out MathColor explicitColor) ? explicitColor : colors[colorNode];
+            if (colored.Kind == NodeKind.Box && colored.Text is "\\phantom" or "\\vphantom" or "\\hphantom") hidden[colorNode] = true;
+            if (colored.Kind is NodeKind.Row or NodeKind.Style or NodeKind.Font or NodeKind.Text or NodeKind.Color or NodeKind.Sizing or NodeKind.Class or NodeKind.Operator or NodeKind.Matrix or NodeKind.MatrixRow or NodeKind.MatrixCell || colored.Kind == NodeKind.Box && colored.Text is "\\phantom" or "\\hbox" or "\\pmb")
+            { for (int child = colored.FirstChild; child >= 0; child = nodes[child].NextSibling) ColorChild(child); if (colored.Kind == NodeKind.MatrixRow) ColorChild(colored.SecondChild); }
+            else { ColorChild(colored.FirstChild); ColorChild(colored.SecondChild); ColorChild(colored.ThirdChild); ColorChild(colored.FourthChild); }
+            void ColorChild(int child) { if (child >= 0) { colors[child] = colors[colorNode]; hidden[child] = hidden[colorNode]; colorStack[colorTop++] = child; } }
+        }
         var decorations = new List<Decoration>();
         int top = 0, batches = 0;
-        frames[top++] = new(root, options.DisplayMode ? (byte)0 : (byte)2, false);
+        frames[top++] = new(root, new(options.DisplayMode ? (byte)0 : (byte)2), false);
         while (top != 0)
         {
             if ((++batches & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
             Frame frame = frames[--top];
             int id = frame.Node;
             ref readonly SemanticNode node = ref nodes[id];
-            byte style = node.Kind == NodeKind.Style ? (byte)((int)node.Style * 2) : frame.Style;
+            LayoutContext style = node.Kind == NodeKind.Style ? frame.Context.WithStyle((byte)((int)node.Style * 2)) : node.Kind == NodeKind.Sizing ? frame.Context.WithSize((byte)node.Value) : frame.Context;
             styles[id] = style;
             if (!frame.Complete)
             {
@@ -59,25 +80,42 @@ internal static partial class MathLayout
                     case NodeKind.Symbol:
                     case NodeKind.Space:
                     case NodeKind.Delimiter:
+                    case NodeKind.Rule:
                         break;
+                    case NodeKind.Choice:
+                        Push(style.Style<2?node.FirstChild:style.Style<4?node.SecondChild:style.Style<6?node.ThirdChild:node.FourthChild,style);
+                        break;
+                    case NodeKind.MathMlChoice:
+                        Push(node.FirstChild, style);
+                        break;
+                    case NodeKind.Tag:
+                        Push(node.FirstChild, style); Push(node.SecondChild, style);
+                        break;
+                    case NodeKind.MatrixRow:
+                        for (int child = node.FirstChild; child >= 0; child = nodes[child].NextSibling) Push(child, style);
+                        Push(node.SecondChild,style); break;
                     case NodeKind.Script:
                         Push(node.FirstChild, style);
-                        Push(node.SecondChild, SupStyles[style]);
-                        Push(node.ThirdChild, SubStyles[style]);
+                        Push(node.SecondChild, style.WithStyle(SupStyles[style.Style]));
+                        Push(node.ThirdChild, style.WithStyle(SubStyles[style.Style]));
                         break;
                     case NodeKind.Fraction:
-                        Push(node.FirstChild, NumeratorStyles[style]);
-                        Push(node.SecondChild, DenominatorStyles[style]);
+                        Push(node.FirstChild, style.WithStyle(NumeratorStyles[style.Style]));
+                        Push(node.SecondChild, style.WithStyle(DenominatorStyles[style.Style]));
                         break;
                     case NodeKind.Radical:
-                        Push(node.FirstChild, (byte)(style | 1));
-                        if (node.SecondChild >= 0) Push(node.SecondChild, 6);
+                        Push(node.FirstChild, style.WithStyle((byte)(style.Style | 1)));
+                        if (node.SecondChild >= 0) Push(node.SecondChild, style.WithStyle(6));
                         break;
                     case NodeKind.Accent:
-                        if (node.Text?.StartsWith("\\x", StringComparison.Ordinal) == true)
-                        { Push(node.FirstChild, SupStyles[style]); Push(node.SecondChild, SubStyles[style]); }
-                        else if (node.Text is "\\overbrace" or "\\underbrace" or "\\overbracket" or "\\underbracket") Push(node.FirstChild, 0);
-                        else Push(node.FirstChild, node.Text == "\\underline" ? style : (byte)(style | 1));
+                        if (node.Text?.StartsWith("\\x", StringComparison.Ordinal) == true || node.Text?.StartsWith("\\\\cd", StringComparison.Ordinal) == true)
+                        { Push(node.FirstChild, style.WithStyle(SupStyles[style.Style])); Push(node.SecondChild, style.WithStyle(SubStyles[style.Style])); }
+                        else if (node.Text is "\\overbrace" or "\\underbrace" or "\\overbracket" or "\\underbracket") Push(node.FirstChild, style.WithStyle(0));
+                        else Push(node.FirstChild, node.Text == "\\underline" ? style : style.WithStyle((byte)(style.Style | 1)));
+                        break;
+                    case NodeKind.Box:
+                        for (int child = node.FirstChild; child >= 0; child = nodes[child].NextSibling)
+                            Push(child, node.Text is "cdleft" or "cdright" ? style.WithStyle(SupStyles[style.Style]) : style);
                         break;
                     default:
                         for (int child = node.FirstChild; child >= 0; child = nodes[child].NextSibling) Push(child, style);
@@ -94,25 +132,75 @@ internal static partial class MathLayout
                     boxes[id] = Symbol(node, scale, options.TextShaper);
                     break;
                 case NodeKind.Operator:
-                    boxes[id] = BuildOperator(node, style, boxes, decorations);
-                    if (node.FirstChild >= 0) x[node.FirstChild] = y[node.FirstChild] = 0;
+                {
+                    Box? operatorBody=node.CodePoint==0&&node.FirstChild>=0&&nodes[node.FirstChild].NextSibling>=0?BuildRow(nodes,id,style,styles,boxes,x,y,sequence,collectStack,atoms,options):null;
+                    boxes[id] = BuildOperator(nodes,node,options.DisplayMode, style, boxes, decorations,operatorBody);
+                    if (node.FirstChild >= 0)
+                    {
+                        if(operatorBody is null)x[node.FirstChild]=0;
+                        for(int child=node.FirstChild;child>=0;child=nodes[child].NextSibling)y[child]=boxes[id].GlyphY;
+                    }
                     break;
+                }
                 case NodeKind.Delimiter:
                     boxes[id] = MakeDelimiter(node.CodePoint, node.Value > 0 ? SizeHeight((int)node.Value) : 0, style, node.Value == 0, (int)node.Value, node.Atom, decorations);
                     break;
                 case NodeKind.Space:
                     // The supported fractional spaces are mu measurements;
                     // quad and qquad are em measurements (units.ts).
-                    boxes[id] = new() { Width = node.Value * scale * (Math.Abs(node.Value) < 1 ? MathConstants.quad(metricIndex) : 1) };
+                    boxes[id] = new() { Width = node.Text == "\\\\" ? 0 : node.Text is "\\kern" or "\\mkern" or "\\hskip" or "\\mskip" or "\\hspace" or "\\hspace*" ? Length(node.Length1, style, options) : node.Value * scale * (Math.Abs(node.Value) < 1 ? MathConstants.quad(metricIndex) : 1) };
                     break;
                 case NodeKind.Row:
                 case NodeKind.Style:
                 case NodeKind.Text:
                 case NodeKind.MatrixCell:
                 case NodeKind.MatrixRow:
+                case NodeKind.Color:
+                case NodeKind.Sizing:
                 {
-                    boxes[id] = BuildRow(nodes, id, style, styles, boxes, x, y, sequence, collectStack, atoms);
+                    boxes[id] = BuildRow(nodes, id, style, styles, boxes, x, y, sequence, collectStack, atoms, options);
+                    if(node.Kind==NodeKind.Row&&node.TextMode)TryShapeTextRow(nodes,id,style,options,colors,boxes,x);
                     break;
+                }
+                case NodeKind.Class:
+                {
+                    Box child = BuildRow(nodes, id, style, styles, boxes, x, y, sequence, collectStack, atoms, options); child.Atom = node.Atom; child.FirstDecoration = 0;
+                    x[node.FirstChild] = y[node.FirstChild] = 0; boxes[id] = child; break;
+                }
+                case NodeKind.Choice:
+                case NodeKind.MathMlChoice:
+                {
+                    int selected = node.Kind == NodeKind.MathMlChoice ? node.FirstChild : style.Style < 2 ? node.FirstChild : style.Style < 4 ? node.SecondChild : style.Style < 6 ? node.ThirdChild : node.FourthChild;
+                    Box child = boxes[selected]; child.FirstDecoration = 0; x[selected] = y[selected] = 0; boxes[id] = child; break;
+                }
+                case NodeKind.Box:
+                    boxes[id] = BuildBox(nodes, node, style, options, boxes, x, y, node.Text is "\\phantom" or "\\hbox" or "\\pmb" ? BuildRow(nodes,id,style,styles,boxes,x,y,sequence,collectStack,atoms,options) : null);
+                    break;
+                case NodeKind.Rule:
+                {
+                    double width = Length(node.Length1, style, options), height = Length(node.Length2, style, options), shift = Length(node.Length3, style, options);
+                    Box result = new() { Width = width, Height = height + shift, Depth = -shift, Atom = MathAtom.Ord };
+                    if (width > 0 && height > 0)
+                    {
+                        // The locked border-based rule has a one-pixel inline
+                        // content strut plus its rounded CSS top border.
+                        double paintedHeight=(1+Math.Max(1,Math.Floor(height*options.FontSize)))/options.FontSize;
+                        AddRule(ref result, 0, -paintedHeight - shift, width, paintedHeight, decorations, exact: true);
+                    }
+                    boxes[id] = result; break;
+                }
+                case NodeKind.Enclose:
+                    boxes[id] = BuildEnclose(nodes, node, style, options, boxes, x, y, decorations);
+                    break;
+                case NodeKind.Verb:
+                    boxes[id] = BuildVerb(node, style, decorations);
+                    break;
+                case NodeKind.Tag:
+                {
+                    Box body = boxes[node.FirstChild], tag = node.SecondChild >= 0 ? boxes[node.SecondChild] : default;
+                    x[node.FirstChild] = y[node.FirstChild] = 0;
+                    if (node.SecondChild >= 0) { x[node.SecondChild] = options.Leqno ? 0 : Math.Max(body.Width, options.DisplayWidth / options.FontSize) - tag.Width; y[node.SecondChild] = 0; }
+                    body.FirstDecoration = 0; boxes[id] = body; break;
                 }
                 case NodeKind.Font:
                 {
@@ -161,7 +249,7 @@ internal static partial class MathLayout
                     double supShift = 0, subShift = 0;
                     if (!scriptBasis.Character)
                     {
-                        byte supStyle = SupStyles[style], subStyle = SubStyles[style];
+                        LayoutContext supStyle = style.WithStyle(SupStyles[style.Style]), subStyle = style.WithStyle(SubStyles[style.Style]);
                         if (hasSup) supShift = scriptBasis.Height - MathConstants.supDrop(MetricIndex(supStyle)) * Scale(supStyle);
                         if (hasSub) subShift = scriptBasis.Depth + MathConstants.subDrop(MetricIndex(subStyle)) * Scale(subStyle);
                     }
@@ -210,7 +298,8 @@ internal static partial class MathLayout
                     Box numerator = boxes[node.FirstChild], denominator = boxes[node.SecondChild];
                     if (node.Text == "\\cfrac") { numerator.Height = Math.Max(numerator.Height, .85 * scale); numerator.Depth = Math.Max(numerator.Depth, .35 * scale); }
                     double defaultRule = MathConstants.defaultRuleThickness(metricIndex) * scale;
-                    double rule = node.HasBar ? node.Value > 0 ? node.Value * scale : defaultRule : 0;
+                    double specifiedRule=node.Text=="\\genfrac"?Length(node.Length1,style,options):node.Value*scale;
+                    double rule = node.HasBar ? Math.Max(node.Value > 0 ? specifiedRule : defaultRule, options.MinRuleThickness * scale) : 0;
                     double numShift = (style < 2 ? MathConstants.num1(metricIndex) : node.HasBar ? MathConstants.num2(metricIndex) : MathConstants.num3(metricIndex)) * scale;
                     double denShift = (style < 2 ? MathConstants.denom1(metricIndex) : MathConstants.denom2(metricIndex)) * scale;
                     double clearance = (style < 2 ? node.HasBar ? 3 : 7 : node.HasBar ? 1 : 3) * (node.HasBar ? rule : defaultRule);
@@ -245,14 +334,14 @@ internal static partial class MathLayout
                     double axis = MathConstants.axisHeight(metricIndex) * scale;
                     double distance = Math.Max(body.Height - axis, body.Depth + axis);
                     double height = Math.Max(distance * 901 / 500, 2 * distance - .5);
-                    int length = Collect(nodes, nodes[node.FirstChild].FirstChild, sequence, collectStack);
+                    int length = Collect(nodes, nodes[node.FirstChild].FirstChild, sequence, collectStack, styles);
                     for (int i = 0; i < length; i++)
                     {
                         int middle = sequence[i];
                         if (nodes[middle].Kind == NodeKind.Delimiter && nodes[middle].Value == 0)
                             boxes[middle] = MakeDelimiter(nodes[middle].CodePoint, height, styles[middle], true, 0, MathAtom.Ord, decorations);
                     }
-                    body = boxes[node.FirstChild] = BuildRow(nodes, node.FirstChild, styles[node.FirstChild], styles, boxes, x, y, sequence, collectStack, atoms);
+                    body = boxes[node.FirstChild] = BuildRow(nodes, node.FirstChild, styles[node.FirstChild], styles, boxes, x, y, sequence, collectStack, atoms,options);
                     Box left = MakeDelimiter(node.LeftDelimiter, height, style, true, 0, MathAtom.Open, decorations);
                     Box right = MakeDelimiter(node.RightDelimiter, height, style, true, 0, MathAtom.Close, decorations);
                     x[node.FirstChild] = left.Width; y[node.FirstChild] = 0;
@@ -263,10 +352,10 @@ internal static partial class MathLayout
                     break;
                 }
                 case NodeKind.Accent:
-                    boxes[id] = BuildAccent(nodes, id, style, boxes, x, y, decorations);
+                    boxes[id] = BuildAccent(nodes, id, style, options, boxes, x, y, decorations);
                     break;
                 case NodeKind.Matrix:
-                    boxes[id] = BuildMatrix(nodes, node, style, options.FontSize, boxes, x, y, decorations);
+                    boxes[id] = BuildMatrix(nodes, node, style, options, boxes, x, y, decorations);
                     break;
                 case NodeKind.Radical:
                 {
@@ -277,17 +366,19 @@ internal static partial class MathLayout
                     double clearance = theta + phi / 4;
                     double minimumHeight = innerHeight + inner.Depth + clearance + theta;
                     double localHeight = minimumHeight / scale;
-                    int size = SelectRadical(minimumHeight);
-                    double multiplier = scale;
+                    double baseFactor = scale / Scale(style.Style);
+                    int size = SelectRadical(minimumHeight / baseFactor);
+                    double multiplier = Scale(style.Style);
+                    double extraVinculum = Math.Max(0, options.MinRuleThickness - MathConstants.sqrtRuleThickness(metricIndex));
                     double texHeight, spanHeight, viewBoxHeight, advance, minWidth;
                     MathPathSegment[] path;
                     if (size == 0)
                     {
                         if (localHeight < 1) multiplier = 1;
                         else if (localHeight < 1.4) multiplier = 0.7;
-                        texHeight = scale / multiplier;
-                        spanHeight = 1.08 * scale / multiplier;
-                        viewBoxHeight = 1080;
+                        texHeight = (1 + extraVinculum) * scale / multiplier;
+                        spanHeight = (1.08 + extraVinculum) * scale / multiplier;
+                        viewBoxHeight = 1080 + 1000 * extraVinculum;
                         advance = 0.833 * scale / multiplier;
                         minWidth = 0.853 * scale;
                         path = RadicalPathData.sqrtMain;
@@ -295,23 +386,24 @@ internal static partial class MathLayout
                     else if (size < 5)
                     {
                         double maxHeight = size switch { 1 => 1.2, 2 => 1.8, 3 => 2.4, _ => 3 };
-                        texHeight = maxHeight;
-                        spanHeight = maxHeight + 0.08;
+                        texHeight = (maxHeight + extraVinculum) * baseFactor;
+                        spanHeight = (maxHeight + extraVinculum + 0.08) * baseFactor;
                         viewBoxHeight = 1080 * maxHeight;
-                        advance = 1;
+                        advance = baseFactor;
                         minWidth = 1.02 * scale;
                         path = size switch { 1 => RadicalPathData.sqrtSize1, 2 => RadicalPathData.sqrtSize2, 3 => RadicalPathData.sqrtSize3, _ => RadicalPathData.sqrtSize4 };
                     }
                     else
                     {
-                        texHeight = minimumHeight;
-                        spanHeight = minimumHeight + 0.08 * scale;
-                        viewBoxHeight = Math.Floor(1000 * localHeight) + 80;
+                        texHeight = minimumHeight + extraVinculum * scale;
+                        spanHeight = minimumHeight + (extraVinculum + 0.08) * scale;
+                        viewBoxHeight = Math.Floor(1000 * localHeight + extraVinculum) + 80;
                         advance = 1.056 * scale;
                         minWidth = 0.742 * scale;
                         path = RadicalPathData.Tall(viewBoxHeight);
                     }
-                    double rule = MathConstants.sqrtRuleThickness(metricIndex) * multiplier * scale;
+                    if (extraVinculum > 0) path = RadicalPathData.WithRule(size, extraVinculum, viewBoxHeight);
+                    double rule = (MathConstants.sqrtRuleThickness(metricIndex) + extraVinculum) * multiplier * scale;
                     double delimiterDepth = texHeight - rule;
                     if (delimiterDepth > innerHeight + inner.Depth + clearance) clearance = (clearance + delimiterDepth - innerHeight - inner.Depth) / 2;
                     double imageShift = texHeight - innerHeight - clearance - rule;
@@ -350,35 +442,63 @@ internal static partial class MathLayout
         cancellationToken.ThrowIfCancellationRequested();
         double fontSize = options.FontSize;
         Box outer = boxes[root];
+        double rootOffset=0;
+        if(options.DisplayMode&&options.DisplayWidth>0)
+        {
+            double available=options.DisplayWidth/fontSize;
+            rootOffset=options.Fleqn?2:Math.Max(0,(available-outer.Width)/2);
+            outer.Width=Math.Max(available,outer.Width+rootOffset);
+            // Tags are aligned to the host's display box, while the formula
+            // body receives the host's centering/flush-left offset.
+            for(int i=0;i<count;i++)if(nodes[i].Kind is NodeKind.Tag or NodeKind.MatrixRow && nodes[i].SecondChild>=0)x[nodes[i].SecondChild]-=rootOffset;
+        }
         var glyphs = new List<MathGlyph>();
         var rules = new List<MathRule>();
         var paths = new List<MathPath>();
         var textGlyphs = new List<MathTextGlyph>();
-        var placements = new Placement[count + 4];
+        var textRuns=new List<MathTextRun>();
+        var paintCommands = new List<MathPaintCommand>();
+        var paintStates = new List<MathPaintState> { new(null, MathTransform.Identity) };
+        var paintStateIds = new Dictionary<MathPaintState, int> { [paintStates[0]] = 0 };
+        var placements = new Placement[checked(count * 3 + 4)];
         int placementCount = 0;
-        placements[placementCount++] = new(root, 0, outer.Height);
+        int activePaintState = 0; bool activeVisible = true;
+        placements[placementCount++] = new(root, rootOffset, outer.Height);
         double inkLeft = double.PositiveInfinity, inkTop = double.PositiveInfinity, inkRight = double.NegativeInfinity, inkBottom = double.NegativeInfinity;
         while (placementCount != 0)
         {
             if ((++batches & 63) == 0) cancellationToken.ThrowIfCancellationRequested();
             Placement placement = placements[--placementCount];
+            if ((long)glyphs.Count + rules.Count + paths.Count >= 262_144)
+                throw new CompileFailure(new(MathDiagnosticCode.NodeLimit, default, "The bounded drawing-instruction budget was exceeded."));
             int id = placement.Node;
             ref readonly SemanticNode node = ref nodes[id];
             ref readonly Box box = ref boxes[id];
             double px = placement.X, py = placement.Y;
-            for (int decorationId = box.FirstDecoration; decorationId != 0;)
+            MathPaintState inherited = paintStates[placement.State];
+            MathPaintState currentState = new(colors[id] ?? inherited.Color, inherited.Transform);
+            int stateId = GetState(currentState);
+            bool visible = !hidden[id] && currentState.Color?.A != 0;
+            activePaintState = stateId; activeVisible = visible;
+            if (!placement.Decorations && box.DecorationsAfter) placements[placementCount++] = placement with { Decorations = true, State = stateId };
+            for (int decorationId = placement.Decorations || !box.DecorationsAfter ? box.FirstDecoration : 0; decorationId != 0;)
             {
                 Decoration decoration = decorations[decorationId - 1];
                 decorationId = decoration.Next;
+                int decorationState = decoration.HasColor ? GetState(currentState with { Color = decoration.Color }) : stateId;
+                activePaintState = decorationState; activeVisible = !hidden[id] && paintStates[decorationState].Color?.A != 0;
                 if (decoration.Kind == DecorationKind.Glyph)
                     EmitGlyph(decoration.Font, decoration.GlyphIndex, decoration.CodePoint, px + decoration.X, py + decoration.Y, decoration.ScaleX);
                 else if (decoration.Kind == DecorationKind.Rule)
                 {
                     double left = (px + decoration.X) * fontSize, upper = (py + decoration.Y) * fontSize;
                     double width = decoration.Width * fontSize, height = decoration.Height * fontSize;
-                    if (decoration.Vertical) { double exactWidth = width; width = Math.Max(1, Math.Floor(width)); left += exactWidth - width; }
-                    else { double exactHeight = height; height = Math.Max(1, Math.Floor(height)); upper += exactHeight - height; }
-                    rules.Add(new(left, upper, width, height)); AddInk(left, upper, left + width, upper + height);
+                    if (!decoration.Exact)
+                    {
+                        if (decoration.Vertical) { double exactWidth = width; width = Math.Max(1, Math.Floor(width)); left += exactWidth - width; }
+                        else { double exactHeight = height; height = Math.Max(1, Math.Floor(height)); upper += exactHeight - height; }
+                    }
+                    rules.Add(new(left, upper, width, height)); AddPaint(MathPaintKind.Rule, rules.Count - 1, decorationState); AddInk(left, upper, left + width, upper + height);
                 }
                 else
                 {
@@ -386,9 +506,26 @@ internal static partial class MathLayout
                     double sx = decoration.ScaleX * fontSize, sy = decoration.ScaleY * fontSize;
                     MathBounds clip = new((px + decoration.Clip.X) * fontSize, (py + decoration.Clip.Y) * fontSize, decoration.Clip.Width * fontSize, decoration.Clip.Height * fontSize);
                     paths.Add(new(decoration.Path!, dx, dy, sx, sy, clip));
+                    AddPaint(MathPaintKind.Path, paths.Count - 1, decorationState);
                     MathBounds pathBounds = PathBounds(decoration.Path!);
                     AddInk(Math.Max(clip.X, dx + pathBounds.X * sx), Math.Max(clip.Y, dy + pathBounds.Y * sy), Math.Min(clip.X + clip.Width, dx + (pathBounds.X + pathBounds.Width) * sx), Math.Min(clip.Y + clip.Height, dy + (pathBounds.Y + pathBounds.Height) * sy));
                 }
+            }
+            activePaintState = stateId; activeVisible = visible;
+            if (placement.Decorations) continue;
+            if(box.TextRunShaped)
+            {
+                double em=Scale(styles[id])*fontSize;
+                int firstRunPath=paths.Count;
+                foreach(MathPath runPath in box.TextRunShape.Paths.Span)
+                {
+                    MathBounds clip=new(px*fontSize+runPath.ClipBounds.X*em,py*fontSize+runPath.ClipBounds.Y*em,runPath.ClipBounds.Width*em,runPath.ClipBounds.Height*em);
+                    paths.Add(new(runPath.Segments,px*fontSize+runPath.X*em,py*fontSize+runPath.Y*em,runPath.ScaleX*em,runPath.ScaleY*em,clip));
+                    AddPaint(MathPaintKind.Path,paths.Count-1);
+                }
+                MathBounds runInk=box.TextRunShape.InkBounds;
+                AddInk(px*fontSize+runInk.X*em,py*fontSize+runInk.Y*em,px*fontSize+(runInk.X+runInk.Width)*em,py*fontSize+(runInk.Y+runInk.Height)*em);
+                textRuns.Add(new(box.RunText!,px*fontSize,py*fontSize,em,firstRunPath,paths.Count-firstRunPath,box.TextRunShape.Advance*em));continue;
             }
             switch (node.Kind)
             {
@@ -402,11 +539,12 @@ internal static partial class MathLayout
                         double size = Scale(styles[id]) * fontSize;
                         MathBounds clip = new(px * fontSize + shape.InkBounds.X * size, py * fontSize + shape.InkBounds.Y * size, shape.InkBounds.Width * size, shape.InkBounds.Height * size);
                         paths.Add(new(shape.Segments, px * fontSize, py * fontSize, size, size, clip));
+                        AddPaint(MathPaintKind.Path, paths.Count - 1);
                         textGlyphs.Add(new(node.CodePoint, px * fontSize, py * fontSize, size, shape.FontFamily));
                         AddInk(clip.X, clip.Y, clip.X + clip.Width, clip.Y + clip.Height);
                     }
                     if (box.Symbol) EmitGlyph(box.Font, box.GlyphIndex, FontData.Glyphs[box.GlyphIndex].CodePoint, px, py + box.GlyphY, box.GlyphScale == 0 ? Scale(styles[id]) : box.GlyphScale);
-                    if (node.Kind == NodeKind.Operator && node.FirstChild >= 0) Place(node.FirstChild);
+                    if (node.Kind == NodeKind.Operator && node.FirstChild >= 0) for(int child=node.FirstChild;child>=0;child=nodes[child].NextSibling)Place(child);
                     break;
                 }
                 case NodeKind.Space:
@@ -417,8 +555,11 @@ internal static partial class MathLayout
                 case NodeKind.Matrix:
                 case NodeKind.MatrixRow:
                 case NodeKind.MatrixCell:
+                case NodeKind.Color:
+                case NodeKind.Sizing:
                 {
-                    int length = Collect(nodes, node.FirstChild, sequence, collectStack);
+                    int length = Collect(nodes, node.FirstChild, sequence, collectStack, styles);
+                    if (node.Kind == NodeKind.MatrixRow && node.SecondChild >= 0) Place(node.SecondChild);
                     for (int i = length - 1; i >= 0; i--) Place(sequence[i]);
                     break;
                 }
@@ -426,9 +567,43 @@ internal static partial class MathLayout
                 case NodeKind.Delimited:
                     Place(node.FirstChild);
                     break;
-                case NodeKind.Accent:
+                case NodeKind.Class:
+                    for (int child = node.FirstChild; child >= 0; child = nodes[child].NextSibling) Place(child);
+                    break;
+                case NodeKind.Choice:
+                    Place(styles[id].Style < 2 ? node.FirstChild : styles[id].Style < 4 ? node.SecondChild : styles[id].Style < 6 ? node.ThirdChild : node.FourthChild);
+                    break;
+                case NodeKind.MathMlChoice:
+                    Place(node.FirstChild);
+                    break;
+                case NodeKind.Box:
+                {
+                    if (node.Text is "\\reflectbox" or "\\mathreflectbox")
+                    {
+                        MathTransform reflection = new(-1, 0, 0, 1, (2 * px + box.Width) * fontSize, 0);
+                        int reflected = GetState(currentState with { Transform = Then(reflection, currentState.Transform) });
+                        placements[placementCount++] = new(node.FirstChild, px + x[node.FirstChild], py + y[node.FirstChild], reflected);
+                    }
+                    else if (node.Text == "\\pmb")
+                    {
+                        Place(node.FirstChild);
+                        double em = Scale(styles[id]) * fontSize;
+                        int shadow = GetState(currentState with { Transform = Then(new(1, 0, 0, 1, .02 * em, .01 * em), currentState.Transform) });
+                        placements[placementCount++] = new(node.FirstChild, px + x[node.FirstChild], py + y[node.FirstChild], shadow);
+                    }
+                    else for (int child = node.FirstChild; child >= 0; child = nodes[child].NextSibling) Place(child);
+                    break;
+                }
+                case NodeKind.Enclose:
+                    Place(node.FirstChild);
+                    break;
+                case NodeKind.Tag:
                     if (node.SecondChild >= 0) Place(node.SecondChild);
                     Place(node.FirstChild);
+                    break;
+                case NodeKind.Accent:
+                    if (node.SecondChild >= 0) Place(node.SecondChild);
+                    if(node.FirstChild>=0)Place(node.FirstChild);
                     break;
                 case NodeKind.Script:
                     if (node.ThirdChild >= 0) Place(node.ThirdChild);
@@ -452,6 +627,7 @@ internal static partial class MathLayout
                         double paintedHeight = Math.Max(1, Math.Floor(rh));
                         double paintedY = ry + rh - paintedHeight;
                         rules.Add(new(rx, paintedY, rw, paintedHeight));
+                        AddPaint(MathPaintKind.Rule, rules.Count - 1);
                         if (rw > 0) AddInk(rx, paintedY, rx + rw, paintedY + paintedHeight);
                     }
                     Place(node.SecondChild);
@@ -462,9 +638,10 @@ internal static partial class MathLayout
                 {
                     double rx = (px + box.PathX) * fontSize, ry = (py + box.PathY) * fontSize;
                     double ps = box.PathScale * fontSize;
-                    double rootOffset = box.PathX;
-                    var clip = new MathBounds(rx, ry, (box.Width - rootOffset) * fontSize, box.PathHeight * fontSize);
+                    double radicalOffset = box.PathX;
+                    var clip = new MathBounds(rx, ry, (box.Width - radicalOffset) * fontSize, box.PathHeight * fontSize);
                     paths.Add(new(box.Path!, rx, ry, ps, ps, clip));
+                    AddPaint(MathPaintKind.Path, paths.Count - 1);
                     MathBounds pb = PathBounds(box.Path!);
                     AddInk(Math.Max(clip.X, rx + pb.X * ps), Math.Max(clip.Y, ry + pb.Y * ps), Math.Min(clip.X + clip.Width, rx + (pb.X + pb.Width) * ps), Math.Min(clip.Y + clip.Height, ry + (pb.Y + pb.Height) * ps));
                     if (node.SecondChild >= 0) Place(node.SecondChild);
@@ -472,23 +649,36 @@ internal static partial class MathLayout
                     break;
                 }
             }
-            void Place(int child) => placements[placementCount++] = new(child, px + x[child], py + y[child]);
+            void Place(int child) => placements[placementCount++] = new(child, px + x[child], py + y[child], stateId);
+            void AddPaint(MathPaintKind kind, int index, int? explicitState = null) { if (!hidden[id] && paintStates[explicitState ?? stateId].Color?.A != 0) paintCommands.Add(new(kind, index, explicitState ?? stateId)); }
         }
         var bounds = double.IsPositiveInfinity(inkLeft) ? new MathBounds(0, 0, 0, 0) : new MathBounds(inkLeft, inkTop, inkRight - inkLeft, inkBottom - inkTop);
-        return new(glyphs.ToArray(), rules.ToArray(), paths.ToArray(), new(Math.Max(0, outer.Width) * fontSize, (outer.Height + outer.Depth) * fontSize), outer.Height * fontSize, bounds, textGlyphs.ToArray());
+        return new(glyphs.ToArray(), rules.ToArray(), paths.ToArray(), new(Math.Max(0, outer.Width) * fontSize, (outer.Height + outer.Depth) * fontSize), outer.Height * fontSize, bounds, textGlyphs.ToArray(), paintCommands.ToArray(), paintStates.ToArray(),textRuns.ToArray());
 
-        void Push(int child, byte childStyle) { if (child >= 0) frames[top++] = new(child, childStyle, false); }
+        void Push(int child, LayoutContext childStyle) { if (child >= 0) frames[top++] = new(child, childStyle, false); }
         void EmitGlyph(int font, int glyphIndex, int codePoint, double gx, double gy, double emSize)
         {
             FontGlyph glyph = FontData.Glyphs[glyphIndex]; double size = emSize * fontSize;
             glyphs.Add(new(font, glyph.GlyphId, codePoint, gx * fontSize, gy * fontSize, size));
+            // Emission is synchronous within the current placement. The state
+            // is looked up from the document's logical provenance color.
+            if (activeVisible) paintCommands.Add(new(MathPaintKind.Glyph, glyphs.Count - 1, activePaintState));
             GlyphInk ink = GlyphInkData.Bounds[glyphIndex]; double units = size / FontData.Fonts[font].UnitsPerEm;
             if (ink.Left != ink.Right && ink.Top != ink.Bottom)
                 AddInk(gx * fontSize + ink.Left * units, gy * fontSize - ink.Top * units, gx * fontSize + ink.Right * units, gy * fontSize - ink.Bottom * units);
         }
+        int GetState(MathPaintState state) { if (paintStateIds.TryGetValue(state, out int existing)) return existing; int id = paintStates.Count; paintStates.Add(state); paintStateIds.Add(state, id); return id; }
         void AddInk(double left, double upper, double right, double bottom)
         {
+            if (!activeVisible) return;
             if (right <= left || bottom <= upper) return;
+            MathTransform transform = paintStates[activePaintState].Transform;
+            double x1 = left * transform.M11 + upper * transform.M21 + transform.Dx, y1 = left * transform.M12 + upper * transform.M22 + transform.Dy;
+            double x2 = right * transform.M11 + upper * transform.M21 + transform.Dx, y2 = right * transform.M12 + upper * transform.M22 + transform.Dy;
+            double x3 = left * transform.M11 + bottom * transform.M21 + transform.Dx, y3 = left * transform.M12 + bottom * transform.M22 + transform.Dy;
+            double x4 = right * transform.M11 + bottom * transform.M21 + transform.Dx, y4 = right * transform.M12 + bottom * transform.M22 + transform.Dy;
+            left = Math.Min(Math.Min(x1,x2),Math.Min(x3,x4)); right = Math.Max(Math.Max(x1,x2),Math.Max(x3,x4));
+            upper = Math.Min(Math.Min(y1,y2),Math.Min(y3,y4)); bottom = Math.Max(Math.Max(y1,y2),Math.Max(y3,y4));
             inkLeft = Math.Min(inkLeft, left); inkTop = Math.Min(inkTop, upper);
             inkRight = Math.Max(inkRight, right); inkBottom = Math.Max(inkBottom, bottom);
         }
@@ -499,33 +689,51 @@ internal static partial class MathLayout
         int defaultFont = node.SymbolFont == MathFont.AMS ? 0 : node.IsMathOrd ? 10 : 8;
         int desired = node.Font switch
         {
-            MathFont.MathItalic => 7, MathFont.MathNormal => 10, MathFont.Main or MathFont.MathRoman => 8, MathFont.MathBold => 5,
+            MathFont.MathItalic => 7, MathFont.MathNormal => 10, MathFont.Main or MathFont.MathRoman => 8, MathFont.MathBold => 5, MathFont.MainBoldItalic => 6,
             MathFont.MathBoldItalic => node.IsMathOrd ? 9 : 5,
             MathFont.MathSans => 13, MathFont.MathSansBold => 11, MathFont.MathSansItalic => 12,
+            MathFont.MathSansBoldItalic => 8,
             MathFont.MathTypewriter => 19, MathFont.AMS => 0, MathFont.Caligraphic => 2,
             MathFont.Fraktur => 4, MathFont.Script => 14,
             _ => defaultFont,
         };
+        if (node.FontIdOverride >= 0) desired = node.FontIdOverride;
+        int metricFont = desired;
+        if(node.TextMode&&node.FontIdOverride==10)desired=7;
+        if(node.OriginalCodePoint is >=0x1d468 and <0x1d49c && desired==6)desired=9;
+        if(node.OriginalCodePoint is >=0x1d56c and <0x1d5a0 && desired==4)desired=3;
         // Explicit math fonts change ords. The upstream mathsym path retains the
         // source Main/AMS family for punctuation and binary/relation atoms.
-        if (node.Atom != MathAtom.Ord && node.Font is not MathFont.MathBoldItalic) desired = defaultFont;
+        if (node.FontIdOverride < 0 && node.Atom != MathAtom.Ord && node.Font is not MathFont.MathBoldItalic) desired = defaultFont;
+        MathFont shapeFont=desired is 10 or 7?MathFont.MathItalic:desired==9?MathFont.MathBoldItalic:node.Font;
+        if(node.TextMode&&Contextual(node.CodePoint)&&textShaper is IMathTextRunShaper contextual&&contextual.TryShapeRun(char.ConvertFromUtf32(node.CodePoint),shapeFont,out MathTextRunShape singleRun)&&ValidTextRun(singleRun,16))
+        {
+            if(!FallbackMetricData.Find(desired,node.CodePoint,true,out TexGlyphMetric runMetric)&&node.CodePoint is >=0x0530 and <=0x058f or >=0x0900 and <=0x10ff)
+                Find(desired,'M',out _,out runMetric);
+            return new(){Width=singleRun.Advance*scale,Height=runMetric.Height*scale,Depth=runMetric.Depth*scale,Atom=node.Atom,TextRunShaped=true,TextRunShape=singleRun,RunText=char.ConvertFromUtf32(node.CodePoint)};
+        }
         if (!Find(desired, node.CodePoint, out int glyphIndex, out TexGlyphMetric metric))
         {
             if (node.Font == MathFont.MathBoldItalic && Find(5, node.CodePoint, out glyphIndex, out metric)) desired = 5;
             else if (Find(defaultFont, node.CodePoint, out glyphIndex, out metric)) desired = defaultFont;
-            else if (node.TextMode && textShaper is not null && textShaper.TryShape(node.CodePoint, node.Font, out MathTextShape shape) &&
+            else if (textShaper is not null && textShaper.TryShape(node.CodePoint, shapeFont, out MathTextShape shape) &&
                 double.IsFinite(shape.Advance) && shape.Advance >= 0 && shape.Advance <= 16 && !shape.Segments.IsEmpty &&
                 double.IsFinite(shape.InkBounds.X) && double.IsFinite(shape.InkBounds.Y) && double.IsFinite(shape.InkBounds.Width) && double.IsFinite(shape.InkBounds.Height) &&
                 shape.InkBounds.Width >= 0 && shape.InkBounds.Height >= 0)
             {
-                // KaTeX's unsupported text fallback borrows the Main M TeX
-                // height/depth; actual advance and ink come from the shaper.
-                Find(8, 'M', out _, out TexGlyphMetric fallback);
-                return new() { Width = shape.Advance * scale, Height = fallback.Height * scale, Depth = fallback.Depth * scale, Atom = node.Atom, TextShaped = true, TextShape = shape };
+                // Keep the locked metric lookup independent from font cmap:
+                // mapped Cyrillic/Latin uses source approximations; supported
+                // text scripts borrow M; completely undefined metrics stay 0.
+                if (!FallbackMetricData.Find(desired,node.CodePoint,node.TextMode,out TexGlyphMetric fallback) && node.TextMode &&
+                    node.CodePoint is >= 0x0100 and <= 0x024f or >= 0x0300 and <= 0x036f or >= 0x0400 and <= 0x04ff or >= 0x0530 and <= 0x058f or >= 0x0900 and <= 0x10ff or >= 0x3000 and <= 0x30ff or >= 0x4e00 and <= 0x9faf or >= 0xff00 and <= 0xff60 or >= 0xac00 and <= 0xd7af)
+                    Find(desired,'M',out _,out fallback);
+                double fallbackItalic = node.TextMode || node.Font == MathFont.MathItalic ? 0 : Math.Max(0,fallback.ItalicCorrection);
+                return new() { Width = (shape.Advance + fallbackItalic) * scale, Height = fallback.Height * scale, Depth = fallback.Depth * scale, Italic=fallbackItalic*scale, Atom = node.Atom, TextShaped = true, TextShape = shape };
             }
             else throw new CompileFailure(new MathDiagnostic(MathDiagnosticCode.UnknownSymbol, node.Range, $"Locked font data has no glyph U+{node.CodePoint:X}."));
         }
         FontGlyph glyph = FontData.Glyphs[glyphIndex];
+        if(metricFont!=desired&&FallbackMetricData.Find(metricFont,node.CodePoint,node.TextMode,out TexGlyphMetric sourceMetric))metric=sourceMetric;
         double italic = node.TextMode || node.Font == MathFont.MathItalic ? 0 : metric.ItalicCorrection;
         return new() { Width = (glyph.AdvanceUnits / (double)FontData.Fonts[desired].UnitsPerEm + Math.Max(0, italic)) * scale, Height = metric.Height * scale, Depth = metric.Depth * scale, Italic = italic * scale, Skew = metric.Skew * scale, Atom = node.Atom, Character = true, Symbol = true, Font = desired, GlyphIndex = glyphIndex };
     }
@@ -551,25 +759,27 @@ internal static partial class MathLayout
             else if (cp > codePoint) high = middle - 1;
             else { metric = FontData.TexMetrics[middle]; return true; }
         }
+        if(font==3&&Find(4,codePoint,out _,out metric))return true;
+        if(font==1&&Find(2,codePoint,out _,out metric))return true;
         return false;
     }
 
     // Styling fragments are transparent to the enclosing math list. Braced rows
     // remain ordinary atoms, preserving the distinction x+{+y} versus x++y.
-    private static int Collect(SemanticNode[] nodes, int first, int[] destination, int[] stack)
+    private static int Collect(SemanticNode[] nodes, int first, int[] destination, int[] stack, LayoutContext[] contexts)
     {
         int length = 0, depth = 0, current = first;
         while (current >= 0 || depth > 0)
         {
             if (current < 0) { current = stack[--depth]; continue; }
             ref readonly SemanticNode node = ref nodes[current];
-            if (node.Kind == NodeKind.Style || node.Kind == NodeKind.Row && node.Value == 2)
+            if (node.Kind is NodeKind.Style or NodeKind.Sizing or NodeKind.Color or NodeKind.Choice or NodeKind.MathMlChoice || node.Kind == NodeKind.Row && node.Value == 2 || node.Kind == NodeKind.Box && node.Text is "\\phantom" or "\\hbox")
             {
                 if (node.NextSibling >= 0) stack[depth++] = node.NextSibling;
-                current = node.FirstChild;
+                current = node.Kind == NodeKind.Choice ? contexts[current].Style < 2 ? node.FirstChild : contexts[current].Style < 4 ? node.SecondChild : contexts[current].Style < 6 ? node.ThirdChild : node.FourthChild : node.FirstChild;
                 // The parser stores a style's implicit body in a transparent
                 // row. Its atoms participate in the enclosing math list.
-                if (node.Kind == NodeKind.Style && current >= 0 && nodes[current].Kind == NodeKind.Row && nodes[current].Value == 0 && nodes[current].NextSibling < 0)
+                if (node.Kind is NodeKind.Style or NodeKind.Sizing or NodeKind.Color or NodeKind.Choice or NodeKind.MathMlChoice && current >= 0 && nodes[current].Kind == NodeKind.Row && nodes[current].NextSibling < 0)
                     current = nodes[current].FirstChild;
             }
             else { destination[length++] = current; current = node.NextSibling; }
@@ -590,7 +800,7 @@ internal static partial class MathLayout
             (MathAtom.Op, MathAtom.Ord) or (MathAtom.Op, MathAtom.Op) or (MathAtom.Op, MathAtom.Inner) or
             (MathAtom.Close, MathAtom.Op) or (MathAtom.Close, MathAtom.Inner) or
             (MathAtom.Punct, MathAtom.Ord) or (MathAtom.Punct, MathAtom.Op) or (MathAtom.Punct, MathAtom.Open) or (MathAtom.Punct, MathAtom.Close) or (MathAtom.Punct, MathAtom.Punct) or (MathAtom.Punct, MathAtom.Inner) or
-            (MathAtom.Inner, MathAtom.Ord) or (MathAtom.Inner, MathAtom.Op) or (MathAtom.Inner, MathAtom.Open) or (MathAtom.Inner, MathAtom.Punct) or (MathAtom.Inner, MathAtom.Inner) => 3,
+            (MathAtom.Inner, MathAtom.Ord) or (MathAtom.Inner, MathAtom.Op) or (MathAtom.Inner, MathAtom.Open) or (MathAtom.Inner, MathAtom.Punct) => 3,
             (MathAtom.Ord, MathAtom.Bin) or (MathAtom.Bin, MathAtom.Ord) or (MathAtom.Bin, MathAtom.Op) or (MathAtom.Bin, MathAtom.Open) or (MathAtom.Bin, MathAtom.Inner) or (MathAtom.Close, MathAtom.Bin) or (MathAtom.Inner, MathAtom.Bin) => 4,
             (MathAtom.Ord, MathAtom.Rel) or (MathAtom.Op, MathAtom.Rel) or (MathAtom.Rel, MathAtom.Ord) or (MathAtom.Rel, MathAtom.Op) or (MathAtom.Rel, MathAtom.Open) or (MathAtom.Rel, MathAtom.Inner) or (MathAtom.Close, MathAtom.Rel) or (MathAtom.Punct, MathAtom.Rel) or (MathAtom.Inner, MathAtom.Rel) => 5,
             _ => 0,

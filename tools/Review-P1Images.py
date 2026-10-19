@@ -47,7 +47,7 @@ def normalized_bbox(mask_image: Image.Image, origin: tuple[float, float]):
 
 def bbox_delta(a, b):
     if a is None or b is None:
-        return None if a is None and b is None else float("inf")
+        return None
     return max(abs(x - y) for x, y in zip(a, b))
 
 
@@ -62,6 +62,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("folder", nargs="?", default="artifacts/p1/jit")
     parser.add_argument("--phase", choices=("p1", "p2", "p4"), default="p1")
+    parser.add_argument("--compact", action="store_true", help="Show sixty actual raster pairs per sheet.")
+    parser.add_argument("--deduplicate", action="store_true", help="Review identical raster/origin pairs once while retaining all identities in the audit.")
     args = parser.parse_args()
     directory = ROOT / args.folder
     report = read(directory / "report.json")
@@ -77,10 +79,12 @@ def main():
         small = ImageFont.truetype("C:/Windows/Fonts/consola.ttf", 13)
     except OSError:
         font = small = ImageFont.load_default()
-    cell_width, cell_height, columns, rows = 620, 390, 4, 6
+    cell_width, cell_height, columns, rows = (330, 190, 6, 10) if args.compact else (620, 390, 4, 6)
     sheet = None
     audit = []
     pair_paths = []
+    seen_pairs = {}
+    displayed = 0
     for index, actual in enumerate(x for x in report["results"] if x["success"]):
         key = (actual["id"], actual["scenario"])
         ref, check = expected[key], measured[key]
@@ -125,6 +129,11 @@ def main():
             "nativePngSha256": native_digest,
             "browserPngSha256": hashlib.sha256(reference_path.read_bytes()).hexdigest()}
         audit.append(row)
+        identity_key = (native_digest, row["browserPngSha256"], tuple(native_origin), tuple(reference_origin), actual["baseline"])
+        if args.deduplicate and identity_key in seen_pairs:
+            row["reviewedIdenticalPair"] = seen_pairs[identity_key]
+            continue
+        seen_pairs[identity_key] = {"id": actual["id"], "scenario": actual["scenario"]}
 
         # Preserve all ink and use the original device-pixel scale. Padding and
         # common origin follow declared geometry, never the observed ink edges.
@@ -154,17 +163,21 @@ def main():
         pair.save(pair_path)
         pair_paths.append(pair_path)
 
-        page_index, slot = divmod(index, columns * rows)
+        page_index, slot = divmod(displayed, columns * rows)
+        displayed += 1
         if slot == 0:
             sheet = Image.new("RGB", (columns * cell_width, rows * cell_height + 42), "#d3d8dc")
             ImageDraw.Draw(sheet).text((10, 8), f"{args.phase.upper()} {directory.name}: all pairs page {page_index+1}; N native / K KaTeX; turquoise baseline / magenta x=0", fill="#121212", font=font)
         cell = pair.copy()
         cell.thumbnail((cell_width - 10, cell_height - 10), Image.Resampling.LANCZOS)
         sheet.paste(cell, ((slot % columns) * cell_width + 5, (slot // columns) * cell_height + 42))
-        if slot == columns * rows - 1 or index == checks["measurements"] - 1:
+        if slot == columns * rows - 1:
             sheet.save(out / f"review-page-{page_index+1:02d}.png")
 
-    summary = {"pairs": len(audit), "thresholdPass": sum(x["thresholdPass"] for x in audit),
+    if sheet is not None and displayed % (columns * rows):
+        sheet.save(out / f"review-page-{page_index+1:02d}.png")
+
+    summary = {"pairs": len(audit), "displayedUniquePairs": displayed, "deduplication": args.deduplicate, "thresholdPass": sum(x["thresholdPass"] for x in audit),
         "thresholdFail": sum(not x["thresholdPass"] for x in audit),
         "maximumNativeVersusInkBoundDeltaDevicePixels": max((x["nativeVersusInkMaximumBoundDeltaDevicePixels"] or 0) for x in audit),
         "maximumBrowserVersusInkBoundDeltaDevicePixels": max((x["browserVersusInkMaximumBoundDeltaDevicePixels"] or 0) for x in audit),
@@ -181,7 +194,7 @@ def main():
         "rasterCheckSha256": hashlib.sha256((directory / "image-check.json").read_bytes()).hexdigest(),
         "referenceReportSha256": hashlib.sha256((reference_root / "reference.json").read_bytes()).hexdigest(),
         "summary": summary, "pairs": audit}
-    (out / "review-audit.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (out / "review-audit.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(out), **summary}))
 
 

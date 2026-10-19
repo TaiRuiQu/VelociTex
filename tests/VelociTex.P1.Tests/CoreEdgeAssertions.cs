@@ -35,7 +35,9 @@ internal static class CoreEdgeAssertions
         Bad("\\newcommand\\frac{x}", MathDiagnosticCode.InvalidMacroDefinition);
         Bad("\\renewcommand\\edge{x}", MathDiagnosticCode.InvalidMacroDefinition);
         Bad("\\def\\edge#2{x}", MathDiagnosticCode.InvalidMacroDefinition);
-        Bad("\\def\\edge#1{#2}", MathDiagnosticCode.InvalidMacroDefinition);
+        Good("\\def\\edge#1{#2}");
+        Good("\\newcommand\\edge[1]{#2}");
+        Bad("\\def\\edge#1{#2}\\edge x", MathDiagnosticCode.InvalidMacroDefinition);
         Require(Glyphs(Good("\\def\\quad{x}\\quad")) == "x", "direct spacing opcode permits user overrides");
         Require(Glyphs(Good("\\def\\def{x}\\def")) == "x", "definition primitive permits user overrides");
         Require(Glyphs(Good("\\replace", options with { Macros = new Dictionary<string, string> { ["\\replace"] = "\\alpha b" } })) == "αb", "control word separation survives macro compaction");

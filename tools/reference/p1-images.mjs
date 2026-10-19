@@ -6,10 +6,12 @@ import {chromium} from 'playwright';
 import {PNG} from 'pngjs';
 import {root,sha256,writeJson} from './acquire.mjs';
 const requested=process.argv.slice(2).filter(x=>!x.startsWith('--'));
+const only=process.argv.find(x=>x.startsWith('--only='))?.slice(7).split(',');
 const phase=process.argv.find(x=>x.startsWith('--phase='))?.slice(8)??'p1';
 if(!['p1','p2','p4'].includes(phase))throw new Error('Unknown phase');
 const folders=requested.length?requested:[`artifacts/${phase}/jit`,`artifacts/${phase}/aot`];
 const useReviewed=process.argv.includes('--reviewed');
+const layoutOnly=process.argv.includes('--layout-only');
 const reviewed=useReviewed?JSON.parse(await fs.readFile(path.join(root,`compatibility/${phase}-raster-review.json`),'utf8')):null;
 const reference=JSON.parse(await fs.readFile(path.join(root,`artifacts/${phase}/reference/reference.json`),'utf8'));
 const toolchain=JSON.parse(await fs.readFile(path.join(root,'docs/reference/development-toolchain.lock.json'),'utf8'));
@@ -39,13 +41,31 @@ function coverage(a,b,tolerance) {
   }
   return covered/a.length;
 }
+function coloredPoints(image,origin,scale) {
+  const points=[];
+  for(let y=0;y<image.height;y++)for(let x=0;x<image.width;x++){
+    const i=(y*image.width+x)*4,a=image.data[i+3];if(a<96)continue;
+    const rgb=[image.data[i],image.data[i+1],image.data[i+2]];
+    if(Math.max(...rgb)-Math.min(...rgb)<40)continue;
+    points.push({x:x+.5-origin.x*scale,y:y+.5-origin.y*scale,rgb});
+  }
+  return points;
+}
+function colorCoverage(a,b,tolerance,coverageIndependent=false) {
+  if(!a.length)return b.length?0:1;
+  const cells=new Map();for(const p of b){const k=`${Math.floor(p.x)},${Math.floor(p.y)}`;if(!cells.has(k))cells.set(k,[]);cells.get(k).push(p);}
+  const radius=Math.ceil(tolerance)+1;let matched=0;
+  const chroma=rgb=>{const lo=Math.min(...rgb),range=Math.max(...rgb)-lo;return rgb.map(v=>(v-lo)/range);};
+  for(const p of a){let found=false;for(let dy=-radius;dy<=radius&&!found;dy++)for(let dx=-radius;dx<=radius&&!found;dx++)for(const q of cells.get(`${Math.floor(p.x)+dx},${Math.floor(p.y)+dy}`)??[]){const pc=coverageIndependent?chroma(p.rgb):p.rgb,qc=coverageIndependent?chroma(q.rgb):q.rgb;if((p.x-q.x)**2+(p.y-q.y)**2<=tolerance*tolerance&&Math.max(...pc.map((v,i)=>Math.abs(v-qc[i])))<=(coverageIndependent?.1:48)){found=true;break;}}if(found)matched++;}
+  return matched/a.length;
+}
 const browser=await chromium.launch({executablePath:toolchain.browserExecutable,headless:true,args:['--force-color-profile=srgb','--disable-lcd-text']});
 const all=[];
 try {
   for(const folder of folders) {
     const report=JSON.parse(await fs.readFile(path.join(root,folder,'report.json'),'utf8'));
     const contexts=new Map(),checks=[],failures=[];
-    for(const actual of report.results.filter(x=>x.success)) {
+    for(const actual of report.results.filter(x=>x.success&&(!only||only.includes(x.id)))) {
       const ref=reference.results.find(x=>x.id===actual.id&&x.scenario===actual.scenario),scale=ref.dpiScale;
       const directory=path.join(root,folder,actual.id,actual.scenario);
       const pngBytes=await fs.readFile(path.join(directory,'formula.png')),png=PNG.sync.read(pngBytes);
@@ -80,12 +100,20 @@ try {
       const tolerance=Math.max(1,.5*scale);
       const nativeToReference=coverage(nativeEdges,refEdges,tolerance),referenceToNative=coverage(refEdges,nativeEdges,tolerance),nativeToSvg=coverage(nativeEdges,svgEdges,tolerance),svgToNative=coverage(svgEdges,nativeEdges,tolerance);
       const nativeToTransparentReference=coverage(nativeEdges,transparentReferenceEdges,tolerance),transparentReferenceToNative=coverage(transparentReferenceEdges,nativeEdges,tolerance);
+      const nativeColors=coloredPoints(png,origin,scale),svgColors=coloredPoints(svgImage,origin,scale),referenceColors=coloredPoints(transparentRefImage,ref.geometry.origin,scale);
+      const rawNativeToSvgRgb=colorCoverage(nativeColors,svgColors,tolerance),rawSvgToNativeRgb=colorCoverage(svgColors,nativeColors,tolerance);
+      const chromaNativeToSvg=colorCoverage(nativeColors,svgColors,tolerance,true),chromaSvgToNative=colorCoverage(svgColors,nativeColors,tolerance,true);
+      // Chromatic direction removes neutral-background coverage changes. On a
+      // colored background, antialiasing blends two genuine foreground colors;
+      // exact nearby RGB agreement is the stronger independent alternative.
+      // Keep both raw results; no translated/scaled pixel fitting is permitted.
+      const nativeToSvgColor=Math.max(rawNativeToSvgRgb,chromaNativeToSvg),svgToNativeColor=Math.max(rawSvgToNativeRgb,chromaSvgToNative),nativeToReferenceColor=colorCoverage(nativeColors,referenceColors,tolerance,true),referenceToNativeColor=colorCoverage(referenceColors,nativeColors,tolerance,true);
       let edgeClipping=false;
       for(let x=0;x<png.width;x++)if(png.data[x*4+3]>0||png.data[((png.height-1)*png.width+x)*4+3]>0)edgeClipping=true;
       for(let y=0;y<png.height;y++)if(png.data[(y*png.width)*4+3]>0||png.data[(y*png.width+png.width-1)*4+3]>0)edgeClipping=true;
-      const check={id:actual.id,category:actual.category,scenario:actual.scenario,pngSha256:sha256(pngBytes),svgSha256:sha256(Buffer.from(svg)),width:png.width,height:png.height,nativeEdgePoints:nativeEdges.length,referenceEdgePoints:refEdges.length,toleranceDevicePixels:tolerance,nativeToReference,referenceToNative,nativeToSvg,svgToNative,nativeToTransparentReference,transparentReferenceToNative,edgeClipping,details};
+      const check={id:actual.id,category:actual.category,scenario:actual.scenario,pngSha256:sha256(pngBytes),svgSha256:sha256(Buffer.from(svg)),width:png.width,height:png.height,nativeEdgePoints:nativeEdges.length,referenceEdgePoints:refEdges.length,toleranceDevicePixels:tolerance,nativeToReference,referenceToNative,nativeToSvg,svgToNative,nativeToTransparentReference,transparentReferenceToNative,nativeColoredPoints:nativeColors.length,referenceColoredPoints:referenceColors.length,rawNativeToSvgRgb,rawSvgToNativeRgb,chromaNativeToSvg,chromaSvgToNative,nativeToSvgColor,svgToNativeColor,nativeToReferenceColor,referenceToNativeColor,edgeClipping,details};
       checks.push(check);
-      if(edgeClipping||[nativeToReference,referenceToNative,nativeToSvg,svgToNative].some(x=>x<.95))failures.push(check);
+      if(edgeClipping||[nativeToReference,referenceToNative,nativeToSvg,svgToNative,nativeToSvgColor,svgToNativeColor,nativeToReferenceColor,referenceToNativeColor].some(x=>x<.95))failures.push(check);
     }
     for(const {context} of contexts.values())await context.close();
     const categories=[...new Set(checks.map(x=>x.category))].map(category=>{const c=checks.filter(x=>x.category===category);return{category,measurements:c.length,minimumNativeToReference:Math.min(...c.map(x=>x.nativeToReference)),minimumReferenceToNative:Math.min(...c.map(x=>x.referenceToNative)),minimumNativeToSvg:Math.min(...c.map(x=>x.nativeToSvg)),minimumSvgToNative:Math.min(...c.map(x=>x.svgToNative))};});
@@ -93,12 +121,12 @@ try {
     for(const failure of failures) {
       const entry=reviewed?.entries.find(e=>e.id===failure.id&&e.scenario===failure.scenario);
       const referencePngSha256=sha256(await fs.readFile(path.join(root,`artifacts/${phase}/reference`,failure.id,failure.scenario,'reference.png')));
-      if(!entry||entry.nativePngSha256!==failure.pngSha256||entry.svgSha256!==failure.svgSha256||entry.referencePngSha256!==referencePngSha256||failure.edgeClipping||failure.nativeToSvg<.95||failure.svgToNative<.95)unreviewedFailures.push(failure);
+      if(!entry||entry.nativePngSha256!==failure.pngSha256||entry.svgSha256!==failure.svgSha256||entry.referencePngSha256!==referencePngSha256||failure.edgeClipping||failure.nativeToSvg<.95||failure.svgToNative<.95||[failure.nativeToSvgColor,failure.svgToNativeColor].some(x=>x<.95))unreviewedFailures.push(failure);
     }
-    await writeJson(path.join(root,folder,'image-check.json'),{schemaVersion:2,method:'Foreground boundary points, alpha>32 (native/SVG), opaque reference contrast-derived coverage>32/255; extra transparent-reference true-alpha metrics retained separately. Bidirectional nearest distance; only recorded origin/baseline alignment. 95% each direction within max(1 device px,0.5 DIP). No fitted transformations. All exported SVGs decoded independently in locked Chrome, network blocked, all PNGs decoded independently. Raw automatic failures remain failures even when an exact-hash rendering review is applied.',browserVersion:browser.version(),measurements:checks.length,failures,reviewedRenderingDifferences:failures.length-unreviewedFailures.length,unreviewedFailures,categories,checks});
-    all.push({folder,measurements:checks.length,automaticFailures:failures.length,reviewedRenderingDifferences:failures.length-unreviewedFailures.length,unreviewedFailures:unreviewedFailures.length,categories});console.log(JSON.stringify(all.at(-1)));
+    await writeJson(path.join(root,folder,only?'image-check-subset.json':'image-check.json'),{schemaVersion:2,subset:only??null,method:'Foreground boundary points, alpha>32 (native/SVG), opaque reference contrast-derived coverage>32/255; extra transparent-reference true-alpha metrics retained separately. Bidirectional nearest distance; only recorded origin/baseline alignment. 95% each direction within max(1 device px,0.5 DIP). Chromatic pixels alpha>=96 and channel range>=40 compare coverage-independent channel direction (rgb-min)/range within0.1 and the same frozen spatial tolerance; 95% bidirectional. Raw RGB48/255 native/SVG coverage is also retained, since gray-background antialiasing changes RGB without changing hue. Exact CSS/painting colors are checked independently in the hard differential. No fitted transformations. All exported SVGs decoded independently in locked Chrome, network blocked, all PNGs decoded independently. Raw automatic failures remain failures even when an exact-hash rendering review is applied.',browserVersion:browser.version(),measurements:checks.length,failures,reviewedRenderingDifferences:failures.length-unreviewedFailures.length,unreviewedFailures,categories,checks});
+    all.push({folder,measurements:checks.length,automaticFailures:failures.length,reviewedRenderingDifferences:failures.length-unreviewedFailures.length,unreviewedFailures:unreviewedFailures.length,layoutOnly,clippingFailures:checks.filter(x=>x.edgeClipping).length,categories});console.log(JSON.stringify(all.at(-1)));
     if(unreviewedFailures.length)console.log('Unreviewed raster failures: '+JSON.stringify(unreviewedFailures.slice(0,8).map(x=>({id:x.id,scenario:x.scenario,nativeToReference:x.nativeToReference,referenceToNative:x.referenceToNative,nativeToSvg:x.nativeToSvg,svgToNative:x.svgToNative,edgeClipping:x.edgeClipping}))));
   }
   await writeJson(path.join(root,`artifacts/${phase}/image-summary.json`),all);
-  if(all.some(x=>x.unreviewedFailures))process.exitCode=1;
+  if(all.some(x=>layoutOnly?x.clippingFailures:x.unreviewedFailures))process.exitCode=1;
 }finally{await browser.close();}

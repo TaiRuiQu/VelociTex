@@ -1,7 +1,7 @@
 // Common semantic projection only. No geometry or C# rule table is used for the
 // upstream side. Redundant implementation wrappers are normalized explicitly;
 // grouping, script attachment, table cells and construction arguments survive.
-export function commonSemantics(source) {
+export function commonSemantics(source,extended=false) {
   const fonts={mathrm:'MathRoman',mathbf:'MathBold',mathit:'MathItalic',mathnormal:'MathNormal',boldsymbol:'MathBoldItalic',mathsf:'MathSans',mathsfit:'MathSansItalic',mathtt:'MathTypewriter',mathcal:'Caligraphic',mathfrak:'Fraktur',mathscr:'Script',mathbb:'AMS'};
   const round=x=>Math.round(x*1e9)/1e9;
   const dim=d=>!d?0:round(d.number*({mu:1/18,em:1,ex:.431,pt:.1,bp:.100375,pc:1.2,in:7.227,cm:7.227/2.54,mm:7.227/25.4,sp:.1/65536}[d.unit]??NaN));
@@ -20,11 +20,11 @@ export function commonSemantics(source) {
     const arg=n=>compact(list(n));
     function node(n) {
       switch(n.type) {
-        case 'mathord':case 'textord':case 'atom':return{kind:'symbol',text:source.symbols[n.mode][n.text]?.replace??n.text,atom:n.family??'ord',textMode:n.mode==='text'};
+        case 'mathord':case 'textord':case 'atom':return{kind:'symbol',text:extended&&n.text.codePointAt(0)>0xffff?n.text:source.symbols[n.mode][n.text]?.replace??n.text,atom:n.family??'ord',textMode:n.mode==='text'};
         case 'spacing':return{kind:'symbol',text:' ',atom:'ord',textMode:true};
         case 'ordgroup':return{kind:'group',children:n.body.map(node)};
         case 'supsub':return{kind:'script',base:node(n.base),sup:arg(n.sup),sub:arg(n.sub)};
-        case 'genfrac':return{kind:'fraction',numer:arg(n.numer),denom:arg(n.denom),hasBar:n.hasBarLine,left:delim(n.leftDelim),right:delim(n.rightDelim),bar:dim(n.barSize),continued:!!n.continued};
+    case 'genfrac':return{kind:'fraction',numer:arg(n.numer),denom:arg(n.denom),hasBar:n.hasBarLine,left:delim(n.leftDelim),right:delim(n.rightDelim),bar:dim(n.barSize),continued:!!n.continued};
         case 'sqrt':return{kind:'radical',body:arg(n.body),index:arg(n.index)};
         case 'font':return{kind:'font',font:fonts[n.font]??n.font,body:arg(n.body)};
         case 'text':return{kind:'text',body:arg(n.body)};
@@ -41,9 +41,23 @@ export function commonSemantics(source) {
         case 'mclass':{
           // A transparent mord wrapper used by boldsymbol is normalized; other
           // explicit atom-class wrappers must be compared when P4 adds them.
-          if(n.mclass==='mord'&&n.body.length===1&&n.body[0].type==='font')return node(n.body[0]);
-          throw new Error('Unprojected atom class '+n.mclass);
+          if(!extended&&n.mclass==='mord'&&n.body.length===1&&n.body[0].type==='font')return node(n.body[0]);
+          return{kind:'class',atom:n.mclass.slice(1),body:arg(n.body)};
         }
+        case 'color':return{kind:'color',color:n.color,body:arg(n.body)};
+        case 'sizing':return{kind:'sizing',size:n.size,body:arg(n.body)};
+        case 'mathchoice':return{kind:'choice',display:arg(n.display),text:arg(n.text),script:arg(n.script),scriptscript:arg(n.scriptscript)};
+        case 'htmlmathml':return{kind:'mathml-choice',html:arg(n.html),mathml:arg(n.mathml)};
+        case 'phantom':case 'vphantom':case 'hbox':case 'pmb':case 'reflectbox':case 'vcenter':return{kind:'box',name:'\\'+n.type,body:arg(n.body)};
+        case 'smash':return{kind:'box',name:'\\smash',body:arg(n.body),selection:(n.smashHeight?'t':'')+(n.smashDepth?'b':'')};
+        case 'lap':return{kind:'box',name:'\\math'+n.alignment,body:arg(n.body)};
+        case 'raisebox':return{kind:'box',name:'\\raisebox',body:arg(n.body),shift:dim(n.dy)};
+        case 'enclose':return{kind:'enclose',name:n.label,body:arg(n.body),background:n.backgroundColor??null,border:n.borderColor??null};
+        case 'rule':return{kind:'rule',width:dim(n.width),height:dim(n.height),shift:dim(n.shift)};
+        case 'verb':return{kind:'verb',text:n.body,star:n.star};
+        case 'tag':return{kind:'tag',body:arg(n.body),tag:arg(n.tag)};
+        case 'cdlabelparent':return{kind:'box',name:'cdparent',body:arg(n.fragment)};
+        case 'cdlabel':return{kind:'box',name:n.side==='left'?'cdleft':'cdright',body:arg(n.label)};
         case 'array':return{kind:'matrix',columns:n.cols?.map(c=>c.type==='separator'?c.separator:c.align).join('')??'c',rows:n.body.map((r,i)=>({cells:r.map(cell=>{
           // Each upstream array cell has a reset-font style and an argument
           // ordgroup. That style is retained, with the argument wrapper removed.
@@ -63,7 +77,7 @@ export function commonSemantics(source) {
       const n=ns[id];
       switch(n.kind) {
         case 'Row':return{kind:'group',children:chain(n.first)};
-        case 'Symbol':return{kind:'symbol',text:String.fromCodePoint(n.codePoint),atom:n.atom.toLowerCase(),textMode:n.textMode};
+        case 'Symbol':return{kind:'symbol',text:String.fromCodePoint(extended&&n.originalCodePoint>0?n.originalCodePoint:n.codePoint),atom:n.atom.toLowerCase(),textMode:n.textMode};
         case 'Script':return{kind:'script',base:node(n.first),sup:list(n.second),sub:list(n.third)};
         case 'Fraction':return{kind:'fraction',numer:list(n.first),denom:list(n.second),hasBar:n.hasBar,left:n.leftDelimiter?String.fromCodePoint(n.leftDelimiter):'',right:n.rightDelimiter?String.fromCodePoint(n.rightDelimiter):'',bar:round(n.value),continued:n.text==='\\cfrac'};
         case 'Radical':return{kind:'radical',body:list(n.first),index:list(n.second)};
@@ -71,6 +85,21 @@ export function commonSemantics(source) {
         case 'Text':return{kind:'text',body:list(n.first)};
         case 'Style':return{kind:'style',style:n.style.toLowerCase(),body:list(n.first)};
         case 'Space':return{kind:'space',value:round(n.value)};
+        case 'Color':return{kind:'color',color:n.text,body:list(n.first)};
+        case 'Sizing':return{kind:'sizing',size:n.value,body:list(n.first)};
+        case 'Choice':return{kind:'choice',display:list(n.first),text:list(n.second),script:list(n.third),scriptscript:list(n.fourth)};
+        case 'MathMlChoice':return{kind:'mathml-choice',html:list(n.first),mathml:list(n.second)};
+        case 'Class':return{kind:'class',atom:n.atom.toLowerCase(),body:n.font==='MathBoldItalic'?[{kind:'font',font:'MathBoldItalic',body:list(n.first)}]:list(n.first)};
+        case 'Box':{
+          const result={kind:'box',name:n.text,body:list(n.first)};
+          if(n.text==='\\smash')result.selection=n.alignment??'tb';
+          if(n.text==='\\raisebox')result.shift=dim(n.length1?{number:n.length1.number,unit:n.length1.unit.toLowerCase()}:null);
+          return result;
+        }
+        case 'Enclose':return{kind:'enclose',name:n.text,body:list(n.first),background:n.text==='\\colorbox'?n.text2:n.text==='\\fcolorbox'?n.text3:null,border:n.text==='\\fcolorbox'?n.text2:null};
+        case 'Rule':return{kind:'rule',width:dim({number:n.length1.number,unit:n.length1.unit.toLowerCase()}),height:dim({number:n.length2.number,unit:n.length2.unit.toLowerCase()}),shift:dim({number:n.length3.number,unit:n.length3.unit.toLowerCase()})};
+        case 'Verb':return{kind:'verb',text:n.text2??n.text,star:n.value!==0};
+        case 'Tag':return{kind:'tag',body:list(n.first),tag:list(n.second)};
         case 'Operator':{
           const expandedName=n.text==='\\limsup'||n.text==='\\liminf';
           return{kind:'operator',name:expandedName?'\\operatorname':n.text,body:n.text==='\\mathop'||n.text==='\\operatorname'||expandedName?list(n.first):null,limits:n.neverLimits?false:n.alwaysLimits||n.limits,always:expandedName?false:n.alwaysLimits||n.neverLimits,never:n.neverLimits};
@@ -91,7 +120,7 @@ export function commonSemantics(source) {
         default:throw new Error('Unprojected common node '+n.kind);
       }
     }
-    return compact(chain(ns[doc.root].first));
+    return compact(ns[doc.root].kind==='Row'?chain(ns[doc.root].first):[node(doc.root)]);
   }
   return{upstream,native};
 }

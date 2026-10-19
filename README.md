@@ -4,7 +4,7 @@ English | [中文](README.zh-CN.md)
 
 A C# math typesetting and rendering library for native Windows apps. It aims to reproduce the **core math typesetting of KaTeX 0.19.0** on WinUI 3, export PNG / SVG / MathML, and replace the formula display path of `../oh-my-study/` as the first priority.
 
-**Status as of 2026-10-19: P2 common math and local `0.2.0-preview.1` packages are implemented.** Integrals, matrices, delimiters and accents run through native / PNG / SVG / MathML, with 307 valid and 31 invalid fixtures, 491 JIT/AOT scenarios, and real isolated NuGet consumers. See the [P2 delivery record](docs/verification/p2-2026-10-19.md) for reviewed raster differences and remaining scope. Full core compatibility and old-CPU acceptance remain unverified; this is not a 1.0 release.
+**Status as of 2026-10-19: P4 core registration coverage is implemented and verified against locked KaTeX 0.19.0.** All 2,939 included identities have source-observed use cases; 3,659 valid formulas and 50 errors pass 3,843 scenarios under JIT and real Native AOT, including independent semantics, geometry, fonts, colors and MathML. P3 downstream native display is integrated. Local `0.4.0-preview.1` packages have real isolated consumers. Anti-aliasing differences are accepted; typesetting and clipping checks remain strict. See the phase records in `docs/verification`. P5 release preparation continues; old-hardware and platform acceptance remain unverified, and there is no stable 1.0 publication.
 
 ## Confirmed Direction
 
@@ -30,7 +30,7 @@ A C# math typesetting and rendering library for native Windows apps. It aims to 
 | [Formula Seed Set](docs/examples/formulas.json) | Calculus, matrices, styling, macros, boundary and error cases |
 | [Document Verification Record](docs/verification/design-review.2026-10-19.md) ([中文](docs/verification/design-review.2026-10-19.zh-CN.md)) | What was actually checked in this round: docs, upstream digests, formula samples |
 
-Suggested reading order: handover → requirements → architecture → roadmap → validation → migration. P3 downstream migration is next, followed by full P4 compatibility and P5 release acceptance.
+Suggested reading order: handover → requirements → architecture → roadmap → validation → migration. Continue with P5 candidate packaging, final consumption and the explicitly outstanding hardware acceptance.
 
 ## Development verification
 
@@ -40,6 +40,7 @@ Suggested reading order: handover → requirements → architecture → roadmap 
 ./verify-p1.ps1
 ./build.ps1 -Target P2 -Locked
 ./verify-p2.ps1
+./verify-p4.ps1
 python tools/VelociTex.Native.Probe/verify-native.py artifacts/native
 ```
 

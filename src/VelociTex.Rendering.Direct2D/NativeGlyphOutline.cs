@@ -14,7 +14,9 @@ internal static unsafe class NativeGlyphOutline
         return Build(face,glyph,size,false).Path!.ToString();
     }
     internal static MathPathSegment[] GetSegments(nint face,ushort glyph,float size) => Build(face,glyph,size,true).Segments!.ToArray();
-    private static State Build(nint face,ushort glyph,float size,bool segments)
+    internal static MathPathSegment[] GetRunSegments(nint face,float size,ushort* glyphs,float* advances,nint offsets,uint count,bool rtl)
+        => Build(face,0,size,true,glyphs,advances,offsets,count,rtl).Segments!.ToArray();
+    private static State Build(nint face,ushort glyph,float size,bool segments,ushort* glyphs=null,float* advances=null,nint offsets=0,uint count=1,bool rtl=false)
     {
         State state=new(segments);GCHandle handle=GCHandle.Alloc(state);
         nint* vtable=stackalloc nint[10];
@@ -32,7 +34,7 @@ internal static unsafe class NativeGlyphOutline
         try
         {
             float advance=0;
-            Check(((delegate* unmanaged[Stdcall]<nint,float,ushort*,float*,nint,uint,int,int,Sink*,int>)Slot(face,14))(face,size,&glyph,&advance,0,1,0,0,&sink));
+            Check(((delegate* unmanaged[Stdcall]<nint,float,ushort*,float*,nint,uint,int,int,Sink*,int>)Slot(face,14))(face,size,glyphs==null?&glyph:glyphs,advances==null?&advance:advances,offsets,count,0,rtl?1:0,&sink));
             if(state.Error is not null)throw new InvalidOperationException("Native glyph outline callback failed.",state.Error);
             return state;
         }

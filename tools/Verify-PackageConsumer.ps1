@@ -1,7 +1,7 @@
 param(
-    [string]$Feed = 'artifacts/packages/p2',
-    [string]$Output = 'artifacts/p2/package-consumer',
-    [ValidatePattern('^0\.2\.0-preview\.1$')][string]$Version = '0.2.0-preview.1',
+    [string]$Feed = 'artifacts/packages/p4',
+    [string]$Output = 'artifacts/p4/package-consumer',
+    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '0.4.0-preview.1',
     [switch]$UpdateLocks
 )
 $ErrorActionPreference = 'Stop'
@@ -13,7 +13,7 @@ function Resolve-RepoPath([string]$Path) {
 $feedPath = Resolve-RepoPath $Feed
 $outputPath = Resolve-RepoPath $Output
 $templatePath = Join-Path $repo 'samples/VelociTex.Export.Sample'
-$lockTemplatePath = Join-Path $templatePath 'package-locks'
+$lockTemplatePath = if ($Version -eq '0.2.0-preview.1') { Join-Path $templatePath 'package-locks' } else { Join-Path (Join-Path $templatePath 'package-locks') $Version }
 $packages = @('VelociTex.Core', 'VelociTex.Rendering.Direct2D')
 foreach ($id in $packages) {
     if (!(Test-Path -LiteralPath (Join-Path $feedPath "$id.$Version.nupkg"))) { throw "Missing local package: $id.$Version.nupkg in $feedPath" }
@@ -25,7 +25,9 @@ New-Item -ItemType Directory -Path $appPath, $isolatedPackages -Force | Out-Null
 if ($UpdateLocks) { New-Item -ItemType Directory -Path $lockTemplatePath -Force | Out-Null }
 $utf8 = [Text.UTF8Encoding]::new($false)
 function Write-Text([string]$Path, [string]$Text) { [IO.File]::WriteAllText($Path, $Text, $utf8) }
-Copy-Item -LiteralPath (Join-Path $templatePath 'Program.cs') -Destination (Join-Path $appPath 'Program.cs')
+$programTemplate = Join-Path $templatePath 'Program.cs'
+if ($Version -eq '0.2.0-preview.1') { $programTemplate = Join-Path $templatePath 'P2.Program.cs.template' }
+Copy-Item -LiteralPath $programTemplate -Destination (Join-Path $appPath 'Program.cs')
 Copy-Item -LiteralPath (Join-Path $repo 'docs/reference/katex-0.19.0.lock.json') -Destination (Join-Path $appPath 'font-lock.json')
 Copy-Item -LiteralPath (Join-Path $repo 'global.json') -Destination (Join-Path $appPath 'global.json')
 Write-Text (Join-Path $appPath 'Directory.Build.props') @'
@@ -135,13 +137,13 @@ try {
     $jitAssets = Read-Assets 'jit'
     $jitBin = Join-Path $runPath 'jit-bin'
     Invoke-Dotnet 'jit-build' @('build', $project, '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=false', '-p:Platform=x64', '-p:RestoreLockedMode=true', '--no-restore', '-o', $jitBin, '--nologo')
-    $jitReport = Run-Consumer 'jit' (Get-Command dotnet).Source @(('"' + (Join-Path $jitBin 'VelociTex.PackageConsumer.dll') + '"'), ('"' + (Join-Path $runPath 'jit') + '"'), '--expect-jit') $false
+    $jitReport = Run-Consumer 'jit' (Get-Command dotnet).Source @(('"' + (Join-Path $jitBin 'VelociTex.PackageConsumer.dll') + '"'), ('"' + (Join-Path $runPath 'jit') + '"'), '--expect-jit', "--package-version=$Version") $false
     Restore-Consumer 'aot' $true
     $aotAssets = Read-Assets 'aot'
     $publish = Join-Path $runPath 'publish'
     Invoke-Dotnet 'aot-publish' @('publish', $project, '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=true', '-p:Platform=x64', '-p:RestoreLockedMode=true', '--no-restore', '-o', $publish, '--nologo')
     $aotExecutable = Join-Path $publish 'VelociTex.PackageConsumer.exe'
-    $aotReport = Run-Consumer 'aot' $aotExecutable @(('"' + (Join-Path $runPath 'aot') + '"'), '--expect-aot') $true
+    $aotReport = Run-Consumer 'aot' $aotExecutable @(('"' + (Join-Path $runPath 'aot') + '"'), '--expect-aot', "--package-version=$Version") $true
 }
 finally { Pop-Location; $env:DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE = $priorWorkloadSetting; $env:MSBuildEnableWorkloadResolver = $priorResolverSetting }
 
@@ -172,7 +174,8 @@ foreach ($id in $packages) {
 }
 $fontLock = Get-Content -LiteralPath (Join-Path $appPath 'font-lock.json') -Raw | ConvertFrom-Json
 foreach ($runtimeReport in @($jitReport, $aotReport)) {
-    if ($runtimeReport.Fonts.Count -ne 20 -or $runtimeReport.Formulas.Count -ne 5 -or $runtimeReport.Checks.Count -lt 90) { throw 'Consumer did not execute the full public API assertions.' }
+    $minimumFormulas = if ($Version -eq '0.2.0-preview.1') { 5 } else { 9 }
+    if ($runtimeReport.Fonts.Count -ne 20 -or $runtimeReport.Formulas.Count -lt $minimumFormulas -or $runtimeReport.Checks.Count -lt 90) { throw 'Consumer did not execute the full public API assertions.' }
     foreach ($font in $fontLock.ttfFonts) {
         $actual = @($runtimeReport.Fonts | Where-Object File -eq $font.file)
         if ($actual.Count -ne 1 -or $actual[0].Sha256 -ne $font.sha256 -or $actual[0].Bytes -ne $font.bytes) { throw "Consumer font bytes differ from locked KaTeX: $($font.file)" }
@@ -191,7 +194,16 @@ foreach ($formula in $jitReport.Formulas) {
         $parity += [ordered]@{ file = $export.File; sha256 = $export.Sha256; jitPath = $jitExportPath; aotPath = $aotExportPath; equal = $true }
     }
 }
-$sourceProgram = Join-Path $templatePath 'Program.cs'
+if ($Version -ne '0.2.0-preview.1') {
+    foreach ($name in @('error-fallback.png', 'error-fallback.svg', 'error-fallback.mathml')) {
+        $jitPath = Join-Path (Join-Path $runPath 'jit') $name
+        $aotPath = Join-Path (Join-Path $runPath 'aot') $name
+        $digest = Hash-File $jitPath
+        if ($digest -ne (Hash-File $aotPath)) { throw "JIT and AOT literal-source presentation bytes differ: $name" }
+        $parity += [ordered]@{ file = $name; sha256 = $digest; jitPath = $jitPath; aotPath = $aotPath; equal = $true }
+    }
+}
+$sourceProgram = $programTemplate
 if ((Hash-File $sourceProgram) -ne (Hash-File (Join-Path $appPath 'Program.cs'))) { throw 'The source template changed while its clean consumer was running.' }
 foreach ($lockName in @('packages.jit.lock.json', 'packages.aot.lock.json')) {
     if ((Hash-File (Join-Path $lockTemplatePath $lockName)) -ne (Hash-File (Join-Path $appPath $lockName))) { throw "The reviewed consumer lock changed while running: $lockName" }
@@ -201,14 +213,14 @@ $evidencePaths = @($PSCommandPath, $sourceProgram, $project, (Join-Path $appPath
     (Join-Path $runPath 'jit-project.assets.json'), (Join-Path $runPath 'aot-project.assets.json'), (Join-Path $runPath 'jit/consumer-report.json'), (Join-Path $runPath 'aot/consumer-report.json'), $aotExecutable) + $logs.ToArray()
 $evidence = @($evidencePaths | ForEach-Object { [ordered]@{ path = $_; bytes = (Get-Item -LiteralPath $_).Length; sha256 = Hash-File $_ } })
 $verification = [ordered]@{
-    schemaVersion = 1; phase = 'P2'; version = $Version; recordedUtc = [DateTime]::UtcNow.ToString('O'); runPath = $runPath; localFeed = $feedPath
+    schemaVersion = 1; phase = $(if ($Version -eq '0.2.0-preview.1') { 'P2' } else { 'P4/P5' }); version = $Version; recordedUtc = [DateTime]::UtcNow.ToString('O'); runPath = $runPath; localFeed = $feedPath
     isolatedPackages = $isolatedPackages; publicApiOnly = $true; projectReferences = 0; packageReferences = $packages; lockedRestoreJit = $true; lockedRestoreAot = $true
     jit = [ordered]@{ processId = $jitReport.ProcessId; nativeAot = $jitReport.NativeAot; checks = $jitReport.Checks.Count; fonts = $jitReport.Fonts.Count; formulas = $jitReport.Formulas.Count }
     aot = [ordered]@{ processId = $aotReport.ProcessId; nativeAot = $aotReport.NativeAot; checks = $aotReport.Checks.Count; fonts = $aotReport.Fonts.Count; formulas = $aotReport.Formulas.Count; executableSha256 = Hash-File $aotExecutable }
     packageDllChecks = $dllChecks; exportParity = $parity; files = $evidence
-    limits = @('This verifies five public API consumer formulas; it does not replace the complete compatibility corpus.', 'The actual installed Windows CJK font is recorded; complex-script shaping is not claimed.', 'Cache byte counts are conservative managed estimates; native peak memory and old hardware performance are not measured here.', 'AOT resolves the same verified package DLL inputs; its linked native executable is separately hashed, not claimed byte-identical to a managed DLL.')
+    limits = @('This public API consumer does not replace the complete compatibility corpus.', 'Actual installed Windows fallback fonts and contextual outlines depend on the host font installation; their provenance is retained.', 'Cache byte counts are conservative managed estimates; native peak memory and old hardware performance are not measured here.', 'AOT resolves the same verified package DLL inputs; its linked native executable is separately hashed, not claimed byte-identical to a managed DLL.')
 }
 $json = $verification | ConvertTo-Json -Depth 12
 Write-Text (Join-Path $runPath 'verification.json') $json
 Write-Text (Join-Path $outputPath 'verification.json') $json
-Write-Host "Clean local-package consumer passed JIT + Native AOT, 20 locked font hashes, 15 identical exports. Evidence: $(Join-Path $outputPath 'verification.json')"
+Write-Host "Clean local-package consumer passed JIT + Native AOT, 20 locked font hashes, $($parity.Count) identical exports. Evidence: $(Join-Path $outputPath 'verification.json')"

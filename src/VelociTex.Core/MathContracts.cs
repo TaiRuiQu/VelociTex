@@ -108,7 +108,22 @@ public enum MathFont
     /// <summary>Script capitals.</summary>
     Script,
     /// <summary>Explicit normal math selection.</summary>
-    MathNormal
+    MathNormal,
+    /// <summary>Bold italic text from the locked Main face.</summary>
+    MainBoldItalic,
+    /// <summary>Bold italic sans-serif text selection, preserving unavailable-face fallback semantics.</summary>
+    MathSansBoldItalic
+}
+
+/// <summary>Handling of optional upstream strict-mode checks.</summary>
+public enum MathStrictMode
+{
+    /// <summary>Allow non-TeX constructs accepted by the locked core.</summary>
+    Ignore,
+    /// <summary>Allow the construct; warnings are retained by diagnostic-aware consumers.</summary>
+    Warn,
+    /// <summary>Reject strict-mode violations with a structured diagnostic.</summary>
+    Error
 }
 
 /// <summary>Bounded compilation settings; all dimensions are device-independent pixels.</summary>
@@ -136,6 +151,26 @@ public readonly record struct MathOptions
     public MacroSession? Session { get; init; }
     /// <summary>Optional actual fallback outline provider, invoked inside compilation. Null reports unavailable text glyphs.</summary>
     public IMathTextShaper? TextShaper { get; init; }
+    /// <summary>Maximum explicit TeX dimension in em; positive infinity preserves the upstream default.</summary>
+    public double MaxSize { get; init; } = double.PositiveInfinity;
+    /// <summary>Minimum line thickness in em; zero preserves locked TeX defaults.</summary>
+    public double MinRuleThickness { get; init; }
+    /// <summary>Parses color as the older two-argument textcolor form.</summary>
+    public bool ColorIsTextColor { get; init; }
+    /// <summary>Commits top-level definitions to an explicitly supplied macro session.</summary>
+    public bool GlobalGroup { get; init; }
+    /// <summary>Places explicit equation tags on the left.</summary>
+    public bool Leqno { get; init; }
+    /// <summary>Uses flush-left display alignment when a display width is supplied.</summary>
+    public bool Fleqn { get; init; }
+    /// <summary>Optional host display width in DIP; zero retains the natural formula width.</summary>
+    public double DisplayWidth { get; init; }
+    /// <summary>Initial explicit equation numbering value for numbered environments.</summary>
+    public int EquationNumber { get; init; } = 1;
+    /// <summary>Optional compatibility strictness; defaults to warnings.</summary>
+    public MathStrictMode StrictMode { get; init; } = MathStrictMode.Warn;
+    /// <summary>Optional per-condition strictness callback. Exceptions propagate for reported conditions and act as Error for behavioral checks.</summary>
+    public Func<MathWarning, MathStrictMode>? StrictHandler { get; init; }
 }
 
 /// <summary>Stable categories of ordinary compilation failures.</summary>
@@ -179,6 +214,8 @@ public enum MathDiagnosticCode
     SessionInUse,
     /// <summary>Compilation was cancelled and transient changes rolled back.</summary>
     Cancelled,
+    /// <summary>A strict-mode compatibility condition was encountered.</summary>
+    StrictViolation,
 }
 
 /// <summary>An ordinary compilation error with a bounded source range.</summary>
@@ -192,12 +229,15 @@ public readonly record struct MathDiagnostic(MathDiagnosticCode Code, SourceRang
 /// <summary>Immutable, independently owned output. Glyph origins and paths use logical-box coordinates.</summary>
 public sealed class MathDocument
 {
-    internal MathDocument(string source, in MathOptions options, SemanticNode[] nodes, int root, LayoutOutput layout)
+    internal MathDocument(string source, in MathOptions options, SemanticNode[] nodes, int root, LayoutOutput layout, MathWarning[]? warnings = null)
     {
-        Source = source; Options = options with { Macros = null, Session = null, TextShaper = null }; Nodes = nodes; Root = root;
+        Source = source; Options = options with { Macros = null, Session = null, TextShaper = null, StrictHandler = null }; Nodes = nodes; Root = root;
         LogicalSize = layout.LogicalSize; Baseline = layout.Baseline; InkBounds = layout.InkBounds;
         Glyphs = layout.Glyphs; Rules = layout.Rules; Paths = layout.Paths;
         TextGlyphs = layout.TextGlyphs;
+        PaintCommands = layout.PaintCommands; PaintStates = layout.PaintStates;
+        TextRuns = layout.TextRuns;
+        Warnings = warnings ?? [];
     }
     /// <summary>Complete original source without host math delimiters; suitable for whole-formula copying.</summary>
     public string Source { get; }
@@ -219,9 +259,21 @@ public sealed class MathDocument
     public ReadOnlyMemory<MathPath> Paths { get; }
     /// <summary>Fallback text provenance; its outlines are already included in Paths.</summary>
     public ReadOnlyMemory<MathTextGlyph> TextGlyphs { get; }
+    /// <summary>Actual shaped text-run provenance; its immutable outlines are already retained in Paths.</summary>
+    public ReadOnlyMemory<MathTextRun> TextRuns { get; }
+    /// <summary>Ordered drawing instructions referencing the immutable geometry arrays.</summary>
+    public ReadOnlyMemory<MathPaintCommand> PaintCommands { get; }
+    /// <summary>Deduplicated colors and affine transforms used by drawing instructions.</summary>
+    public ReadOnlyMemory<MathPaintState> PaintStates { get; }
+    /// <summary>Bounded independently owned compatibility warnings from successful compilation.</summary>
+    public ReadOnlyMemory<MathWarning> Warnings { get; }
     internal SemanticNode[] Nodes { get; }
     internal int Root { get; }
 }
+
+/// <summary>A non-fatal locked-core compatibility condition retained by a successful result.</summary>
+/// <param name="Code">Stable upstream strict-mode condition name.</param><param name="Range">Original UTF-16 source range.</param><param name="Message">Unlocalized diagnostic detail.</param>
+public readonly record struct MathWarning(string Code, SourceRange Range, string Message);
 
 /// <summary>Access to the unchanged embedded KaTeX fonts, licensed separately under OFL-1.1.</summary>
 public static class MathFontCatalog
@@ -237,19 +289,25 @@ public static class MathFontCatalog
         ?? throw new InvalidOperationException("Embedded font resource is missing.");
 }
 
-internal enum NodeKind { Row, Symbol, Script, Fraction, Radical, Style, Font, Text, Space, Operator, Delimiter, Delimited, Accent, Matrix, MatrixRow, MatrixCell }
+internal enum NodeKind { Row, Symbol, Script, Fraction, Radical, Style, Font, Text, Space, Operator, Delimiter, Delimited, Accent, Matrix, MatrixRow, MatrixCell, Box, Color, Enclose, Rule, Sizing, Choice, MathMlChoice, Class, Tag, Verb }
+internal enum TexUnit { Em, Ex, Mu, Pt, Bp, Pc, In, Cm, Mm, Dd, Cc, Nd, Nc, Sp, Px }
+internal readonly record struct TexLength(double Number, TexUnit Unit)
+{
+    internal string UnitText => Unit.ToString().ToLowerInvariant();
+}
 internal struct SemanticNode
 {
     internal NodeKind Kind;
     internal SourceRange Range;
-    internal int FirstChild, NextSibling, SecondChild, ThirdChild, CodePoint;
+    internal int FirstChild, NextSibling, SecondChild, ThirdChild, FourthChild, CodePoint, OriginalCodePoint, FontIdOverride;
     internal MathAtom Atom;
     internal MathFont Font;
     internal MathFont SymbolFont;
     internal MathStyle Style;
     internal bool TextMode;
-    internal double Value;
-    internal string? Text, Alignment;
+    internal double Value, Value2, Value3;
+    internal string? Text, Alignment, Text2, Text3;
+    internal TexLength Length1, Length2, Length3;
     internal int LeftDelimiter, RightDelimiter, ColumnCount, RuleAbove, RuleBelow;
     internal bool HasBar, Limits, AlwaysLimits, NeverLimits;
     // True for upstream mathord; textord remains upright by default even in math mode.
@@ -257,10 +315,11 @@ internal struct SemanticNode
     internal SemanticNode(NodeKind kind, SourceRange range)
     {
         this = default; Kind = kind; Range = range;
-        FirstChild = NextSibling = SecondChild = ThirdChild = -1;
+        FirstChild = NextSibling = SecondChild = ThirdChild = FourthChild = -1;
+        FontIdOverride = -1;
         Style = MathStyle.Text;
         HasBar = true;
     }
 }
 
-internal readonly record struct LayoutOutput(MathGlyph[] Glyphs, MathRule[] Rules, MathPath[] Paths, MathSize LogicalSize, double Baseline, MathBounds InkBounds, MathTextGlyph[] TextGlyphs);
+internal readonly record struct LayoutOutput(MathGlyph[] Glyphs, MathRule[] Rules, MathPath[] Paths, MathSize LogicalSize, double Baseline, MathBounds InkBounds, MathTextGlyph[] TextGlyphs, MathPaintCommand[] PaintCommands, MathPaintState[] PaintStates, MathTextRun[] TextRuns);

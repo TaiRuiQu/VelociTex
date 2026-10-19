@@ -48,7 +48,7 @@ public sealed class MathDocumentCache
         document = null; diagnostic = default; cacheHit = false;
         if (cancellationToken.IsCancellationRequested)
         { diagnostic = new(MathDiagnosticCode.Cancelled, new(0, latex.Length), "Compilation was cancelled."); return false; }
-        var eligible = MaximumBytes > 0 && MaximumItems > 0 && options.Macros is null && options.Session is null && options.TextShaper is null && !ContainsDefinition(latex);
+        var eligible = MaximumBytes > 0 && MaximumItems > 0 && options.Macros is null && options.Session is null && options.TextShaper is null && options.StrictHandler is null && !ContainsDefinition(latex);
         var key = new Key(latex, options);
         if (eligible)
         {
@@ -100,9 +100,13 @@ public sealed class MathDocumentCache
         // Array headers, strings, keys, dictionary/LRU bookkeeping and the result object are
         // deliberately charged above their payloads. Shared static path data is charged per
         // result as a conservative upper bound; it is never omitted from the budget.
-        long bytes = 512 + 2L * document.Source.Length + 160L * document.Nodes.Length +
-            64L * document.Glyphs.Length + 96L * document.TextGlyphs.Length + 48L * document.Rules.Length + 128L * document.Paths.Length;
-        foreach (var node in document.Nodes.AsSpan()) bytes += 64 + 2L * ((node.Text?.Length ?? 0) + (node.Alignment?.Length ?? 0));
+        long bytes = 512 + 2L * document.Source.Length + (System.Runtime.CompilerServices.Unsafe.SizeOf<SemanticNode>() + 32L) * document.Nodes.Length +
+            64L * document.Glyphs.Length + 96L * document.TextGlyphs.Length + 48L * document.Rules.Length + 128L * document.Paths.Length +
+            24L * document.PaintCommands.Length + 80L * document.PaintStates.Length + 64L * document.Warnings.Length + 96L * document.TextRuns.Length;
+        foreach(var run in document.TextRuns.Span)bytes+=32+2L*run.Text.Length;
+        foreach (var warning in document.Warnings.Span) bytes += 64 + 2L * (warning.Code.Length + warning.Message.Length);
+        foreach (var text in document.TextGlyphs.Span) bytes += 32 + 2L * text.FontFamily.Length;
+        foreach (var node in document.Nodes.AsSpan()) bytes += 128 + 2L * ((node.Text?.Length ?? 0) + (node.Text2?.Length ?? 0) + (node.Text3?.Length ?? 0) + (node.Alignment?.Length ?? 0));
         foreach (var path in document.Paths.Span) bytes += 64L * path.Segments.Length;
         return bytes;
     }

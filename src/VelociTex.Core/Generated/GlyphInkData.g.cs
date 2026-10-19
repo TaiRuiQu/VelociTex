@@ -2224,4 +2224,27 @@ internal static class GlyphInkData
         new(211, 334, 313, 623),
         new(44, -139, 480, 248),
     ];
+    internal static readonly double[] FontDescents =
+    [
+        0.463d, // AMS-Regular
+        0.164d, // Caligraphic-Bold
+        0.143d, // Caligraphic-Regular
+        0.242d, // Fraktur-Bold
+        0.257d, // Fraktur-Regular
+        0.268d, // Main-Bold
+        0.25d, // Main-BoldItalic
+        0.25d, // Main-Italic
+        0.272d, // Main-Regular
+        0.216d, // Math-BoldItalic
+        0.218d, // Math-Italic
+        0.25d, // SansSerif-Bold
+        0.25d, // SansSerif-Italic
+        0.25d, // SansSerif-Regular
+        0.314d, // Script-Regular
+        0.35d, // Size1-Regular
+        0.862d, // Size2-Regular
+        0.95d, // Size3-Regular
+        1.25d, // Size4-Regular
+        0.229d, // Typewriter-Regular
+    ];
 }

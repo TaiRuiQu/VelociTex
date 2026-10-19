@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "phase": "P4",
+  "reference": {
+    "repository": "https://github.com/KaTeX/KaTeX",
+    "tag": "v0.19.0",
+    "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba",
+    "referenceApi": "https://api.github.com/repos/KaTeX/KaTeX/git/ref/tags/v0.19.0"
+  },
+  "counts": {
+    "valid": 0,
+    "invalid": 0
+  },
+  "cases": []
+}

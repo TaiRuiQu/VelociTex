@@ -4,6 +4,8 @@ English | [中文](requirements.zh-CN.md)
 
 Confirmed date: 2026-10-19. Source of requirements: Current user Q&A session. This document distinguishes between "user-confirmed" items and "engineering proposals" to avoid conflating optimization ideas with product requirements during implementation.
 
+Later confirmation on 2026-10-19: anti-aliasing differences are acceptable; correct mathematical typesetting is the acceptance criterion. Pixel-edge differences remain diagnostic, while semantic and layout correctness, colors, missing glyphs and clipping remain hard checks.
+
 ## 1. Product Goals (User Confirmed)
 
 Build an independent mathematical typesetting and rendering library in C# for fast display of complete formulas in native WinUI 3 interfaces. The first downstream consumer is `../oh-my-study/`, with priority on replacing that project's existing formula display pipeline. The product will be delivered as an independent open-source NuGet library under MIT license.

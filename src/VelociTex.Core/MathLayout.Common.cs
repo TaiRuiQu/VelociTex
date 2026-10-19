@@ -12,25 +12,35 @@ internal static partial class MathLayout
         internal double X, Y, Width, Height, ScaleX, ScaleY;
         internal MathPathSegment[]? Path;
         internal MathBounds Clip;
-        internal bool Vertical;
+        internal bool Vertical, Exact, HasColor;
+        internal MathColor Color;
     }
 
-    private static Box BuildRow(SemanticNode[] nodes, int id, byte style, byte[] styles, Box[] boxes, double[] x, double[] y, int[] sequence, int[] collectStack, MathAtom[] atoms)
+    private static Box BuildRow(SemanticNode[] nodes, int id, LayoutContext style, LayoutContext[] styles, Box[] boxes, double[] x, double[] y, int[] sequence, int[] collectStack, MathAtom[] atoms, in MathOptions options)
     {
         ref readonly SemanticNode node = ref nodes[id];
-        int length = Collect(nodes, node.FirstChild, sequence, collectStack);
+        int length = Collect(nodes, node.FirstChild, sequence, collectStack, styles);
         for (int i = 0; i < length; i++) atoms[i] = boxes[sequence[i]].Atom;
+        for(int i=1;i<length;i++)
+        {
+            int before=sequence[i-1],current=sequence[i];
+            if(nodes[before].Kind==NodeKind.Symbol&&nodes[current].Kind==NodeKind.Symbol&&nodes[before].Atom==MathAtom.Bin&&nodes[current].Atom==MathAtom.Bin&&
+                nodes[before].Font==MathFont.AMS&&nodes[current].Font==MathFont.AMS&&boxes[before].Skew==boxes[current].Skew&&styles[before]==styles[current]) atoms[i]=atoms[i-1];
+        }
         int previous = -1;
         for (int i = 0; i < length; i++)
         {
             if (nodes[sequence[i]].Kind == NodeKind.Space) continue;
+            if(i>0 && nodes[sequence[i]].Kind==NodeKind.Symbol&&nodes[sequence[i-1]].Kind==NodeKind.Symbol&&
+                nodes[sequence[i]].Atom==MathAtom.Bin&&nodes[sequence[i-1]].Atom==MathAtom.Bin&&nodes[sequence[i]].Font==MathFont.AMS&&nodes[sequence[i-1]].Font==MathFont.AMS&&
+                boxes[sequence[i]].Skew==boxes[sequence[i-1]].Skew&&styles[sequence[i]]==styles[sequence[i-1]]) {atoms[i]=atoms[i-1];continue;}
             MathAtom current = atoms[i];
             if (previous >= 0 && atoms[previous] == MathAtom.Bin && CancelsBinOnRight(current)) atoms[previous] = MathAtom.Ord;
             else if (current == MathAtom.Bin && (previous < 0 || CancelsBinOnLeft(atoms[previous]))) atoms[i] = MathAtom.Ord;
             previous = i;
         }
         if (previous >= 0 && atoms[previous] == MathAtom.Bin) atoms[previous] = MathAtom.Ord;
-        byte glueStyle = style;
+        LayoutContext glueStyle = style;
         if (node.FirstChild >= 0 && nodes[node.FirstChild].NextSibling < 0 && nodes[node.FirstChild].Kind == NodeKind.Style)
             glueStyle = styles[node.FirstChild];
         double mu = MathConstants.quad(MetricIndex(glueStyle)) * Scale(glueStyle) / 18d;
@@ -52,21 +62,47 @@ internal static partial class MathLayout
                     boxes[before].Font == childBox.Font && boxes[before].Skew == childBox.Skew && atoms[previous] == MathAtom.Ord && atoms[i] == MathAtom.Ord && styles[before] == styles[child])
                     box.Width -= Math.Max(0, boxes[before].Italic);
             }
-            if (!space && previous >= 0) box.Width += Spacing(atoms[previous], atoms[i], styles[child] >= 4) * mu;
+            if (!space && previous >= 0 && !boxes[sequence[previous]].NoAtom && !childBox.NoAtom) box.Width += Spacing(atoms[previous], atoms[i], styles[child] >= 4) * mu;
             x[child] = box.Width; y[child] = 0;
             box.Width += childBox.Width; box.Height = Math.Max(box.Height, childBox.Height); box.Depth = Math.Max(box.Depth, childBox.Depth);
             if (!space) previous = i;
         }
         if (length == 1 && node.Kind == NodeKind.Row) box.Character = boxes[sequence[0]].Character;
+        bool hasNewLine = false;
+        if (id == 0) for(int i=0;i<length;i++) if(nodes[sequence[i]].Kind==NodeKind.Space && nodes[sequence[i]].Text=="\\\\" && (!options.DisplayMode || options.StrictMode!=MathStrictMode.Error)) { hasNewLine=true; break; }
+        if(hasNewLine){bool content=false;for(int i=0;i<length;i++)if(nodes[sequence[i]].Kind!=NodeKind.Space){content=true;break;}hasNewLine=content;}
+        if (hasNewLine)
+        {
+            double maxWidth = 0, baseline = 0, previousDepth = 0; int lineStart = 0; bool firstLine = true;
+            for (int end = 0; end <= length; end++)
+            {
+                if (end < length && !(nodes[sequence[end]].Kind == NodeKind.Space && nodes[sequence[end]].Text == "\\\\" && (!options.DisplayMode || options.StrictMode != MathStrictMode.Error))) continue;
+                double h = 0,d = 0,w = 0;
+                for(int i=lineStart;i<end;i++){int child=sequence[i];h=Math.Max(h,boxes[child].Height);d=Math.Max(d,boxes[child].Depth);w=Math.Max(w,x[child]+boxes[child].Width-(lineStart<end?x[sequence[lineStart]]:0));}
+                if(!firstLine)baseline+=Math.Max(1.2*style.Scale,previousDepth+h);
+                for(int i=lineStart;i<end;i++)y[sequence[i]]=baseline;
+                if(lineStart<end){double origin=x[sequence[lineStart]];for(int i=lineStart;i<end;i++)x[sequence[i]]-=origin;}
+                if(firstLine){box.Height=h;firstLine=false;} box.Depth=baseline+d; maxWidth=Math.Max(maxWidth,w);previousDepth=d;
+                if(end<length)baseline+=Length(nodes[sequence[end]].Length1,style,options);
+                lineStart=end+1;
+            }
+            box.Width=maxWidth;
+        }
         return box;
     }
 
-    private static Box BuildOperator(in SemanticNode node, byte style, Box[] boxes, List<Decoration> decorations)
+    private static Box BuildOperator(SemanticNode[]nodes,in SemanticNode node,bool centered, LayoutContext style, Box[] boxes, List<Decoration> decorations,Box?composed=null)
     {
         if (node.CodePoint == 0)
         {
-            Box body = node.FirstChild < 0 ? default : boxes[node.FirstChild];
+            Box body = composed??(node.FirstChild < 0 ? default : boxes[node.FirstChild]);
             body.Atom = MathAtom.Op; body.Character = false; body.Symbol = false; body.FirstDecoration = 0;
+            if(node.Text=="\\mathop"&&node.Value==0&&composed is null&&node.FirstChild>=0)
+            {
+                int symbol=node.FirstChild;
+                while(nodes[symbol].Kind is NodeKind.Row or NodeKind.Font && nodes[symbol].FirstChild>=0&&nodes[nodes[symbol].FirstChild].NextSibling<0)symbol=nodes[symbol].FirstChild;
+                if(boxes[symbol].Symbol){body.GlyphY=(body.Height-body.Depth)/2-MathConstants.axisHeight(style.Metrics)*style.Scale;body.Italic=boxes[symbol].Italic;}
+            }
             return body;
         }
         int font = style < 2 && node.Text != "\\smallint" ? 16 : 15;
@@ -84,20 +120,26 @@ internal static partial class MathLayout
         };
         if (node.CodePoint is 0x222f or 0x2230)
         {
+            result.DecorationsAfter=true;
             bool large = font == 16, triple = node.CodePoint == 0x2230;
             double width = (triple ? large ? 1.98 : 1.304 : large ? 1.472 : .957) * scale;
             double height = (large ? .659 : .499) * scale;
             double top = (large ? .08 * scale : 0) + result.GlyphY - height;
-            double left = (result.Width - width) / 2;
+            double left = centered ? (result.Width - width) / 2 : 0;
             AddPath(ref result, StretchyPathData.Get((triple ? "oiiintSize" : "oiintSize") + (large ? "2" : "1")), left, top, .001 * scale, .001 * scale, new(left, top, width, height), decorations);
         }
         return result;
     }
 
-    private static bool UseLimits(in SemanticNode node, byte style) => !node.NeverLimits && (node.AlwaysLimits || node.Limits && style < 2);
+    private static bool UseLimits(in SemanticNode node, LayoutContext style) => node.Text=="\\operatorname"
+        ? node.Text2=="star"&&(style.Style<2||node.AlwaysLimits&&!node.NeverLimits)
+        : !node.NeverLimits && (node.AlwaysLimits || node.Limits && style.Style < 2);
 
-    private static Box BuildLimits(in SemanticNode node, Box basis, Box sup, Box sub, byte style, Box[] boxes, double[] x, double[] y)
+    private static Box BuildLimits(in SemanticNode node, Box basis, Box sup, Box sub, LayoutContext style, Box[] boxes, double[] x, double[] y)
     {
+        // assembleSupSub first encloses the operator in a span. Its extent
+        // union clamps negative glyph depths before adding limit clearances.
+        basis.Height=Math.Max(0,basis.Height);basis.Depth=Math.Max(0,basis.Depth);
         double scale = Scale(style); int m = MetricIndex(style);
         double slant = basis.Italic, shift = basis.GlyphY;
         bool hasSup = node.SecondChild >= 0, hasSub = node.ThirdChild >= 0;
@@ -126,7 +168,7 @@ internal static partial class MathLayout
     private static bool AlwaysStacks(int cp) => cp is '|' or 0x2223 or 0x2225 or 0x2016 or 0x2191 or 0x2193 or 0x2195 or 0x21d1 or 0x21d3 or 0x21d5 or 0x27ee or 0x27ef or 0x23b0 or 0x23b1;
     private static bool NeverStacks(int cp) => cp is 0x27e8 or 0x27e9 or '/' or '\\';
 
-    private static Box MakeDelimiter(int codePoint, double requiredHeight, byte style, bool center, int explicitSize, MathAtom atom, List<Decoration> decorations)
+    private static Box MakeDelimiter(int codePoint, double requiredHeight, LayoutContext style, bool center, int explicitSize, MathAtom atom, List<Decoration> decorations)
     {
         if (codePoint is 0 or '.') return new() { Width = explicitSize > 0 ? 0 : .12, Atom = atom };
         int cp = codePoint switch { '<' => 0x27e8, '>' => 0x27e9, '|' => 0x2223, 0x2016 => 0x2225, _ => codePoint };
@@ -252,10 +294,10 @@ internal static partial class MathLayout
         CheckDecorationBudget(decorations);
         decorations.Add(new() { Kind = DecorationKind.Path, Next = box.FirstDecoration, Path = path, X = x, Y = y, ScaleX = scaleX, ScaleY = scaleY, Clip = clip }); box.FirstDecoration = decorations.Count;
     }
-    private static void AddRule(ref Box box, double x, double y, double width, double height, List<Decoration> decorations, bool vertical = false)
+    private static void AddRule(ref Box box, double x, double y, double width, double height, List<Decoration> decorations, bool vertical = false, bool exact = false, MathColor? color = null)
     {
         CheckDecorationBudget(decorations);
-        decorations.Add(new() { Kind = DecorationKind.Rule, Next = box.FirstDecoration, X = x, Y = y, Width = width, Height = height, Vertical = vertical }); box.FirstDecoration = decorations.Count;
+        decorations.Add(new() { Kind = DecorationKind.Rule, Next = box.FirstDecoration, X = x, Y = y, Width = width, Height = height, Vertical = vertical, Exact = exact, HasColor = color.HasValue, Color = color.GetValueOrDefault() }); box.FirstDecoration = decorations.Count;
     }
     private static void CheckDecorationBudget(List<Decoration> decorations)
     {
@@ -263,35 +305,38 @@ internal static partial class MathLayout
             throw new CompileFailure(new(MathDiagnosticCode.NodeLimit, default, "The bounded drawing-decoration budget was exceeded."));
     }
 
-    private static Box BuildAccent(SemanticNode[] nodes, int id, byte style, Box[] boxes, double[] x, double[] y, List<Decoration> decorations)
+    private static Box BuildAccent(SemanticNode[] nodes, int id, LayoutContext style, in MathOptions options, Box[] boxes, double[] x, double[] y, List<Decoration> decorations)
     {
-        ref readonly SemanticNode node = ref nodes[id]; Box body = boxes[node.FirstChild];
+        ref readonly SemanticNode node = ref nodes[id]; Box body = node.FirstChild>=0?boxes[node.FirstChild]:default;
         double scale = Scale(style), theta = MathConstants.defaultRuleThickness(MetricIndex(style)) * scale;
         string label = node.Text ?? "";
-        Box result = new() { Width = body.Width, Height = body.Height, Depth = body.Depth, Atom = MathAtom.Ord };
-        x[node.FirstChild] = y[node.FirstChild] = 0;
+        Box result = new() { Width = body.Width, Height = body.Height, Depth = body.Depth, Atom = MathAtom.Ord,DecorationsAfter=true };
+        if(node.FirstChild>=0)x[node.FirstChild] = y[node.FirstChild] = 0;
         if (label is "\\overline" or "\\underline")
         {
             bool under = label == "\\underline";
-            AddRule(ref result, 0, under ? body.Depth + 3 * theta : -body.Height - 4 * theta, body.Width, theta, decorations);
-            if (under) result.Depth += 5 * theta; else result.Height += 5 * theta;
+            double line=Math.Max(theta,options.MinRuleThickness*scale);
+            AddRule(ref result, 0, under ? body.Depth + 3 * theta : -body.Height - 3 * theta-line, body.Width, line, decorations);
+            if (under) result.Depth += 4 * theta+line; else result.Height += 4 * theta+line;
             return result;
         }
-        if (label.StartsWith("\\x", StringComparison.Ordinal))
+        if (label.StartsWith("\\x", StringComparison.Ordinal) || label.StartsWith("\\\\cd", StringComparison.Ordinal))
         {
             Box lower = node.SecondChild >= 0 ? boxes[node.SecondChild] : default;
-            StretchyInfo info = GetStretchy(label[1..]);
+            bool cd = label.StartsWith("\\\\cd",StringComparison.Ordinal);
+            StretchyInfo info = GetStretchy(label.TrimStart('\\'));
             double arrowHeight = info.Height * scale;
-            result.Width = Math.Max(info.MinWidth * scale, Math.Max(body.Width + Scale(SupStyles[style]), node.SecondChild >= 0 ? lower.Width + Scale(SubStyles[style]) : 0));
+            double labelPad = cd ? .83334 : 1;
+            result.Width = Math.Max(info.MinWidth * scale, Math.Max(node.FirstChild>=0?body.Width + labelPad * Scale(style.WithStyle(SupStyles[style.Style])):0, node.SecondChild >= 0 ? lower.Width + labelPad * Scale(style.WithStyle(SubStyles[style.Style])) : 0));
             double axis = MathConstants.axisHeight(MetricIndex(style)) * scale;
             double upperY = -axis - .5 * arrowHeight - .111 * scale;
             if (body.Depth > .25 * scale || label == "\\xleftequilibrium") upperY -= body.Depth;
-            x[node.FirstChild] = (result.Width - body.Width) / 2; y[node.FirstChild] = upperY;
-            result.Height = Math.Max(axis + arrowHeight / 2, body.Height - upperY);
+            if(node.FirstChild>=0){x[node.FirstChild] = (result.Width - body.Width) / 2 - (cd ? .13889 * Scale(style.WithStyle(SupStyles[style.Style])) : 0); y[node.FirstChild] = upperY;}
+            result.Height = Math.Max(axis + arrowHeight / 2, node.FirstChild>=0?body.Height - upperY:0);
             result.Depth = Math.Max(0, arrowHeight / 2 - axis);
             if (node.SecondChild >= 0)
             {
-                x[node.SecondChild] = (result.Width - lower.Width) / 2;
+                x[node.SecondChild] = (result.Width - lower.Width) / 2 - (cd ? .13889 * Scale(style.WithStyle(SubStyles[style.Style])) : 0);
                 y[node.SecondChild] = -axis + lower.Height + arrowHeight / 2 + .111 * scale;
                 result.Depth = Math.Max(result.Depth, lower.Depth + y[node.SecondChild]);
             }
@@ -324,29 +369,38 @@ internal static partial class MathLayout
                 double vh = tilde ? image switch { 1 => 260, 2 => 286, 3 => 306, _ => 312 } : image switch { 1 => 239, 2 => 300, 3 => 360, _ => 420 };
                 double h = tilde ? image switch { 1 => .26, 2 => .286, 3 => .3, _ => .34 } : image switch { 1 => .24, 2 => .3, 3 => .3, _ => .42 };
                 string name = (tilde ? "tilde" : label[1..]) + image;
-                double width = Math.Max(0, body.Width - 2 * skew), top = under ? body.Depth : -body.Height - h * scale;
+                double underKern = label == "\\utilde" ? .12 * scale : 0;
+                double width = Math.Max(0, body.Width - 2 * skew), top = under ? body.Depth + underKern : -body.Height - h * scale;
                 AddPath(ref result, StretchyPathData.Get(name), 2 * skew, top, width / vw, h * scale / vh, new(2 * skew, top, width, h * scale), decorations);
-                if (under) result.Depth += h * scale; else result.Height += h * scale;
+                if (under) result.Depth += h * scale + underKern; else result.Height += h * scale;
             }
             else
             {
                 info = GetStretchy(label[1..]); result.Width = Math.Max(body.Width, info.MinWidth * scale);
-                x[node.FirstChild] = (result.Width - body.Width) / 2;
+                x[node.FirstChild] = under?0:(result.Width - body.Width) / 2;
                 AddStretchy(ref result, info, 0, under ? body.Depth : -body.Height - info.Height * scale, result.Width, scale, decorations);
                 if (under) result.Depth += info.Height * scale; else result.Height += info.Height * scale;
             }
             return result;
         }
-        double clearance = Math.Min(body.Height, MathConstants.xHeight(MetricIndex(style)) * scale);
-        double accentWidth, accentHeight, accentDepth = 0; int accentFont = 8, accentGlyph = -1;
+        bool accentBelow = label == "\\c", accentFull = label == "\\textcircled";
+        double clearance = accentBelow ? body.Height + body.Depth : accentFull ? body.Height : Math.Min(body.Height, MathConstants.xHeight(MetricIndex(style)) * scale);
+        double accentWidth, accentHeight, accentDepth = 0;
+        int accentFont = node.Font switch { MathFont.MathBold => 5, MathFont.MainBoldItalic => 6, MathFont.MathItalic => 7, MathFont.MathSans => 13, MathFont.MathSansBold => 11, MathFont.MathSansItalic => 12, MathFont.MathTypewriter => 19, _ => 8 }, accentGlyph = -1;
         if (label == "\\vec") { accentWidth = .471 * scale; accentHeight = .714 * scale; }
-        else if (Find(accentFont, node.CodePoint, out accentGlyph, out TexGlyphMetric accent))
+        else if (Find(accentFont, label=="\\^"?0x02c6:node.CodePoint, out accentGlyph, out TexGlyphMetric accent))
         { accentWidth = FontData.Glyphs[accentGlyph].AdvanceUnits / (double)FontData.Fonts[accentFont].UnitsPerEm * scale; accentHeight = accent.Height * scale; accentDepth = accent.Depth * scale; }
+        else if (accentFont != 8 && Find(8,node.CodePoint,out accentGlyph,out TexGlyphMetric fallbackAccent))
+        { accentFont = 8; accentWidth = FontData.Glyphs[accentGlyph].AdvanceUnits / (double)FontData.Fonts[8].UnitsPerEm * scale; accentHeight = fallbackAccent.Height * scale; accentDepth = fallbackAccent.Depth * scale; }
         else throw new CompileFailure(new(MathDiagnosticCode.UnsupportedCommand, node.Range, "This accent requires an unavailable locked glyph."));
-        double ax = body.Width / 2 + skew - accentWidth / 2, ay = -body.Height + clearance - accentDepth;
+        if (accentBelow) clearance += accentDepth;
+        double ax = (accentFull ? (Math.Max(body.Width,accentWidth)-accentWidth)/2 : body.Width / 2 - accentWidth / 2) + skew;
+        double ay = -body.Height + clearance - accentDepth + (accentFull ? .2 * scale : 0);
         if (label == "\\vec") AddPath(ref result, StretchyPathData.Get("vec"), ax, ay - accentHeight, .001 * scale, .001 * scale, new(ax, ay - accentHeight, accentWidth, accentHeight), decorations);
-        else AddGlyph(ref result, accentFont, accentGlyph, node.CodePoint, ax, ay, scale, decorations);
-        result.Height = Math.Max(result.Height, accentHeight - ay);
+        else AddGlyph(ref result, accentFont, accentGlyph, label=="\\^"?0x02c6:node.CodePoint, ax, ay, scale, decorations);
+        result.Height = Math.Max(result.Height, accentHeight - ay + (accentFull ? .2 * scale : 0));
+        result.Depth = Math.Max(result.Depth, accentDepth + ay - (accentFull ? .2 * scale : 0));
+        if (accentFull) { result.Width = Math.Max(result.Width,accentWidth); x[node.FirstChild]=(result.Width-body.Width)/2; }
         return result;
     }
 
@@ -366,6 +420,7 @@ internal static partial class MathLayout
     private readonly record struct StretchyInfo(string Left, string? Right, double MinWidth, double Height, bool AlignRight = false, string? Middle = null);
     private static StretchyInfo GetStretchy(string label) => label switch
     {
+        "cdrightarrow" => new("rightarrow", null, 3, .522, true), "cdleftarrow" => new("leftarrow", null, 3, .522), "cdlongequal" => new("longequal", null, 3, .334),
         "overrightarrow" or "underrightarrow" => new("rightarrow", null, .888, .522, true),
         "overleftarrow" or "underleftarrow" => new("leftarrow", null, .888, .522),
         "xrightarrow" => new("rightarrow", null, 1.469, .522, true), "xleftarrow" => new("leftarrow", null, 1.469, .522),
@@ -412,14 +467,17 @@ internal static partial class MathLayout
         }
     }
 
-    private static Box BuildMatrix(SemanticNode[] nodes, in SemanticNode node, byte style, double fontSize, Box[] boxes, double[] x, double[] y, List<Decoration> decorations)
+    private static Box BuildMatrix(SemanticNode[] nodes, in SemanticNode node, LayoutContext style, in MathOptions options, Box[] boxes, double[] x, double[] y, List<Decoration> decorations)
     {
         string environment = node.Text ?? "matrix";
-        bool aligned = environment is "aligned" or "alignedat" or "split", gathered = environment == "gathered";
+        bool aligned = environment is "aligned" or "alignedat" or "split" or "align" or "align*" or "alignat" or "alignat*", gathered = environment is "gathered" or "gather" or "gather*";
+        bool cd = environment == "CD", addJot = aligned || gathered || cd || environment is "align" or "align*" or "alignat" or "alignat*" or "gather" or "gather*";
         bool small = environment is "smallmatrix" or "subarray", cases = environment.Contains("cases", StringComparison.Ordinal);
         bool hskip = environment is "array" or "darray";
-        double scale = Scale(style), stretch = small ? .5 : cases ? 1.2 : 1;
-        double strutHeight = .84 * stretch * scale, strutDepth = .36 * stretch * scale;
+        double scale = Scale(style), stretch = small ? .5 : cases ? 1.2 : cd ? 1 : node.Value2>0?node.Value2:1;
+        double baselineSkip = cd ? 3 * MathConstants.xHeight(style.Metrics) : 1.2;
+        double strutHeight = .7 * baselineSkip * stretch * scale, strutDepth = .3 * baselineSkip * stretch * scale;
+        double fontSize = options.FontSize;
         int columns = node.ColumnCount;
         if (columns == 0) for (int row = node.FirstChild; row >= 0; row = nodes[row].NextSibling)
         { int c = 0; for (int cell = nodes[row].FirstChild; cell >= 0; cell = nodes[cell].NextSibling) c++; columns = Math.Max(columns, c); }
@@ -435,9 +493,9 @@ internal static partial class MathLayout
             int c = 0;
             for (int cell = nodes[row].FirstChild; cell >= 0; cell = nodes[cell].NextSibling, c++)
             { rowBox.Height = Math.Max(rowBox.Height, boxes[cell].Height); rowBox.Depth = Math.Max(rowBox.Depth, boxes[cell].Depth); if (c < columns) widths[c] = Math.Max(widths[c], boxes[cell].Width); }
-            double gap = nodes[row].Value * scale;
+            double gap = nodes[row].Length1.Number != 0 ? Length(nodes[row].Length1,style,options) : nodes[row].Value * scale;
             if (gap > 0) { rowBox.Depth = Math.Max(rowBox.Depth, gap + strutDepth); gap = 0; }
-            if ((aligned || gathered) && nodes[row].NextSibling >= 0) rowBox.Depth += .3 * scale;
+            if (addJot && nodes[row].NextSibling >= 0) rowBox.Depth += .3 * scale;
             if (Math.Abs(nodes[row].RuleAbove) > 1) totalHeight += (Math.Abs(nodes[row].RuleAbove) - 1) * .25 * scale;
             totalHeight += rowBox.Height; y[row] = totalHeight; totalHeight += rowBox.Depth + gap;
             boxes[row] = rowBox;
@@ -446,7 +504,7 @@ internal static partial class MathLayout
         double offset = totalHeight / 2 + MathConstants.axisHeight(MetricIndex(style)) * scale;
         // Smallmatrix applies scriptstyle to its cells even when the array
         // already sits in scriptstyle: each side contributes 0.2778*0.7em.
-        double separation = small ? 2 * .2778 * .7 : scale;
+        double separation = small ? 2 * .2778 * .7 : cd ? .5 * scale : scale;
         double width = 0;
         var separatorPositions = new List<(double X, bool Dashed)>(); int specPosition = 0;
         double ruleThickness = .04 * scale;
@@ -470,7 +528,14 @@ internal static partial class MathLayout
             starts[c] = width; width += widths[c];
             if (hskip) width += .5 * scale;
         }
-        Box result = new() { Width = width, Height = offset, Depth = totalHeight - offset, Atom = MathAtom.Ord };
+        double logicalHeight=offset,logicalDepth=totalHeight-offset;
+        if(cd)
+        {
+            logicalHeight=logicalDepth=0;
+            for(int row=node.FirstChild;row>=0;row=nodes[row].NextSibling)if(nodes[row].FirstChild>=0)
+            {logicalHeight=Math.Max(logicalHeight,boxes[row].Height-(y[row]-offset));logicalDepth=Math.Max(logicalDepth,boxes[row].Depth+y[row]-offset);}
+        }
+        Box result = new() { Width = width, Height = logicalHeight, Depth = logicalDepth, Atom = MathAtom.Ord };
         for (int row = node.FirstChild; row >= 0; row = nodes[row].NextSibling)
         {
             y[row] -= offset; x[row] = 0; int c = 0;
@@ -479,14 +544,34 @@ internal static partial class MathLayout
                 x[cell] = starts[c] + (alignments[c] == 'r' ? widths[c] - boxes[cell].Width : alignments[c] == 'l' ? 0 : (widths[c] - boxes[cell].Width) / 2); y[cell] = 0;
             }
             for (int line = 0; line < Math.Abs(nodes[row].RuleAbove); line++)
-                AddArrayHorizontal(ref result, y[row] - boxes[row].Height - line * .25 * scale, width, .04 * scale, nodes[row].RuleAbove < 0, scale, decorations);
+                AddArrayHorizontal(ref result, y[row] - boxes[row].Height - line * .25 * scale, width, .04 * scale, nodes[row].RuleAbove < 0, fontSize, decorations);
         }
-        for (int line = 0; line < Math.Abs(node.RuleBelow); line++) AddArrayHorizontal(ref result, result.Depth - line * .25 * scale, width, .04 * scale, node.RuleBelow < 0, scale, decorations);
+        for (int line = 0; line < Math.Abs(node.RuleBelow); line++) AddArrayHorizontal(ref result, result.Depth - line * .25 * scale, width, .04 * scale, node.RuleBelow < 0, fontSize, decorations);
         foreach (var separator in separatorPositions)
         {
             if (!separator.Dashed) AddRule(ref result, separator.X, -result.Height, .04 * scale, totalHeight, decorations, true);
-            else for (double dash = 0; dash < totalHeight; dash += .2 * scale)
-                AddRule(ref result, separator.X, -result.Height + dash, .04 * scale, Math.Min(.1 * scale, totalHeight - dash), decorations, true);
+            else
+            {
+                double stroke=Math.Max(1,Math.Floor(.04*scale*fontSize))/fontSize;
+                double dash=3*stroke,count=Math.Max(1,Math.Round((totalHeight+2*stroke)/(5*stroke)));
+                double gap=count<=1?0:Math.Max(0,(totalHeight-count*dash)/(count-1));
+                for(int i=0;i<(int)count;i++){double top=i*(dash+gap);AddRule(ref result,separator.X,-result.Height+top,.04*scale,Math.Min(dash,totalHeight-top),decorations,true);}
+            }
+        }
+        int equationNumber = options.EquationNumber;
+        for (int row = node.FirstChild; row >= 0; row = nodes[row].NextSibling)
+        {
+            if (nodes[row].SecondChild >= 0)
+            { int tag = nodes[row].SecondChild; x[tag] = options.Leqno ? 0 : Math.Max(width,options.DisplayWidth / options.FontSize)-boxes[tag].Width; y[tag] = 0; }
+            else if (nodes[row].AlwaysLimits && !nodes[row].NeverLimits)
+            {
+                string label = "(" + (equationNumber++).ToString(System.Globalization.CultureInfo.InvariantCulture) + ")";
+                double labelWidth = 0; foreach(char c in label) if(Find(8,c,out int glyph,out _)) labelWidth += FontData.Glyphs[glyph].AdvanceUnits/(double)FontData.Fonts[8].UnitsPerEm*scale;
+                double labelX = options.Leqno ? 0 : Math.Max(width,options.DisplayWidth/options.FontSize)-labelWidth;
+                Box rowBox = boxes[row];
+                foreach(char c in label) if(Find(8,c,out int glyph,out _)) { AddGlyph(ref rowBox,8,glyph,c,labelX,0,scale,decorations); labelX += FontData.Glyphs[glyph].AdvanceUnits/(double)FontData.Fonts[8].UnitsPerEm*scale; }
+                boxes[row] = rowBox;
+            }
         }
         if (node.LeftDelimiter != 0 || node.RightDelimiter != 0)
         {
@@ -506,11 +591,19 @@ internal static partial class MathLayout
         }
         return result;
     }
-    private static void AddArrayHorizontal(ref Box result, double y, double width, double thickness, bool dashed, double scale, List<Decoration> decorations)
+    private static void AddArrayHorizontal(ref Box result, double y, double width, double thickness, bool dashed, double fontSize, List<Decoration> decorations)
     {
         // makeVList anchors an array line's bottom at the row boundary.
         // Its border therefore occupies the preceding rule thickness.
         if (!dashed) AddRule(ref result, 0, y - thickness, width, thickness, decorations);
-        else for (double x = 0; x < width; x += .2 * scale) AddRule(ref result, x, y - thickness, Math.Min(.1 * scale, width - x), thickness, decorations);
+        else
+        {
+            // Dashed CSS borders fit a painted dash at both ends. A three-
+            // stroke dash length is retained while gaps share the remainder.
+            double stroke=Math.Max(1,Math.Floor(thickness*fontSize))/fontSize;
+            double dash=3*stroke, count=Math.Max(1,Math.Round((width+2*stroke)/(5*stroke)));
+            double gap=count<=1?0:Math.Max(0,(width-count*dash)/(count-1));
+            for(int i=0;i<(int)count;i++){double left=i*(dash+gap);AddRule(ref result,left,y-thickness,Math.Min(dash,width-left),thickness,decorations);}
+        }
     }
 }

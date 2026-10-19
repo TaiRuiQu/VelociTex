@@ -1,16 +1,20 @@
 param(
-    [string]$FeedDirectory = 'artifacts/packages/p2',
-    [string]$OutputDirectory = 'artifacts/package-consumer/winui',
+    [string]$FeedDirectory = 'artifacts/packages/p4',
+    [string]$OutputDirectory = 'artifacts/p4/package-consumer/winui',
+    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '0.4.0-preview.1',
     [switch]$UpdateLocks
 )
 $ErrorActionPreference='Stop'
 $repository=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $feed=if([IO.Path]::IsPathRooted($FeedDirectory)){[IO.Path]::GetFullPath($FeedDirectory)}else{[IO.Path]::GetFullPath((Join-Path $repository $FeedDirectory))}
 $output=if([IO.Path]::IsPathRooted($OutputDirectory)){[IO.Path]::GetFullPath($OutputDirectory)}else{[IO.Path]::GetFullPath((Join-Path $repository $OutputDirectory))}
-$consumer=Join-Path $output ('isolated-'+[Guid]::NewGuid().ToString('N'))
+# The WinUI XAML compiler still resolves some reference assemblies through
+# Windows path APIs. Keep its fresh checkout shallow; reports remain under Output.
+$consumer=Join-Path $repository ('artifacts/c-'+[Guid]::NewGuid().ToString('N').Substring(0,8))
 $published=Join-Path $consumer 'publish'
 $capture=Join-Path $output 'aot'
-$lockTemplate=Join-Path $repository 'samples/VelociTex.WinUI.Sample/package-consumer.lock.json'
+$lockTemplate=if($Version -eq '0.2.0-preview.1'){Join-Path $repository 'samples/VelociTex.WinUI.Sample/package-consumer.lock.json'}else{Join-Path $repository "samples/VelociTex.WinUI.Sample/package-locks/$Version/packages.lock.json"}
+if($UpdateLocks){New-Item -ItemType Directory -Path (Split-Path $lockTemplate -Parent) -Force | Out-Null}
 New-Item -ItemType Directory -Path $consumer -Force | Out-Null
 $source=Join-Path $repository 'samples/VelociTex.WinUI.Sample'
 $sourceHashes=@()
@@ -22,19 +26,19 @@ foreach($name in @('FormulaWindow.cs','ControlAcceptance.cs','WindowCapture.cs',
 Copy-Item -LiteralPath (Join-Path $repository 'global.json') -Destination (Join-Path $consumer 'global.json')
 '<Project />' | Set-Content -LiteralPath (Join-Path $consumer 'Directory.Build.props') -Encoding utf8
 '<Project />' | Set-Content -LiteralPath (Join-Path $consumer 'Directory.Build.targets') -Encoding utf8
-@'
+@"
 <Project>
   <PropertyGroup><ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally></PropertyGroup>
   <ItemGroup>
-    <PackageVersion Include="VelociTex.Core" Version="0.2.0-preview.1" />
-    <PackageVersion Include="VelociTex.Rendering.Direct2D" Version="0.2.0-preview.1" />
-    <PackageVersion Include="VelociTex.WinUI" Version="0.2.0-preview.1" />
+    <PackageVersion Include="VelociTex.Core" Version="$Version" />
+    <PackageVersion Include="VelociTex.Rendering.Direct2D" Version="$Version" />
+    <PackageVersion Include="VelociTex.WinUI" Version="$Version" />
     <PackageVersion Include="Microsoft.WindowsAppSDK.WinUI" Version="2.3.9" />
     <PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
     <PackageVersion Include="Microsoft.Windows.CsWinRT" Version="2.3.1" />
   </ItemGroup>
 </Project>
-'@ | Set-Content -LiteralPath (Join-Path $consumer 'Directory.Packages.props') -Encoding utf8
+"@ | Set-Content -LiteralPath (Join-Path $consumer 'Directory.Packages.props') -Encoding utf8
 $escapedFeed=[Security.SecurityElement]::Escape($feed)
 @"
 <?xml version="1.0" encoding="utf-8"?>
@@ -112,22 +116,23 @@ try{
     if($LASTEXITCODE -ne 0){throw 'Isolated WinUI package live acceptance failed.'}
     $liveReport=Get-Content -LiteralPath (Join-Path $capture 'winui-report.json') -Raw | ConvertFrom-Json
     if(!$liveReport.nativeAot){throw 'The isolated WinUI package consumer did not execute as Native AOT.'}
+    foreach($item in $sourceHashes){if((Get-FileHash -LiteralPath (Join-Path $source $item.path) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $item.sha256){throw "WinUI sample changed while the isolated consumer was running: $($item.path)"}}
     $assets=Get-Content -LiteralPath 'obj/project.assets.json' -Raw | ConvertFrom-Json -AsHashtable
     if(@($assets.libraries.Values | Where-Object {$_.type -eq 'project'}).Count -ne 0){throw 'The isolated consumer unexpectedly used a ProjectReference.'}
     $packageHashes=@()
     foreach($id in @('VelociTex.Core','VelociTex.Rendering.Direct2D','VelociTex.WinUI')){
-        $nupkg=Join-Path $feed "$id.0.2.0-preview.1.nupkg"
-        $restoredNupkg=Join-Path $consumer ('packages/'+$id.ToLowerInvariant()+'/0.2.0-preview.1/'+$id.ToLowerInvariant()+'.0.2.0-preview.1.nupkg')
+        $nupkg=Join-Path $feed "$id.$Version.nupkg"
+        $restoredNupkg=Join-Path $consumer ('packages/'+$id.ToLowerInvariant()+"/$Version/"+$id.ToLowerInvariant()+".$Version.nupkg")
         $feedHash=(Get-FileHash -LiteralPath $nupkg -Algorithm SHA256).Hash.ToLowerInvariant()
         $restoredHash=(Get-FileHash -LiteralPath $restoredNupkg -Algorithm SHA256).Hash.ToLowerInvariant()
         if($feedHash -ne $restoredHash){throw "The restored $id payload differs from the selected local feed."}
-        $dll=Get-ChildItem -LiteralPath (Join-Path $consumer ('packages/'+$id.ToLowerInvariant()+'/0.2.0-preview.1/lib')) -Filter "$id.dll" -Recurse
+        $dll=Get-ChildItem -LiteralPath (Join-Path $consumer ('packages/'+$id.ToLowerInvariant()+"/$Version/lib")) -Filter "$id.dll" -Recurse
         if(@($dll).Count -ne 1){throw "Expected exactly one restored $id assembly."}
         $packageHashes += [ordered]@{id=$id;nupkgSha256=$feedHash;restoredNupkgSha256=$restoredHash;restoredAssemblySha256=(Get-FileHash -LiteralPath $dll.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}
     }
     $consumerInputs=@(Get-ChildItem -LiteralPath $consumer -File | ForEach-Object{[ordered]@{path=$_.Name;sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}})
     $publishedHashes=@(Get-ChildItem -LiteralPath $published -File -Recurse | ForEach-Object{[ordered]@{path=[IO.Path]::GetRelativePath($published,$_.FullName).Replace('\','/');sha256=(Get-FileHash -LiteralPath $_.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}})
-    $report=[ordered]@{scope='Isolated local PackageReference WinUI Native AOT consumer, independent UIA and actual keyboard/window captures';consumer=$consumer;feed=$feed;noProjectReferences=$true;privatePackageCache=$true;nativeAot=$true;packages=$packageHashes;sampleSources=$sourceHashes;consumerInputs=$consumerInputs;publishedFiles=$publishedHashes;sourceLinkVerified=$false;screenReaderAudioTested=$false}
+    $report=[ordered]@{scope='Isolated local PackageReference WinUI Native AOT consumer, independent UIA and actual keyboard/window captures';version=$Version;consumer=$consumer;feed=$feed;noProjectReferences=$true;privatePackageCache=$true;nativeAot=$true;packages=$packageHashes;sampleSources=$sourceHashes;consumerInputs=$consumerInputs;publishedFiles=$publishedHashes;sourceLinkVerified=$false;screenReaderAudioTested=$false}
     $report | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath (Join-Path $output 'package-consumer-report.json') -Encoding utf8
     Write-Host "Isolated WinUI local package consumer passed; report in $output."
 }

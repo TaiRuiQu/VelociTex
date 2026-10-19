@@ -10,7 +10,7 @@ namespace VelociTex.Rendering.Direct2D;
 /// initialization and releases its factory, collection, family, font and face before returning.
 /// This implementation supports CJK scalar text, not complex script shaping. The selected system
 /// font and glyph geometry depend on the Windows font installation and are reported in results.</remarks>
-public sealed unsafe class WindowsMathTextShaper : IMathTextShaper
+public sealed unsafe partial class WindowsMathTextShaper : IMathTextRunShaper
 {
     private readonly object _gate = new();
     private readonly Dictionary<(int,MathFont),MathTextShape> _cache = new();
@@ -35,7 +35,7 @@ public sealed unsafe class WindowsMathTextShaper : IMathTextShaper
     public bool TryShape(int codePoint,MathFont font,out MathTextShape shape)
     {
         shape=default;
-        if(codePoint is not (>=0x3000 and <=0x30FF or >=0x4E00 and <=0x9FAF or >=0xFF00 and <=0xFF60 or >=0xAC00 and <=0xD7AF))return false;
+        if(!System.Text.Rune.IsValid(codePoint))return false;
         lock(_gate)
         {
             var key=(codePoint,font);if(_cache.TryGetValue(key,out shape))return true;
@@ -57,7 +57,9 @@ public sealed unsafe class WindowsMathTextShaper : IMathTextShaper
         {
             Guid iid=new("b859ee5a-d838-4b5b-a2e8-1adc7d93db48");Check(DWriteCreateFactory(1,&iid,&factory));
             Check(((delegate* unmanaged[Stdcall]<nint,nint*,int,int>)Slot(factory,3))(factory,&collection,0));
-            foreach(string familyName in new[]{"Microsoft YaHei","Yu Gothic","Malgun Gothic"})
+            bool cjk=codePoint is >=0x3000 and <=0x30FF or >=0x4E00 and <=0x9FAF or >=0xFF00 and <=0xFF60 or >=0xAC00 and <=0xD7AF;
+            bool italic=requested is MathFont.MathItalic or MathFont.MainBoldItalic or MathFont.MathBoldItalic or MathFont.MathSansItalic or MathFont.MathSansBoldItalic;
+            foreach(string familyName in cjk?new[]{"Noto Sans SC","NotoSansSC","Microsoft YaHei","Yu Gothic","Malgun Gothic"}:italic?new[]{"Times New Roman","Cambria Math","Segoe UI Symbol","Segoe UI","Microsoft YaHei"}:new[]{"Cambria Math","Times New Roman","Segoe UI Symbol","Segoe UI","Microsoft YaHei"})
             {
                 uint index=0;int exists=0;
                 fixed(char* name=familyName)Check(((delegate* unmanaged[Stdcall]<nint,char*,uint*,int*,int>)Slot(collection,5))(collection,name,&index,&exists));
@@ -66,7 +68,8 @@ public sealed unsafe class WindowsMathTextShaper : IMathTextShaper
                 {
                     Check(((delegate* unmanaged[Stdcall]<nint,uint,nint*,int>)Slot(collection,4))(collection,index,&family));
                     uint weight=requested is MathFont.MathBold or MathFont.MathBoldItalic or MathFont.MathSansBold?700u:400u;
-                    Check(((delegate* unmanaged[Stdcall]<nint,uint,uint,uint,nint*,int>)Slot(family,7))(family,weight,5,0,&font));
+                    uint style=requested is MathFont.MathItalic or MathFont.MainBoldItalic or MathFont.MathBoldItalic or MathFont.MathSansItalic or MathFont.MathSansBoldItalic?2u:0u;
+                    Check(((delegate* unmanaged[Stdcall]<nint,uint,uint,uint,nint*,int>)Slot(family,7))(family,weight,5,style,&font));
                     Check(((delegate* unmanaged[Stdcall]<nint,nint*,int>)Slot(font,13))(font,&face));
                     uint scalar=(uint)codePoint;ushort glyph=0;
                     Check(((delegate* unmanaged[Stdcall]<nint,uint*,uint,ushort*,int>)Slot(face,11))(face,&scalar,1,&glyph));

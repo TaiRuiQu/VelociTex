@@ -2,6 +2,8 @@
 
 English | [中文](validation.zh-CN.md)
 
+**Acceptance update, 2026-10-19:** the user explicitly allowed anti-aliasing differences and requested correct typesetting as the criterion. Raster edge/RGB thresholds below remain diagnostic history and do not block acceptance. Semantics, font/glyph identity and ordering, structural geometry, baseline/spacing, colors and clipping remain hard requirements. `verify-p4.ps1` retains original pixel metrics using `--layout-only`; mathematical differences and clipping still fail.
+
 This document defines executable verification protocols. The 10ms target is a user-confirmed first-version threshold; every other number is an initial engineering budget to be frozen after P0 calibration with the reason recorded, not a measurement taken in this round.
 
 ## 1. Comparison Baseline and Artifacts

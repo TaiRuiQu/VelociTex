@@ -13,6 +13,7 @@ if (args.Contains("--workload", StringComparer.Ordinal)) { P2Workload.Run(args);
 string phase = args.FirstOrDefault(x => x.StartsWith("--phase=", StringComparison.Ordinal))?[8..] ?? "p1";
 bool diagnosticRun = args.Contains("--diagnostic", StringComparer.Ordinal);
 int expectationFailures = 0;
+List<string> exportErrors = [];
 Assert(phase is "p1" or "p2" or "p4", "known verification phase");
 string output = Path.GetFullPath(args.FirstOrDefault(x => !x.StartsWith("--", StringComparison.Ordinal)) ?? $"artifacts/{phase}/jit");
 Directory.CreateDirectory(output);
@@ -38,8 +39,33 @@ foreach (JsonElement fixture in corpus.RootElement.GetProperty("cases").Enumerat
         macros = [];
         foreach (JsonProperty macro in definitions.EnumerateObject()) macros.Add(macro.Name, macro.Value.GetString()!);
     }
-    MathOptions options = new() { DisplayMode = fixture.TryGetProperty("displayMode", out var display) && display.GetBoolean(), Macros = macros, TextShaper = textShaper };
-    bool success = engine.TryCompile(latex, in options, workspace, default, out MathDocument? document, out MathDiagnostic diagnostic);
+    MathOptions options = new() { DisplayMode = fixture.TryGetProperty("displayMode", out var display) && display.GetBoolean(), Macros = macros, TextShaper = textShaper, StrictMode = phase == "p4" ? MathStrictMode.Ignore : MathStrictMode.Warn };
+    if (fixture.TryGetProperty("options", out var fixtureOptions))
+    {
+        foreach (var option in fixtureOptions.EnumerateObject())
+            options = option.Name switch
+            {
+                "displayMode" => options with { DisplayMode = option.Value.GetBoolean() },
+                "maxExpand" => options with { MaxExpansion = option.Value.GetInt32() },
+                "maxSize" => options with { MaxSize = option.Value.GetDouble() },
+                "minRuleThickness" => options with { MinRuleThickness = option.Value.GetDouble() },
+                "colorIsTextColor" => options with { ColorIsTextColor = option.Value.GetBoolean() },
+                "globalGroup" => options with { GlobalGroup = option.Value.GetBoolean() },
+                "leqno" => options with { Leqno = option.Value.GetBoolean() },
+                "fleqn" => options with { Fleqn = option.Value.GetBoolean() },
+                "strict" => options with { StrictMode = option.Value.ValueKind == JsonValueKind.True ? MathStrictMode.Error : option.Value.ValueKind == JsonValueKind.False ? MathStrictMode.Ignore : option.Value.GetString() switch { "error" => MathStrictMode.Error, "warn" => MathStrictMode.Warn, _ => MathStrictMode.Ignore } },
+                "output" or "throwOnError" or "errorColor" => options, // Presentation facade checked separately; TryCompile always returns structured failure.
+                _ => throw new InvalidOperationException("Unmapped fixture option " + option.Name),
+            };
+    }
+    bool success; MathDocument? document = null; MathDiagnostic diagnostic = default;
+    try { success = engine.TryCompile(latex, in options, workspace, default, out document, out diagnostic); }
+    catch (Exception exception) when (diagnosticRun)
+    {
+        exportErrors.Add($"{id}: UNHANDLED {exception.GetType().Name}: {exception.Message}");
+        Console.WriteLine("Compile crash " + id + ": " + latex + " " + exception);
+        diagnostic = new(MathDiagnosticCode.UnsupportedCommand, new(0,latex.Length),"Unexpected implementation exception, diagnostic run only: "+exception.Message); success = false;
+    }
     if (success != expected)
     {
         expectationFailures++;
@@ -52,6 +78,17 @@ foreach (JsonElement fixture in corpus.RootElement.GetProperty("cases").Enumerat
     {
         Assert(diagnostic.Range.Start >= 0 && diagnostic.Range.Length >= 0 && diagnostic.Range.Start + diagnostic.Range.Length <= latex.Length, $"{id}: diagnostic source bounds");
         results.Add((id, category, "24dip-100pct-light", null, diagnostic));
+        if(fixture.TryGetProperty("presentationFallback",out var literalFallback)&&literalFallback.GetBoolean())
+        {
+            var errorColor=new MathColor(204,0,0);
+            if(fixtureOptions.ValueKind==JsonValueKind.Object&&fixtureOptions.TryGetProperty("errorColor",out var errorColorJson)&&MathColorUtilities.TryParse(errorColorJson.GetString(),out var parsedColor))errorColor=parsedColor;
+            var presentationOptions=new MathPresentationOptions{Compilation=options,RenderErrors=true,ErrorColor=errorColor};
+            var presentation=engine.CompileForPresentation(latex,in presentationOptions,workspace);
+            Assert(presentation.Document is not null&&presentation.IsErrorFallback&&presentation.Diagnostic.IsError&&presentation.Source==latex,id+": literal presentation facade");
+            string presentationDirectory=Path.Combine(output,"presentation",id);Directory.CreateDirectory(presentationDirectory);
+            renderer.WritePng(presentation.Document!,Path.Combine(presentationDirectory,"error.png"));renderer.WriteSvg(presentation.Document!,Path.Combine(presentationDirectory,"error.svg"));File.WriteAllText(Path.Combine(presentationDirectory,"error.mathml"),MathMlWriter.Write(presentation.Document!));
+            using var presentationJson=new Utf8JsonWriter(File.Create(Path.Combine(presentationDirectory,"result.json")));presentationJson.WriteStartObject();presentationJson.WriteString("source",latex);presentationJson.WriteString("errorColor",$"#{errorColor.R:x2}{errorColor.G:x2}{errorColor.B:x2}{errorColor.A:x2}");presentationJson.WriteBoolean("isErrorFallback",true);presentationJson.WriteEndObject();
+        }
         Assert(engine.TryCompile("x+1", in options, workspace, default, out _, out _), $"{id}: recovery after parse failure");
         continue;
     }
@@ -64,9 +101,17 @@ foreach (JsonElement fixture in corpus.RootElement.GetProperty("cases").Enumerat
         string directory = Path.Combine(output, id, scenario);
         Directory.CreateDirectory(directory);
         MathDrawingColor color = dark ? new(238f / 255, 238f / 255, 238f / 255) : new(17f / 255, 17f / 255, 17f / 255);
-        renderer.WritePng(document, Path.Combine(directory, "formula.png"), scale, 8, color);
-        renderer.WriteSvg(document, Path.Combine(directory, "formula.svg"), 8, color);
-        File.WriteAllText(Path.Combine(directory, "formula.mathml"), MathMlWriter.Write(document), new UTF8Encoding(false));
+        try
+        {
+            renderer.WritePng(document, Path.Combine(directory, "formula.png"), scale, 8, color);
+            renderer.WriteSvg(document, Path.Combine(directory, "formula.svg"), 8, color);
+            File.WriteAllText(Path.Combine(directory, "formula.mathml"), MathMlWriter.Write(document), new UTF8Encoding(false));
+        }
+        catch (Exception exception) when (diagnosticRun)
+        {
+            exportErrors.Add($"{id}/{scenario}: {exception.GetType().Name}: {exception.Message}");
+            Console.WriteLine("Export failure " + exportErrors[^1]);
+        }
         Assert(document.LogicalSize.Width >= 0 && document.LogicalSize.Height >= 0 && double.IsFinite(document.Baseline), $"{id}: finite metrics");
         foreach (MathGlyph glyph in document.Glyphs.Span)
             Assert(glyph.GlyphId != 0 && double.IsFinite(glyph.X) && double.IsFinite(glyph.Y) && glyph.FontSize > 0, $"{id}: finite mapped glyph");
@@ -153,6 +198,10 @@ AssertThrows<ArgumentOutOfRangeException>(() => renderer.WriteSvg(retained!, new
 int edgeAssertions = CoreEdgeAssertions.Run();
 int cacheAssertions = CacheAssertions.Run();
 int parserAssertions = ParserConstructionAssertions.Run();
+int p4ParserAssertions = phase == "p4" ? P4ParserAssertions.Run() : 0;
+int presentationAssertions = phase == "p4" ? PresentationAssertions.Run(renderer,output) : 0;
+int paintingAssertions = phase == "p4" ? PaintingAssertions.Run(renderer,output) : 0;
+int layoutContextAssertions = phase == "p4" ? LayoutContextAssertions.Run() : 0;
 
 // Allocation numbers include immutable results; these are a P1 subset baseline,
 // not the P0 normal corpus or an old-CPU performance acceptance.
@@ -193,9 +242,14 @@ using (Utf8JsonWriter json = new(stream, new JsonWriterOptions { Indented = true
     json.WriteString("corpusSha256", Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(fixturePath))));
     json.WriteNumber("validFixtures", valid); json.WriteNumber("invalidFixtures", invalid);
     json.WriteBoolean("diagnosticRun", diagnosticRun); json.WriteNumber("expectationFailures", expectationFailures);
+    json.WriteStartArray("exportErrors"); foreach (var exportError in exportErrors) json.WriteStringValue(exportError); json.WriteEndArray();
     json.WriteNumber("additionalCoreEdgeAssertions", edgeAssertions);
     json.WriteNumber("cacheAssertions", cacheAssertions);
     json.WriteNumber("parserConstructionAssertions", parserAssertions);
+    json.WriteNumber("p4ParserAssertions", p4ParserAssertions);
+    json.WriteNumber("presentationAssertions", presentationAssertions);
+    json.WriteNumber("paintingAssertions", paintingAssertions);
+    json.WriteNumber("layoutContextAssertions", layoutContextAssertions);
     json.WriteStartObject("lifecycle"); json.WriteBoolean("resultIsolation", true); json.WriteBoolean("cancelAndRecovery", true); json.WriteBoolean("resourceLimits", true); json.WriteNumber("concurrentIndependentWorkspaces", 100); json.WriteNumber("rendererCreateDisposeCycles", 100); json.WriteNumber("privateBytesBeforeCycles", privateBefore); json.WriteNumber("privateBytesAfterCycles", privateAfter); json.WriteNumber("handlesBeforeCycles", handlesBefore); json.WriteNumber("handlesAfterCycles", handlesAfter); json.WriteEndObject();
     json.WriteStartObject("allocationBaseline"); json.WriteString("boundary", "Complete synchronous compile including options validation, parse, layout, immutable result; six P1 cases, warmed reused workspace, no formula cache. Thread managed allocation excludes native resources. 100 renderer lifecycle private bytes/handles are whole-process snapshots, not an exact native/GPU ledger."); json.WriteNumber("samples", timings.Length); json.WriteNumber("p50Ms", Percentile(sorted, .50)); json.WriteNumber("p95Ms", Percentile(sorted, .95)); json.WriteNumber("p99Ms", Percentile(sorted, .99)); json.WriteNumber("maximumMs", sorted[^1]); json.WriteNumber("sampleLoopManagedAllocatedBytes", managedAllocated); json.WriteNumber("minimumCompleteCompileManagedBytes", allocations.Min()); json.WriteNumber("maximumCompleteCompileManagedBytes", allocations.Max()); json.WriteEndObject();
     json.WriteStartArray("results");
@@ -209,7 +263,7 @@ using (Utf8JsonWriter json = new(stream, new JsonWriterOptions { Indented = true
     json.WriteEndArray(); json.WriteEndObject();
 }
 Console.WriteLine($"{(expectationFailures == 0 ? "PASS" : "FAIL")} {phase.ToUpperInvariant()} {valid} valid / {invalid} invalid, {results.Count - invalid} exports; AOT={!RuntimeFeature.IsDynamicCodeSupported}; P95={Percentile(sorted, .95):F4}ms (six P1 timing cases only)");
-if (expectationFailures != 0) Environment.ExitCode = 1;
+if (expectationFailures != 0 || exportErrors.Count != 0) Environment.ExitCode = 1;
 
 static IEnumerable<(double Size, double Scale, bool Dark)> Scenarios(bool matrix)
 {
@@ -239,16 +293,29 @@ static void WriteDocument(Utf8JsonWriter json, MathDocument doc)
     json.WriteStartArray("nodes"); foreach (ref readonly SemanticNode node in doc.Nodes.AsSpan())
     {
         json.WriteStartObject(); json.WriteString("kind", node.Kind.ToString()); json.WriteNumber("first", node.FirstChild); json.WriteNumber("next", node.NextSibling); json.WriteNumber("second", node.SecondChild); json.WriteNumber("third", node.ThirdChild); json.WriteNumber("codePoint", node.CodePoint); json.WriteString("atom", node.Atom.ToString()); json.WriteString("font", node.Font.ToString()); json.WriteString("style", node.Style.ToString()); json.WriteBoolean("textMode", node.TextMode); json.WriteBoolean("mathOrd", node.IsMathOrd); json.WriteNumber("value", node.Value); json.WriteNumber("start", node.Range.Start); json.WriteNumber("length", node.Range.Length);
-        json.WriteString("text", node.Text); json.WriteString("alignment", node.Alignment); json.WriteNumber("leftDelimiter", node.LeftDelimiter); json.WriteNumber("rightDelimiter", node.RightDelimiter); json.WriteNumber("columnCount", node.ColumnCount); json.WriteNumber("ruleAbove", node.RuleAbove); json.WriteNumber("ruleBelow", node.RuleBelow); json.WriteBoolean("hasBar", node.HasBar); json.WriteBoolean("limits", node.Limits); json.WriteBoolean("alwaysLimits", node.AlwaysLimits); json.WriteBoolean("neverLimits", node.NeverLimits); json.WriteEndObject();
+        json.WriteString("text", node.Text); json.WriteString("alignment", node.Alignment); json.WriteNumber("leftDelimiter", node.LeftDelimiter); json.WriteNumber("rightDelimiter", node.RightDelimiter); json.WriteNumber("columnCount", node.ColumnCount); json.WriteNumber("ruleAbove", node.RuleAbove); json.WriteNumber("ruleBelow", node.RuleBelow); json.WriteBoolean("hasBar", node.HasBar); json.WriteBoolean("limits", node.Limits); json.WriteBoolean("alwaysLimits", node.AlwaysLimits); json.WriteBoolean("neverLimits", node.NeverLimits);
+        json.WriteNumber("fourth", node.FourthChild); json.WriteString("text2", node.Text2); json.WriteString("text3", node.Text3);
+        json.WriteNumber("originalCodePoint", node.OriginalCodePoint); json.WriteNumber("fontIdOverride", node.FontIdOverride);
+        json.WriteNumber("value2", node.Value2); json.WriteNumber("value3", node.Value3);
+        WriteLength("length1", node.Length1); WriteLength("length2", node.Length2); WriteLength("length3", node.Length3);
+        json.WriteEndObject();
+        void WriteLength(string key, TexLength length) { json.WriteStartObject(key); json.WriteNumber("number", length.Number); json.WriteString("unit", length.Unit.ToString()); json.WriteEndObject(); }
     } json.WriteEndArray();
     json.WriteStartArray("glyphs"); foreach (MathGlyph glyph in doc.Glyphs.Span)
     {
-        json.WriteStartObject(); json.WriteString("text", char.ConvertFromUtf32(glyph.CodePoint)); json.WriteString("font", MathFontCatalog.GetName(glyph.FontId)); json.WriteNumber("glyphId", glyph.GlyphId); json.WriteNumber("x", glyph.X); json.WriteNumber("y", glyph.Y); json.WriteNumber("fontSize", glyph.FontSize); json.WriteEndObject();
+        json.WriteStartObject(); json.WriteString("text", char.ConvertFromUtf32(glyph.CodePoint)); json.WriteString("font", MathFontCatalog.GetName(glyph.FontId)); json.WriteNumber("glyphId", glyph.GlyphId); json.WriteNumber("x", glyph.X); json.WriteNumber("y", glyph.Y); json.WriteNumber("fontSize", glyph.FontSize);
+        var descriptor=FontData.Fonts[glyph.FontId];double advance=0;
+        for(int g=descriptor.GlyphStart;g<descriptor.GlyphStart+descriptor.GlyphCount;g++)if(FontData.Glyphs[g].GlyphId==glyph.GlyphId){advance=FontData.Glyphs[g].AdvanceUnits/(double)descriptor.UnitsPerEm*glyph.FontSize;break;}
+        json.WriteNumber("advance",advance);json.WriteEndObject();
     } json.WriteEndArray();
     json.WriteStartArray("textGlyphs"); foreach (MathTextGlyph glyph in doc.TextGlyphs.Span)
     {
         json.WriteStartObject(); json.WriteString("text", char.ConvertFromUtf32(glyph.CodePoint)); json.WriteString("font", glyph.FontFamily); json.WriteNumber("x", glyph.X); json.WriteNumber("y", glyph.Y); json.WriteNumber("fontSize", glyph.FontSize); json.WriteEndObject();
     } json.WriteEndArray();
+    json.WriteStartArray("textRuns");foreach(var run in doc.TextRuns.Span)
+    {
+        json.WriteStartObject();json.WriteString("text",run.Text);json.WriteNumber("x",run.X);json.WriteNumber("y",run.Y);json.WriteNumber("fontSize",run.FontSize);json.WriteNumber("firstPath",run.FirstPath);json.WriteNumber("pathCount",run.PathCount);json.WriteNumber("advance",run.Advance);json.WriteEndObject();
+    }json.WriteEndArray();
     json.WriteStartArray("rules"); foreach (MathRule rule in doc.Rules.Span)
     {
         json.WriteStartObject(); json.WriteNumber("x", rule.X); json.WriteNumber("y", rule.Y); json.WriteNumber("width", rule.Width); json.WriteNumber("height", rule.Height); json.WriteEndObject();
@@ -260,6 +327,7 @@ static void WriteDocument(Utf8JsonWriter json, MathDocument doc)
         bool fallback = false;
         foreach (var text in doc.TextGlyphs.Span)
             if (path.X == text.X && path.Y == text.Y && path.ScaleX == text.FontSize && path.ScaleY == text.FontSize) { fallback = true; break; }
+        foreach(var run in doc.TextRuns.Span)if(pathIndex>=run.FirstPath&&pathIndex<run.FirstPath+run.PathCount){fallback=true;break;}
         json.WriteBoolean("fallback", fallback);
         double left = double.PositiveInfinity, right = double.NegativeInfinity, top = double.PositiveInfinity, bottom = double.NegativeInfinity;
         foreach (var segment in path.Segments.Span)
@@ -272,6 +340,13 @@ static void WriteDocument(Utf8JsonWriter json, MathDocument doc)
         json.WriteEndObject();
         void Include(double x, double y) { left = Math.Min(left, x); right = Math.Max(right, x); top = Math.Min(top, y); bottom = Math.Max(bottom, y); }
     } json.WriteEndArray();
+    json.WriteStartArray("paintStates"); foreach (var state in doc.PaintStates.Span)
+    {
+        json.WriteStartObject(); if (state.Color is {} color) json.WriteString("color", $"#{color.R:x2}{color.G:x2}{color.B:x2}{color.A:x2}"); else json.WriteNull("color");
+        var t = state.Transform; json.WriteStartArray("transform"); json.WriteNumberValue(t.M11); json.WriteNumberValue(t.M12); json.WriteNumberValue(t.M21); json.WriteNumberValue(t.M22); json.WriteNumberValue(t.Dx); json.WriteNumberValue(t.Dy); json.WriteEndArray(); json.WriteEndObject();
+    } json.WriteEndArray();
+    json.WriteStartArray("paintCommands"); foreach (var command in doc.PaintCommands.Span)
+    { json.WriteStartObject(); json.WriteString("kind", command.Kind.ToString()); json.WriteNumber("index", command.Index); json.WriteNumber("state", command.StateIndex); json.WriteEndObject(); } json.WriteEndArray();
 }
 
 sealed class ForwardOnlyStream(Stream sink) : Stream

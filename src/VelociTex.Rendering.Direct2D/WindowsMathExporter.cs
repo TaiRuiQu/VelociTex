@@ -93,7 +93,7 @@ public sealed unsafe partial class WindowsMathRenderer
             {
                 outline=NativeGlyphOutline.GetPath(GetFace(glyph.FontId),glyph.GlyphId,(float)glyph.FontSize);
                 long bytes=(long)outline.Length*sizeof(char)+64;
-                if(_outlines.Count>=OutlineCacheLimit||_outlineBytes+bytes>OutlineCacheByteLimit){_outlines.Clear();_outlineBytes=0;}
+                if(_outlines.Count+_drawingOutlines.Count>=OutlineCacheLimit||_outlineBytes+_drawingOutlineBytes+bytes>OutlineCacheByteLimit)ClearOutlineCaches();
                 if(bytes<=OutlineCacheByteLimit){_outlines[key]=outline;_outlineBytes+=bytes;}
             }
             xml.WriteStartElement("path");xml.WriteAttributeString("id",id);xml.WriteAttributeString("d",outline);xml.WriteEndElement();
@@ -108,13 +108,41 @@ public sealed unsafe partial class WindowsMathRenderer
         xml.WriteStartElement("g");
         xml.WriteAttributeString("fill",$"#{(int)Math.Round(foreground.R*255):x2}{(int)Math.Round(foreground.G*255):x2}{(int)Math.Round(foreground.B*255):x2}");
         if(foreground.A!=1)xml.WriteAttributeString("fill-opacity",Number(foreground.A));
-        foreach(MathGlyph glyph in document.Glyphs.Span)
+        if(document.PaintStates.Length!=0)
+        {
+            foreach(MathPaintCommand command in document.PaintCommands.Span)
+            {
+                MathPaintState state=document.PaintStates.Span[command.StateIndex];if(state.Color is {A:0})continue;
+                bool wrapped=state.Color is not null||state.Transform!=MathTransform.Identity;
+                if(wrapped)
+                {
+                    xml.WriteStartElement("g");
+                    if(state.Color is {} ink){xml.WriteAttributeString("fill",$"#{ink.R:x2}{ink.G:x2}{ink.B:x2}");xml.WriteAttributeString("fill-opacity",Number(ink.A/255d));}
+                    if(state.Transform!=MathTransform.Identity){var t=state.Transform;xml.WriteAttributeString("transform",$"matrix({Number(t.M11)} {Number(t.M12)} {Number(t.M21)} {Number(t.M22)} {Number(t.Dx)} {Number(t.Dy)})");}
+                }
+                switch(command.Kind)
+                {
+                    case MathPaintKind.Glyph:WriteGlyph(document.Glyphs.Span[command.Index]);break;
+                    case MathPaintKind.Rule:var rule=document.Rules.Span[command.Index];WriteRect(xml,rule.X,rule.Y,rule.Width,rule.Height);break;
+                    case MathPaintKind.Path:WritePath(command.Index);break;
+                    default:throw new InvalidOperationException("Unknown retained painting command.");
+                }
+                if(wrapped)xml.WriteEndElement();
+            }
+        }
+        else
+        {
+            foreach(MathGlyph glyph in document.Glyphs.Span)WriteGlyph(glyph);
+            foreach(MathRule rule in document.Rules.Span)WriteRect(xml,rule.X,rule.Y,rule.Width,rule.Height);
+            for(int i=0;i<document.Paths.Length;i++)WritePath(i);
+        }
+        xml.WriteEndElement();xml.WriteEndElement();
+        void WriteGlyph(MathGlyph glyph)
         {
             xml.WriteStartElement("use");xml.WriteAttributeString("href","#"+definitions[(glyph.FontId,glyph.GlyphId,glyph.FontSize)]);
             xml.WriteAttributeString("transform",$"translate({Number(glyph.X)} {Number(glyph.Y)})");xml.WriteEndElement();
         }
-        foreach(MathRule rule in document.Rules.Span)WriteRect(xml,rule.X,rule.Y,rule.Width,rule.Height);
-        for(int i=0;i<document.Paths.Length;i++)
+        void WritePath(int i)
         {
             MathPath data=document.Paths.Span[i];
             xml.WriteStartElement("g");xml.WriteAttributeString("clip-path","url(#c"+i+")");
@@ -132,7 +160,6 @@ public sealed unsafe partial class WindowsMathRenderer
             }
             xml.WriteAttributeString("d",pathData.ToString());xml.WriteEndElement();xml.WriteEndElement();
         }
-        xml.WriteEndElement();xml.WriteEndElement();
     }
 
     private static void WriteRect(XmlWriter xml,double x,double y,double width,double height)

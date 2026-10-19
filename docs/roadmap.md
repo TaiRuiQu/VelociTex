@@ -2,7 +2,7 @@
 
 English | [中文](roadmap.zh-CN.md)
 
-This document delivers "replace the display chain early" and "reach complete core compatibility" as separate milestones. P0, P1 and P2 were delivered on 2026-10-19; see the [P2 record](verification/p2-2026-10-19.md) for the common subset, real local package consumers, reviewed raster exceptions and unverified hardware items. P3 migration and P4 complete compatibility are next; P5 is not yet accepted. Phases advance by dependency, never by an unverified fixed schedule.
+P0 through P4 have implemented deliverables and actual checks on2026-10-19. P3 migrates downstream native display; P4 covers all2,939 included registration identities with source-observed use cases and3,843 independent JIT/AOT hard-check scenarios. The user's later acceptance update allows anti-aliasing differences while mathematical typesetting remains strict. P5 local candidate preparation continues; old-CPU and other real-machine gates remain explicitly unverified. Phases advance by evidence, not an unverified schedule.
 
 ## Phase Overview
 

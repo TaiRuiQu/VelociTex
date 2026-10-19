@@ -42,9 +42,11 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
     private readonly string _fontDirectory;
     private readonly bool _ownsFontDirectory;
     private readonly nint[] _faces=new nint[MathFontCatalog.Count];
-    private nint _writeFactory,_factory;
+    private nint _writeFactory,_factory,_renderingParams;
     private bool _disposed;
     private readonly Dictionary<(int Font,ushort Glyph,double Size),string> _outlines=[];
+    private readonly Dictionary<(int Font,ushort Glyph,double Size),MathPathSegment[]> _drawingOutlines=[];
+    private long _drawingOutlineBytes;
     private const int OutlineCacheLimit=4096;
     private const long OutlineCacheByteLimit=16*1024*1024;
     private long _outlineBytes;
@@ -76,6 +78,11 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
             }
             Guid iid=new("b859ee5a-d838-4b5b-a2e8-1adc7d93db48");nint write=0;
             Check(DWriteCreateFactory(1,&iid,&write));_writeFactory=write;
+            nint rendering=0;
+            // Outline rendering preserves the exact retained font geometry at
+            // fractional origins, matching self-contained SVG paths. Font
+            // grid fitting otherwise distorts small heavy glyph contours.
+            Check(((delegate* unmanaged[Stdcall]<nint,float,float,float,uint,uint,nint*,int>)Slot(write,12))(write,2.2f,0,0,0,6,&rendering));_renderingParams=rendering;
             iid=new("06152247-6f50-465a-9245-118bfd3b6007");nint factory=0;
             Check(D2D1CreateFactory(1,&iid,0,&factory));_factory=factory;
         }
@@ -112,25 +119,50 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
         Matrix original=default;
         ((delegate* unmanaged[Stdcall]<nint,Matrix*,void>)Slot(renderTarget,31))(renderTarget,&original);
         uint originalAa=((delegate* unmanaged[Stdcall]<nint,uint>)Slot(renderTarget,35))(renderTarget);
+        nint originalRendering=0;
+        ((delegate* unmanaged[Stdcall]<nint,nint*,void>)Slot(renderTarget,37))(renderTarget,&originalRendering);
         Matrix translated=original;translated.Dx+=(float)offsetX;translated.Dy+=(float)offsetY;
         try
         {
+            ((delegate* unmanaged[Stdcall]<nint,nint*,void>)Slot(renderTarget,3))(renderTarget,&factory);
             ((delegate* unmanaged[Stdcall]<nint,Matrix*,void>)Slot(renderTarget,30))(renderTarget,&translated);
             ((delegate* unmanaged[Stdcall]<nint,uint,void>)Slot(renderTarget,34))(renderTarget,2);
+            ((delegate* unmanaged[Stdcall]<nint,nint,void>)Slot(renderTarget,36))(renderTarget,_renderingParams);
+            if(prepared.Document.PaintStates.Length!=0)
+            {
+                int previousState=-1;Matrix stateTransform=translated;
+                foreach(MathPaintCommand command in prepared.Document.PaintCommands.Span)
+                {
+                    MathPaintState state=prepared.Document.PaintStates.Span[command.StateIndex];
+                    if(state.Color is {A:0})continue;
+                    if(previousState!=command.StateIndex)
+                    {
+                        stateTransform=Compose(state.Transform,translated);
+                        Color ink=state.Color is {} explicitColor?new(explicitColor.R/255f,explicitColor.G/255f,explicitColor.B/255f,explicitColor.A/255f):nativeColor;
+                        ((delegate* unmanaged[Stdcall]<nint,Color*,void>)Slot(brush,8))(brush,&ink);
+                        previousState=command.StateIndex;
+                    }
+                    ((delegate* unmanaged[Stdcall]<nint,Matrix*,void>)Slot(renderTarget,30))(renderTarget,&stateTransform);
+                    switch(command.Kind)
+                    {
+                        case MathPaintKind.Glyph:DrawGlyph(prepared.Document.Glyphs.Span[command.Index],brush,factory);break;
+                        case MathPaintKind.Rule:DrawRule(prepared.Document.Rules.Span[command.Index],brush);break;
+                        case MathPaintKind.Path:DrawPath(renderTarget,factory,brush,prepared.Document.Paths.Span[command.Index],stateTransform);break;
+                        default:throw new InvalidOperationException("Unknown retained painting command.");
+                    }
+                }
+                return;
+            }
             foreach(MathGlyph glyph in prepared.Document.Glyphs.Span)
             {
-                ushort index=glyph.GlyphId;float advance=0;
-                GlyphRun run=new(){FontFace=GetFace(glyph.FontId),EmSize=(float)glyph.FontSize,GlyphCount=1,GlyphIndices=&index,GlyphAdvances=&advance};
-                ((delegate* unmanaged[Stdcall]<nint,Point,GlyphRun*,nint,uint,void>)Slot(renderTarget,29))(renderTarget,new((float)glyph.X,(float)glyph.Y),&run,brush,0);
+                DrawGlyph(glyph,brush,factory);
             }
             foreach(MathRule rule in prepared.Document.Rules.Span)
             {
-                Rect rect=new((float)rule.X,(float)rule.Y,(float)(rule.X+rule.Width),(float)(rule.Y+rule.Height));
-                ((delegate* unmanaged[Stdcall]<nint,Rect*,nint,void>)Slot(renderTarget,17))(renderTarget,&rect,brush);
+                DrawRule(rule,brush);
             }
             if(prepared.Document.Paths.Length!=0)
             {
-                ((delegate* unmanaged[Stdcall]<nint,nint*,void>)Slot(renderTarget,3))(renderTarget,&factory);
                 foreach(MathPath path in prepared.Document.Paths.Span)DrawPath(renderTarget,factory,brush,path,translated);
             }
         }
@@ -138,9 +170,38 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
         {
             ((delegate* unmanaged[Stdcall]<nint,Matrix*,void>)Slot(renderTarget,30))(renderTarget,&original);
             ((delegate* unmanaged[Stdcall]<nint,uint,void>)Slot(renderTarget,34))(renderTarget,originalAa);
-            Release(ref factory);Release(ref brush);
+            ((delegate* unmanaged[Stdcall]<nint,nint,void>)Slot(renderTarget,36))(renderTarget,originalRendering);
+            Release(ref originalRendering);Release(ref factory);Release(ref brush);
+        }
+        void DrawGlyph(MathGlyph glyph,nint drawBrush,nint drawFactory)
+        {
+            var key=(glyph.FontId,glyph.GlyphId,glyph.FontSize);
+            if(!_drawingOutlines.TryGetValue(key,out var outline))
+            {
+                outline=NativeGlyphOutline.GetSegments(GetFace(glyph.FontId),glyph.GlyphId,(float)glyph.FontSize);
+                long bytes=outline.Length*64L+128;
+                if(_drawingOutlines.Count+_outlines.Count>=OutlineCacheLimit||_drawingOutlineBytes+_outlineBytes+bytes>OutlineCacheByteLimit)ClearOutlineCaches();
+                if(bytes<=OutlineCacheByteLimit){_drawingOutlines.Add(key,outline);_drawingOutlineBytes+=bytes;}
+            }
+            if(outline.Length==0)return;
+            Matrix matrix=default;((delegate* unmanaged[Stdcall]<nint,Matrix*,void>)Slot(renderTarget,31))(renderTarget,&matrix);
+            DrawPath(renderTarget,drawFactory,drawBrush,new(outline,glyph.X,glyph.Y,1,1,new(-32768,-32768,65536,65536)),matrix);
+        }
+        void DrawRule(MathRule rule,nint drawBrush)
+        {
+            Rect rect=new((float)rule.X,(float)rule.Y,(float)(rule.X+rule.Width),(float)(rule.Y+rule.Height));
+            ((delegate* unmanaged[Stdcall]<nint,Rect*,nint,void>)Slot(renderTarget,17))(renderTarget,&rect,drawBrush);
         }
     }
+
+    private static Matrix Compose(MathTransform a,Matrix b)=>new()
+    {
+        M11=(float)(a.M11*b.M11+a.M12*b.M21),M12=(float)(a.M11*b.M12+a.M12*b.M22),
+        M21=(float)(a.M21*b.M11+a.M22*b.M21),M22=(float)(a.M21*b.M12+a.M22*b.M22),
+        Dx=(float)(a.Dx*b.M11+a.Dy*b.M21+b.Dx),Dy=(float)(a.Dx*b.M12+a.Dy*b.M22+b.Dy)
+    };
+
+    private void ClearOutlineCaches(){_outlines.Clear();_drawingOutlines.Clear();_outlineBytes=_drawingOutlineBytes=0;}
 
     private static void DrawPath(nint target,nint factory,nint brush,MathPath path,Matrix original)
     {
@@ -211,7 +272,7 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
     {
         if(_disposed)return;
         if(Environment.CurrentManagedThreadId!=_threadId)throw new InvalidOperationException("Dispose native math resources on their creating thread.");
-        _disposed=true;for(int i=0;i<_faces.Length;i++)Release(ref _faces[i]);Release(ref _factory);Release(ref _writeFactory);_outlines.Clear();_outlineBytes=0;
+        _disposed=true;for(int i=0;i<_faces.Length;i++)Release(ref _faces[i]);Release(ref _renderingParams);Release(ref _factory);Release(ref _writeFactory);_outlines.Clear();_outlineBytes=0;_drawingOutlines.Clear();_drawingOutlineBytes=0;
         if(_uninitialize)CoUninitialize();
         if(_ownsFontDirectory&&Directory.Exists(_fontDirectory))Directory.Delete(_fontDirectory,true);
     }

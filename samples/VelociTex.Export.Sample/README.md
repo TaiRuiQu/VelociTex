@@ -1,8 +1,10 @@
 # Public API export sample
 
-This Windows x64 console sample compiles five complete formulas and exports PNG,
+This Windows x64 console sample compiles nine complete formulas and exports PNG,
 self-contained SVG and MathML. It includes integrals, matrices, a named operator,
-an accent and CJK text using actual system-font outlines. It uses public APIs
+an accent, explicit colors, transforms, invisible content and contextual text
+using actual system-font outlines. It also exports literal-source error
+presentation. It uses public APIs
 only. The development project references the repository projects; the clean
 package verification below copies the exact same `Program.cs` into a fresh
 consumer with only centrally versioned `PackageReference` entries.
@@ -20,15 +22,16 @@ pwsh ./tools/Verify-PackageConsumer.ps1
 ```
 
 The verifier creates a unique consumer and isolated package directory under
-`artifacts/p2/package-consumer`, restores both JIT and Native AOT using the
-reviewed locks in `package-locks`, then compiles and runs both. It verifies the
+`artifacts/p4/package-consumer`, restores both JIT and Native AOT using the
+reviewed versioned locks in `package-locks/<version>`, then compiles and runs both. It verifies the
 restored and JIT-loaded DLL bytes against the actual nupkg entries, all 20
-original font hashes, source-retaining MathML, 15 identical JIT/AOT exports,
+original font hashes, source-retaining MathML, identical JIT/AOT exports,
 bounded caching, cancellation, error recovery, macro rollback and ownership.
 The generated project has no project references. `-UpdateLocks` is reserved for
 intentional dependency changes; inspect and commit both resulting lock files.
 
-Reports and all 15 exported artifacts are retained per runtime. The report names
-the installed fallback font. CJK scalar fallback does not promise contextual
-shaping of complex scripts. These five consumer formulas do not replace the
-full compatibility corpus or old-hardware acceptance.
+Reports and all exported artifacts are retained per runtime. Actual contextual
+run text and installed fallback font provenance remain available in documents.
+These consumer formulas do not replace the full compatibility corpus or
+old-hardware acceptance. The historical P2 source template and original locks
+remain available for explicitly verifying `0.2.0-preview.1`.
