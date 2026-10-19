@@ -1,4 +1,33 @@
-# P3 downstream migration delta
+# Downstream migration snapshots
+
+## P5 candidate integration
+
+The current downstream display path consumes the frozen local `1.0.0-rc.1`
+packages in `artifacts/packages/p5`. `p5.patch` upgrades the existing P3 working
+tree: it changes the three central package versions, the local feed and three
+application lock variants, for five changed paths. It contains no UI source
+changes. Apply it only after the exact captured P3 state, not directly to an
+arbitrary clean checkout.
+
+`p5.manifest.json` guards 23 paths, including all 22 P3 paths and the unchanged
+math smoke source. An isolated `git apply --check` and actual application of the
+patch both passed, with every resulting canonical hash verified. Existing
+downstream user changes remain in their working tree; neither its index nor
+commits were modified.
+
+The locked Debug build, locked Native AOT publish, actual math/preview runs and
+33 reviewed screenshots passed with the candidate. A separate actual run passed
+while the owned Typst directory was absent, and the tool was restored. Printing
+retains its existing implementation. Exact candidate identities, process IDs,
+hashes and limitations are in `artifacts/p5/downstream-aot/downstream-runtime.json`
+and the [P5 verification record](../../docs/verification/p5-2026-10-19.md).
+
+The P3 commands below also apply to the migrated current workspace. Do not
+overwrite frozen package bytes or replay either patch against an unmatched
+baseline. Physical monitor DPI changes, old hardware and screen-reader audio
+remain unverified; this local candidate is not a published stable release.
+
+## Historical P3 migration delta
 
 `p3.patch` contains only this migration's edits. Its baseline is the preserved
 **dirty working tree** of `../oh-my-study` at commit

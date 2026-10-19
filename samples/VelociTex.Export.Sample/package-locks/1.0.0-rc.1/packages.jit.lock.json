@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net10.0-windows10.0.26100": {
+      "Microsoft.NET.ILLink.Tasks": {
+        "type": "Direct",
+        "requested": "[10.0.13, )",
+        "resolved": "10.0.13",
+        "contentHash": "40yrBMsLEcjixBR4G+FiUaBPvxXIPSKJ2OgSrbOZcmSDBda4Sb0k7BWrfDpIvn3IvvDzwOL/tEPa6gDQfh6aRw=="
+      },
+      "VelociTex.Core": {
+        "type": "Direct",
+        "requested": "[1.0.0-rc.1, )",
+        "resolved": "1.0.0-rc.1",
+        "contentHash": "VLkbl4LLEhw6oaDAFKmx+lTrPfgne51cYX8hijuynrlFM1DUi8NDeYjDSIUcaH+oLrlIkB7T4N2QdmSkPMkEhQ=="
+      },
+      "VelociTex.Rendering.Direct2D": {
+        "type": "Direct",
+        "requested": "[1.0.0-rc.1, )",
+        "resolved": "1.0.0-rc.1",
+        "contentHash": "20q6rrch+S56cM94WhIbsNby27J7GDgbIr/ELR4szc85dxbW+wUMI3nfJJDP7Zh+M4V2rgtXkk1jH0KAZj67Vg==",
+        "dependencies": {
+          "VelociTex.Core": "1.0.0-rc.1"
+        }
+      }
+    },
+    "net10.0-windows10.0.26100/win-x64": {}
+  }
+}

@@ -2,7 +2,7 @@
 
 English | [中文](roadmap.zh-CN.md)
 
-P0 through P4 have implemented deliverables and actual checks on2026-10-19. P3 migrates downstream native display; P4 covers all2,939 included registration identities with source-observed use cases and3,843 independent JIT/AOT hard-check scenarios. The user's later acceptance update allows anti-aliasing differences while mathematical typesetting remains strict. P5 local candidate preparation continues; old-CPU and other real-machine gates remain explicitly unverified. Phases advance by evidence, not an unverified schedule.
+P0 through P4 have implemented deliverables and actual checks on 2026-10-19. P3 migrates downstream native display; P4 covers all 2,939 included registration identities with source-observed use cases and 3,843 independent JIT/AOT hard-check scenarios. The user permits antialiasing differences while mathematical typesetting remains strict. P5 has produced and verified local `1.0.0-rc.1` candidates and consumers; its formal 1.0 exit remains pending old-CPU, physical-monitor DPI, minimum Windows, hardware-device/GPU and screen-reader audio gates. See the [P5 record](verification/p5-2026-10-19.md). Phases advance by evidence, not an unverified schedule.
 
 ## Phase Overview
 
@@ -105,6 +105,9 @@ If only standalone formulas were replaced while mixed paragraphs still use Typst
 100% coverage of in-scope functionality, with all math-content correctness hard checks passing. Visual checks reach the [validation thresholds](validation.md), and there are no unresolved missing glyphs, wrong ordering, clipping, baseline, or structural issues. Every exception has an auditable reason; failures cannot be cleared by moving unimplemented items out of scope.
 
 ## P5: 1.0 Candidate and Release Preparation
+
+Current status: local candidate preparation is complete. The checklist below remains the formal release definition; unexecuted real-machine gates are pending and must not be marked complete merely because local packages run. `1.0.0-rc.1` is not an externally published stable 1.0.
+
 
 - The public API is stable, with XML documentation, error codes, resource limits, and thread and lifecycle contracts complete.
 - The MIT library license, the KaTeX MIT license, the font OFL / RFN terms, the source list, and dependency notes ship with the package; the package contains no development browser or Node dependencies.

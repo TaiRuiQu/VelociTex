@@ -3,12 +3,21 @@
 Package creation is a reversible local preparation step. It does not publish a
 release, prove compatibility or satisfy hardware acceptance by itself.
 
+As of 2026-10-19, local `1.0.0-rc.1` packages and isolated consumers are prepared
+from P4 commit `1b0c77774418fd349c36b8b4cd0c89a135f70fba`. The [P5 record](verification/p5-2026-10-19.md)
+and its checksum manifest define this frozen candidate. Formal 1.0 exit remains
+pending the real-machine and audio gates in item 7; no external publication is
+authorized. The candidate also retains a documented non-blocking XML-comment
+blemish that must be cleaned up before a stable release.
+
 1. Freeze the exact source revision, SDK, centrally managed dependencies and
    JIT/AOT lock files. Keep KaTeX fixed at 0.19.0 and the original font hashes.
 2. Finish applicable semantic, geometric, MathML, native and raster checks for
    the complete included registration denominator. Preserve every failing or
-   reviewed exception and its original threshold result. Keep remaining work
-   explicit in the phase record.
+   diagnostic result. The user's later instruction accepts antialiasing
+   differences when typesetting is correct; raw pixel-threshold failures remain
+   informational, while semantics, layout, missing glyphs, clipping and colors
+   remain mandatory. Keep remaining work explicit in the phase record.
 3. Run the real WinUI application and inspect automated screenshots after UI
    changes. Record independent keyboard, clipboard and UI Automation evidence;
    basic providers are not a screen-reader audio test.

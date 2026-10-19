@@ -4,7 +4,7 @@ English | [中文](README.zh-CN.md)
 
 A C# math typesetting and rendering library for native Windows apps. It aims to reproduce the **core math typesetting of KaTeX 0.19.0** on WinUI 3, export PNG / SVG / MathML, and replace the formula display path of `../oh-my-study/` as the first priority.
 
-**Status as of 2026-10-19: P4 core registration coverage is implemented and verified against locked KaTeX 0.19.0.** All 2,939 included identities have source-observed use cases; 3,659 valid formulas and 50 errors pass 3,843 scenarios under JIT and real Native AOT, including independent semantics, geometry, fonts, colors and MathML. P3 downstream native display is integrated. Local `0.4.0-preview.1` packages have real isolated consumers. Anti-aliasing differences are accepted; typesetting and clipping checks remain strict. See the phase records in `docs/verification`. P5 release preparation continues; old-hardware and platform acceptance remain unverified, and there is no stable 1.0 publication.
+**Status as of 2026-10-19: P0–P4 implementation is delivered, and local P5 candidate preparation is complete.** The `1.0.0-rc.1` packages use frozen KaTeX 0.19.0 rules and have real isolated JIT/AOT and WinUI consumers. P4 covers all 2,939 included registration identities with source-observed use cases; 3,659 valid inputs and 50 errors pass 3,843 independent hard-check scenarios per runtime. Downstream native display is integrated. Antialiasing differences are accepted; layout and clipping remain mandatory. See the [P5 record](docs/verification/p5-2026-10-19.md). Formal 1.0 exit remains pending old-hardware, physical monitor DPI, minimum Windows 10, hardware GPU/device and screen-reader audio acceptance; nothing has been published externally.
 
 ## Confirmed Direction
 
@@ -30,7 +30,7 @@ A C# math typesetting and rendering library for native Windows apps. It aims to 
 | [Formula Seed Set](docs/examples/formulas.json) | Calculus, matrices, styling, macros, boundary and error cases |
 | [Document Verification Record](docs/verification/design-review.2026-10-19.md) ([中文](docs/verification/design-review.2026-10-19.zh-CN.md)) | What was actually checked in this round: docs, upstream digests, formula samples |
 
-Suggested reading order: handover → requirements → architecture → roadmap → validation → migration. Continue with P5 candidate packaging, final consumption and the explicitly outstanding hardware acceptance.
+Suggested reading order: handover → requirements → architecture → roadmap → validation → migration. The local candidate and consumers are frozen; continue with the explicitly outstanding formal hardware/platform/audio gates and the documented candidate XML-comment blemish.
 
 ## Development verification
 
