@@ -12,7 +12,7 @@ release gate.
 | Pure parse to SVG at least 3x faster than KaTeX | Native AOT portable SVG: **3.54x mean, 3.39x P50, 4.14x P95** | **Pass** |
 | Pure parse to MathML at least 3x faster than KaTeX | Native AOT MathML-only: **1.31x mean, 1.22x P50, 1.31x P95** | **Fail** |
 | WinUI end-to-end at least 2x faster than browser KaTeX | Single formula CPU drawing **5.78x mean / 8.83x P50**; 100-formula page **2.49x** call-to-DOM and **2.18x** second frame | **Pass** |
-| WASM at least 50% faster than browser KaTeX | Single parse **1.20x slower**; single DOM **1.17x faster**; 100-formula page **1.19x** call-to-DOM and **1.28x** painted | **Fail** |
+| WASM at least 50% faster than browser KaTeX | Single parse **1.20x slower**; single DOM **1.21x faster**; 100-formula page **1.38x** call-to-DOM and **1.50x** painted | **Fail** |
 
 The remaining two gaps are not being relabelled as passes. The WASM result is
 limited by the .NET 10 browser Mono-AOT pipeline: `CompileMetricsSimple` alone
@@ -33,7 +33,7 @@ require a further 2.3x while KaTeX's MathML path deliberately skips layout.
 | Corpus | `benchmarks/corpus.normal.json`, SHA-256 `0c9f4daf48a372eba2b297e346bc5a7dd11ac54e816a2ca7281eda150677a3b0` |
 | WinUI rasterization scale | 1.0; observed compositor interval 16.9 ms P50 in the final run |
 
-The machine is shared development hardware. It is not the 2015鈥?017 reference
+The machine is shared development hardware. It is not the 2015–017 reference
 CPU and the results do not substitute for that acceptance.
 
 ## Workloads
@@ -43,7 +43,7 @@ each). No formula, semantic or layout result cache is enabled.
 
 - **Single/simple:** the complete 60-formula corpus, fixed-seed shuffled.
 - **Complex:** twelve formulas from matrices, aligned, calculus and text
-  categories (5脳5 matrices, aligned systems, integrals/sums, nested fractions).
+  categories (5×5 matrices, aligned systems, integrals/sums, nested fractions).
 - **Page:** 100 formulas: the 60 corpus entries plus 40 deterministic generated
   fractions/matrices/integrals. WinUI creates 100 `MathView` controls on one UI
   thread; browser harnesses create 100 hosts in one layout pass.
@@ -61,11 +61,11 @@ milliseconds (P50 / P95 / mean).
 
 | Path | VelociTex | KaTeX 0.19.0 | Speedup (mean) |
 | --- | --- | --- | --- |
-| Compile only (validation鈫抎rawable result) | 0.0442鈥?.0445 / 0.0938鈥?.0975 / 0.0480 | 0.200 / 0.485 / 0.2294 (HTML `renderToString`) | **4.78x** |
-| Compile + portable SVG | 0.0587鈥?.0596 / 0.1165鈥?.1202 / 0.0648 | 0.200 / 0.485 / 0.2294 | **3.54x** |
-| Compile + MathML-only (no layout) | 0.0369鈥?.0371 / 0.0837鈥?.0841 / 0.0409 | 0.045 / 0.110 / 0.0535 (MathML) | **1.31x** |
-| Compile + Windows Direct2D SVG | 0.1704鈥?.1744 / 0.2718鈥?.3222 / 0.1563 | 0.200 / 0.485 / 0.2294 | 1.47x |
-| Compile + MathML after layout | 0.0572鈥?.0577 / 0.1328鈥?.1364 / 0.0638 | 0.045 / 0.110 / 0.0535 | 0.84x |
+| Compile only (validation→drawable result) | 0.0442–.0445 / 0.0938–.0975 / 0.0480 | 0.200 / 0.485 / 0.2294 (HTML `renderToString`) | **4.78x** |
+| Compile + portable SVG | 0.0587–.0596 / 0.1165–.1202 / 0.0648 | 0.200 / 0.485 / 0.2294 | **3.54x** |
+| Compile + MathML-only (no layout) | 0.0369–.0371 / 0.0837–.0841 / 0.0409 | 0.045 / 0.110 / 0.0535 (MathML) | **1.31x** |
+| Compile + Windows Direct2D SVG | 0.1704–.1744 / 0.2718–.3222 / 0.1563 | 0.200 / 0.485 / 0.2294 | 1.47x |
+| Compile + MathML after layout | 0.0572–.0577 / 0.1328–.1364 / 0.0638 | 0.045 / 0.110 / 0.0535 | 0.84x |
 
 The portable SVG path is the cross-platform parse-to-SVG implementation used by
 WASM and is the path that meets the 3x target. The Windows Direct2D SVG exporter
@@ -125,16 +125,16 @@ the 32 Hz run with the 59 Hz browser run.
 ## WASM versus browser KaTeX
 
 Final WASM AOT run, 300 iterations per formula and five page rounds, Chrome with
-COOP/COEP so the timer resolution is ~5 碌s.
+COOP/COEP so the timer resolution is ~5 µs.
 
 | Metric | VelociTex WASM | KaTeX | Result |
 | --- | --- | --- | --- |
-| Parse 鈫?SVG P50 / P95 / mean | 0.230 / 0.410 / 0.250 | HTML 0.190 / 0.380 / 0.209 | **1.20x slower** |
-| Parse 鈫?MathML P50 / P95 / mean | 0.110 / 0.265 / 0.137 | MathML 0.040 / 0.100 / 0.049 | **2.8x slower** |
-| Complex subset P50 | 0.235 | 0.175 | 1.34x slower |
-| Single DOM sync P50 | **2.105** | 2.455 | **1.17x** |
-| 100-formula page sync | **163.4 ms** | 194.8 ms | **1.19x** |
-| 100-formula page paint | **183.5 ms** | 234.7 ms | **1.28x** |
+| Parse → SVG P50 / P95 / mean | 0.230 / 0.415 / 0.255 | HTML 0.185 / 0.330 / 0.199 | **1.28x slower** |
+| Parse → MathML P50 / P95 / mean | 0.110 / 0.265 / 0.134 | MathML 0.045 / 0.105 / 0.051 | **2.6x slower** |
+| Complex subset P50 | 0.215 | 0.175 | 1.23x slower |
+| Single DOM sync P50 | **1.960** | 2.375 | **1.21x** |
+| 100-formula page sync | **149.1 ms** | 206.2 ms | **1.38x** |
+| 100-formula page paint | **166.8 ms** | 250.9 ms | **1.50x** |
 
 Diagnostic split from the same AOT build:
 
@@ -146,12 +146,14 @@ Diagnostic split from the same AOT build:
 | SVG serialization only (`CompileMetricsSvg`) | 0.050 ms |
 | Complete parse-to-SVG including JS wrapper | 0.230 ms |
 
-The 0.095 ms total budget required for 2x faster than 0.190 ms is below the
+The 0.095 ms total budget required for 2x faster than 0.185 ms is below the
 compile floor alone. `PublishAot=true` for `browser-wasm` is rejected by this SDK
 (`NETSDK1203`: browser-wasm does not support ahead-of-time compilation), so the
-binding is on Mono AOT. Meeting the WASM target needs either a faster browser
-runtime/toolchain or a further ~2x algorithmic reduction in the compile path;
-that work is not claimed here.
+binding is on Mono AOT. Removing the SDK's default `no-opt` AOT argument did not
+change the measured compile floor; the page/DOM improvement comes from smaller
+shared-definition DOM output. Meeting the WASM target needs either a faster
+browser runtime/toolchain or a further ~2x algorithmic reduction in the compile
+path; that work is not claimed here.
 
 ## Implemented optimizations
 
@@ -199,7 +201,9 @@ WASM:
   options that don't require macros or custom limits.
 - Added diagnostic-only exports for compile/export/interop timing.
 - Enabled Mono AOT with IL stripping and published the runtime into the npm dist
-  package.
+  package. Removed the SDK's default `no-opt` AOT argument so LLVM emits
+  optimized code; the measured compile floor did not move, so this is retained
+  as build hygiene rather than claimed as a speedup.
 
 ## Correctness and regression evidence
 
@@ -214,7 +218,7 @@ WASM:
   macro-isolation, delimiter, fragment and boundedness assertions pass.
 - The same browser verification passes against a freshly packed isolated npm
   consumer: `npm install` of `velocitex-0.1.0-preview.2.tgz` (SHA-256
-  `d2c7271345b70865fa39a648acea52e512633b8c64640c37f87c6d68a7ed895e`), copied
+  `1891a43514ce9c05acaf3580caa21142ba376a58a87854fbb43f44bdcc282a55`), copied
   runtime assets, and a strict TypeScript check of the consumer entry point.
   This is a locally built package, not a publication claim.
 - The final AOT9 build (page-level shared definitions, stable glyph IDs, no

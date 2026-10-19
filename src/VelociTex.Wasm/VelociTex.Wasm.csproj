@@ -15,6 +15,14 @@
     <ProjectReference Include="../VelociTex.Core/VelociTex.Core.csproj" />
     <ProjectReference Include="../VelociTex.Rendering.Svg/VelociTex.Rendering.Svg.csproj" />
   </ItemGroup>
+  <!-- The browser SDK defaults Mono AOT to `no-opt`. Keep LLVM AOT enabled but
+       let it optimize the generated bitcode; this is the compile-time/quality
+       tradeoff required by the performance target. -->
+  <Target Name="EnableMonoAotOptimizations" BeforeTargets="_WasmAotCompileApp">
+    <ItemGroup>
+      <MonoAOTCompilerDefaultAotArguments Remove="no-opt" />
+    </ItemGroup>
+  </Target>
   <Target Name="CopyRuntimeLicenses" AfterTargets="Publish">
     <ItemGroup>
       <_LicenseRuntimePack Include="@(ResolvedRuntimePack)" Condition="'%(ResolvedRuntimePack.Identity)' == 'Microsoft.NETCore.App.Runtime.Mono.browser-wasm'" />
