@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "reference": "KaTeX 0.19.0",
+  "purpose": "Seed fixtures for reference tooling; not a complete compatibility or performance corpus.",
+  "defaults": {
+    "fontSizeDip": 24,
+    "maxExpand": 1000,
+    "isolatedMacros": true
+  },
+  "cases": [
+    {
+      "id": "quadratic",
+      "category": "algebra",
+      "latex": "x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}",
+      "displayMode": false,
+      "expectation": "valid"
+    },
+    {
+      "id": "gaussian-integral",
+      "category": "calculus",
+      "latex": "\\int_{-\\infty}^{\\infty}e^{-x^2}\\,dx=\\sqrt{\\pi}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "stokes",
+      "category": "calculus",
+      "latex": "\\iint_{\\Sigma}(\\nabla\\times\\mathbf{F})\\cdot d\\mathbf{S}=\\oint_{\\partial\\Sigma}\\mathbf{F}\\cdot d\\mathbf{r}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "derivative-evaluation",
+      "category": "scripts-delimiters",
+      "latex": "\\left.\\frac{\\partial^2}{\\partial x\\,\\partial y}\\left(\\frac{e^{xy}}{\\sqrt{1+x^2+y^2}}\\right)\\right|_{(x,y)=(0,0)}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "series-limits",
+      "category": "operators",
+      "latex": "\\lim_{n\\to\\infty}\\sum_{k=1}^{n}\\frac{1}{n}f\\!\\left(\\frac{k}{n}\\right)=\\int_0^1 f(x)\\,dx",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "continued-fraction",
+      "category": "fractions",
+      "latex": "\\cfrac{1}{1+\\cfrac{1}{2+\\cfrac{1}{3+\\cfrac{1}{4+x}}}}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "matrix-three",
+      "category": "matrix",
+      "latex": "A=\\begin{pmatrix}1&\\frac12&\\sqrt3\\\\0&e^{i\\theta}&-1\\\\\\alpha_1&\\beta^2&\\sum_{k=1}^n k\\end{pmatrix}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "determinant",
+      "category": "matrix",
+      "latex": "\\det(A-\\lambda I)=\\begin{vmatrix}a-\\lambda&b&c\\\\d&e-\\lambda&f\\\\g&h&i-\\lambda\\end{vmatrix}=0",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "aligned-maxwell",
+      "category": "alignment",
+      "latex": "\\begin{aligned}\\nabla\\cdot\\mathbf{E}&=\\frac{\\rho}{\\varepsilon_0}\\\\\\nabla\\cdot\\mathbf{B}&=0\\\\\\nabla\\times\\mathbf{E}&=-\\frac{\\partial\\mathbf{B}}{\\partial t}\\\\\\nabla\\times\\mathbf{B}&=\\mu_0\\mathbf{J}+\\mu_0\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}\\end{aligned}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "piecewise",
+      "category": "cases",
+      "latex": "f(x)=\\begin{cases}\\dfrac{\\sin x}{x},&x\\ne0\\\\1,&x=0\\end{cases}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "array-rules",
+      "category": "array",
+      "latex": "\\begin{array}{c|rr}x&1&2\\\\\\hline f(x)&-1&\\frac13\\end{array}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "stretchy-brace-arrow",
+      "category": "stretchy",
+      "latex": "\\underbrace{\\frac1n+\\frac1n+\\cdots+\\frac1n}_{n\\text{ terms}}\\xrightarrow[n\\to\\infty]{\\text{uniformly}}1",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "accents",
+      "category": "accents",
+      "latex": "\\widehat{ABC}+\\overrightarrow{u+v}+\\widetilde{xyz}+\\ddot{\\theta}+\\overline{\\frac{a+b}{c}}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "fonts",
+      "category": "fonts",
+      "latex": "\\mathbb{R}\\supset\\mathcal{F}\\quad\\mathfrak{g}\\quad\\boldsymbol{\\alpha+x}\\quad\\mathbf{AB}\\quad\\mathsf{XYZ}\\quad\\mathtt{code}",
+      "displayMode": false,
+      "expectation": "valid"
+    },
+    {
+      "id": "chinese-math-text",
+      "category": "text-fallback",
+      "latex": "\\text{平均速度}=\\frac{\\text{总路程}}{\\text{总时间}}\\quad\\text{when }t>0",
+      "displayMode": false,
+      "expectation": "valid",
+      "notes": "Compare on the same Windows font environment; record fallback fonts and upstream warnings."
+    },
+    {
+      "id": "atom-reclassification",
+      "category": "spacing",
+      "latex": "-x+(-y)+a\\mathrel{=}b\\quad\\sin x\\,dx\\quad a\\!b\\;c\\qquad x\\mid y",
+      "displayMode": false,
+      "expectation": "valid"
+    },
+    {
+      "id": "color-phantom-lap",
+      "category": "special-boxes",
+      "latex": "{\\color{blue}\\frac{x+1}{y}}+\\phantom{\\frac ab}z+\\mathllap{A}B+\\smash{\\sum_{k=1}^n k}",
+      "displayMode": false,
+      "expectation": "valid"
+    },
+    {
+      "id": "macro-scope",
+      "category": "macros",
+      "latex": "\\def\\foo{x}{\\def\\foo{y}\\foo}+\\foo\\quad\\def\\sqr#1{#1^2}\\sqr{x+y}",
+      "displayMode": false,
+      "expectation": "valid"
+    },
+    {
+      "id": "mathchoice",
+      "category": "styles",
+      "latex": "\\mathchoice{\\dfrac{a}{b}}{\\tfrac{a}{b}}{a/b}{a/b}+x^{\\frac{1}{1+y_2}}",
+      "displayMode": false,
+      "expectation": "valid"
+    },
+    {
+      "id": "tag",
+      "category": "tags",
+      "latex": "\\int_0^1x^n\\,dx=\\frac{1}{n+1}\\tag{A}",
+      "displayMode": true,
+      "containerWidthDip": 640,
+      "expectation": "valid"
+    },
+    {
+      "id": "core-cd",
+      "category": "core-diagram",
+      "latex": "\\begin{CD}A @>f>> B\\\\@VgVV @VVhV\\\\C @>>k> D\\end{CD}",
+      "displayMode": true,
+      "expectation": "valid"
+    },
+    {
+      "id": "invalid-fraction",
+      "category": "errors",
+      "latex": "\\frac{1}",
+      "displayMode": false,
+      "expectation": "invalid"
+    },
+    {
+      "id": "unclosed-group",
+      "category": "errors",
+      "latex": "\\sqrt{a+b",
+      "displayMode": false,
+      "expectation": "invalid"
+    },
+    {
+      "id": "duplicate-superscript",
+      "category": "errors",
+      "latex": "x^2^3",
+      "displayMode": false,
+      "expectation": "invalid"
+    },
+    {
+      "id": "unknown-command",
+      "category": "errors",
+      "latex": "\\VelociTexUnknown{x}",
+      "displayMode": false,
+      "expectation": "invalid"
+    },
+    {
+      "id": "macro-cycle",
+      "category": "limits",
+      "latex": "\\def\\foo{\\foo}\\foo",
+      "displayMode": false,
+      "expectation": "invalid"
+    },
+    {
+      "id": "excluded-browser-link",
+      "category": "excluded",
+      "latex": "\\href{https://example.invalid}{x}",
+      "displayMode": false,
+      "expectation": "excluded"
+    },
+    {
+      "id": "excluded-image",
+      "category": "excluded",
+      "latex": "\\includegraphics{https://example.invalid/a.png}",
+      "displayMode": false,
+      "expectation": "excluded"
+    },
+    {
+      "id": "excluded-mhchem",
+      "category": "excluded",
+      "latex": "\\ce{H2 + O2 -> H2O}",
+      "displayMode": false,
+      "expectation": "excluded"
+    }
+  ]
+}
