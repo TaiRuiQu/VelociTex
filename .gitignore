@@ -1,0 +1,15 @@
+# Build products and reproducible verification outputs.
+**/bin/
+**/obj/
+**/node_modules/
+**/__pycache__/
+*.pyc
+artifacts/
+.vs/
+*.user
+*.suo
+*.binlog
+*.pdb
+# Keep small generated source data, reference manifests, and dependency locks.
+!**/packages.lock.json
+!**/package-lock.json

@@ -4,7 +4,7 @@ English | [中文](README.zh-CN.md)
 
 A C# math typesetting and rendering library for native Windows apps. It aims to reproduce the **core math typesetting of KaTeX 0.19.0** on WinUI 3, export PNG / SVG / MathML, and replace the formula display path of `../oh-my-study/` as the first priority.
 
-**Status as of 2026-10-19: requirements are confirmed and the implementation design is complete. There is no rendering engine yet, no installable NuGet package, and no evidence that the performance targets are met.** The APIs, project layout, phases, and budgets below are designs to be built, not shipped features.
+**Status as of 2026-10-19: P0 reference tooling and the real native/AOT WinUI feasibility loop are implemented and verified.** There is no formula parsing/layout engine or installable NuGet package yet, and the performance targets are unverified. The hard-coded probe contributes no formula compatibility coverage. See the [P0 delivery record](docs/verification/p0-2026-10-19.md) for evidence and remaining limits.
 
 ## Confirmed Direction
 
@@ -30,4 +30,14 @@ A C# math typesetting and rendering library for native Windows apps. It aims to 
 | [Formula Seed Set](docs/examples/formulas.json) | Calculus, matrices, styling, macros, boundary and error cases |
 | [Document Verification Record](docs/verification/design-review.2026-10-19.md) ([中文](docs/verification/design-review.2026-10-19.zh-CN.md)) | What was actually checked in this round: docs, upstream digests, formula samples |
 
-Suggested reading order: requirements → architecture → implementation → validation → migration. The next step is P0: freeze the compatibility list, verify fonts, native drawing and AOT, and build a repeatably runnable comparison tool.
+Suggested reading order: handover → requirements → architecture → roadmap → validation → migration. The next step is P1: compact semantics, basic formula layout, immutable results, and four outputs from the same result.
+
+## Development verification
+
+```powershell
+./verify-reference.ps1 -FullMatrix
+./build.ps1 -Target All -Locked
+python tools/VelociTex.Native.Probe/verify-native.py artifacts/native
+```
+
+Reference regeneration needs the locked local browser bytes, Node/npm and Python. Native verification needs the pinned .NET SDK and Windows C++/AOT build tools. Consumers will not require these development tools. Large evidence is regenerated under ignored `artifacts/`; small checksum manifests, generated data, fonts, licenses and dependency locks are committed. No remote repository or external package has been published.

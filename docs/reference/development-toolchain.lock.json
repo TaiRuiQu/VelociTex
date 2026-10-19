@@ -1,0 +1,11 @@
+{
+  "node": "22.23.2",
+  "npm": "10.9.8",
+  "playwright": "1.56.1",
+  "typescript": "5.9.3",
+  "pngjs": "7.0.0",
+  "browserVersion": "155.0.8059.84",
+  "browserExecutable": "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
+  "browserSha256": "6aa5d599bbc3a0b3842af9f44b18fd29989eb3cc21b4b3ec7489e12f36e9962e",
+  "browserAcquisition": "Locally installed Chrome, pinned by version and executable SHA-256. Official Playwright Chromium v1194 download was attempted and canceled after no progress; automatic browser acquisition is not verified."
+}

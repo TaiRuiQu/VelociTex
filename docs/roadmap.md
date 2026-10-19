@@ -2,7 +2,7 @@
 
 English | [中文](roadmap.zh-CN.md)
 
-This document delivers "replace the display chain early" and "reach complete core compatibility" as separate milestones. None of the phases has started yet; this delivery contains requirements and design only. Phases advance by dependency, never by an unverified fixed schedule.
+This document delivers "replace the display chain early" and "reach complete core compatibility" as separate milestones. P0's reference and native/AOT feasibility loop was delivered on 2026-10-19; see the [P0 record](verification/p0-2026-10-19.md) for actual checks and unverified hardware/measurement items. P1 is next. Phases advance by dependency, never by an unverified fixed schedule.
 
 ## Phase Overview
 

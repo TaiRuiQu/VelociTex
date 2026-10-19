@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "upstreamVersion": "0.19.0",
+  "browserVersion": "155.0.8059.84",
+  "browserSha256": "6aa5d599bbc3a0b3842af9f44b18fd29989eb3cc21b4b3ec7489e12f36e9962e",
+  "devicePixelRatio": 1,
+  "privateFontsLoaded": 20,
+  "formulaSamples": 8,
+  "maxCanvasAdvanceErrorPx": 1.4038085936363132e-05,
+  "cssFontSizeScale": 1.21,
+  "cssRawWidthPx": 10.5625,
+  "cssKaTeXWidthPx": 12.78125,
+  "cssBaselineDeltaPx": 0.0,
+  "fItalicCorrectionCssEm": 0.1076,
+  "measurements": [
+    {
+      "font": "AMS-Regular",
+      "codePoint": 65,
+      "glyphId": 4,
+      "ttfAdvance40px": 28.88,
+      "canvasAdvancePx": 28.879989624023438,
+      "absoluteErrorPx": 1.037597656150524e-05
+    },
+    {
+      "font": "Caligraphic-Bold",
+      "codePoint": 65,
+      "glyphId": 4,
+      "ttfAdvance40px": 36.84,
+      "canvasAdvancePx": 36.839996337890625,
+      "absoluteErrorPx": 3.662109378410605e-06
+    },
+    {
+      "font": "Caligraphic-Regular",
+      "codePoint": 65,
+      "glyphId": 4,
+      "ttfAdvance40px": 31.92,
+      "canvasAdvancePx": 31.919998168945312,
+      "absoluteErrorPx": 1.8310546892053026e-06
+    },
+    {
+      "font": "Fraktur-Bold",
+      "codePoint": 65,
+      "glyphId": 30,
+      "ttfAdvance40px": 33.879999999999995,
+      "canvasAdvancePx": 33.87998962402344,
+      "absoluteErrorPx": 1.0375976557952526e-05
+    },
+    {
+      "font": "Fraktur-Regular",
+      "codePoint": 65,
+      "glyphId": 30,
+      "ttfAdvance40px": 28.72,
+      "canvasAdvancePx": 28.719985961914062,
+      "absoluteErrorPx": 1.4038085936363132e-05
+    },
+    {
+      "font": "Main-Bold",
+      "codePoint": 65,
+      "glyphId": 36,
+      "ttfAdvance40px": 34.76,
+      "canvasAdvancePx": 34.75999450683594,
+      "absoluteErrorPx": 5.49316406051048e-06
+    },
+    {
+      "font": "Main-BoldItalic",
+      "codePoint": 65,
+      "glyphId": 33,
+      "ttfAdvance40px": 34.64,
+      "canvasAdvancePx": 34.63999938964844,
+      "absoluteErrorPx": 6.103515630684342e-07
+    },
+    {
+      "font": "Main-Italic",
+      "codePoint": 65,
+      "glyphId": 33,
+      "ttfAdvance40px": 29.72,
+      "canvasAdvancePx": 29.719985961914062,
+      "absoluteErrorPx": 1.4038085936363132e-05
+    },
+    {
+      "font": "Main-Regular",
+      "codePoint": 65,
+      "glyphId": 36,
+      "ttfAdvance40px": 30.0,
+      "canvasAdvancePx": 30,
+      "absoluteErrorPx": 0.0
+    },
+    {
+      "font": "Math-BoldItalic",
+      "codePoint": 65,
+      "glyphId": 14,
+      "ttfAdvance40px": 34.76,
+      "canvasAdvancePx": 34.75999450683594,
+      "absoluteErrorPx": 5.49316406051048e-06
+    },
+    {
+      "font": "Math-Italic",
+      "codePoint": 102,
+      "glyphId": 45,
+      "ttfAdvance40px": 19.6,
+      "canvasAdvancePx": 19.599990844726562,
+      "absoluteErrorPx": 9.155273438921085e-06
+    },
+    {
+      "font": "SansSerif-Bold",
+      "codePoint": 65,
+      "glyphId": 34,
+      "ttfAdvance40px": 29.32,
+      "canvasAdvancePx": 29.319992065429688,
+      "absoluteErrorPx": 7.934570312784217e-06
+    },
+    {
+      "font": "SansSerif-Italic",
+      "codePoint": 65,
+      "glyphId": 34,
+      "ttfAdvance40px": 26.68,
+      "canvasAdvancePx": 26.67999267578125,
+      "absoluteErrorPx": 7.324218749715783e-06
+    },
+    {
+      "font": "SansSerif-Regular",
+      "codePoint": 65,
+      "glyphId": 34,
+      "ttfAdvance40px": 26.68,
+      "canvasAdvancePx": 26.67999267578125,
+      "absoluteErrorPx": 7.324218749715783e-06
+    },
+    {
+      "font": "Script-Regular",
+      "codePoint": 65,
+      "glyphId": 4,
+      "ttfAdvance40px": 32.120000000000005,
+      "canvasAdvancePx": 32.1199951171875,
+      "absoluteErrorPx": 4.8828125045474735e-06
+    },
+    {
+      "font": "Size1-Regular",
+      "codePoint": 40,
+      "glyphId": 4,
+      "ttfAdvance40px": 18.32,
+      "canvasAdvancePx": 18.319992065429688,
+      "absoluteErrorPx": 7.934570312784217e-06
+    },
+    {
+      "font": "Size2-Regular",
+      "codePoint": 40,
+      "glyphId": 4,
+      "ttfAdvance40px": 23.88,
+      "canvasAdvancePx": 23.879989624023438,
+      "absoluteErrorPx": 1.037597656150524e-05
+    },
+    {
+      "font": "Size3-Regular",
+      "codePoint": 40,
+      "glyphId": 4,
+      "ttfAdvance40px": 29.439999999999998,
+      "canvasAdvancePx": 29.439987182617188,
+      "absoluteErrorPx": 1.2817382810226263e-05
+    },
+    {
+      "font": "Size4-Regular",
+      "codePoint": 40,
+      "glyphId": 4,
+      "ttfAdvance40px": 31.68,
+      "canvasAdvancePx": 31.67999267578125,
+      "absoluteErrorPx": 7.324218749715783e-06
+    },
+    {
+      "font": "Typewriter-Regular",
+      "codePoint": 65,
+      "glyphId": 36,
+      "ttfAdvance40px": 21.0,
+      "canvasAdvancePx": 21,
+      "absoluteErrorPx": 0.0
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "artifacts/fonts/browser-calibration.json",
+      "sha256": "493ab9a529f3969133f7efd174844e0a9e21251753c3f96d6074df760072b3a1",
+      "bytes": 24126
+    },
+    {
+      "path": "artifacts/fonts/font-calibration.png",
+      "sha256": "6f71ecc89a74f35a72441ab015d10441126743a9b5262f048131948afc38eb26",
+      "bytes": 133782
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 English | [中文](agent-handoff.zh-CN.md)
 
-Recorded on 2026-10-19. The next implementation Agent starts at P0 rather than repeating the requirements interview.
+Updated on 2026-10-19 after the [P0 delivery](verification/p0-2026-10-19.md). Continue at P1 rather than repeating P0 or the requirements interview. Sections describing the original design-only round below remain historical context; the P0 record is authoritative for current implementation and evidence.
 
 ## 1. Already Determined, Should Not Repeatedly Ask
 
@@ -42,7 +42,7 @@ Advance autonomously on ordinary implementation choices inside a phase. Ask agai
 
 ## 4. First Implementation Task
 
-Execute **P0-01 through P0-08** and produce the reference data, the native feasibility probes, and the selection records. Aim for a first delivery that closes this loop:
+P0-01 through P0-08 now have implemented tools, probes and selection records, with explicit hardware and measurement limitations in the delivery record. Next execute **P1-01 through P1-06** and its 50-fixture exit. Reuse this established P0 loop:
 
 ```text
 Verify upstream
@@ -82,7 +82,7 @@ docs/
 artifacts/  # large runtime artifacts; the ignore policy is defined during project setup
 ```
 
-Build and check scripts are delivered by P0 / P1; there is no directly runnable `build.ps1` or test project yet. Every later delivery must provide real, reproducibly runnable commands instead of keeping only planned command names.
+Runnable `build.ps1`, `verify-reference.ps1`, and native/reference probes now exist; see the P0 delivery for commands. P1 adds actual formula-engine test projects. Every later delivery must keep providing real, reproducibly runnable commands.
 
 ## 5. Technical Risks and Solutions
 

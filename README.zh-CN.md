@@ -4,7 +4,7 @@
 
 面向原生 Windows 应用的 C# 数学排版与渲染库。目标是在 WinUI 3 上还原 **KaTeX 0.19.0 的核心数学排版**，导出 PNG / SVG / MathML，并优先替换 `../oh-my-study/` 的公式显示链路。
 
-**截至 2026-10-19 的状态：需求已确认，实施设计已完成；尚无渲染引擎、暂无可安装的 NuGet 包，也没有性能达标的实测证据。** 下文列出的 API、项目结构、阶段与预算都是待实现的设计，不是已交付的功能。
+**截至 2026-10-19：P0 参考工具与真实原生/AOT WinUI 可行性闭环已实现并验证。** 尚无公式解析/排版引擎和可安装 NuGet 包，性能目标未验证；硬编码探针不计公式兼容覆盖。证据与限制见 [P0 交付记录](docs/verification/p0-2026-10-19.md)。
 
 ## 已确认的方向
 
@@ -30,4 +30,14 @@
 | [公式种子集](docs/examples/formulas.json) | 微积分、矩阵、样式、宏、边界与错误用例 |
 | [文档验证记录](docs/verification/design-review.2026-10-19.zh-CN.md) ([English](docs/verification/design-review.2026-10-19.md)) | 本轮实际检查范围：文档、上游摘要、公式样本 |
 
-建议按“需求 → 架构 → 实施 → 验证 → 迁移”的顺序阅读。下一步是 P0：冻结兼容清单，验证字体、原生绘制与 AOT，并建立可重复运行的对照工具。
+建议按“交接 → 需求 → 架构 → 实施 → 验证 → 迁移”的顺序阅读。下一步是 P1：紧凑语义数据、基础公式布局、不可变结果以及四路同源输出。
+
+## 开发验证
+
+```powershell
+./verify-reference.ps1 -FullMatrix
+./build.ps1 -Target All -Locked
+python tools/VelociTex.Native.Probe/verify-native.py artifacts/native
+```
+
+参考再生成需锁定的本机浏览器字节、Node/npm 和 Python；原生验证需固定 .NET SDK 与 Windows C++/AOT 工具链，普通库消费者不需要这些开发工具。大体积证据位于忽略的 `artifacts/`；小型散列清单、生成数据、字体、许可证和依赖锁提交到 Git。没有创建远程仓库或发布外部包。

@@ -2,7 +2,7 @@
 
 [English](architecture.md) | 中文
 
-本文件是工程方案，尚未实现。需求依据见 [需求与边界](requirements.zh-CN.md)，阶段出口见 [分阶段实施](roadmap.zh-CN.md)。
+本文件描述目标架构。P0 已实现参考工具、字体生成数据及硬编码原生/AOT 探针；公式引擎与公共 API 仍待实现。原生选型见 [ADR 0001](decisions/0001-native-rendering.md)。需求依据见 [需求与边界](requirements.zh-CN.md)，阶段出口见 [分阶段实施](roadmap.zh-CN.md)。
 
 ## 1. 管线与模块
 

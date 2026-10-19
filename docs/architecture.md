@@ -2,7 +2,7 @@
 
 English | [中文](architecture.zh-CN.md)
 
-This document is an engineering proposal; none of it is implemented yet. Requirements are in [Requirements and Scope](requirements.md), and the phase deliverables are in the [Roadmap](roadmap.md).
+This document describes the target architecture. P0 has implemented reference tooling, generated font data and hard-coded native/AOT probes; the formula engine and public API remain designs. The selected native route is recorded in [ADR 0001](decisions/0001-native-rendering.md). Requirements are in [Requirements and Scope](requirements.md), and phase deliverables are in the [Roadmap](roadmap.md).
 
 ## 1. Pipeline and Modules
 

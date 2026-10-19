@@ -1,0 +1,14 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Folder Name="/src/">
+    <Project Path="src/VelociTex.Rendering.Direct2D/VelociTex.Rendering.Direct2D.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/VelociTex.WinUI.Sample/VelociTex.WinUI.Sample.csproj" />
+  </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/VelociTex.Native.Probe/VelociTex.Native.Probe.csproj" />
+  </Folder>
+</Solution>
