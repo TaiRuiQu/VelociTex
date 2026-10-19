@@ -64,6 +64,18 @@ for(const [name,source] of sources) if(name.startsWith('builder:')) {
 entries.sort((a,b)=>a.id<b.id?-1:a.id>b.id?1:0);
 const byKind={};
 for(const item of entries) byKind[item.kind]=(byKind[item.kind]??0)+1;
+// Phase overlays only add audited fixture evidence. They never shrink scope or
+// turn a handful of use cases into a complete registration compatibility claim.
+try {
+  const p1=JSON.parse(await fs.readFile(path.join(root,'compatibility/p1-coverage.json'),'utf8'));
+  for(const evidence of p1.entries) {
+    const item=entries.find(x=>x.id===evidence.id);
+    if(!item||item.scope!=='included')throw new Error('Invalid P1 coverage overlay identity');
+    item.fixtureStatus='partially-verified';
+    item.phaseEvidence={phase:'P1',fixtureIds:evidence.fixtureIds,reason:evidence.reason};
+    for(const dimension of Object.keys(item.status))item.status[dimension]='partially-verified';
+  }
+}catch(error){if(error.code!=='ENOENT')throw error;}
 const result={schemaVersion:1,reference:{version:lock.npm.version,commit:lock.source.commit,npmSha256:lock.npm.sha256},method:'TypeScript AST call instrumentation plus controlled execution of the exact source transitive registry graph; final registries determine the denominator.',manualReview:{date:'2026-10-19',policy:'Only explicitly named external resources, DOM/CSS injection and the browser trust option are wholly excluded. Output remains included for MathML semantics, with browser-only values separately annotated. CD, all core callback macros, internal HTML/MathML choice helpers and all other registrations remain included. Callback-style user extensions remain out of scope.',unclassified:0},summary:{total:entries.length,included:entries.filter(x=>x.scope==='included').length,excluded:entries.filter(x=>x.scope==='excluded').length,byKind},transitiveSourceModules:loaded.moduleSources.sort(),entries};
 await writeJson(path.join(root,'compatibility/core-0.19.0.json'),result);
 await writeJson(path.join(root,'artifacts/reference/inventory-summary.json'),{...result.summary,registrationEvents:registrations.length,transitiveModules:loaded.moduleSources.length,sha256:sha256(Buffer.from(JSON.stringify(result,null,2)+'\n'))});

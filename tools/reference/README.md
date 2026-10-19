@@ -58,3 +58,22 @@ full-core compatibility, or old-hardware acceptance follows from these results.
 Large upstream archives, browsers and reference images live under ignored
 `artifacts/`. Tracked manifests, code, dependency lock and verification notes
 retain the provenance and reproduction entry points.
+
+P1 adds `generate-core-symbols.mjs --check` and `generate-layout-data.mjs
+--check` for actual C# static rules, plus the repository-root
+`verify-p1.ps1`. `p1-reference.mjs --full-matrix` freezes 64 valid / 12 invalid
+inputs and 202 browser scenarios; a second transparent capture calibrates true
+alpha without replacing the opaque theme screenshots. Natural vertical extent
+uses the direct base strut; radical paths record their real `getScreenCTM`
+under the locked CSS viewport, rather than inferring scale from SVG attributes.
+
+`p1-compare.mjs` checks compact semantics, MathML and measured geometry against
+those independent expectations. `p1-images.mjs` independently opens every SVG,
+decodes every PNG and retains raw bidirectional edge failures. Its `--reviewed`
+mode additionally checks exact PNG/SVG/reference hashes against the committed
+`compatibility/p1-raster-review.json`; it never generates new exceptions.
+`p1-runtime-parity.mjs` requires byte-identical JIT/AOT exports.
+`p1-coverage.mjs` records only conservative partial use-case evidence, and
+`inventory.mjs` applies that overlay without changing the complete denominator.
+The [P1 record](../../docs/verification/p1-2026-10-19.md) states the automatic
+failures, reviewed rendering differences and remaining scope explicitly.

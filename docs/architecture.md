@@ -2,7 +2,7 @@
 
 English | [中文](architecture.zh-CN.md)
 
-This document describes the target architecture. P0 has implemented reference tooling, generated font data and hard-coded native/AOT probes; the formula engine and public API remain designs. The selected native route is recorded in [ADR 0001](decisions/0001-native-rendering.md). Requirements are in [Requirements and Scope](requirements.md), and phase deliverables are in the [Roadmap](roadmap.md).
+This document describes the target architecture. P1 now implements compact semantics, basic math layout, independent immutable results and native/PNG/SVG/MathML output. The current API and ownership boundaries are documented in [p1-api.md](p1-api.md), with actual verification and limits in the [P1 record](verification/p1-2026-10-19.md). Some sketches below still describe later target APIs. The selected native route is recorded in [ADR 0001](decisions/0001-native-rendering.md). Requirements are in [Requirements and Scope](requirements.md), and phase deliverables are in the [Roadmap](roadmap.md).
 
 ## 1. Pipeline and Modules
 
@@ -171,7 +171,7 @@ The first version compares normalized XML trees; byte-identical serialization, a
 
 ## 7. API Shape (Design Draft)
 
-The sketch below only pins down responsibilities. API compatibility checks are added once P1 finalizes it; none of these types exist in this repository yet.
+The sketch below pins down target responsibilities. P1 implements MathEngine/MathWorkspace/MathDocument, WindowsMathRenderer/PreparedMath and MathMlWriter; the actual signatures are in [p1-api.md](p1-api.md). PNG/SVG methods currently live on WindowsMathRenderer, and MathView binds a Result. Source binding and API stabilization remain P2 work.
 
 ```csharp
 // Each formula parsed once; errors return stable diagnostics.

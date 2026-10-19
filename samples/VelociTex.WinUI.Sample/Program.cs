@@ -32,7 +32,7 @@ internal static class Program
 public sealed partial class ProbeApp : Application
 {
     private readonly string[] args;
-    private ProbeWindow? window;
+    private Window? window;
     public ProbeApp(string[] args)
     {
         Program.Log("App constructor");
@@ -44,7 +44,7 @@ public sealed partial class ProbeApp : Application
     protected override void OnLaunched(LaunchActivatedEventArgs launched)
     {
         Program.Log("Launching window");
-        window = new ProbeWindow(args);
+        window = args.Contains("--p0") ? new ProbeWindow(args) : new FormulaWindow(args);
         window.Activate();
         Program.Log("Window activated");
     }

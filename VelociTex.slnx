@@ -3,7 +3,12 @@
     <Platform Name="x64" />
   </Configurations>
   <Folder Name="/src/">
+    <Project Path="src/VelociTex.Core/VelociTex.Core.csproj" />
     <Project Path="src/VelociTex.Rendering.Direct2D/VelociTex.Rendering.Direct2D.csproj" />
+    <Project Path="src/VelociTex.WinUI/VelociTex.WinUI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj" />
   </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/VelociTex.WinUI.Sample/VelociTex.WinUI.Sample.csproj" />

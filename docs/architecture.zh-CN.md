@@ -2,7 +2,7 @@
 
 [English](architecture.md) | 中文
 
-本文件描述目标架构。P0 已实现参考工具、字体生成数据及硬编码原生/AOT 探针；公式引擎与公共 API 仍待实现。原生选型见 [ADR 0001](decisions/0001-native-rendering.md)。需求依据见 [需求与边界](requirements.zh-CN.md)，阶段出口见 [分阶段实施](roadmap.zh-CN.md)。
+本文件描述目标架构。P1 已实现紧凑语义、基础数学布局、独立不可变结果及原生/PNG/SVG/MathML 输出；当前接口和生命周期见 [p1-api.md](p1-api.md)，实测与限制见 [P1 记录](verification/p1-2026-10-19.md)。下文部分草图仍是后续目标接口。原生选型见 [ADR 0001](decisions/0001-native-rendering.md)。需求依据见 [需求与边界](requirements.zh-CN.md)，阶段出口见 [分阶段实施](roadmap.zh-CN.md)。
 
 ## 1. 管线与模块
 
@@ -171,7 +171,7 @@ SVG 在 Windows 上获取字体轮廓，因此归入 Windows 渲染包，Core �
 
 ## 7. API 形态（设计草案）
 
-以下只表达职责，P1 定稿后再补 API 兼容检查；本仓库当前还没有这些类型。
+以下草图表达目标职责。P1 已实现 MathEngine/MathWorkspace/MathDocument、WindowsMathRenderer/PreparedMath 和 MathMlWriter；真实签名见 [p1-api.md](p1-api.md)。PNG/SVG 现位于 WindowsMathRenderer，MathView 已能绑定 Result；Source 绑定及 API 稳定性在 P2 完善。
 
 ```csharp
 // 一个公式只解析一次；错误返回稳定诊断。

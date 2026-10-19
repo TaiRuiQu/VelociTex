@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <NuGetLockFilePath Condition="'$(PublishAot)' == 'true'">packages.aot.lock.json</NuGetLockFilePath>
+    <Description>Compact single-formula TeX parsing and layout using locked KaTeX 0.19.0 rules.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources/Fonts/*.ttf" />
+  </ItemGroup>
+</Project>

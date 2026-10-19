@@ -132,18 +132,55 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-builder-atom",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "html": true,
         "mathml": true
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "binary-end",
+          "bold",
+          "bracket",
+          "decimal",
+          "dfrac",
+          "empty-group",
+          "frac-rules",
+          "greek",
+          "greek-caps",
+          "group-script",
+          "group-spacing",
+          "macro-arg",
+          "macro-local",
+          "macro-redefine-scope",
+          "macro-zero",
+          "paren",
+          "plus",
+          "punct",
+          "relation",
+          "roman",
+          "script-binary",
+          "sqrt-display",
+          "sqrt-expression",
+          "sqrt-script",
+          "style-script",
+          "style-scriptscript",
+          "text",
+          "times",
+          "unary-after-rel",
+          "unary-start",
+          "wide-super"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -159,18 +196,83 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-builder-mathord",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "html": true,
         "mathml": true
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "binary-end",
+          "bold",
+          "both-scripts",
+          "both-scripts-reverse",
+          "bracket",
+          "dfrac",
+          "empty-group",
+          "frac-display",
+          "frac-empty-num",
+          "frac-inline",
+          "frac-nested",
+          "frac-rules",
+          "frac-script",
+          "fraction-scripts",
+          "greek",
+          "group-script",
+          "group-spacing",
+          "italic",
+          "italic-scripts",
+          "letters",
+          "macro-arg",
+          "macro-local",
+          "macro-nested",
+          "macro-redefine-scope",
+          "macro-two-args",
+          "macro-zero",
+          "negative-space",
+          "nested-sub",
+          "nested-super",
+          "paren",
+          "plus",
+          "punct",
+          "quad",
+          "radical-sup",
+          "relation",
+          "roman",
+          "script-binary",
+          "single-f",
+          "single-x",
+          "sqrt",
+          "sqrt-display",
+          "sqrt-expression",
+          "sqrt-frac",
+          "sqrt-nested",
+          "sqrt-script",
+          "style-display",
+          "style-script",
+          "style-scriptscript",
+          "style-text",
+          "sub",
+          "sup",
+          "text",
+          "text-script",
+          "tfrac-display",
+          "thin-space",
+          "times",
+          "unary-after-rel",
+          "unary-start",
+          "wide-super"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -294,18 +396,46 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-builder-textord",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "html": true,
         "mathml": true
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "both-scripts",
+          "both-scripts-reverse",
+          "decimal",
+          "digits",
+          "empty-base",
+          "frac-nested",
+          "frac-rules",
+          "fraction-scripts",
+          "greek-caps",
+          "group-script",
+          "italic",
+          "macro-arg",
+          "macro-nested",
+          "macro-zero",
+          "nested-super",
+          "radical-sup",
+          "sqrt-display",
+          "sqrt-expression",
+          "sqrt-script",
+          "sup",
+          "text",
+          "text-script"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -1344,14 +1474,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-0010c48c884799ff",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "styling",
@@ -1365,6 +1495,13 @@
           "\\scriptstyle",
           "\\scriptscriptstyle"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "style-text"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -1380,14 +1517,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-0089700c0dd51d6c",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "genfrac",
@@ -1407,6 +1544,13 @@
           "\\\\bracefrac",
           "\\\\brackfrac"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "dfrac"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -4148,14 +4292,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-2b803becad291e0a",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "styling",
@@ -4169,6 +4313,13 @@
           "\\textstyle",
           "\\scriptstyle"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "style-scriptscript"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -4555,14 +4706,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-334e4724367ac19c",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "internal",
@@ -4576,6 +4727,14 @@
           "\\edef",
           "\\xdef"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "macro-local",
+          "macro-redefine-scope"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -5270,14 +5429,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-3d3b0efcfd581eda",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "styling",
@@ -5291,6 +5450,13 @@
           "\\textstyle",
           "\\scriptscriptstyle"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "style-script"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -5502,14 +5668,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-442601e9beef681b",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "genfrac",
@@ -5529,6 +5695,22 @@
           "\\\\bracefrac",
           "\\\\brackfrac"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "frac-display",
+          "frac-empty-num",
+          "frac-inline",
+          "frac-nested",
+          "frac-rules",
+          "frac-script",
+          "fraction-scripts",
+          "sqrt-frac",
+          "style-display",
+          "style-text"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -6183,14 +6365,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-5063f8823b16b4c1",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "sqrt",
@@ -6200,6 +6382,19 @@
         "allowedInText": false,
         "allowedInMath": true,
         "aliases": []
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "radical-sup",
+          "sqrt",
+          "sqrt-display",
+          "sqrt-expression",
+          "sqrt-frac",
+          "sqrt-nested",
+          "sqrt-script"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -10642,14 +10837,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-a54ff53ae3f7220f",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "font",
@@ -10673,6 +10868,13 @@
           "\\bold",
           "\\frak"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "bold"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -11852,14 +12054,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-bee3f6a04b29ffd8",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "font",
@@ -11883,6 +12085,13 @@
           "\\bold",
           "\\frak"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "italic"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -11898,14 +12107,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-bf4dbe05fc33620b",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "genfrac",
@@ -11925,6 +12134,13 @@
           "\\\\bracefrac",
           "\\\\brackfrac"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "tfrac-display"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -13960,14 +14176,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-db418b83c6073c1a",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "text",
@@ -13989,6 +14205,14 @@
           "\\textup",
           "\\emph"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text",
+          "text-script"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -14603,14 +14827,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-e89375116e0ec9c5",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "font",
@@ -14634,6 +14858,13 @@
           "\\bold",
           "\\frak"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "roman"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -14649,14 +14880,14 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-function-e93c9be298cf5ca0",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "nodeType": "styling",
@@ -14670,6 +14901,13 @@
           "\\scriptstyle",
           "\\scriptscriptstyle"
         ]
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "style-display"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -15842,19 +16080,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-macro-010254730547daa2",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "definitionType": "string",
         "definition": "\\hskip1em\\relax",
         "requiredBuiltinCallback": false
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "quad"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -19258,19 +19503,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-macro-548e408933d0e265",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "definitionType": "string",
         "definition": "\\tmspace-{3mu}{.1667em}",
         "requiredBuiltinCallback": false
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "negative-space"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -20490,19 +20742,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-macro-7a62a675bdd77bdc",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "definitionType": "string",
         "definition": "\\tmspace+{3mu}{.1667em}",
         "requiredBuiltinCallback": false
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "thin-space"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -29589,19 +29848,28 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-189f40034be7a199",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "j"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "frac-rules",
+          "italic-scripts",
+          "nested-sub"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -29734,19 +30002,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-19581e27de7ced00",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "9"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "digits"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -31590,19 +31865,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-245843abef9e72e7",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "open",
         "replace": "["
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "bracket"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -31735,19 +32017,27 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-252f10c83610ebca",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "f"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "italic-scripts",
+          "single-f"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -32663,19 +32953,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-2c624232cdd22177",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "8"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "digits"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -32953,19 +33250,61 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-2d711642b726b044",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "x"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "binary-end",
+          "bold",
+          "both-scripts",
+          "both-scripts-reverse",
+          "bracket",
+          "frac-rules",
+          "frac-script",
+          "letters",
+          "macro-arg",
+          "macro-local",
+          "macro-nested",
+          "macro-redefine-scope",
+          "macro-zero",
+          "negative-space",
+          "nested-sub",
+          "nested-super",
+          "quad",
+          "radical-sup",
+          "roman",
+          "script-binary",
+          "single-x",
+          "sqrt",
+          "sqrt-display",
+          "sqrt-expression",
+          "sqrt-nested",
+          "sqrt-script",
+          "style-script",
+          "style-scriptscript",
+          "sub",
+          "sup",
+          "text",
+          "text-script",
+          "thin-space",
+          "unary-after-rel",
+          "unary-start",
+          "wide-super"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -33156,19 +33495,33 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-2e7d2c03a9507ae2",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "c"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "dfrac",
+          "letters",
+          "paren",
+          "punct",
+          "relation",
+          "roman",
+          "script-binary",
+          "times"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -34113,19 +34466,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-32ebb1abcc1c601c",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "open",
         "replace": "("
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "paren"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -34345,19 +34705,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-349ba76d907adfab",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "bin",
         "replace": "×"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "times"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -34867,19 +35234,30 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-380918b946a52664",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "rel",
         "replace": "="
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "greek",
+          "greek-caps",
+          "relation",
+          "script-binary",
+          "unary-after-rel"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -35070,19 +35448,27 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-3973e022e93220f9",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "bin",
         "replace": "−"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "unary-after-rel",
+          "unary-start"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -35737,19 +36123,50 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-3e23e8160039594a",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "b"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "bold",
+          "dfrac",
+          "empty-group",
+          "frac-display",
+          "frac-empty-num",
+          "frac-inline",
+          "frac-nested",
+          "frac-script",
+          "fraction-scripts",
+          "group-script",
+          "group-spacing",
+          "letters",
+          "macro-two-args",
+          "paren",
+          "plus",
+          "punct",
+          "relation",
+          "roman",
+          "script-binary",
+          "sqrt-frac",
+          "style-display",
+          "style-text",
+          "tfrac-display",
+          "times",
+          "wide-super"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -36172,19 +36589,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-41b805ea7ac014e2",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "punct",
         "replace": ";"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "punct"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -37448,19 +37872,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-4893e9df8b5496eb",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "α"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "greek"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -37941,19 +38372,27 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-4b227777d4dd1fc6",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "4"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "decimal",
+          "digits"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -38579,19 +39018,29 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-4e07408562bedb8b",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "3"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "decimal",
+          "digits",
+          "empty-base",
+          "italic"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -40058,19 +40507,27 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-559aead08264d579",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "A"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "bold",
+          "italic"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -40493,19 +40950,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-57885e4c75965b23",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "Γ"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "greek-caps"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -40957,19 +41421,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-594e519ae499312b",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "z"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "letters"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -42175,19 +42646,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-5feceb66ffc86f38",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "0"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "digits"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -43074,19 +43552,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-67610b0632683369",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "γ"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "greek"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -43828,19 +44313,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-6b23c0d5f35d1b11",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "C"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "italic"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -43886,19 +44378,34 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-6b86b273ff34fce1",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "1"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "decimal",
+          "digits",
+          "frac-nested",
+          "frac-rules",
+          "italic",
+          "macro-arg",
+          "macro-zero",
+          "sqrt-display",
+          "sqrt-expression"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -46699,19 +47206,27 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-7902699be42c8a8e",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "7"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "decimal",
+          "digits"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -48932,19 +49447,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-8779068734acaece",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "bin",
         "replace": "⋅"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "times"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -53456,19 +53978,39 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-a1fce4363854ff88",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "y"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "bracket",
+          "frac-rules",
+          "letters",
+          "macro-local",
+          "macro-redefine-scope",
+          "negative-space",
+          "nested-super",
+          "quad",
+          "sqrt-script",
+          "style-script",
+          "style-scriptscript",
+          "thin-space",
+          "unary-after-rel",
+          "unary-start"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -53688,19 +54230,52 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-a318c24216defe20",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "bin",
         "replace": "+"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "binary-end",
+          "bold",
+          "bracket",
+          "decimal",
+          "dfrac",
+          "empty-group",
+          "frac-rules",
+          "greek",
+          "greek-caps",
+          "group-script",
+          "group-spacing",
+          "macro-arg",
+          "macro-local",
+          "macro-redefine-scope",
+          "macro-zero",
+          "paren",
+          "plus",
+          "roman",
+          "script-binary",
+          "sqrt-display",
+          "sqrt-expression",
+          "sqrt-script",
+          "style-script",
+          "style-scriptscript",
+          "text",
+          "unary-start",
+          "wide-super"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -57284,19 +57859,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-ba5ec51d07a4ac0e",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "close",
         "replace": ")"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "paren"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -59923,19 +60505,48 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-ca978112ca1bbdca",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "a"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "dfrac",
+          "empty-group",
+          "frac-display",
+          "frac-inline",
+          "frac-nested",
+          "frac-script",
+          "fraction-scripts",
+          "group-script",
+          "group-spacing",
+          "letters",
+          "macro-two-args",
+          "paren",
+          "plus",
+          "punct",
+          "relation",
+          "roman",
+          "script-binary",
+          "sqrt-frac",
+          "style-display",
+          "style-text",
+          "tfrac-display",
+          "times",
+          "wide-super"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -60561,19 +61172,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-cdb4ee2aea69cc6a",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "."
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "decimal"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -60996,19 +61614,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-cfae0d4248f7142f",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "close",
         "replace": "]"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "bracket"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -61112,19 +61737,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-d03502c43d74a30b",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "punct",
         "replace": ","
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "punct"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -61895,19 +62527,40 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-d4735e3a265e16ee",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "2"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "both-scripts",
+          "both-scripts-reverse",
+          "decimal",
+          "digits",
+          "empty-base",
+          "frac-rules",
+          "fraction-scripts",
+          "group-script",
+          "italic",
+          "macro-arg",
+          "macro-nested",
+          "nested-super",
+          "radical-sup",
+          "sqrt-script",
+          "sup"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -62330,19 +62983,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-d6aef031749de4a7",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "Ω"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "greek-caps"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -62707,19 +63367,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-dabd3aff769f07eb",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "rel",
         "replace": "<"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "relation"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -63374,19 +64041,32 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-de7d1b721a1e0632",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "i"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "both-scripts",
+          "both-scripts-reverse",
+          "frac-rules",
+          "fraction-scripts",
+          "italic-scripts",
+          "nested-sub",
+          "sub"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -63635,19 +64315,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-df7e70e5021544f4",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "B"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "italic"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -64969,19 +65656,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-e7f6c011776e8db7",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "6"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "digits"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -65810,19 +66504,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-ef2d127de37b942b",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "5"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "digits"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -66274,19 +66975,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-f1941b975ffcc891",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "Δ"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "greek-caps"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -66680,19 +67388,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-math-f3f3804480e8551a",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "mathord",
         "replace": "β"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "greek"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -70885,19 +71600,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-18ac3e7343f01689",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "d"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -72596,19 +73318,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-2d711642b726b044",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "x"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text-script"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -74017,19 +74746,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-3f79bb7b435b0532",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "e"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -74510,19 +75246,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-454349e422f05297",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "r"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -75844,19 +76587,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-50e721e49c013f00",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "w"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -77236,19 +77986,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-62c66a7a5dd70c31",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "m"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text-script"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -77526,19 +78283,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-65c74c15a686187b",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "o"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -83065,19 +83829,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-aaa9402664f1a41f",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "h"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -83297,19 +84068,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-acac86c0e609ca90",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "l"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {
@@ -85849,19 +86627,26 @@
         "commit": "6ea2dc97188f0cc282e05a9690418ae7fe5457ba"
       },
       "fixtureId": "coverage-symbol-text-ca978112ca1bbdca",
-      "fixtureStatus": "planned",
+      "fixtureStatus": "partially-verified",
       "status": {
-        "semantic": "not-implemented",
-        "geometry": "not-implemented",
-        "mathml": "not-implemented",
-        "native": "not-implemented",
-        "png": "not-implemented",
-        "svg": "not-implemented"
+        "semantic": "partially-verified",
+        "geometry": "partially-verified",
+        "mathml": "partially-verified",
+        "native": "partially-verified",
+        "png": "partially-verified",
+        "svg": "partially-verified"
       },
       "upstream": {
         "font": "main",
         "group": "textord",
         "replace": "a"
+      },
+      "phaseEvidence": {
+        "phase": "P1",
+        "fixtureIds": [
+          "text-script"
+        ],
+        "reason": "These P1 fixtures passed normalized semantics, geometry, MathML and homologous native/PNG/SVG checks under JIT and Native AOT. Other arguments, styles, modes, aliases or interactions of this registration are not claimed complete."
       }
     },
     {

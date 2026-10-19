@@ -2,7 +2,7 @@
 
 English | [中文](agent-handoff.zh-CN.md)
 
-Updated on 2026-10-19 after the [P0 delivery](verification/p0-2026-10-19.md). Continue at P1 rather than repeating P0 or the requirements interview. Sections describing the original design-only round below remain historical context; the P0 record is authoritative for current implementation and evidence.
+Updated on 2026-10-19 after the [P1 delivery](verification/p1-2026-10-19.md). Continue at P2 rather than repeating P0/P1 or the requirements interview. Sections describing the original design-only round below remain historical context; the P1 record is authoritative for current implementation and evidence. The user authorized implementation and one Git commit per completed phase. Git main contains the documentation baseline and P0, followed by the P1 phase commit; there is no remote or publication.
 
 ## 1. Already Determined, Should Not Repeatedly Ask
 
@@ -42,7 +42,7 @@ Advance autonomously on ordinary implementation choices inside a phase. Ask agai
 
 ## 4. First Implementation Task
 
-P0-01 through P0-08 now have implemented tools, probes and selection records, with explicit hardware and measurement limitations in the delivery record. Next execute **P1-01 through P1-06** and its 50-fixture exit. Reuse this established P0 loop:
+P0-01 through P0-08 and P1-01 through P1-06 have implemented tools and real checks. P1 passes 64 valid / 12 invalid fixtures, 202 geometry/MathML scenarios per runtime, actual JIT/AOT exports and AOT WinUI; raster differences remain explicitly classified in the delivery record. Next execute **P2-01 through P2-06** and the category-distributed 300-fixture exit. Read [p1-api.md](p1-api.md), reuse the compact data architecture, and extend rather than replacing it. Current layout scratch arrays still allocate per compile; report these honestly and require comparison evidence for reuse optimizations. Reuse the established loop:
 
 ```text
 Verify upstream
@@ -82,7 +82,7 @@ docs/
 artifacts/  # large runtime artifacts; the ignore policy is defined during project setup
 ```
 
-Runnable `build.ps1`, `verify-reference.ps1`, and native/reference probes now exist; see the P0 delivery for commands. P1 adds actual formula-engine test projects. Every later delivery must keep providing real, reproducibly runnable commands.
+Runnable `build.ps1`, `verify-reference.ps1`, `verify-p1.ps1`, actual engine tests and native/reference probes exist; see the P1 delivery for commands. Every later delivery must keep providing real, reproducibly runnable commands.
 
 ## 5. Technical Risks and Solutions
 

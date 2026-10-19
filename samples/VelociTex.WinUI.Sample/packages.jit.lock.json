@@ -68,8 +68,23 @@
           "Microsoft.WindowsAppSDK.Base": "2.0.4"
         }
       },
-      "velocitex.rendering.direct2d": {
+      "velocitex.core": {
         "type": "Project"
+      },
+      "velocitex.rendering.direct2d": {
+        "type": "Project",
+        "dependencies": {
+          "VelociTex.Core": "[1.0.0, )"
+        }
+      },
+      "velocitex.winui": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Windows.CsWinRT": "[2.3.1, )",
+          "Microsoft.Windows.SDK.BuildTools": "[10.0.28000.2705, )",
+          "Microsoft.WindowsAppSDK.WinUI": "[2.3.9, )",
+          "VelociTex.Rendering.Direct2D": "[1.0.0, )"
+        }
       }
     },
     "net10.0-windows10.0.26100/win-x64": {

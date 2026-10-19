@@ -8,6 +8,7 @@ internal static unsafe partial class NativeMethods
 {
     [LibraryImport("ole32.dll")] internal static partial int CoInitializeEx(nint reserved, uint flags);
     [LibraryImport("ole32.dll")] internal static partial void CoUninitialize();
+    [LibraryImport("ole32.dll")] internal static partial int CreateStreamOnHGlobal(nint memory,int deleteOnRelease,nint* stream);
     [LibraryImport("ole32.dll")] internal static partial int CoCreateInstance(Guid* clsid, nint outer, uint context, Guid* iid, nint* result);
     [LibraryImport("dwrite.dll")] internal static partial int DWriteCreateFactory(uint factoryType, Guid* iid, nint* factory);
     [LibraryImport("d2d1.dll")] internal static partial int D2D1CreateFactory(uint factoryType, Guid* iid, nint options, nint* factory);

@@ -4,7 +4,7 @@ English | [中文](README.zh-CN.md)
 
 A C# math typesetting and rendering library for native Windows apps. It aims to reproduce the **core math typesetting of KaTeX 0.19.0** on WinUI 3, export PNG / SVG / MathML, and replace the formula display path of `../oh-my-study/` as the first priority.
 
-**Status as of 2026-10-19: P0 reference tooling and the real native/AOT WinUI feasibility loop are implemented and verified.** There is no formula parsing/layout engine or installable NuGet package yet, and the performance targets are unverified. The hard-coded probe contributes no formula compatibility coverage. See the [P0 delivery record](docs/verification/p0-2026-10-19.md) for evidence and remaining limits.
+**Status as of 2026-10-19: P1 implements the basic formula engine and native / PNG / SVG / MathML pipeline.** The 64 valid and 12 invalid fixtures run under JIT and real Native AOT, with 202 geometric/output scenarios and real WinUI captures. This is a basic subset; integral/matrix support, full compatibility, local NuGet consumption and old-CPU performance acceptance remain future work. See the [P1 delivery record](docs/verification/p1-2026-10-19.md), including the explicitly reviewed raster differences, and the [API/ownership guide](docs/p1-api.md).
 
 ## Confirmed Direction
 
@@ -30,13 +30,14 @@ A C# math typesetting and rendering library for native Windows apps. It aims to 
 | [Formula Seed Set](docs/examples/formulas.json) | Calculus, matrices, styling, macros, boundary and error cases |
 | [Document Verification Record](docs/verification/design-review.2026-10-19.md) ([中文](docs/verification/design-review.2026-10-19.zh-CN.md)) | What was actually checked in this round: docs, upstream digests, formula samples |
 
-Suggested reading order: handover → requirements → architecture → roadmap → validation → migration. The next step is P1: compact semantics, basic formula layout, immutable results, and four outputs from the same result.
+Suggested reading order: handover → requirements → architecture → roadmap → validation → migration. Next is P2: common math, wider compatibility fixtures, controls and an integrable local pre-release package.
 
 ## Development verification
 
 ```powershell
 ./verify-reference.ps1 -FullMatrix
 ./build.ps1 -Target All -Locked
+./verify-p1.ps1
 python tools/VelociTex.Native.Probe/verify-native.py artifacts/native
 ```
 

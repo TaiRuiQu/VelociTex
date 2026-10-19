@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/VelociTex.Rendering.Direct2D/VelociTex.Rendering.Direct2D.csproj" />
-    <Compile Include="../../src/VelociTex.Core/Generated/FontData.g.cs" Link="Generated/FontData.g.cs" />
     <Content Include="../../src/VelociTex.Core/Resources/Fonts/*.ttf" Link="Fonts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
