@@ -14,14 +14,15 @@ public sealed class MathWorkspace : IDisposable
     internal readonly Dictionary<string, MacroDefinition> Definitions = new(StringComparer.Ordinal);
     internal readonly List<MacroUndo> Undo = new(32);
     internal readonly List<int> Scopes = new(32);
+    internal readonly List<byte> ScopeKinds = new(32);
     internal bool Enter() => Interlocked.CompareExchange(ref _busy, 1, 0) == 0;
     internal void Leave()
     {
         Pending.Clear(); Expanded.Clear(); Arguments.Clear(); Nodes.Clear(); Tasks.Clear();
-        Definitions.Clear(); Undo.Clear(); Scopes.Clear();
+        Definitions.Clear(); Undo.Clear(); Scopes.Clear(); ScopeKinds.Clear();
         // Large requests cannot permanently retain their high-water buffers.
         Trim(Pending, 4096); Trim(Expanded, 4096); Trim(Arguments, 4096); Trim(Nodes, 4096); Trim(Tasks, 1024);
-        Trim(Undo, 256); Trim(Scopes, 128);
+        Trim(Undo, 256); Trim(Scopes, 128); Trim(ScopeKinds, 128);
         if (Definitions.EnsureCapacity(0) > 1024) Definitions.TrimExcess(1024);
         Volatile.Write(ref _busy, 0);
     }
@@ -35,7 +36,7 @@ public sealed class MathWorkspace : IDisposable
             Pending.Clear(); Pending.Capacity = 0; Expanded.Clear(); Expanded.Capacity = 0;
             Arguments.Clear(); Arguments.Capacity = 0; Nodes.Clear(); Nodes.Capacity = 0;
             Tasks.Clear(); Tasks.Capacity = 0; Definitions.Clear(); Definitions.TrimExcess();
-            Undo.Clear(); Undo.Capacity = 0; Scopes.Clear(); Scopes.Capacity = 0;
+            Undo.Clear(); Undo.Capacity = 0; Scopes.Clear(); Scopes.Capacity = 0; ScopeKinds.Clear(); ScopeKinds.Capacity = 0;
         }
         finally { Volatile.Write(ref _busy, 0); }
     }
@@ -44,6 +45,8 @@ public sealed class MathWorkspace : IDisposable
 /// <summary>Serial, explicit macro sharing. Successful calls commit; errors and cancellation roll back.</summary>
 public sealed class MacroSession
 {
+    /// <summary>Creates an isolated empty serial macro session.</summary>
+    public MacroSession() { }
     private int _busy;
     private Dictionary<string, MacroDefinition> _definitions = new(StringComparer.Ordinal);
     internal bool Enter() => Interlocked.CompareExchange(ref _busy, 1, 0) == 0;
@@ -65,10 +68,10 @@ internal readonly record struct LexToken(string Source, int Start, int Length, S
     internal ReadOnlySpan<char> Text => Source.AsSpan(Start, Length);
     internal bool Is(ReadOnlySpan<char> text) => Text.SequenceEqual(text);
 }
-internal readonly record struct MacroDefinition(LexToken[] Body, int Arguments, bool BuiltIn = false);
+internal readonly record struct MacroDefinition(LexToken[] Body, int Arguments, bool BuiltIn = false, LexToken[][]? Delimiters = null);
 internal readonly record struct MacroUndo(string Name, bool Existed, MacroDefinition Previous);
-internal enum ParseTaskKind { Sequence, AttachSequence, Argument, Atom, SetChild, Return }
-internal readonly record struct ParseTask(ParseTaskKind Kind, int Node = -1, int Last = -1, int Previous = -1, int Slot = 0, bool Closing = false, bool Text = false, MathFont Font = MathFont.Default, int Depth = 0);
+internal enum ParseTaskKind { Sequence, AttachSequence, Argument, Atom, SetChild, Return, FinishDelimited, MatrixNextCell }
+internal readonly record struct ParseTask(ParseTaskKind Kind, int Node = -1, int Last = -1, int Previous = -1, int Slot = 0, bool Closing = false, bool Text = false, MathFont Font = MathFont.Default, int Depth = 0, byte Stop = 0);
 
 internal sealed class CompileFailure(MathDiagnostic diagnostic) : Exception(diagnostic.Message)
 {

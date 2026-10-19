@@ -6,7 +6,7 @@ using static VelociTex.Rendering.Direct2D.NativeMethods;
 namespace VelociTex.Rendering.Direct2D;
 
 /// <summary>Exercises real DirectWrite inline-object layout and static unmanaged callbacks. Hard-coded metrics only.</summary>
-public static unsafe class NativeInlineBaselineProbe
+internal static unsafe class NativeInlineBaselineProbe
 {
     /// <summary>Records actual wide and narrow line, glyph, and inline-object baseline positions.</summary>
     public static void WriteReport(string path)
@@ -155,4 +155,4 @@ public static unsafe class NativeInlineBaselineProbe
 }
 
 /// <summary>Measured logical paragraph bounds returned by the P0 DirectWrite host probe.</summary>
-public readonly record struct InlineParagraphMetrics(float Width,float Height,float FirstBaseline,int LineCount);
+internal readonly record struct InlineParagraphMetrics(float Width,float Height,float FirstBaseline,int LineCount);

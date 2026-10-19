@@ -3,6 +3,7 @@ namespace VelociTex;
 internal static class MacroExpander
 {
     private static readonly Dictionary<string, MacroDefinition> BuiltIns = CreateBuiltIns();
+    private static readonly string CellScopeMarker = new('\0', 1);
 
     private static Dictionary<string, MacroDefinition> CreateBuiltIns()
     {
@@ -42,28 +43,34 @@ internal static class MacroExpander
         {
             cancellationToken.ThrowIfCancellationRequested();
             var token = Pop(w);
+            if (ReferenceEquals(token.Source, CellScopeMarker) && token.Length == 0) { OpenScope(w, options, token, 3); continue; }
             MacroDefinition macro = default;
             var isMacro = token.Text.Length > 1 && token.Text[0] == '\\' && w.Definitions.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(token.Text, out macro);
             var customOverride = isMacro && !macro.BuiltIn;
             if (!customOverride && (token.Is("\\def") || token.Is("\\gdef"))) { Define(w, options, token.Is("\\gdef"), token, cancellationToken); continue; }
             if (!customOverride && (token.Is("\\newcommand") || token.Is("\\renewcommand") || token.Is("\\providecommand")))
             { NewCommand(w, options, token, cancellationToken); continue; }
-            if (token.Is("{")) { if (w.Scopes.Count >= options.MaxNesting) Fail(MathDiagnosticCode.NestingLimit, token, "Group nesting budget exceeded."); w.Scopes.Add(w.Undo.Count); }
-            else if (token.Is("}") && w.Scopes.Count != 0)
+            if (!customOverride && (token.Is("\\begingroup") || token.Is("\\endgroup")))
             {
-                var marker = w.Scopes[^1]; w.Scopes.RemoveAt(w.Scopes.Count - 1);
-                for (var i = w.Undo.Count - 1; i >= marker; i--)
-                { var undo = w.Undo[i]; if (undo.Existed) w.Definitions[undo.Name] = undo.Previous; else w.Definitions.Remove(undo.Name); }
-                w.Undo.RemoveRange(marker, w.Undo.Count - marker);
+                if (token.Is("\\begingroup")) OpenScope(w, options, token, 4);
+                else { if (w.ScopeKinds.Count == 0 || w.ScopeKinds[^1] != 4) Fail(MathDiagnosticCode.UnexpectedGroupEnd, token, "Unmatched endgroup."); CloseScope(w); }
             }
+            if (token.Is("{")) OpenScope(w, options, token, 1);
+            else if (token.Is("}") && w.Scopes.Count != 0 && w.ScopeKinds[^1] == 1) CloseScope(w);
             if (isMacro && !(macro.BuiltIn && IsDirectSpacing(token.Text)))
             {
                 if (++expansions > options.MaxExpansion) Fail(MathDiagnosticCode.ExpansionLimit, token, "Macro expansion budget exceeded.");
-                for (var a = 0; a < macro.Arguments; a++) arguments[a] = ConsumeArgument(w, options, token, cancellationToken);
+                if (macro.Delimiters is not null)
+                {
+                    foreach (var prefix in macro.Delimiters[0])
+                        if (w.Pending.Count == 0 || !Pop(w).Text.SequenceEqual(prefix.Text)) Fail(MathDiagnosticCode.MissingArgument, token, "Macro invocation does not match its parameter prefix.");
+                }
+                for (var a = 0; a < macro.Arguments; a++) arguments[a] = macro.Delimiters is not null && macro.Delimiters[a + 1].Length != 0 ? ConsumeDelimitedArgument(w, options, token, macro.Delimiters[a + 1], cancellationToken) : ConsumeArgument(w, options, token, cancellationToken);
                 for (var i = macro.Body.Length - 1; i >= 0; i--)
                 {
                     var part = macro.Body[i];
-                    if (i > 0 && macro.Body[i - 1].Is("#") && part.Text.Length == 1 && part.Text[0] is >= '1' and <= '9')
+                    if (i > 0 && macro.Body[i - 1].Is("#") && part.Is("#")) { Push(w, part with { Origin = token.Origin }, options.MaxTokens); i--; }
+                    else if (IsParameterReference(macro.Body, i))
                     {
                         var index = part.Text[0] - '1';
                         if (index >= macro.Arguments) Fail(MathDiagnosticCode.InvalidMacroDefinition, token, "Macro parameter is outside its declared arity.");
@@ -75,15 +82,43 @@ internal static class MacroExpander
                 }
                 continue;
             }
+            if (token.Is("\\begin"))
+            {
+                OpenScope(w, options, token, 2);
+                // Insert a scope event after the literal environment-name group.
+                // It owns no source text and is never exposed to the parser.
+                var depth = 0;
+                for (var i = w.Pending.Count - 1; i >= 0; i--)
+                {
+                    if (w.Pending[i].Is("{")) depth++;
+                    else if (w.Pending[i].Is("}") && --depth == 0)
+                    { if (w.Pending.Count >= options.MaxTokens) Fail(MathDiagnosticCode.TokenLimit, token, "Pending token budget exceeded."); w.Pending.Insert(i, new(CellScopeMarker, 0, 0, token.Origin)); break; }
+                }
+            }
+            else if (token.Is("\\end"))
+            { if (w.ScopeKinds.Count != 0 && w.ScopeKinds[^1] == 3) CloseScope(w); if (w.ScopeKinds.Count != 0 && w.ScopeKinds[^1] == 2) CloseScope(w); }
+            else if ((token.Is("&") || token.Is("\\\\") || token.Is("\\cr")) && w.ScopeKinds.Count != 0 && w.ScopeKinds[^1] == 3)
+            { CloseScope(w); OpenScope(w, options, token, 3); }
             if (w.Expanded.Count >= options.MaxTokens) Fail(MathDiagnosticCode.TokenLimit, token, "Expanded token budget exceeded.");
             w.Expanded.Add(token);
         }
+        if (w.ScopeKinds.Contains((byte)4)) throw new CompileFailure(new(MathDiagnosticCode.UnclosedGroup, new(source.Length, 0), "Unclosed begingroup."));
         ValidatePersistentBudget(w.Definitions, options);
+    }
+
+    private static void OpenScope(MathWorkspace w, in MathOptions options, LexToken token, byte kind)
+    { if (w.Scopes.Count >= options.MaxNesting) Fail(MathDiagnosticCode.NestingLimit, token, "Group nesting budget exceeded."); w.Scopes.Add(w.Undo.Count); w.ScopeKinds.Add(kind); }
+    private static void CloseScope(MathWorkspace w)
+    {
+        var marker = w.Scopes[^1]; w.Scopes.RemoveAt(w.Scopes.Count - 1); w.ScopeKinds.RemoveAt(w.ScopeKinds.Count - 1);
+        for (var i = w.Undo.Count - 1; i >= marker; i--)
+        { var undo = w.Undo[i]; if (undo.Existed) w.Definitions[undo.Name] = undo.Previous; else w.Definitions.Remove(undo.Name); }
+        w.Undo.RemoveRange(marker, w.Undo.Count - marker);
     }
 
     // These stable built-in string macros have direct equivalent P1 opcodes.
     // User overrides retain ordinary macro behavior.
-    private static bool IsDirectSpacing(ReadOnlySpan<char> name) => name is "\\," or "\\:" or "\\;" or "\\!" or "\\quad" or "\\qquad";
+    private static bool IsDirectSpacing(ReadOnlySpan<char> name) => name is "\\," or "\\:" or "\\;" or "\\!" or "\\quad" or "\\qquad" or "\\operatorname" or "\\liminf" or "\\limsup" or "\\bm";
 
     private static void ValidatePersistentBudget(Dictionary<string, MacroDefinition> definitions, in MathOptions options)
     {
@@ -93,6 +128,8 @@ internal static class MacroExpander
             if (definition.BuiltIn) continue;
             units += name.Length; names++; tokens += definition.Body.Length;
             foreach (var token in definition.Body) units += token.Length;
+            if (definition.Delimiters is not null) foreach (var delimiter in definition.Delimiters)
+            { tokens += delimiter.Length; foreach (var token in delimiter) units += token.Length; }
             if (units > options.MaxInputLength) throw new CompileFailure(new(MathDiagnosticCode.InputLimit, new(0, 0), "Persistent macro source budget exceeded."));
             if (tokens > options.MaxTokens || names > options.MaxTokens) throw new CompileFailure(new(MathDiagnosticCode.TokenLimit, new(0, 0), "Persistent macro token budget exceeded."));
         }
@@ -103,17 +140,24 @@ internal static class MacroExpander
         SkipSpaces(w);
         if (w.Pending.Count == 0) Fail(MathDiagnosticCode.InvalidMacroDefinition, command, "Expected a macro name.");
         var nameToken = Pop(w); var name = nameToken.Text.ToString(); ValidateName(name, nameToken.Origin);
-        var count = 0;
+        var count = 0; var delimiters = new List<List<LexToken>> { new() }; LexToken? insert = null;
         while (w.Pending.Count != 0 && !w.Pending[^1].Is("{"))
         {
             var hash = Pop(w);
-            if (!hash.Is("#") || w.Pending.Count == 0) Fail(MathDiagnosticCode.InvalidMacroDefinition, hash, "Only consecutive undelimited macro parameters are supported in P1.");
+            if (!hash.Is("#")) { delimiters[count].Add(hash); continue; }
+            if (w.Pending.Count == 0) Fail(MathDiagnosticCode.InvalidMacroDefinition, hash, "Expected a macro parameter number.");
+            if (w.Pending[^1].Is("{")) { insert = w.Pending[^1]; delimiters[count].Add(insert.Value); break; }
             var number = Pop(w);
             if (number.Text.Length != 1 || number.Text[0] != '1' + count || ++count > 9) Fail(MathDiagnosticCode.InvalidMacroDefinition, number, "Expected consecutive parameters #1 through #9.");
+            delimiters.Add(new());
         }
         var body = ReadDefinitionBody(w, options, command, cancellationToken);
+        if (insert is not null) body.Add(insert.Value);
         if (CountArguments(body) > count) Fail(MathDiagnosticCode.InvalidMacroDefinition, command, "Replacement uses an undeclared macro parameter.");
-        Assign(w, name, new(Compact(body, command.Origin, options.MaxTokens), count), global);
+        LexToken[][]? compactDelimiters = null;
+        if (delimiters.Any(d => d.Count != 0))
+        { compactDelimiters = new LexToken[delimiters.Count][]; for (var i = 0; i < delimiters.Count; i++) compactDelimiters[i] = Compact(delimiters[i], command.Origin, options.MaxTokens); }
+        Assign(w, name, new(Compact(body, command.Origin, options.MaxTokens), count, Delimiters: compactDelimiters), global);
     }
     private static void NewCommand(MathWorkspace w, in MathOptions options, LexToken command, CancellationToken cancellationToken)
     {
@@ -153,6 +197,29 @@ internal static class MacroExpander
         }
         Fail(MathDiagnosticCode.UnclosedGroup, command, "Unclosed macro argument."); return default;
     }
+    private static (int, int) ConsumeDelimitedArgument(MathWorkspace w, in MathOptions options, LexToken command, LexToken[] delimiter, CancellationToken cancellationToken)
+    {
+        var start = w.Arguments.Count; var depth = 0; var match = 0;
+        while (w.Pending.Count != 0)
+        {
+            cancellationToken.ThrowIfCancellationRequested(); var token = Pop(w);
+            if (w.Arguments.Count >= options.MaxTokens) Fail(MathDiagnosticCode.TokenLimit, token, "Delimited argument token budget exceeded.");
+            w.Arguments.Add(token);
+            if (token.Is("{")) { if (++depth > options.MaxNesting) Fail(MathDiagnosticCode.NestingLimit, token, "Delimited argument nesting budget exceeded."); }
+            else if (token.Is("}") && --depth < 0) Fail(MathDiagnosticCode.UnexpectedGroupEnd, token, "Unexpected closing brace in a delimited macro argument.");
+            if ((depth == 0 || depth == 1 && delimiter[match].Is("{")) && token.Text.SequenceEqual(delimiter[match].Text))
+            {
+                if (++match == delimiter.Length)
+                {
+                    w.Arguments.RemoveRange(w.Arguments.Count - match, match); var length = w.Arguments.Count - start;
+                    if (length >= 2 && w.Arguments[start].Is("{") && w.Arguments[^1].Is("}")) return (start + 1, length - 2);
+                    return (start, length);
+                }
+            }
+            else match = 0;
+        }
+        Fail(MathDiagnosticCode.MissingArgument, command, "Missing delimited macro argument terminator."); return default;
+    }
     private static void Assign(MathWorkspace w, string name, MacroDefinition value, bool global)
     {
         if (!global && w.Scopes.Count != 0) { var exists = w.Definitions.TryGetValue(name, out var old); w.Undo.Add(new(name, exists, old)); }
@@ -164,7 +231,21 @@ internal static class MacroExpander
         w.Definitions[name] = value;
     }
     private static int CountArguments(IReadOnlyList<LexToken> body)
-    { var count = 0; for (var i = 1; i < body.Count; i++) if (body[i - 1].Is("#") && body[i].Text.Length == 1 && body[i].Text[0] is >= '1' and <= '9') count = Math.Max(count, body[i].Text[0] - '0'); return count; }
+    {
+        var count = 0;
+        for (var i = 0; i < body.Count; i++)
+        {
+            if (!body[i].Is("#") || i + 1 >= body.Count) continue;
+            if (body[i + 1].Is("#")) { i++; continue; }
+            if (body[i + 1].Text.Length == 1 && body[i + 1].Text[0] is >= '1' and <= '9') count = Math.Max(count, body[++i].Text[0] - '0');
+        }
+        return count;
+    }
+    private static bool IsParameterReference(LexToken[] body, int index)
+    {
+        if (index == 0 || body[index].Text.Length != 1 || body[index].Text[0] is < '1' or > '9') return false;
+        var hashes = 0; for (var i = index - 1; i >= 0 && body[i].Is("#"); i--) hashes++; return (hashes & 1) != 0;
+    }
     private static LexToken[] Compact(IReadOnlyList<LexToken> body, SourceRange origin, int maximum)
     {
         // A persistent session must not pin the complete formula for a tiny definition.

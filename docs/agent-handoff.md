@@ -2,7 +2,7 @@
 
 English | [中文](agent-handoff.zh-CN.md)
 
-Updated on 2026-10-19 after the [P1 delivery](verification/p1-2026-10-19.md). Continue at P2 rather than repeating P0/P1 or the requirements interview. Sections describing the original design-only round below remain historical context; the P1 record is authoritative for current implementation and evidence. The user authorized implementation and one Git commit per completed phase. Git main contains the documentation baseline and P0, followed by the P1 phase commit; there is no remote or publication.
+Updated on 2026-10-19 after the [P2 delivery](verification/p2-2026-10-19.md). The user explicitly requested P2 through P5 and one Git commit per completed phase. Continue with P3 downstream migration and P4 full core compatibility; P5 is still pending their real acceptance. P0/P1 and the requirements interview must not be repeated. Sections describing the original design-only round below are historical, not current status. P2 has local preview packages, 307 valid/31 invalid inputs, 491 JIT/AOT hard differential scenarios, 1473 identical exports and real isolated package consumers. Full compatibility, old CPU, SourceLink and publication remain unverified. The downstream working tree already contains user changes; preserve them and save touched baselines before editing. No remote or external publication is authorized.
 
 ## 1. Already Determined, Should Not Repeatedly Ask
 
@@ -42,7 +42,7 @@ Advance autonomously on ordinary implementation choices inside a phase. Ask agai
 
 ## 4. First Implementation Task
 
-P0-01 through P0-08 and P1-01 through P1-06 have implemented tools and real checks. P1 passes 64 valid / 12 invalid fixtures, 202 geometry/MathML scenarios per runtime, actual JIT/AOT exports and AOT WinUI; raster differences remain explicitly classified in the delivery record. Next execute **P2-01 through P2-06** and the category-distributed 300-fixture exit. Read [p1-api.md](p1-api.md), reuse the compact data architecture, and extend rather than replacing it. Current layout scratch arrays still allocate per compile; report these honestly and require comparison evidence for reuse optimizations. Reuse the established loop:
+P0 through P2 have implemented tools and real checks. P2 passes 307 valid / 31 invalid fixtures, 491 geometry/MathML scenarios per runtime, actual JIT/AOT exports, and real package-only headless and WinUI AOT consumers. Raster exceptions remain explicitly classified. Next execute **P3-01 through P3-05** while the independent **P4 remaining-core work** advances; then close all real P5 gates. Read the P2 record and package contract, extend the compact architecture, and preserve existing downstream user edits. Layout scratch arrays and drawing decorations still allocate per compile; report these honestly and require comparison evidence for reuse optimizations. Reuse the established loop:
 
 ```text
 Verify upstream

@@ -7,6 +7,12 @@ namespace VelociTex.Rendering.Direct2D;
 
 public sealed unsafe partial class WindowsMathRenderer
 {
+    /// <summary>Writes a transparent PNG file, replacing existing contents and creating its parent directory.</summary>
+    /// <param name="document">A complete compilation result.</param>
+    /// <param name="path">Destination file path.</param>
+    /// <param name="scale">Pixels per DIP, greater than zero and at most eight.</param>
+    /// <param name="padding">Transparent margin in DIP, between zero and 1,024.</param>
+    /// <param name="color">Optional foreground; the standard light-theme foreground is used by default.</param>
     public void WritePng(MathDocument document,string path,double scale=1,double padding=4,MathDrawingColor? color=null)
     {
         CheckThread();ArgumentNullException.ThrowIfNull(document);ArgumentException.ThrowIfNullOrWhiteSpace(path);
@@ -15,6 +21,13 @@ public sealed unsafe partial class WindowsMathRenderer
     }
 
     /// <summary>Writes transparent PNG bytes to any writable stream without closing it.</summary>
+    /// <remarks>The native bitmap is limited to 8,192 pixels per side and 4,194,304 pixels total. The original source and layout remain unchanged.</remarks>
+    /// <param name="document">A complete compilation result.</param>
+    /// <param name="output">Caller-owned writable stream; seeking is not required.</param>
+    /// <param name="scale">Pixels per DIP, greater than zero and at most eight.</param>
+    /// <param name="padding">Transparent margin in DIP, between zero and 1,024.</param>
+    /// <param name="color">Optional foreground; the standard light-theme foreground is used by default.</param>
+    /// <exception cref="ArgumentOutOfRangeException">The scale, padding, color or output image dimensions exceed supported bounds.</exception>
     public void WritePng(MathDocument document,Stream output,double scale=1,double padding=4,MathDrawingColor? color=null)
     {
         CheckThread();ArgumentNullException.ThrowIfNull(document);ArgumentNullException.ThrowIfNull(output);
@@ -39,6 +52,11 @@ public sealed unsafe partial class WindowsMathRenderer
         finally{Release(ref target);Release(ref bitmap);Release(ref wic);}
     }
 
+    /// <summary>Writes a self-contained SVG file, replacing existing contents and creating its parent directory.</summary>
+    /// <param name="document">A complete compilation result.</param>
+    /// <param name="path">Destination file path.</param>
+    /// <param name="padding">Transparent margin in DIP, between zero and 1,024.</param>
+    /// <param name="color">Optional foreground; the standard light-theme foreground is used by default.</param>
     public void WriteSvg(MathDocument document,string path,double padding=4,MathDrawingColor? color=null)
     {
         CheckThread();ArgumentNullException.ThrowIfNull(document);ArgumentException.ThrowIfNullOrWhiteSpace(path);
@@ -47,6 +65,13 @@ public sealed unsafe partial class WindowsMathRenderer
     }
 
     /// <summary>Writes self-contained SVG paths to any writable stream without closing it.</summary>
+    /// <remarks>Private glyph outlines and paths are embedded; no font installation or external resource is required to view the file.</remarks>
+    /// <param name="document">A complete compilation result.</param>
+    /// <param name="output">Caller-owned writable stream; seeking is not required.</param>
+    /// <param name="padding">Transparent margin in DIP, between zero and 1,024.</param>
+    /// <param name="color">Optional foreground; the standard light-theme foreground is used by default.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Padding or color exceeds supported bounds.</exception>
+    /// <exception cref="InvalidOperationException">Document export geometry is invalid or exceeds the 32,768 DIP boundary.</exception>
     public void WriteSvg(MathDocument document,Stream output,double padding=4,MathDrawingColor? color=null)
     {
         CheckThread();ArgumentNullException.ThrowIfNull(document);ArgumentNullException.ThrowIfNull(output);

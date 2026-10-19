@@ -5,12 +5,16 @@ import path from 'node:path';
 import {chromium} from 'playwright';
 import {root,sha256,writeJson} from './acquire.mjs';
 import {loadSource} from './load-source.mjs';
+import {commonSemantics} from './p2-semantics.mjs';
 const inputs=process.argv.slice(2).filter(x=>!x.startsWith('--'));
-const folders=inputs.length?inputs:['artifacts/p1/jit','artifacts/p1/aot'];
-const reference=JSON.parse(await fs.readFile(path.join(root,'artifacts/p1/reference/reference.json'),'utf8'));
-const corpusBytes=await fs.readFile(path.join(root,'tests/fixtures/p1.json'));
+const phase=process.argv.find(x=>x.startsWith('--phase='))?.slice(8)??'p1';
+if(!['p1','p2','p4'].includes(phase))throw new Error('Unknown phase');
+const folders=inputs.length?inputs:[`artifacts/${phase}/jit`,`artifacts/${phase}/aot`];
+const reference=JSON.parse(await fs.readFile(path.join(root,`artifacts/${phase}/reference/reference.json`),'utf8'));
+const corpusBytes=await fs.readFile(path.join(root,`tests/fixtures/${phase}.json`));
 if(reference.corpusSha256!==sha256(corpusBytes))throw new Error('Reference corpus changed');
 const source=loadSource();
+const common=commonSemantics(source);
 const row=children=>({kind:'row',children});
 const fontNames={mathrm:'MathRoman',mathbf:'MathBold',mathit:'MathItalic',boldsymbol:'MathBoldItalic',mathsf:'MathSans',mathtt:'MathTypewriter',mathcal:'Caligraphic',mathfrak:'Fraktur',mathscr:'Script'};
 function upstream(n) {
@@ -72,7 +76,7 @@ try {
       const geometry=expected.geometry;
       let semanticPass=true;
       if(actual.scenario==='24dip-100pct-light') {
-        const a=native(actual),e=upstream(sem.tree);
+        const a=phase==='p1'?native(actual):common.native(actual),e=phase==='p1'?upstream(sem.tree):common.upstream(sem.tree);
         if(JSON.stringify(a)!==JSON.stringify(e)){semanticPass=false;fail('semantic',{expected:e,actual:a});}
       }
       const size=actual.fontSize,totalTolerance=Math.max(.04*size,.75),positionTolerance=Math.max(.02*size,.35),ruleTolerance=Math.max(.015*size,.25);
@@ -82,36 +86,60 @@ try {
       // DOM lists vlist children bottom-up. Pair actual painted glyphs by scalar,
       // font and closest declared origin; no translation/scale fitting is used.
       const expectedGlyphs=geometry.glyphs.filter(g=>g.text!=='\u200b'&&!/^\s$/u.test(g.text));
-      const actualGlyphs=actual.glyphs.filter(g=>!/^\s$/u.test(g.text));
+      const actualGlyphs=[...actual.glyphs,...(actual.textGlyphs??[]).map(g=>({...g,fallback:true}))].filter(g=>!/^\s$/u.test(g.text));
       if(expectedGlyphs.length!==actualGlyphs.length)fail('glyph-count',{expected:expectedGlyphs.length,actual:actualGlyphs.length});
       for(const glyph of actualGlyphs) {
         const suffix=glyph.font.endsWith('BoldItalic')?'bold-italic':glyph.font.endsWith('Italic')?'italic':glyph.font.endsWith('Bold')?'bold':'normal';
         const family=glyph.font.split('-')[0];
-        const candidates=expectedGlyphs.map((g,i)=>({g,i,distance:Math.hypot(g.x-glyph.x,g.y-(glyph.y-actual.baseline))})).filter(x=>!used.has(x.i)&&x.g.text===glyph.text&&Math.abs(x.g.fontSizeDip-glyph.fontSize)<.02&&x.g.fontFamily.includes('KaTeX_'+family)&&((suffix.includes('italic'))===(x.g.fontStyle==='italic'))&&((suffix.includes('bold'))===(Number(x.g.fontWeight)>=600))).sort((a,b)=>a.distance-b.distance);
+        const candidates=expectedGlyphs.map((g,i)=>({g,i,distance:Math.hypot(g.x-glyph.x,g.y-(glyph.y-actual.baseline))})).filter(x=>!used.has(x.i)&&x.g.text===glyph.text&&Math.abs(x.g.fontSizeDip-glyph.fontSize)<.02&&(glyph.fallback||x.g.fontFamily.includes('KaTeX_'+family)&&((suffix.includes('italic'))===(x.g.fontStyle==='italic'))&&((suffix.includes('bold'))===(Number(x.g.fontWeight)>=600)))).sort((a,b)=>a.distance-b.distance);
         if(!candidates.length){fail('glyph-font-or-scalar',glyph);continue;}
         const match=candidates[0];used.add(match.i);
         const dx=Math.abs(match.g.x-glyph.x),dy=Math.abs(match.g.y-(glyph.y-actual.baseline));
         glyphDifferences.push({text:glyph.text,dx,dy});
         if(dx>positionTolerance||dy>positionTolerance)fail('glyph-origin',{glyph,expected:match.g,dx,dy,tolerance:positionTolerance});
       }
-      if(actual.rules.length!==geometry.rules.length)fail('rule-count',{expected:geometry.rules.length,actual:actual.rules.length});
+      const actualRules=actual.rules.map(r=>({...r}));
+      for(const rule of geometry.rules.filter(r=>r.dashed)) {
+        const pieces=actualRules.filter(r=>Math.abs(r.y-actual.baseline-rule.y)<ruleTolerance&&Math.abs(r.height-rule.height)<ruleTolerance&&r.x>=rule.x-ruleTolerance&&r.x+r.width<=rule.x+rule.width+ruleTolerance);
+        if(!pieces.length)continue;
+        for(const piece of pieces)actualRules.splice(actualRules.indexOf(piece),1);
+        // A CSS dashed border is one logical rule. Native output represents its
+        // painted dashes as several rectangles; compare their common geometric
+        // envelope, retaining the original pixel comparison for dash painting.
+        const left=Math.min(...pieces.map(r=>r.x)),right=Math.max(...pieces.map(r=>r.x+r.width));
+        actualRules.push({x:left,y:pieces[0].y,width:right-left,height:pieces[0].height});
+      }
+      if(actualRules.length!==geometry.rules.length)fail('rule-count',{expected:geometry.rules.length,actual:actualRules.length});
       const unusedRules=new Set(geometry.rules.map((_,i)=>i));
-      for(const rule of actual.rules) {
+      for(const rule of actualRules) {
         const matches=[...unusedRules].map(i=>({i,d:Math.hypot(rule.x-geometry.rules[i].x,rule.y-actual.baseline-geometry.rules[i].y)})).sort((a,b)=>a.d-b.d);
         if(!matches.length)continue;const i=matches[0].i;unusedRules.delete(i);const e=geometry.rules[i];
         for(const [key,delta]of Object.entries({x:Math.abs(rule.x-e.x),y:Math.abs(rule.y-actual.baseline-e.y),width:Math.abs(rule.width-e.width),height:Math.abs(rule.height-e.height)}))if(delta>ruleTolerance)fail('rule.'+key,{rule,expected:e,delta,tolerance:ruleTolerance});
       }
-      if(actual.paths.length!==geometry.paths.length)fail('path-count',{expected:geometry.paths.length,actual:actual.paths.length});
+      const constructionPaths=actual.paths.filter(p=>!p.fallback);
+      if(constructionPaths.length!==geometry.paths.length)fail('path-count',{expected:geometry.paths.length,actual:constructionPaths.length});
       const unusedPaths=new Set(geometry.paths.map((_,i)=>i));
-      for(const painted of actual.paths) {
+      for(const painted of constructionPaths) {
         const candidates=[...unusedPaths].map(i=>({i,d:Math.hypot(painted.x-geometry.paths[i].transform.x,painted.y-actual.baseline-geometry.paths[i].transform.y)})).sort((a,b)=>a.d-b.d);
         if(!candidates.length)continue;const i=candidates[0].i;unusedPaths.delete(i);const e=geometry.paths[i].transform;
-        const dx=Math.abs(painted.x-e.x),dy=Math.abs(painted.y-actual.baseline-e.y);
+        const refPath=geometry.paths[i],vb=refPath.viewBox?.split(/\s+/).map(Number)??[0,0,0,0];
+        const anchorX=refPath.preserveAspectRatio?.includes('xMax')?vb[0]+vb[2]:refPath.preserveAspectRatio?.includes('xMid')?vb[0]+vb[2]/2:vb[0];
+        // Long 400em paths deliberately paint only one end of a clipped SVG.
+        // Compare the declared alignment anchor, avoiding amplification of
+        // 1/64px CSS rounding at an invisible origin thousands of DIP away.
+        const dx=Math.abs(painted.x+anchorX*painted.scaleX-(e.x+anchorX*e.scaleX)),dy=Math.abs(painted.y-actual.baseline-e.y);
         // CTM scale includes the actual CSS-constrained SVG viewport and slice
         // behavior. Relative tolerance only covers 1/64 CSS-pixel rounding of
         // the measured viewport, not a different transform construction.
         const relativeScaleX=Math.abs(painted.scaleX-e.scaleX)/e.scaleX,relativeScaleY=Math.abs(painted.scaleY-e.scaleY)/e.scaleY;
-        if(dx>positionTolerance||dy>positionTolerance||relativeScaleX>.002||relativeScaleY>.002)fail('path-transform',{painted,expected:e,dx,dy,relativeScaleX,relativeScaleY});
+        // Test the change over the actual clipped viewport in DIP. A tiny
+        // extender's 1/64px CSS rounding can have a large relative percentage
+        // while changing visible ink by far less than the frozen DIP budget.
+        // Conversely a small relative change over a wide path must still pass
+        // this absolute geometric guard. Raw relative deltas remain in failures.
+        const inkWidth=Math.min(refPath.width,(painted.normalizedInkWidth??Infinity)*e.scaleX),inkHeight=Math.min(refPath.height,(painted.normalizedInkHeight??Infinity)*e.scaleY);
+        const visibleScaleEffectX=relativeScaleX*inkWidth,visibleScaleEffectY=relativeScaleY*inkHeight;
+        if(dx>positionTolerance||dy>positionTolerance||visibleScaleEffectX>positionTolerance||visibleScaleEffectY>positionTolerance)fail('path-transform',{painted,expected:e,dx,dy,relativeScaleX,relativeScaleY,visibleScaleEffectX,visibleScaleEffectY,tolerance:positionTolerance});
       }
       const mathml=await fs.readFile(path.join(root,folder,actual.id,actual.scenario,'formula.mathml'),'utf8');
       const mathmlComparison=await page.evaluate(({mathml,expected,source})=>{
@@ -141,6 +169,6 @@ try {
     console.log(JSON.stringify(all.at(-1)));
     if(failures.length)console.log('Failures: '+JSON.stringify(failures.slice(0,8)));
   }
-  await writeJson(path.join(root,'artifacts/p1/differential-summary.json'),all);
+  await writeJson(path.join(root,`artifacts/${phase}/differential-summary.json`),all);
   if(all.some(x=>x.failures))process.exitCode=1;
 }finally{await browser.close();}

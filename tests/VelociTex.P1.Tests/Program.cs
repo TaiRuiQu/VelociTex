@@ -9,15 +9,22 @@ using VelociTex.Rendering.Direct2D;
 
 // Dependency-free executable assertions run unchanged under JIT and Native AOT.
 // JsonDocument is input tooling only; production parsing never uses JSON/DOM.
-string output = Path.GetFullPath(args.Length > 0 ? args[0] : "artifacts/p1/jit");
+if (args.Contains("--workload", StringComparer.Ordinal)) { P2Workload.Run(args); return; }
+string phase = args.FirstOrDefault(x => x.StartsWith("--phase=", StringComparison.Ordinal))?[8..] ?? "p1";
+bool diagnosticRun = args.Contains("--diagnostic", StringComparer.Ordinal);
+int expectationFailures = 0;
+Assert(phase is "p1" or "p2" or "p4", "known verification phase");
+string output = Path.GetFullPath(args.FirstOrDefault(x => !x.StartsWith("--", StringComparison.Ordinal)) ?? $"artifacts/{phase}/jit");
 Directory.CreateDirectory(output);
-string fixturePath = Path.Combine(AppContext.BaseDirectory, "fixtures", "p1.json");
+string fixturePath = Path.Combine(AppContext.BaseDirectory, "fixtures", phase + ".json");
 using JsonDocument corpus = JsonDocument.Parse(File.ReadAllBytes(fixturePath));
 MathWorkspace workspace = new();
 MathEngine engine = new();
 using WindowsMathRenderer renderer = new(); // Test embedded fonts, not repository font paths.
+WindowsMathTextShaper textShaper = new();
 List<(string Id, string Category, string Scenario, MathDocument? Document, MathDiagnostic Diagnostic)> results = [];
 HashSet<string> selected = ["single-x", "both-scripts", "frac-display", "sqrt-frac", "roman", "macro-arg"];
+if (phase != "p1") selected = ["p2-integral-display", "p2-sum-display", "p2-binom", "p2-delimiter-tall", "p2-widehat", "p2-matrix-fraction", "p2-aligned", "p2-text-fonts"];
 int valid = 0, invalid = 0;
 foreach (JsonElement fixture in corpus.RootElement.GetProperty("cases").EnumerateArray())
 {
@@ -31,9 +38,14 @@ foreach (JsonElement fixture in corpus.RootElement.GetProperty("cases").Enumerat
         macros = [];
         foreach (JsonProperty macro in definitions.EnumerateObject()) macros.Add(macro.Name, macro.Value.GetString()!);
     }
-    MathOptions options = new() { DisplayMode = fixture.TryGetProperty("displayMode", out var display) && display.GetBoolean(), Macros = macros };
+    MathOptions options = new() { DisplayMode = fixture.TryGetProperty("displayMode", out var display) && display.GetBoolean(), Macros = macros, TextShaper = textShaper };
     bool success = engine.TryCompile(latex, in options, workspace, default, out MathDocument? document, out MathDiagnostic diagnostic);
-    Assert(success == expected, $"{id}: expected {expected}, got {diagnostic}");
+    if (success != expected)
+    {
+        expectationFailures++;
+        if (!diagnosticRun) Assert(false, $"{id}: expected {expected}, got {diagnostic}");
+        Console.WriteLine($"Mismatch {id}: expected {expected}, got success={success} {diagnostic}");
+    }
     Assert(success ? document!.Source == latex && !diagnostic.IsError : document is null && diagnostic.IsError, $"{id}: success/error ownership");
     if (success) valid++; else invalid++;
     if (!success)
@@ -62,7 +74,7 @@ foreach (JsonElement fixture in corpus.RootElement.GetProperty("cases").Enumerat
         results.Add((id, category, scenario, document, diagnostic));
     }
 }
-Assert(valid >= 50 && invalid >= 10, "phase denominator");
+Assert(diagnosticRun || valid >= (phase == "p1" ? 50 : phase == "p2" ? 300 : 1000) && invalid >= 10, "phase denominator");
 
 // Results outlive scratch reuse, cancellation, invalid input and isolated calls.
 MathOptions normal = new();
@@ -139,6 +151,8 @@ Task.Run(() => AssertThrows<InvalidOperationException>(() => renderer.Prepare(re
 AssertThrows<ArgumentOutOfRangeException>(() => renderer.WritePng(retained!, new MemoryStream(), scale: double.NaN), "PNG invalid scale");
 AssertThrows<ArgumentOutOfRangeException>(() => renderer.WriteSvg(retained!, new MemoryStream(), padding: -1), "SVG invalid padding");
 int edgeAssertions = CoreEdgeAssertions.Run();
+int cacheAssertions = CacheAssertions.Run();
+int parserAssertions = ParserConstructionAssertions.Run();
 
 // Allocation numbers include immutable results; these are a P1 subset baseline,
 // not the P0 normal corpus or an old-CPU performance acceptance.
@@ -173,12 +187,15 @@ using (FileStream stream = File.Create(Path.Combine(output, "report.json")))
 using (Utf8JsonWriter json = new(stream, new JsonWriterOptions { Indented = true }))
 {
     json.WriteStartObject();
-    json.WriteString("kind", "P1 real formula engine; exact 0.19.0 differential corpus");
+    json.WriteString("kind", $"{phase.ToUpperInvariant()} real formula engine; exact 0.19.0 differential corpus");
     json.WriteBoolean("nativeAot", !RuntimeFeature.IsDynamicCodeSupported);
     json.WriteNumber("processId", Environment.ProcessId); json.WriteString("utc", DateTimeOffset.UtcNow);
     json.WriteString("corpusSha256", Convert.ToHexStringLower(SHA256.HashData(File.ReadAllBytes(fixturePath))));
     json.WriteNumber("validFixtures", valid); json.WriteNumber("invalidFixtures", invalid);
+    json.WriteBoolean("diagnosticRun", diagnosticRun); json.WriteNumber("expectationFailures", expectationFailures);
     json.WriteNumber("additionalCoreEdgeAssertions", edgeAssertions);
+    json.WriteNumber("cacheAssertions", cacheAssertions);
+    json.WriteNumber("parserConstructionAssertions", parserAssertions);
     json.WriteStartObject("lifecycle"); json.WriteBoolean("resultIsolation", true); json.WriteBoolean("cancelAndRecovery", true); json.WriteBoolean("resourceLimits", true); json.WriteNumber("concurrentIndependentWorkspaces", 100); json.WriteNumber("rendererCreateDisposeCycles", 100); json.WriteNumber("privateBytesBeforeCycles", privateBefore); json.WriteNumber("privateBytesAfterCycles", privateAfter); json.WriteNumber("handlesBeforeCycles", handlesBefore); json.WriteNumber("handlesAfterCycles", handlesAfter); json.WriteEndObject();
     json.WriteStartObject("allocationBaseline"); json.WriteString("boundary", "Complete synchronous compile including options validation, parse, layout, immutable result; six P1 cases, warmed reused workspace, no formula cache. Thread managed allocation excludes native resources. 100 renderer lifecycle private bytes/handles are whole-process snapshots, not an exact native/GPU ledger."); json.WriteNumber("samples", timings.Length); json.WriteNumber("p50Ms", Percentile(sorted, .50)); json.WriteNumber("p95Ms", Percentile(sorted, .95)); json.WriteNumber("p99Ms", Percentile(sorted, .99)); json.WriteNumber("maximumMs", sorted[^1]); json.WriteNumber("sampleLoopManagedAllocatedBytes", managedAllocated); json.WriteNumber("minimumCompleteCompileManagedBytes", allocations.Min()); json.WriteNumber("maximumCompleteCompileManagedBytes", allocations.Max()); json.WriteEndObject();
     json.WriteStartArray("results");
@@ -191,7 +208,8 @@ using (Utf8JsonWriter json = new(stream, new JsonWriterOptions { Indented = true
     }
     json.WriteEndArray(); json.WriteEndObject();
 }
-Console.WriteLine($"PASS P1 {valid} valid / {invalid} invalid, {results.Count - invalid} exports; AOT={!RuntimeFeature.IsDynamicCodeSupported}; P95={Percentile(sorted, .95):F4}ms (P1 subset only)");
+Console.WriteLine($"{(expectationFailures == 0 ? "PASS" : "FAIL")} {phase.ToUpperInvariant()} {valid} valid / {invalid} invalid, {results.Count - invalid} exports; AOT={!RuntimeFeature.IsDynamicCodeSupported}; P95={Percentile(sorted, .95):F4}ms (six P1 timing cases only)");
+if (expectationFailures != 0) Environment.ExitCode = 1;
 
 static IEnumerable<(double Size, double Scale, bool Dark)> Scenarios(bool matrix)
 {
@@ -220,19 +238,39 @@ static void WriteDocument(Utf8JsonWriter json, MathDocument doc)
     json.WriteNumber("root", doc.Root);
     json.WriteStartArray("nodes"); foreach (ref readonly SemanticNode node in doc.Nodes.AsSpan())
     {
-        json.WriteStartObject(); json.WriteString("kind", node.Kind.ToString()); json.WriteNumber("first", node.FirstChild); json.WriteNumber("next", node.NextSibling); json.WriteNumber("second", node.SecondChild); json.WriteNumber("third", node.ThirdChild); json.WriteNumber("codePoint", node.CodePoint); json.WriteString("atom", node.Atom.ToString()); json.WriteString("font", node.Font.ToString()); json.WriteString("style", node.Style.ToString()); json.WriteBoolean("textMode", node.TextMode); json.WriteBoolean("mathOrd", node.IsMathOrd); json.WriteNumber("value", node.Value); json.WriteNumber("start", node.Range.Start); json.WriteNumber("length", node.Range.Length); json.WriteEndObject();
+        json.WriteStartObject(); json.WriteString("kind", node.Kind.ToString()); json.WriteNumber("first", node.FirstChild); json.WriteNumber("next", node.NextSibling); json.WriteNumber("second", node.SecondChild); json.WriteNumber("third", node.ThirdChild); json.WriteNumber("codePoint", node.CodePoint); json.WriteString("atom", node.Atom.ToString()); json.WriteString("font", node.Font.ToString()); json.WriteString("style", node.Style.ToString()); json.WriteBoolean("textMode", node.TextMode); json.WriteBoolean("mathOrd", node.IsMathOrd); json.WriteNumber("value", node.Value); json.WriteNumber("start", node.Range.Start); json.WriteNumber("length", node.Range.Length);
+        json.WriteString("text", node.Text); json.WriteString("alignment", node.Alignment); json.WriteNumber("leftDelimiter", node.LeftDelimiter); json.WriteNumber("rightDelimiter", node.RightDelimiter); json.WriteNumber("columnCount", node.ColumnCount); json.WriteNumber("ruleAbove", node.RuleAbove); json.WriteNumber("ruleBelow", node.RuleBelow); json.WriteBoolean("hasBar", node.HasBar); json.WriteBoolean("limits", node.Limits); json.WriteBoolean("alwaysLimits", node.AlwaysLimits); json.WriteBoolean("neverLimits", node.NeverLimits); json.WriteEndObject();
     } json.WriteEndArray();
     json.WriteStartArray("glyphs"); foreach (MathGlyph glyph in doc.Glyphs.Span)
     {
         json.WriteStartObject(); json.WriteString("text", char.ConvertFromUtf32(glyph.CodePoint)); json.WriteString("font", MathFontCatalog.GetName(glyph.FontId)); json.WriteNumber("glyphId", glyph.GlyphId); json.WriteNumber("x", glyph.X); json.WriteNumber("y", glyph.Y); json.WriteNumber("fontSize", glyph.FontSize); json.WriteEndObject();
     } json.WriteEndArray();
+    json.WriteStartArray("textGlyphs"); foreach (MathTextGlyph glyph in doc.TextGlyphs.Span)
+    {
+        json.WriteStartObject(); json.WriteString("text", char.ConvertFromUtf32(glyph.CodePoint)); json.WriteString("font", glyph.FontFamily); json.WriteNumber("x", glyph.X); json.WriteNumber("y", glyph.Y); json.WriteNumber("fontSize", glyph.FontSize); json.WriteEndObject();
+    } json.WriteEndArray();
     json.WriteStartArray("rules"); foreach (MathRule rule in doc.Rules.Span)
     {
         json.WriteStartObject(); json.WriteNumber("x", rule.X); json.WriteNumber("y", rule.Y); json.WriteNumber("width", rule.Width); json.WriteNumber("height", rule.Height); json.WriteEndObject();
     } json.WriteEndArray();
-    json.WriteStartArray("paths"); foreach (MathPath path in doc.Paths.Span)
+    json.WriteStartArray("paths"); for (int pathIndex = 0; pathIndex < doc.Paths.Length; pathIndex++)
     {
-        json.WriteStartObject(); json.WriteNumber("x", path.X); json.WriteNumber("y", path.Y); json.WriteNumber("scaleX", path.ScaleX); json.WriteNumber("scaleY", path.ScaleY); json.WriteNumber("segments", path.Segments.Length); json.WriteEndObject();
+        MathPath path = doc.Paths.Span[pathIndex];
+        json.WriteStartObject(); json.WriteNumber("x", path.X); json.WriteNumber("y", path.Y); json.WriteNumber("scaleX", path.ScaleX); json.WriteNumber("scaleY", path.ScaleY); json.WriteNumber("segments", path.Segments.Length);
+        bool fallback = false;
+        foreach (var text in doc.TextGlyphs.Span)
+            if (path.X == text.X && path.Y == text.Y && path.ScaleX == text.FontSize && path.ScaleY == text.FontSize) { fallback = true; break; }
+        json.WriteBoolean("fallback", fallback);
+        double left = double.PositiveInfinity, right = double.NegativeInfinity, top = double.PositiveInfinity, bottom = double.NegativeInfinity;
+        foreach (var segment in path.Segments.Span)
+        {
+            if (segment.Operation == MathPathOperation.Close) continue;
+            Include(segment.X1, segment.Y1);
+            if (segment.Operation == MathPathOperation.Cubic) { Include(segment.X2, segment.Y2); Include(segment.X3, segment.Y3); }
+        }
+        json.WriteNumber("normalizedInkWidth", double.IsFinite(left) ? right - left : 0); json.WriteNumber("normalizedInkHeight", double.IsFinite(top) ? bottom - top : 0);
+        json.WriteEndObject();
+        void Include(double x, double y) { left = Math.Min(left, x); right = Math.Max(right, x); top = Math.Min(top, y); bottom = Math.Max(bottom, y); }
     } json.WriteEndArray();
 }
 

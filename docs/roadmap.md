@@ -2,7 +2,7 @@
 
 English | [中文](roadmap.zh-CN.md)
 
-This document delivers "replace the display chain early" and "reach complete core compatibility" as separate milestones. P0 and the P1 basic pipeline were delivered on 2026-10-19; see the [P1 record](verification/p1-2026-10-19.md) for actual checks, reviewed raster exceptions and unverified hardware/measurement items. P2 is next. Phases advance by dependency, never by an unverified fixed schedule.
+This document delivers "replace the display chain early" and "reach complete core compatibility" as separate milestones. P0, P1 and P2 were delivered on 2026-10-19; see the [P2 record](verification/p2-2026-10-19.md) for the common subset, real local package consumers, reviewed raster exceptions and unverified hardware items. P3 migration and P4 complete compatibility are next; P5 is not yet accepted. Phases advance by dependency, never by an unverified fixed schedule.
 
 ## Phase Overview
 

@@ -2,7 +2,7 @@
 
 English | [中文](architecture.zh-CN.md)
 
-This document describes the target architecture. P1 now implements compact semantics, basic math layout, independent immutable results and native/PNG/SVG/MathML output. The current API and ownership boundaries are documented in [p1-api.md](p1-api.md), with actual verification and limits in the [P1 record](verification/p1-2026-10-19.md). Some sketches below still describe later target APIs. The selected native route is recorded in [ADR 0001](decisions/0001-native-rendering.md). Requirements are in [Requirements and Scope](requirements.md), and phase deliverables are in the [Roadmap](roadmap.md).
+This document describes the target architecture. P2 extends compact semantics and independent immutable results with common operators, matrices, stretchy paths, actual system-font CJK outlines and bounded result caching. Native/PNG/SVG/MathML and isolated local NuGet consumers are real. The baseline API guide is [p1-api.md](p1-api.md); additions, verification and limits are in the [P2 record](verification/p2-2026-10-19.md) and [package contract](package-contract.md). Some sketches below still describe later target APIs. The selected native route is recorded in [ADR 0001](decisions/0001-native-rendering.md).
 
 ## 1. Pipeline and Modules
 

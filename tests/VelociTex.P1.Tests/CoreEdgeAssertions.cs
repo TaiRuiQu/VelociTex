@@ -40,8 +40,8 @@ internal static class CoreEdgeAssertions
         Require(Glyphs(Good("\\def\\def{x}\\def")) == "x", "definition primitive permits user overrides");
         Require(Glyphs(Good("\\replace", options with { Macros = new Dictionary<string, string> { ["\\replace"] = "\\alpha b" } })) == "αb", "control word separation survives macro compaction");
         Require(Glyphs(Good("\\def\\edge{\\alpha b}\\edge")) == "αb", "definition compaction preserves token boundaries");
-        Bad("\\sqrt[3]{x}", MathDiagnosticCode.UnsupportedCommand);
-        Bad("\\sum_i", MathDiagnosticCode.UnsupportedCommand);
+        Good("\\sqrt[3]{x}");
+        Good("\\sum_i");
         Bad("😀", MathDiagnosticCode.UnknownSymbol);
         Bad("x\ud800y", MathDiagnosticCode.UnknownSymbol);
         Bad("x\udc00y", MathDiagnosticCode.UnknownSymbol);

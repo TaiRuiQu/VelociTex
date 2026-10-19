@@ -4,7 +4,7 @@
 
 面向原生 Windows 应用的 C# 数学排版与渲染库。目标是在 WinUI 3 上还原 **KaTeX 0.19.0 的核心数学排版**，导出 PNG / SVG / MathML，并优先替换 `../oh-my-study/` 的公式显示链路。
 
-**截至 2026-10-19：P1 基础公式引擎与原生 / PNG / SVG / MathML 流水线已实现。** 64 个有效、12 个错误用例已在 JIT 和真实 Native AOT 中运行，完成 202 组几何/输出对照及真实 WinUI 截图。这是基础子集；积分、矩阵、完整兼容、NuGet 消费和旧 CPU 性能验收仍待后续阶段。证据、逐项保留的栅格差异及限制见 [P1 交付记录](docs/verification/p1-2026-10-19.md)，接口见 [API 与生命周期](docs/p1-api.md)。
+**截至 2026-10-19：P2 常用数学与本地 `0.2.0-preview.1` 包已实现。** 积分、矩阵、定界符和重音可原生显示及导出 PNG / SVG / MathML；307 个有效、31 个错误输入及491场景通过 JIT/AOT 对照，隔离 NuGet 消费者真实运行。证据及保留的栅格差异见 [P2 交付记录](docs/verification/p2-2026-10-19.md)。完整核心兼容和旧 CPU 验收尚未完成，这不是 1.0 发布。
 
 ## 已确认的方向
 
@@ -30,7 +30,7 @@
 | [公式种子集](docs/examples/formulas.json) | 微积分、矩阵、样式、宏、边界与错误用例 |
 | [文档验证记录](docs/verification/design-review.2026-10-19.zh-CN.md) ([English](docs/verification/design-review.2026-10-19.md)) | 本轮实际检查范围：文档、上游摘要、公式样本 |
 
-建议按“交接 → 需求 → 架构 → 实施 → 验证 → 迁移”的顺序阅读。下一步是 P2：常用数学、更广的兼容用例、控件和可接入的本地预发布包。
+建议按“交接 → 需求 → 架构 → 实施 → 验证 → 迁移”的顺序阅读。下一步是 P3 下游迁移，再完成 P4 全部兼容和 P5 发布验收。
 
 ## 开发验证
 
@@ -38,6 +38,8 @@
 ./verify-reference.ps1 -FullMatrix
 ./build.ps1 -Target All -Locked
 ./verify-p1.ps1
+./build.ps1 -Target P2 -Locked
+./verify-p2.ps1
 python tools/VelociTex.Native.Probe/verify-native.py artifacts/native
 ```
 

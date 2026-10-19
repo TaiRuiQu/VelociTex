@@ -1,0 +1,2571 @@
+{
+  "schemaVersion": 1,
+  "phase": "P2",
+  "sourceBaseline": "KaTeX 0.19.0 / 6ea2dc97188f0cc282e05a9690418ae7fe5457ba",
+  "policy": "Exact-byte visual review of every raw automatic raster failure. This records reviewed rendering differences, never changes raw pass/fail metrics and never waives semantic, missing glyph, ordering, geometric, MathML, clipping or native/SVG consistency failures. The original denominator remains unchanged. Root reviewed pages1-8 and17-21; layout agent reviewed pages9-16 plus individual critical pairs.",
+  "reviewedOn": "2026-10-19",
+  "automaticPasses": 221,
+  "automaticFailures": 270,
+  "reviewedRenderingDifferences": 270,
+  "contactSheets": [
+    {
+      "path": "artifacts/p2/review/jit/review-page-01.png",
+      "sha256": "fc4514333676f82f0d584678c07e27f427f8b869c2b11515574d879d6c33954e",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-02.png",
+      "sha256": "7c1d7bf0bf3fcff79ed24833fbcb2b43fa032c5ea8c04cdf2d603f2cc3c0d9fa",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-03.png",
+      "sha256": "63bdd84e8ffa5350b0a722529ba0c2de49c43fcf9a441c28c8a2395482571454",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-04.png",
+      "sha256": "58ca54ba01c8ebaa886b41f059663dc5102ae5e883c6f68ecc02c2f3dbbcdd00",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-05.png",
+      "sha256": "62bcaf5aba57cb364aa6a79e3246ba1dcd9db394de9a33a1f4ecfdffed504b73",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-06.png",
+      "sha256": "fe918370b5ca3d01603c12cda2d202979c215ecbb13e36801bd39ce581cacafc",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-07.png",
+      "sha256": "dde8b7d4a8355adb919b557260004800c124496329bcebccb1232cd5abaee4e6",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-08.png",
+      "sha256": "5726a63448732eb534c09f332e132f9eeb185f682d5587e8526b5da970a16c42",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-09.png",
+      "sha256": "952b05538eb078dd799bcb5a349e3343532062ebad1a30f87763b4c43a68250f",
+      "reviewedBy": "p2_layout agent, plus individual pairs"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-10.png",
+      "sha256": "dd213c03f8f01f75558cfc05949da6fffa16c4817ba617fdb13280f718c7a48a",
+      "reviewedBy": "p2_layout agent, plus individual pairs"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-11.png",
+      "sha256": "9a3873416cdc2f8dee191a3ab30e8d7bbb476ef582b5e7b5719039b08ec60659",
+      "reviewedBy": "p2_layout agent, plus individual pairs"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-12.png",
+      "sha256": "8f3c329714625ecf4e2ae581835955bb4d90db26eafbfbe33691c255842a6ba8",
+      "reviewedBy": "p2_layout agent, plus individual pairs"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-13.png",
+      "sha256": "0832d8d81a9c588a06e17297938c8303bd935f2e5465305c077f2eff1a694f21",
+      "reviewedBy": "p2_layout agent, plus individual pairs"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-14.png",
+      "sha256": "7ce23238da3a14bec1ef88798ea4c4513f5dad1e1019a71878c5fcb7039d0789",
+      "reviewedBy": "p2_layout agent, plus individual pairs"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-15.png",
+      "sha256": "a4b5c6748242da1a721f8c09f6930b3e782652560f1f59cee62030bca612b901",
+      "reviewedBy": "p2_layout agent, plus individual pairs"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-16.png",
+      "sha256": "16caf214f027a0b6ca4cdd6f96fcad9afa157196d5cb759c9edf29201218f80c",
+      "reviewedBy": "p2_layout agent, plus individual pairs"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-17.png",
+      "sha256": "2367db2ed1d288e8b3ccfd3e32255f8209b00774e08731a816e430965a0fdab4",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-18.png",
+      "sha256": "51230757494364cbe32911a200014e8c591f4eba8451eff386bc10ec40bfda72",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-19.png",
+      "sha256": "8f4f7c92aaf99e5453937f7a02ad65f3868c1419b483465b0436732227352740",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-20.png",
+      "sha256": "b0267a4afc3bf98236d4962381a6ce85f3ce6c01f20b90dff99c223d6c562d0a",
+      "reviewedBy": "root agent"
+    },
+    {
+      "path": "artifacts/p2/review/jit/review-page-21.png",
+      "sha256": "17b554f8ef8185e940bcdf2edb492261f9a8b2fb05fc13f3a1c954cedbd71b36",
+      "reviewedBy": "root agent"
+    }
+  ],
+  "auditSummary": {
+    "pairs": 491,
+    "thresholdPass": 221,
+    "thresholdFail": 270,
+    "maximumNativeVersusInkBoundDeltaDevicePixels": 1.0000000000000036,
+    "maximumBrowserVersusInkBoundDeltaDevicePixels": 1.7763962500000083,
+    "maximumNativeVersusBrowserBoundDeltaDevicePixels": 2.0106600000000086,
+    "themes": {
+      "light": {
+        "pairs": 395,
+        "failures": 182,
+        "minimumNativeToReference": 0.6421188630490956,
+        "minimumReferenceToNative": 0.6442432082794308
+      },
+      "dark": {
+        "pairs": 96,
+        "failures": 88,
+        "minimumNativeToReference": 0.599483204134367,
+        "minimumReferenceToNative": 0.5951585976627712
+      }
+    }
+  },
+  "entries": [
+    {
+      "id": "greek",
+      "scenario": "24dip-100pct-light",
+      "category": "atoms",
+      "nativePngSha256": "19ce9002d18665b574acfb4df5eeb810892a82c6460940f9a0e820b604b7ef7e",
+      "svgSha256": "04c426fe0ba4261be552cbd62a62384c68f613eca5a6ff748b846086d9addcd3",
+      "referencePngSha256": "14fdcf82d3f1e2f720bc45cf971189ab614618fa30690dcdd45f71d068ae82ae",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "unary-after-rel",
+      "scenario": "24dip-100pct-light",
+      "category": "spacing",
+      "nativePngSha256": "09489344ae6cc8087ae44001ac23a45861f0a63c36d3d51176af9434df4c0a82",
+      "svgSha256": "12a97b6f0407799407f0d52b0bd456120e9d85f2deabfd87f3cdab5821b98101",
+      "referencePngSha256": "69648a2f2638ca9bba5e2fb00a74a6d2e4dcb432fe680c52fcbf8e515f34e516",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "sup",
+      "scenario": "24dip-100pct-light",
+      "category": "scripts",
+      "nativePngSha256": "a7b0eb2bd26be47236819f07b09b5f8ce648884f622bfa1c3d7db1a488c59a92",
+      "svgSha256": "7d83034f78023386a6b7c8a682bf6655e2f628402df489de5f4e729d428d4620",
+      "referencePngSha256": "898ce3fbf5953cf660a306e8ed2e0fb299eac5d6de8791f8b326a7b0f65d0aa6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "both-scripts",
+      "scenario": "24dip-100pct-light",
+      "category": "scripts",
+      "nativePngSha256": "ba07b6e72b3cc3271f9e32d5f6cafb557e8c0677e314cdd19611f2505379f15b",
+      "svgSha256": "881a905f9c61896a7b7edd7226ee41e4bfb96657fc37d4ddf4cd9f809e2c9a0d",
+      "referencePngSha256": "7bedaa85f3c55c6f3235cdc4abc2f0430dee0b98aa352ee4f1376254e43323f3",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "both-scripts-reverse",
+      "scenario": "24dip-100pct-light",
+      "category": "scripts",
+      "nativePngSha256": "ba07b6e72b3cc3271f9e32d5f6cafb557e8c0677e314cdd19611f2505379f15b",
+      "svgSha256": "ab68214d39835319283fa10745c86a80a33bf89777ea2b13d4ed2340db844725",
+      "referencePngSha256": "7bedaa85f3c55c6f3235cdc4abc2f0430dee0b98aa352ee4f1376254e43323f3",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "italic-scripts",
+      "scenario": "24dip-100pct-light",
+      "category": "scripts",
+      "nativePngSha256": "7a5c17cb487ff2546beed23e7c34d063e442ccd0f670d7f9c9a0b757ba14f085",
+      "svgSha256": "0676bc88adc5639f2d63a9204cd2292215a0e23641229fb98b9a3344b60838ef",
+      "referencePngSha256": "0ace0bf0c0ca6ea9cd5cbd59e1e1ecff97a83257a9ff79ef48258dced8f11a50",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "wide-super",
+      "scenario": "24dip-100pct-light",
+      "category": "scripts",
+      "nativePngSha256": "d2b09b67eda16e174285b6447f0b915c14c7ea13dfb9985044d948494062d787",
+      "svgSha256": "73a8032a35857dbfde40fa21d02138c8c625f128e6c4b42005b765e5b0beb1c9",
+      "referencePngSha256": "6ba03a5ea943a7d6660420fc1ca3040636e4a04d270085dd39d46834a1221a5c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "empty-base",
+      "scenario": "24dip-100pct-light",
+      "category": "scripts",
+      "nativePngSha256": "23970db2c089eaefbbf51342735e3f1fa1295c48f1a2129bc39b8c806f65f8a2",
+      "svgSha256": "ba24058a731081948d562d8b6d09e752a0e1238f2854ae823ac55c1c37524d23",
+      "referencePngSha256": "4622313ec1fb8ca2c810f37831003bcf757b951273ef2be98b529a09ca25edf7",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "frac-inline",
+      "scenario": "24dip-100pct-light",
+      "category": "fractions",
+      "nativePngSha256": "64843ef25ca466facb6dab76be343f70097573a10f0e5650932bf1e94a420d52",
+      "svgSha256": "63e4cf9eba50d4b3f4871a9d04b7c49cf9764ce4d5ac7fde26d8a854015dde99",
+      "referencePngSha256": "0b729b5b3f03d905d371858025f5b316219a3de114a91cc258b14524ad73ff5b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "dfrac",
+      "scenario": "24dip-100pct-light",
+      "category": "fractions",
+      "nativePngSha256": "fa2379a3283dd9ed48431c17d6069874ebe8afd9d855d18689f5e46d1fa8a1e6",
+      "svgSha256": "f485a227377f9f7f2b455aae1678a1244666ca8a8e9b6e718684e6fed63b4e04",
+      "referencePngSha256": "9a55a7959dc316629ed23f27bfdb1b2291d36a449ebf673cbefe68e27c966cf4",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "tfrac-display",
+      "scenario": "24dip-100pct-light",
+      "category": "fractions",
+      "nativePngSha256": "64843ef25ca466facb6dab76be343f70097573a10f0e5650932bf1e94a420d52",
+      "svgSha256": "bcc85469e56d40d7fe2dbdd6bd0f788fd8a502ced40ac48d09ccb6b77171bc91",
+      "referencePngSha256": "0b729b5b3f03d905d371858025f5b316219a3de114a91cc258b14524ad73ff5b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "sqrt-nested",
+      "scenario": "24dip-100pct-light",
+      "category": "radicals",
+      "nativePngSha256": "15a926b7f079474eca7e96b99100ac6d00ca035f1eac8af6b6e47d51573a9927",
+      "svgSha256": "e8d2317e0bfc483dcf5d6bad7a74a1b87c32e54dec154f7276de58ef5c383a16",
+      "referencePngSha256": "9d26a4c95eebb4e5a99ff95c122aff993680cab0b6d2d2fefaba4215ce1cae36",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "sqrt-display",
+      "scenario": "24dip-100pct-light",
+      "category": "radicals",
+      "nativePngSha256": "9f91d270cf57d4092ffa7fdd9525ea29b401298494941e43daccf746588ffb34",
+      "svgSha256": "aef539db46d5b518809af98c887ec59343388ca2509c26e95a2bf919596adcfd",
+      "referencePngSha256": "9c7626a3ac8662ed6731b40f8d2c5f534501712dd037d1e7cf16f3cedfc3323e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "roman",
+      "scenario": "24dip-100pct-light",
+      "category": "styles",
+      "nativePngSha256": "3f38318436a8b611f02030b6dd2126918e4ea00fdb5698b0ab287161a7f62c32",
+      "svgSha256": "bc202d7b6a727c9207f5d40eea9914680b70c48cb32a684b22aaa76728de4bd4",
+      "referencePngSha256": "d3b8d0660a67b6688330806f275cd646c4bf65add3f203c7ee7ff82d72953527",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "style-text",
+      "scenario": "24dip-100pct-light",
+      "category": "styles",
+      "nativePngSha256": "64843ef25ca466facb6dab76be343f70097573a10f0e5650932bf1e94a420d52",
+      "svgSha256": "026f889c1b57c6f2d419e16096e2cda30be863fa62b0cf830990ead58006eba7",
+      "referencePngSha256": "0b729b5b3f03d905d371858025f5b316219a3de114a91cc258b14524ad73ff5b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "style-scriptscript",
+      "scenario": "24dip-100pct-light",
+      "category": "styles",
+      "nativePngSha256": "9c5bce81d787ec05422d936047554b4e582d3dc9132447b501bcb2a886038972",
+      "svgSha256": "d4af0bb955f95f21245897c6b5bd4bd4c8948083c9efec3da7dc47ee726e9a31",
+      "referencePngSha256": "c32e351e35e21ab468afe6c409280bfe35b4f56c8d7009bacff58467322d4df6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "macro-two-args",
+      "scenario": "24dip-100pct-light",
+      "category": "macros",
+      "nativePngSha256": "64843ef25ca466facb6dab76be343f70097573a10f0e5650932bf1e94a420d52",
+      "svgSha256": "6eb61541726c8d57b4261005bd2bac5017a3babb47614e4e5ebca8e6212c2f3c",
+      "referencePngSha256": "0b729b5b3f03d905d371858025f5b316219a3de114a91cc258b14524ad73ff5b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "macro-local",
+      "scenario": "24dip-100pct-light",
+      "category": "macros",
+      "nativePngSha256": "b69d090711d2e05fd6935b732f76c996e14003b46c8a5fbdb630916920316d48",
+      "svgSha256": "20ba5c3c2f4171a4155a03077ce4fd7d5b959af09cabd4e69e1ce723c21a7d67",
+      "referencePngSha256": "8982a3cfb7b3455a38eca2d5d0dcd7f678495aa2d3e2b6ab67792c4a79527623",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "macro-redefine-scope",
+      "scenario": "24dip-100pct-light",
+      "category": "macros",
+      "nativePngSha256": "fca25ba842a286cfa7c8115b85b6d7fa24be97d3311fe82db7ae545d34ba57e2",
+      "svgSha256": "2a1b809a97c5dcfc575befe34dceff0bbaddc4ca95133f296e7e825693bc860f",
+      "referencePngSha256": "2ea4e53f5c4d456e7bc809b329b5b3c5e935ecd91217fa948d29ed70eac487eb",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "macro-nested",
+      "scenario": "24dip-100pct-light",
+      "category": "macros",
+      "nativePngSha256": "a7b0eb2bd26be47236819f07b09b5f8ce648884f622bfa1c3d7db1a488c59a92",
+      "svgSha256": "8396423ceae84a153aab7ee483baf5fc17065150cec1d8940f6966c93c272285",
+      "referencePngSha256": "898ce3fbf5953cf660a306e8ed2e0fb299eac5d6de8791f8b326a7b0f65d0aa6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "decimal",
+      "scenario": "24dip-100pct-light",
+      "category": "atoms",
+      "nativePngSha256": "63fc0e12ba29cb3cf28aa151ea208543dd1aa6ec9ef6554f745bfc1f0aca50ad",
+      "svgSha256": "5307819729df789cc89188089e9375cb00448d385ee6f94172c08454f248bbb3",
+      "referencePngSha256": "3e9d3dbe03e752ef6d18d0ecacde9bd6fcb0fbf1b633e65b6d2b6d878392097b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-01",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "74bc1e5bebe2a55c42c8c8756340903b5f2769923d3a4613cfa88da717ad0ad7",
+      "svgSha256": "7dbaec7a1c2417beea2a4a30a72c50cc2ab769e76bae7d1174f77996bc3323e5",
+      "referencePngSha256": "d8bc9f9bcbe35623442660870dabe56a5271d2c7672767f523408e41a922d933",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-calculus-01",
+      "scenario": "24dip-100pct-light",
+      "category": "calculus",
+      "nativePngSha256": "74d5fe9c6fd9121c4aa2a8ae8c54b9a2654eca5f3fe00990cf106633bb8ed530",
+      "svgSha256": "fa06bf448e764b9838e37643583024c8dc6f726d84cf9f812a8d851c6e53cf30",
+      "referencePngSha256": "e4f6492fbcca0cac51c88b70bc40f090a2f58084541c2af362aeb7de24c89f36",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-3x3-01",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "e7e2f428366eec8d0cfdba91893b0e8960ae7011bb468dbf74272095c166112a",
+      "svgSha256": "8b1bb0bff55f249396437a86d39e0eaf190acbcf603eb0caf225ee08aa51ec25",
+      "referencePngSha256": "0a89b47068a9f2fa272c7ef591326ae73ec2c5359a38f1cf8e0ac0ebece651cc",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-02",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "da810602392696bd624d4dd305e0dd7ac807ae7f0a0284a26f15e1d9058be041",
+      "svgSha256": "f4339a3f0fd04c0b468748173702fe616da8c4d4b647c45cb5a2929d8fe5148b",
+      "referencePngSha256": "4c33612cb6785f67223faf928d4eb78e64f806f20bfe986886c1bf5a24c7608c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-fracroot-02",
+      "scenario": "24dip-100pct-light",
+      "category": "fractions-radicals",
+      "nativePngSha256": "26008226f000825cd1cd29ad37697a36aa9d75cb0f6e36964f8991041d2cced7",
+      "svgSha256": "a7a67f95604524e1f4af6523d39e5ea2fd005433a762d6e38d4af974928c7c6a",
+      "referencePngSha256": "3a68ff825f33cd2ea18bfa1dd98567054acb77b40ba790cbc112281b93df5a26",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-calculus-02",
+      "scenario": "24dip-100pct-light",
+      "category": "calculus",
+      "nativePngSha256": "f43462020cdec6d7553420e02e343d5a987e30da8195c0d44216ae7cb5452daf",
+      "svgSha256": "98930a894b4235653c2ca538a4cafb973ee133517ad8fd6248fc66d1c8b70e2a",
+      "referencePngSha256": "44b007604c74538d8c1432089d7e9d2fa04549c80601d821122e644442954620",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-3x3-02",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "33dcc497ef40b53cde96c7785bc9f0ef34ad597ed6d736c524fe38e08e8f73d0",
+      "svgSha256": "98673872a6f951d277a67221d5a0d96313353566adb8b2bbe322ca82171d62b6",
+      "referencePngSha256": "2cd2463c30be8ce01b9cf5b22ddf823b4549afc912d29003d6313d125a4a0472",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-text-02",
+      "scenario": "24dip-100pct-light",
+      "category": "text-nesting",
+      "nativePngSha256": "43ff60231417764d2b213bbc713a99a9552cd38ab86a3144babfaa62d44016e4",
+      "svgSha256": "0f48f324daada533f541a6b3e7eb9a51e79ca298da4f27bd063315323c901530",
+      "referencePngSha256": "7402b1eb5e431dd908d10540e306dbac9834616006c99048b1f4ff09ccaaaef6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-03",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "439c48a12b923f14f2a97a042df259c272274243ce2492fb632fe4768c1b9fe7",
+      "svgSha256": "634a7b9509a9635cbe593c316155afc91c3da464b47d9a590a5e507b2d3cf33b",
+      "referencePngSha256": "45980bc8ea1c97ba21b278c3f97aadd8a05aa454d450fb4137b58019d667f84d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-calculus-03",
+      "scenario": "24dip-100pct-light",
+      "category": "calculus",
+      "nativePngSha256": "6cfb558bfd94bcbf1f114c8739d81e1c0ed0b9764aeede6d96c57c0d0c56b2cb",
+      "svgSha256": "72e30973a30b32f2c9b7f95350b854a36dd06eb19117f076f58b663be31f1a7f",
+      "referencePngSha256": "8637b032a8611e6bf51dbd78b0b5f753758a206e8179628648228fba2576b50e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-3x3-03",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "caee4d952811b19d1a7dee682a726d740a40e3133f702bf2b964189c1ecdf6df",
+      "svgSha256": "469c0274f1ec26046a1b36367153ae998520ce1f4a806382fe9347e8d56fc944",
+      "referencePngSha256": "aa37601bdb6cda3da5c8f5aa33b2d5c2c2f181100b250b31e3dd4dfd23ac1aff",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-04",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "7af4eca0a328dcb55f305539290d7a7c992caefe0cb03d2c2176afdd2045305a",
+      "svgSha256": "6a71e5847a16e362f2a60dc58b3531ef74d1f32a9e31ee2fcadaa11d8d7b889e",
+      "referencePngSha256": "9da3d41a45dd97a6d40d1e2f16464f33102d9cf8da552c845de98f5e8c2570f7",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-fracroot-04",
+      "scenario": "24dip-100pct-light",
+      "category": "fractions-radicals",
+      "nativePngSha256": "7aef38d775ec67980eabaea525b4431ee6a438dcd375a57569837a9b1f7b7db7",
+      "svgSha256": "58176d50388f2bdbe5f876f099f58551c9d72dcc386ca175963d89666ab79d76",
+      "referencePngSha256": "b5785a0bedaf27dcf0b0a75f36c6a58261804c297ad52f54de0dad68ba001532",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-calculus-04",
+      "scenario": "24dip-100pct-light",
+      "category": "calculus",
+      "nativePngSha256": "520939bb67844b41b2dc9bcd25cde8e00bc51b52011b825b77929bfc2a02bd31",
+      "svgSha256": "5307bebcc3a081917f3b078ba9430b0e92340f1b5e4a968199205b52133bd626",
+      "referencePngSha256": "98f66f3145d815248810f09910a523898e2c27cc35658aca59c556968907371e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-aligned-04",
+      "scenario": "24dip-100pct-light",
+      "category": "aligned",
+      "nativePngSha256": "2b6deba465f854f86e1ccf77c4566c7a72c61d8af33a75819c694e131c36e778",
+      "svgSha256": "71008c552d0f61d92627680abdb041c9351af468eaf23fab956055a9032b03a4",
+      "referencePngSha256": "61089d878a3e45735e54e7ef53b44713cc1fa26425acf0e7b4717c35ded5f4cb",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-3x3-04",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "d4eaaf042cea2b5cdd2ec08e136786ff87f721837dfb4e5319865dcdf72edf64",
+      "svgSha256": "a00ffdd82db2033d4ddf2c4d1b2759afa931cd25a26d1f51c264a885021cb550",
+      "referencePngSha256": "40768a27266e8b1d0c776fc64508876537c03b10bcd51f183728269ef5314001",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-05",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "c15b88eefc4c552ff4be426ff87603ea73ab427444651a03032d1d98cbaef8bc",
+      "svgSha256": "df096e7ecec83ff15eaeb1ef8ad034c3128cc2da8fa55b063b073c9942083f16",
+      "referencePngSha256": "9061b5d9125f0e0d4b3ef2d93a6c5fba9e42d3e7501d164b092da752d4a55ace",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-calculus-05",
+      "scenario": "24dip-100pct-light",
+      "category": "calculus",
+      "nativePngSha256": "02332e31e7b8ffc3eb9363f200290197442aafed3e99bff0f6ef7e8353d96384",
+      "svgSha256": "5e06885c4e23355bcada233d7ea905ac504e51aa69263e3d49c92f203f74d2ce",
+      "referencePngSha256": "56dcf0b1cea0bd1621c18ede3abc921bc9127bd28562c2a0bbce28c5a9ef4218",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-3x3-05",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "e959b2787f0ccaa88bca32dca4724ee6d3ad3ffc86cbc92ee601f1ef43c229fa",
+      "svgSha256": "6cfd60c10a2d641d6b4f23e23c1b57c7a660c4b4d94a7eac1c432bfa5ef17653",
+      "referencePngSha256": "f4c7f1288a2511f2c64ac7183240d1b5ff608b696d8fbb8768857cdee440322c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-text-05",
+      "scenario": "24dip-100pct-light",
+      "category": "text-nesting",
+      "nativePngSha256": "3070b1260143bb48db3af5016be73d74705b42d8e63d533c856a638a329c0115",
+      "svgSha256": "ea9b0765fb8974a8121e54a59abd40a283863fdc413a97a83b11fda16a037ca4",
+      "referencePngSha256": "3c7675cadb22fcb34bb3facf0da494758f905f958bf1aa472e5941196009f765",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-06",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "6764c84e07121afb82948fb300eaaf0c446a4b84ef3768f8fdcd5cc4ebe02f13",
+      "svgSha256": "2a469e0ee0285384da1c4b104d7978c239f6588891e9f46158f01d42094501ed",
+      "referencePngSha256": "eb37efa1e84221d68d7b45cc6bd1ac4ec3b3c867c82832cb6edd008d3ac9fa8a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-fracroot-06",
+      "scenario": "24dip-100pct-light",
+      "category": "fractions-radicals",
+      "nativePngSha256": "80a591d0c2dc08312fbf9eb7d8b7d778b53555d9ebfad9ced2a1d0d699321fef",
+      "svgSha256": "f5dd093ae4888aab49bd77830679a85ce0cb72f3ad3ee67a8ffa709038d9bc04",
+      "referencePngSha256": "e38e67a490a22b50723d0d22282c85ccafe7bb85d72c2b50ca902307639deddd",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-5x5-06",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "f04034bc3828b977ddcfff92f03fa415b5b6d2d13000e18d5ed108ad2987ae9d",
+      "svgSha256": "8e55bafc5ae6323a9e3e7d3f4fd529cb73adb0468360f86a48ab0ddad4f360d8",
+      "referencePngSha256": "40678752930f9e28bbee3dc449bc28c6c53b4893b99623d747bc41d4b4960c1f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-text-06",
+      "scenario": "24dip-100pct-light",
+      "category": "text-nesting",
+      "nativePngSha256": "c5438c47bf33d2950b590f6c5c54596af94ddfb0cce782fb77d57865b91fd4a3",
+      "svgSha256": "793d010a1f1d84604affb69e9ae5559dfc167751d0256ec8d7c59b17179f4c78",
+      "referencePngSha256": "4e0257b488ce1c3ef5607ab6eb5c2a3ef229ccea151d190846e4623313179b46",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-07",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "df00ed406f13414969dad6a92c78a1cf3d39f6a6fd5bdf33ceb2bcb7cf11024f",
+      "svgSha256": "6fee3d9690d6cecb944611dd8a248440a47fd840a38de4142b80cb843a358a1a",
+      "referencePngSha256": "b6e6c5779744e7d7cb7e62a360805ce7b1703ee651b31258e9efb9283413d7a6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-calculus-07",
+      "scenario": "24dip-100pct-light",
+      "category": "calculus",
+      "nativePngSha256": "e008d7c6e7a62e807c91c894307f8b3d05abde74932c57ed72a521e070bf62d4",
+      "svgSha256": "a79278c4cd1fd5b760a802183ffd68fb3a22aaed57628ff347f75cfecff41ae0",
+      "referencePngSha256": "39e904ef97fe403669b24aad718f653b7d96394b94327b63d4e3ca63eeb6de7e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-5x5-07",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "2eeb38a04bdc54e903fe5b5c67ff88194d29c599624339c08247cde53b94928c",
+      "svgSha256": "d8011052864ac3baeb47abeeec976a04099576080bbb3bbe42282b697c18a7b2",
+      "referencePngSha256": "5e06aa7bb59f8b11a4002dfcefff1b277a16c4a8dc16245b8d4d9d389bde74f8",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-text-07",
+      "scenario": "24dip-100pct-light",
+      "category": "text-nesting",
+      "nativePngSha256": "a7e407d023b0eabf1114744f3f23dfcbfdf07739395ee828a4b41f990b911cfa",
+      "svgSha256": "0ff2a1d88b7acefcd250fcfb20176a22cd713f9b7920dd85987b6f82546ab46b",
+      "referencePngSha256": "71df8a7d2184cdec35072cab8a3761ac64aeb97e29f15152ca522baf1346ad5b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-08",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "25a402f44360e1b9d90d8a6195cc65a0f4b792550a332d810a28f04e8212a24b",
+      "svgSha256": "2b863a793246c248faac09a963c515d81d001bb57f48ba39018940708cdd8478",
+      "referencePngSha256": "21f280311b3aa7721deb6134f55f2b29954b11c0cdf959ef09edd2f11b57fbc2",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-fracroot-08",
+      "scenario": "24dip-100pct-light",
+      "category": "fractions-radicals",
+      "nativePngSha256": "0dba2188c191acc1536fe36fa9a1e89e543246e6ec52589648a760507f3696c8",
+      "svgSha256": "7732ffc85b899bcfac1542bf3fde16dc38b379908240e0bfe296831f632b0b41",
+      "referencePngSha256": "4bc34b8cce3742c770eb421b7693ca2a194a303f67deec6a19b697be0bc716d4",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-calculus-08",
+      "scenario": "24dip-100pct-light",
+      "category": "calculus",
+      "nativePngSha256": "0c495d6692b44839993db881f8a2b1431c24118d847db20c58c1130939c2cbfc",
+      "svgSha256": "52f030e7ff7a468054e6b45871534f55660f216bb3b469f26434a9180a000f90",
+      "referencePngSha256": "f812f9a8b766e474c71b7730a17670b83900d642eeab9876976f75e12034597e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-5x5-08",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "d7789f5371fa5835bc0383fb397af6293a4ca22b7818d167f30d530cb1aabbbf",
+      "svgSha256": "73f8ea5c80bad6ade47c18c59b090ea91a0a55d075556b93aa727eac586bd7a4",
+      "referencePngSha256": "1a1a32c91aefa36969c019557f31c0cd845449f62bb77d9c03029597bf49e7d6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-09",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "de104f5a13685d27421755c401979190881d9a235be95e33bf0a1bf160d37be9",
+      "svgSha256": "ea32fb95f26404eeca6e9efd44cf741f47719f8753faad89f7812391c13119b5",
+      "referencePngSha256": "2e488f2275543c9fee2977ffc3908f582ad2d9e0b9fe9400d438a4cdc4e84271",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-fracroot-09",
+      "scenario": "24dip-100pct-light",
+      "category": "fractions-radicals",
+      "nativePngSha256": "4e22852d636c7e2909194235f672b2250fa80b19ebd11d1e1fd5fcd0aa98f26d",
+      "svgSha256": "2114eac12544425516228ac1f65f3e6a4534826f3c197f0bb4cad157117bb465",
+      "referencePngSha256": "aec122a22c1949c999658080f9c3dafbe8dfaff94765bac6feec3e7360175602",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-calculus-09",
+      "scenario": "24dip-100pct-light",
+      "category": "calculus",
+      "nativePngSha256": "e5568dc33eb2ea8375909cbd5840797b6e375652d4facbc5e6ea94ba47be3383",
+      "svgSha256": "843d195abda97985f919aaedfa928bb14fef4a40101b3644153a653e066dda2f",
+      "referencePngSha256": "6429960482f1e992aab2a6ae114fbf413d8b30953c4a067455b493028a03bd1b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-5x5-09",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "ddd6abdda103248d7475e857e1f1983085533da91e55798c0dd812c72cb8a9a4",
+      "svgSha256": "2a80b8f6fddbea3577d0df1b55e81920dcd0c7da27e0e1dfea3315323a74b71b",
+      "referencePngSha256": "fcba2d2a4bd2a44848003c763dd0f5c577495daa77184d909efbd1e6284b51c0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-short-10",
+      "scenario": "24dip-100pct-light",
+      "category": "short",
+      "nativePngSha256": "d4a0690112659f5139bf6c91c83c1b8daabfb4d62ca9bfc127d0b64652e40288",
+      "svgSha256": "e723af03eff92bff543be383177444271229013e3ee2338abb28aaddf13f4a51",
+      "referencePngSha256": "57464c2e97d17a1d6b115ddf7b2e9f8f5bab583bf5784aef788ef114f5d12e25",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-fracroot-10",
+      "scenario": "24dip-100pct-light",
+      "category": "fractions-radicals",
+      "nativePngSha256": "1ba49452a602a542548d0e02549d6ce6cebfb63a502ec4511e3ff50a6d83a7b1",
+      "svgSha256": "5afc96d4e67dad50211c0fb675be2497450aef50e3adfe1ef5523ae89fbbc40b",
+      "referencePngSha256": "91b4614fba0f390ce1545800a03bb160c94cf1ed02a9653ad7fd65eb84dbcc3a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-calculus-10",
+      "scenario": "24dip-100pct-light",
+      "category": "calculus",
+      "nativePngSha256": "29520c5019937bb483fec9c43387ef5de579aeb6687185df9f1e94fe563f14b8",
+      "svgSha256": "26a534c14fa8f2c192248441c7ebd4e916553336c886520fe74784d6dc4c06aa",
+      "referencePngSha256": "37c5ce55c9a81b19e208b7d28991c93674c7accd7c34643a2ad063af4ff988d8",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-matrix-5x5-10",
+      "scenario": "24dip-100pct-light",
+      "category": "matrices",
+      "nativePngSha256": "e4b1e6909a26505f7b48bebc5d54c024b8c1756916086ec63c63ffd964bc41db",
+      "svgSha256": "5d14ddf1d442f3c485e58e92b04c6d7ff005717439f6eb5d33870624aaed34cf",
+      "referencePngSha256": "6b28ec6fd557afb89447bb5f4b7dfe50898dfb110727133875fbc9a6c3cb43ae",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "normal-text-10",
+      "scenario": "24dip-100pct-light",
+      "category": "text-nesting",
+      "nativePngSha256": "86de7286883510c55e04e9c725d6ec3dd9ed6044932cfb70ed34c7d380374de2",
+      "svgSha256": "b4513f413cf75fef51e14acd5b0a789f678c0a7eaf8dee4ac99ff3d77a3d6a99",
+      "referencePngSha256": "dc8ab44e8134420e5d09d438fc5a76dd17be5fedec0ecc53bfb4bab494b4ebf8",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "16dip-100pct-dark",
+      "category": "operators",
+      "nativePngSha256": "2875598fb8cda115af9b1707ea836c83e7eb71c23312073aa3775fccfae8466a",
+      "svgSha256": "5b7d9c08e3e539911b7d635a8754a770e4b890c462b5a421ef1a4b8fa1827a1e",
+      "referencePngSha256": "c0edcdf60b9311b1f8ac55f3e87c8bce54b5648bb85ee189ff7b8c9deb55938a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "16dip-125pct-dark",
+      "category": "operators",
+      "nativePngSha256": "0113e18615b50eb1d0d3ddf5df083c820cacdc788829ecc80b99ae1cada5acc5",
+      "svgSha256": "5b7d9c08e3e539911b7d635a8754a770e4b890c462b5a421ef1a4b8fa1827a1e",
+      "referencePngSha256": "b3a701ceb05ebb5c705821326fa65f92b912ea6ea140b64d458a52b7f07ed4f3",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "16dip-150pct-dark",
+      "category": "operators",
+      "nativePngSha256": "af40355c8e9f20fafcc415aa7b87e41d45ec6f6ffb88b3df7d70b7ff397699fb",
+      "svgSha256": "5b7d9c08e3e539911b7d635a8754a770e4b890c462b5a421ef1a4b8fa1827a1e",
+      "referencePngSha256": "11f5b95835dcd67abea92d592ee7006568076ff552a2b239d6838ae4b8967b04",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "16dip-200pct-light",
+      "category": "operators",
+      "nativePngSha256": "dc2c9b3a77fa20132a13788e847154c2b0e961133bd2d63aa787f9196f731469",
+      "svgSha256": "886267ffea6236d0357ef32499c145850bc1194f9ace188534e0c8bae8a80747",
+      "referencePngSha256": "287745dfecfeae0998005f7e879e6b7328a5e1606557284d3ca273353c12c567",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "16dip-200pct-dark",
+      "category": "operators",
+      "nativePngSha256": "0546c850a1622bf1936b3190e22a1ccb7ea8be5e6793226230d239aebff54fa1",
+      "svgSha256": "5b7d9c08e3e539911b7d635a8754a770e4b890c462b5a421ef1a4b8fa1827a1e",
+      "referencePngSha256": "cf06a99a9f0347ef09efa9a964ffefc1b0f05a41960c119fdbed0379a0fc7c47",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "24dip-100pct-dark",
+      "category": "operators",
+      "nativePngSha256": "94454557b3b9c9d5557d0e47e9e0959cee21642208530e39f968f05f52f7ebca",
+      "svgSha256": "540fbd1eb1c1cbddab45af973fce004d95c30be043b145ca4ce1fe65304ef46b",
+      "referencePngSha256": "04952248cddaef98e975b196fc468498bd4a3fde99f9b94d10708af7594a325e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "24dip-125pct-light",
+      "category": "operators",
+      "nativePngSha256": "3dfdab06a54db998a036f27c4db6d98c6ada23837a14a7c960b1416ca2b3026b",
+      "svgSha256": "abe9ce0112df2798b6d2e2ff51588329ad09f38f0cf04653c19c5358b2bb919b",
+      "referencePngSha256": "dacabde4ab6a204568c719b8206a2feaa9263e396f4eab55ae48492d04bf27eb",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "24dip-125pct-dark",
+      "category": "operators",
+      "nativePngSha256": "4e1ca7bf8f7f5d72b375e9117863677b0ea853572cabb4c6f1b1e313c5fc113a",
+      "svgSha256": "540fbd1eb1c1cbddab45af973fce004d95c30be043b145ca4ce1fe65304ef46b",
+      "referencePngSha256": "6a6fb48fc605f08c41fb561a0328d1fa3668702722461f00306d9a1cfa243154",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "24dip-150pct-light",
+      "category": "operators",
+      "nativePngSha256": "ac90ecb8835203d69e2cf1766a64f2e25a8151a220bd1808a1897ba5326258f9",
+      "svgSha256": "abe9ce0112df2798b6d2e2ff51588329ad09f38f0cf04653c19c5358b2bb919b",
+      "referencePngSha256": "598c1b5d29e12c7df4f909ded69d5c7b53fb180bf67a66e4dfc0108c87bc40f6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "24dip-150pct-dark",
+      "category": "operators",
+      "nativePngSha256": "ab720148db7bf765b5b056f322b3053bee1f0454a332666034d9047583a87018",
+      "svgSha256": "540fbd1eb1c1cbddab45af973fce004d95c30be043b145ca4ce1fe65304ef46b",
+      "referencePngSha256": "7f3dd8c79aec0d21ac92b4eaaa0bf7f9c28d9927a6ad11e13555d8195d5286f0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "24dip-200pct-light",
+      "category": "operators",
+      "nativePngSha256": "f38f1a147194cceafdef8bfeff9df7d83118d22a4c050b2f19c42546b0e768c1",
+      "svgSha256": "abe9ce0112df2798b6d2e2ff51588329ad09f38f0cf04653c19c5358b2bb919b",
+      "referencePngSha256": "6c1a1d53edad82d994e2b19f6e51a1d379343aa59f4f21b289fbe418503fb87e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "24dip-200pct-dark",
+      "category": "operators",
+      "nativePngSha256": "eef001132bb7cc840d78f3638360395d61a0a04445e4579b9ad1614f1bd3fdcc",
+      "svgSha256": "540fbd1eb1c1cbddab45af973fce004d95c30be043b145ca4ce1fe65304ef46b",
+      "referencePngSha256": "0da75f2834609ad7f21df4f9af6899dfec1201442081825e95cc4c831ab6ade0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "32dip-100pct-dark",
+      "category": "operators",
+      "nativePngSha256": "a14b70aa11ad9b2499af513dac4318fbabf74708de75c3a1e7bca816126b7e8c",
+      "svgSha256": "0b969b47cb8e070c153fea3fc6b2c78b988ed938865ec0469ffd7dc4f31b45f7",
+      "referencePngSha256": "7fd6284ec189aca4293dcc8d1f640e3b7d11f72717ecf4cad0aa124cb126f600",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "32dip-125pct-dark",
+      "category": "operators",
+      "nativePngSha256": "163bbbc6ebeb893d1798c97ba574ad8775f8f2500c1c1f434f62774411a3da0a",
+      "svgSha256": "0b969b47cb8e070c153fea3fc6b2c78b988ed938865ec0469ffd7dc4f31b45f7",
+      "referencePngSha256": "46ed321bf00921e1094744a57c19c599ba516b264bf377881bf0eefdc8d5cbf0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "32dip-150pct-dark",
+      "category": "operators",
+      "nativePngSha256": "bd57c64b85c502c35f64eb2e01f26fa33e6f862833cf57a33b704e65afac64ff",
+      "svgSha256": "0b969b47cb8e070c153fea3fc6b2c78b988ed938865ec0469ffd7dc4f31b45f7",
+      "referencePngSha256": "389b2d8ec501b3ff025d969ec1bb0b16427f586c62f0280e62e0954fbf06d785",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "32dip-200pct-light",
+      "category": "operators",
+      "nativePngSha256": "847ca651c7c43a209ad14b062d3824c55be841120e8f98848b8cafb4e6135f91",
+      "svgSha256": "d1c203c0753b6c5985e81cea67e1b8360a64b10a6979cba8978d512cb320ef77",
+      "referencePngSha256": "dad1b205cc1806c13ec0c2c1d89b8a7813ece704df0f7978a3e9d0c9f95ac26f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-integral-display",
+      "scenario": "32dip-200pct-dark",
+      "category": "operators",
+      "nativePngSha256": "852e34fbf2aad067fa82039034eab1de770bf288df2e078f73b62f7f223d4b1c",
+      "svgSha256": "0b969b47cb8e070c153fea3fc6b2c78b988ed938865ec0469ffd7dc4f31b45f7",
+      "referencePngSha256": "f0c9897b19093ac76b27333524c842e25ce08cfa2a2557623f4141bae00cce30",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "5a734abaddd60ea13ce87b9977cf74dd59af109331da0686a2e14081359ee85e",
+      "svgSha256": "0c04f013dde53a0407e769667657c75bb683192f315770a802c8227a997665e0",
+      "referencePngSha256": "fd09e1b05a78c16ffb008d20c18ddfccb3a1aca590d612bb5006a44d1942317f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "16dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "9b011853079d195e23457a82a0f14352b6ae32195a7688165c7edf2d2370b945",
+      "svgSha256": "19bc30a6b8e3b49a5aa51106d0dfecc33e2d3b152e5ba97dd9013369c5781620",
+      "referencePngSha256": "10f9b09971259d33e4e0c75982b5c059ef985e063d5189f0054557e0a6459fe0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "16dip-100pct-dark",
+      "category": "operators",
+      "nativePngSha256": "97210df1ec47502a8ce5f8d22818855c535506047e13d7a042f1f6eab751f229",
+      "svgSha256": "1e49106d0a549a86e5dc1929a3e95c37031c678e46673bddad5de3f18b410215",
+      "referencePngSha256": "36a8003f77910c672b10a6812986a4a21b9129dd5f7349753972c50bdb096872",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "16dip-125pct-light",
+      "category": "operators",
+      "nativePngSha256": "ba25da6fbe195a52c5c3ffc49bf5586c364b1e8b376555455a4284dbe3efe810",
+      "svgSha256": "19bc30a6b8e3b49a5aa51106d0dfecc33e2d3b152e5ba97dd9013369c5781620",
+      "referencePngSha256": "0809935e7f091709e857511f2d19e40a0bdd0ccfde9bec6952b23e9fe8c5455a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "16dip-125pct-dark",
+      "category": "operators",
+      "nativePngSha256": "3b262559a46d66c808dd235fa0d0bcbee23b7e98a047be4f2f15338f0af7b4f5",
+      "svgSha256": "1e49106d0a549a86e5dc1929a3e95c37031c678e46673bddad5de3f18b410215",
+      "referencePngSha256": "3f698da020e0329670ac863779e00ad02efc2157da67d260e5f63b4a72b8683b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "16dip-150pct-light",
+      "category": "operators",
+      "nativePngSha256": "50c449855da61ba7a0e217f3a566610d00d04968ccd396202a59cd8c9e2840a4",
+      "svgSha256": "19bc30a6b8e3b49a5aa51106d0dfecc33e2d3b152e5ba97dd9013369c5781620",
+      "referencePngSha256": "9d2961566f9e1eae7ec7ec72e026d951d0d7ce69eea88d4f82a00394cf28ac0d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "16dip-150pct-dark",
+      "category": "operators",
+      "nativePngSha256": "535548f439c59504fc27961c19c7d5d6634a44f619e0a91fbc3011517a78cee3",
+      "svgSha256": "1e49106d0a549a86e5dc1929a3e95c37031c678e46673bddad5de3f18b410215",
+      "referencePngSha256": "388d62e76df0bb6de7bbde56a2a9bd051955ebdd4422f3f3e319dcbed077e96d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "16dip-200pct-light",
+      "category": "operators",
+      "nativePngSha256": "88195285a3fdcdacba13802f8111d01a648e9fdc05c3f97abf9de856cab7850f",
+      "svgSha256": "19bc30a6b8e3b49a5aa51106d0dfecc33e2d3b152e5ba97dd9013369c5781620",
+      "referencePngSha256": "fbe4464e9d5c1032b079f2942a1cda169924003a7099ec0a3673709b422ce1e9",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "16dip-200pct-dark",
+      "category": "operators",
+      "nativePngSha256": "976c5968687d6ceeca6b104f22c41e4207b8729bd377c02a245b68cc8bec03dd",
+      "svgSha256": "1e49106d0a549a86e5dc1929a3e95c37031c678e46673bddad5de3f18b410215",
+      "referencePngSha256": "27f6ed77f8d617e1776b936e7ea6e3d3d668c0466506a407aa3657df5ea16043",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "24dip-100pct-dark",
+      "category": "operators",
+      "nativePngSha256": "bc2274b9e695d8260c70548b769d5934a5a2353d19decd5452969f8037a232f5",
+      "svgSha256": "5437007ab133113ac5b588c5e2e68345163aa53c88356a177c510293d31b7341",
+      "referencePngSha256": "02d2376b3c53b83468b3f159a353a1444b6447913b618984cc771dff0e9d57d8",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "24dip-125pct-light",
+      "category": "operators",
+      "nativePngSha256": "e8368f9ca70330a125a22fc6696cdcb276b19104717bb6ef0da75c6d32842fc1",
+      "svgSha256": "0c04f013dde53a0407e769667657c75bb683192f315770a802c8227a997665e0",
+      "referencePngSha256": "f55ff09991ff2f96cc66cf6173c9b396e711cbd91b1af775d1bd21fbe91fb9d4",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "24dip-125pct-dark",
+      "category": "operators",
+      "nativePngSha256": "f5af49dead8188488e2c3ca4c663836042301423e0bb9a9ab703ed5a78ad9fa6",
+      "svgSha256": "5437007ab133113ac5b588c5e2e68345163aa53c88356a177c510293d31b7341",
+      "referencePngSha256": "7c188256d9652d43f9a18506f5a85262f03395bd5e9053acfaf8ce4b0bf22a20",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "24dip-150pct-light",
+      "category": "operators",
+      "nativePngSha256": "df3a27d24d55c171140e63e690482cbcae8e23def716381c998bcead0e7d5b6b",
+      "svgSha256": "0c04f013dde53a0407e769667657c75bb683192f315770a802c8227a997665e0",
+      "referencePngSha256": "28707f09391f7f8a92848d6e21f4d462ec4efd6730ef7bd19899de52f3c31b6c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "24dip-150pct-dark",
+      "category": "operators",
+      "nativePngSha256": "bc6d520a226629bca590a149f3a950859f3c87d5d4a7de2563731d0052d8e0a3",
+      "svgSha256": "5437007ab133113ac5b588c5e2e68345163aa53c88356a177c510293d31b7341",
+      "referencePngSha256": "92525d5d2cb76633d2597404fb6e328faa0e8debdc1f990d8d2da37062364271",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "24dip-200pct-light",
+      "category": "operators",
+      "nativePngSha256": "d5ce867de84cfc5f98cac6073e499ec1e1c54fea74190d21d4997578871d92d4",
+      "svgSha256": "0c04f013dde53a0407e769667657c75bb683192f315770a802c8227a997665e0",
+      "referencePngSha256": "0591b08aacd338a4991186cc870e6ae36d4338bd749a468443fcb592c0367558",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "24dip-200pct-dark",
+      "category": "operators",
+      "nativePngSha256": "fd427d733b05c94c8d963dcd0724d13ba470d1df5805b76d5030c8e6f48a1f51",
+      "svgSha256": "5437007ab133113ac5b588c5e2e68345163aa53c88356a177c510293d31b7341",
+      "referencePngSha256": "ae4e7fd0b9cb871c7f003bd47a7d24e4bebe121a5c01ea0023f947550440fcdf",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "32dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "19de27675998f0715f6429a503ee91bad61224d33456907261a9593f8aeaf24d",
+      "svgSha256": "9e87c9ce0d903dbacced715cc3377a7c1746ba4980fe59cc6b8f9a357a8d3e9a",
+      "referencePngSha256": "1694b8ac2899db6e3d02513096c815f9b9c8c8fb10dcda075a57b3e960129e7d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "32dip-100pct-dark",
+      "category": "operators",
+      "nativePngSha256": "3e11bb04d1610021d2941841565e4b9fbb6c34bf73f27663f282d31673654c2c",
+      "svgSha256": "9fa022fe04000a782ded537fd94b0a2f75661cd487df14858c1af254f1bdf065",
+      "referencePngSha256": "dea83b20a89ff4eabcc857ced2a91008f239877e5f903e167669d15255c2a0fa",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "32dip-125pct-light",
+      "category": "operators",
+      "nativePngSha256": "71c61e4c41f8f6c60c9c797075fe0bdc68b01c4d6835bb617701b96e53c558ae",
+      "svgSha256": "9e87c9ce0d903dbacced715cc3377a7c1746ba4980fe59cc6b8f9a357a8d3e9a",
+      "referencePngSha256": "8bc3b55dc940e9c4ad25f07c03bc0a5aeaec9707160145d0b44823b37872fc6d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "32dip-125pct-dark",
+      "category": "operators",
+      "nativePngSha256": "a902fddeff5d27c872871ab05f0046760053b793789333e1370651706fc1818b",
+      "svgSha256": "9fa022fe04000a782ded537fd94b0a2f75661cd487df14858c1af254f1bdf065",
+      "referencePngSha256": "4021137c62caee28e2e61b543e591d403b6b328ce7f34ec48a65581f08eef7b7",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "32dip-150pct-light",
+      "category": "operators",
+      "nativePngSha256": "531afe73b6ec544f783867a9751a3df58c4128ab2e51a4f721f92a291eaf5957",
+      "svgSha256": "9e87c9ce0d903dbacced715cc3377a7c1746ba4980fe59cc6b8f9a357a8d3e9a",
+      "referencePngSha256": "5716286314e12ba93fe50e35304422815ff52f81369ce3b18b94d411a66113e2",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "32dip-150pct-dark",
+      "category": "operators",
+      "nativePngSha256": "cfb2f55f1a5f45388acc8d97ca86fc49002f2fd4d6bd6911518dafedaefe89c5",
+      "svgSha256": "9fa022fe04000a782ded537fd94b0a2f75661cd487df14858c1af254f1bdf065",
+      "referencePngSha256": "346fa13ec44081fc2145c801b3fa549daca645b92be5a995cd1cfe038268735e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "32dip-200pct-light",
+      "category": "operators",
+      "nativePngSha256": "41f94cc00286a65f483f4aef02b981b179120b8d6bc60120ada0f017344d6279",
+      "svgSha256": "9e87c9ce0d903dbacced715cc3377a7c1746ba4980fe59cc6b8f9a357a8d3e9a",
+      "referencePngSha256": "f082ff53e58f0684782a40400493b61e0a593dbdec6e08ecdbce8bcace3fb0a1",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-display",
+      "scenario": "32dip-200pct-dark",
+      "category": "operators",
+      "nativePngSha256": "03ea2844ef01e4f07feb3c4ca6a492992c219c30a21c3323f80a5be25ac3afbe",
+      "svgSha256": "9fa022fe04000a782ded537fd94b0a2f75661cd487df14858c1af254f1bdf065",
+      "referencePngSha256": "1185e4ab571f9263307cb46ec7ae321bf316d486cf05756bf45ab3ebeeb5c9f0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-bigcap",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "64355be8f5fba0f486e7a0eb7e2a76d50a5e36eed7841c26d14e68f85d16cec2",
+      "svgSha256": "b72dc89ac137ac24bbf370abed2870092534740d7c693cb7c96f8f81ff3e3667",
+      "referencePngSha256": "6827e01b9e237119a60d3560e01b79ac09983011ea3cc14cc07dd10915451b70",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-bigotimes",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "efce7579dd3fccf451833cbf1e21ea1b3e5fa8558cfdc42e0351dc1f75feed37",
+      "svgSha256": "e9b6d421566894e307b6c2e88ecbd81ee5abba7e995b26ae2136816ab6d82374",
+      "referencePngSha256": "0d8240f11e245dab515d4ff7e9fba097d43de3f6d8f025ab4a6ea84a299c01e8",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-iint",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "438a8c02e6cb5834265d9f8d0c12287047811b8d2040b2a2876fba0648ad5c67",
+      "svgSha256": "a61f439de822fde121b8e50b9c5143bff3b5b160648211ac464009841d6be778",
+      "referencePngSha256": "7d561df9633326e9361ee86534d7d9298cad86e997ae5d915620e1fb1348abd9",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-iiint",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "17fa05f39f90a670a09ce33f5bd908ab3ff2fc09aed4ba5672551590711c29f2",
+      "svgSha256": "9ef2ae12590103d1cf65e9eb016981e18f2277e513127fdf182f71db6428e664",
+      "referencePngSha256": "45e43c55b529c2ad34bebc88c3775ef5125bd6269136111e6bb12006d356f0dd",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-oint",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "6285fc2bc088e07a820b6a5fc6eae9154c6e294575c1ac08e88fba30f786aa3e",
+      "svgSha256": "37fd744e3975203616fdc1b9512e071caf8efefa981278c171835275f217156b",
+      "referencePngSha256": "10ca9b0b8e23437d929d5ee85bc4e61bc33198c12ab5b8b9434872b2ce1f2762",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-oiint",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "d2f4a9d37651dd330ccb91697d4e9f4f7f31a4bd75e3caf5d68b8309117b884e",
+      "svgSha256": "b2366abdf51feeeb6ca34bf2d84108caaac1e301286d39d76ca6d7dc645c9565",
+      "referencePngSha256": "03adceb703fe369d5b87b41429d129fbdde197293c145dfa61ed677693b9532a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-limits",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "cc84ac24eef2297cfc29593f0962299089ada5563abeea254476d4bf952ec31e",
+      "svgSha256": "e195890197ab3fa45a4b4f6904662d84e56caba7d6549504685f12f5bdc74704",
+      "referencePngSha256": "46f52fa3942f2b93e5dfda40e54ef337eeef01200fc25b71ade1aa2e8d59330e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-nolimits",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "91a7f42e27e6a239bafb316cd717a1bf7dd3d4f3cbf0f1fedb657bfbe6448cb2",
+      "svgSha256": "c1112f6daa31a6b75b289ba4317f263571e2ffe31da64b596905a16f87198081",
+      "referencePngSha256": "6c2e03949d1850fb7899ba8f73cd6364c0afa6a10b8c2a3a58fce8f543ea8bc7",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-lim",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "0daaba92349871b0a8f417940c6df2103d5733fa5ab3c43123e28f20ee38936f",
+      "svgSha256": "af4a55efc1c7bf8eef2ac5e5fc95477c6b3469cca5f5ec435a9f2d65ead69d98",
+      "referencePngSha256": "1f24f047bf89fd363b59115044e64b1a3980acfbc6864e4a9e0c63c41dd35b0b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-liminf",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "f5bca3bf9a71d67c179d12af615baee32c2223af02dead46191c4a80eeac31c6",
+      "svgSha256": "031b8c5c1a1a13670179961686bc9d68bbfc5f58810e0ea59b3becee6071ef65",
+      "referencePngSha256": "919b25b0924264a3fd5a8f46feebdabb5f024a0daa9e4fb613b549dfe014c285",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-inf",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "04bba50888659aa6c7890ebf5c217129bb4052c9341711edbf566ef516426bb5",
+      "svgSha256": "5c98048fdafdc842bc60984f6e53367abb05563e1a903dbcf46d83f6cb99f2ac",
+      "referencePngSha256": "29e1f7a33358b89f1b0d674b51ec9840873f96e0667c9cddf797562cc9fdfbab",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-trig",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "0dfc4fb6e02bc41352de883ea87188068ad333567806bc044717f61a3fc710a5",
+      "svgSha256": "357adc66d40702fb5fad9fb7942817f04a482f52a8031e29cbf9a47503f061a9",
+      "referencePngSha256": "ae6092f913e8360e0210811355f7af390e58caaae9620bf9aaa91c6e4f59428c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-log",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "9af0ff1aac57a7c12086c810676fc30d665223d6cff960573019f866554740d9",
+      "svgSha256": "5135fbbcd15340704127460b0ff183c4332ac2c5852294a33c5c56f2506c09f2",
+      "referencePngSha256": "f82f5d9a9c8502c3a334ac6777c9c94074be1c00d1133bb527ecb82ed980396b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-script-operator",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "4a23c8d7efd3d73db16f13e44dd8ccd719ce95e1ccfc54d0e06a1c142bb7c6d1",
+      "svgSha256": "65953202da37aff9325d97411fe00555715769cf27d26f2a265468c1adebae64",
+      "referencePngSha256": "b933e367f637f01a21a4c0c52958c7e7dc904c8f95e53ba573281fcae04f8197",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-sum-frac",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "78cd9c4bb69c5f83e13ecb6cf867bc9a964b09f3f4829ccf23ff9ea911addf76",
+      "svgSha256": "13187ad469833a7832c2fddf50285e36887e08cac345c7a6346ad284f759e9ad",
+      "referencePngSha256": "cabfde9de543819388e49e450103f6987fcf9581c14d8a83b638fe45f9217c6e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-operator-empty-sup",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "91c2234bfe04ac8dda7bc1a2f26b7dd5764c5c0723d777bc91cf19c59cec73d9",
+      "svgSha256": "14844c4b5a227d7a7d8a9bc94e52753098992686ac0d502bbe82a2b2f6cbf184",
+      "referencePngSha256": "b7a784b45201fe1c72ddd0c5f2c3b0476921fa90ebd6fe80a83b25e6ba6fe322",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-operator-group",
+      "scenario": "24dip-100pct-light",
+      "category": "operators",
+      "nativePngSha256": "67b0fffa656ae5819d10e47d26af9275b24d6352d3163e304b385ef444443b72",
+      "svgSha256": "ab7ed7acd631ae04f56370dd831f8f8c5e8c75533db5bfdf891761e133e08d19",
+      "referencePngSha256": "091cabf792306393eae21009aa3d852e7e726a76d0d95dbaccb6033e0fe508fd",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "16dip-100pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "61e654fadf0e9141b2d44bd4c2abe116eac4ddf5873953634ecb14bf3035ce89",
+      "svgSha256": "96c423d3eaf4420b1c4cee890c5a2e7a36a8669a649da9ce61f3727b71a5b02d",
+      "referencePngSha256": "ac23c2806f966a870383eccf55efa9977c00db3698a4e49095684421ad60bcb1",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "16dip-125pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "f2c58e3d38cd54ddb6b60a3f15455e81da27ad0e0dfef2aaf113df6ff53ec8c0",
+      "svgSha256": "2b381f3cc416f94685829eb653cd75f426f8132cd707667759ff75be1a4e949a",
+      "referencePngSha256": "95734f643fe2476aea978d9a2f1148dcea5cd86ce084a3ff7a8ef7df3a0d2dfa",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "16dip-125pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "687b81016a792a650203505f21d03d44ad7bcc390c85216fdbcb7d2c37e51fe4",
+      "svgSha256": "96c423d3eaf4420b1c4cee890c5a2e7a36a8669a649da9ce61f3727b71a5b02d",
+      "referencePngSha256": "32aa37b069b650cd1fc5120ab2146ec8c3aa23ee564dadbc1aeaf577f0cefa7f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "16dip-150pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "901305cba9f84f0fdd993ced4047fbe61a7fc74e92197cb9e64902c5a5f1e7c4",
+      "svgSha256": "96c423d3eaf4420b1c4cee890c5a2e7a36a8669a649da9ce61f3727b71a5b02d",
+      "referencePngSha256": "ab6d1153bc3a5a8655729085c51ab4b860f4024e714fff03b752adc73f2fde3b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "16dip-200pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "fa2e482781733a2434224fbe5acd3a7e3a506af2db142e73157cb95973eb68bf",
+      "svgSha256": "2b381f3cc416f94685829eb653cd75f426f8132cd707667759ff75be1a4e949a",
+      "referencePngSha256": "7764e2ade8cfebcbdb0ac6c9fb36a5bc8f51f1a37141002813261c12d54d6960",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "16dip-200pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "5d434c4dd50ff9ece32d26bbdd235b0a0cf74e8e2274a4d18cd853a65d9d706f",
+      "svgSha256": "96c423d3eaf4420b1c4cee890c5a2e7a36a8669a649da9ce61f3727b71a5b02d",
+      "referencePngSha256": "b43ac2e23e4d083471b26139bfbc3c4b32bae2bf8f35d8f7445be4e1a7cb8f6a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "24dip-100pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "d91fe48368de2bfb5207f9b1240ddf277618e3a992977a6b81a24972733b039c",
+      "svgSha256": "7bd90f5bc41af6926a963567de2c1f924a3e0ba379599462f892c25ba24521af",
+      "referencePngSha256": "64f9de4a7c16b32c5b7ca66411bb8ac8e86a3742a1931b8f8786ac923f88e0da",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "24dip-125pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "763ae7a86453a3f21b8be2229d350ea8f55f899a652a2f392c8a8282ba27048e",
+      "svgSha256": "7bd90f5bc41af6926a963567de2c1f924a3e0ba379599462f892c25ba24521af",
+      "referencePngSha256": "a0a822dadb0fa22b6581442197a569ae80e1e6ed9b2b3ac2307fafb047c1f6cb",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "24dip-150pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "37a931d6e7eb1c8673f89317247ace0b5982a9ca7ea0d4fd069dfe8441cc2442",
+      "svgSha256": "9766ab53df5fe5fae4b0861f73ea8fd6d8bf4fbbbf8a2f793e57eab93e178daa",
+      "referencePngSha256": "fe0357f38d99e9c56e67673567cd3abd7e2ff6039eb777827f68d86b6a3afcdd",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "24dip-150pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "477a04f0164974aaeafe14303dc973146923f2bff79bd07b6bfb759a9b3b2b92",
+      "svgSha256": "7bd90f5bc41af6926a963567de2c1f924a3e0ba379599462f892c25ba24521af",
+      "referencePngSha256": "beddcdd348e8d466737be6dfe9807daeb56496636f660c32a228c561aacf0f69",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "24dip-200pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "35c1ac14260f41131bdf76c0ed499017e14c54dfc229cce499ce8adbd95f81f1",
+      "svgSha256": "9766ab53df5fe5fae4b0861f73ea8fd6d8bf4fbbbf8a2f793e57eab93e178daa",
+      "referencePngSha256": "602d70618384cea57dbb8c7cd253a9d42035cbd1669e56c2c70b4356fe3aa706",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "24dip-200pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "39757636c2149b8c139f013e9b6faf74b83c24d603855c425996a8ab19c4ccc7",
+      "svgSha256": "7bd90f5bc41af6926a963567de2c1f924a3e0ba379599462f892c25ba24521af",
+      "referencePngSha256": "801168f1e64b1b0aa798c28ae008d10a764c630ba14e5a4a5e3ae04f55ba50a4",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "32dip-100pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "02995693d0544d620a5a53fe73bbca12f4f3ce60a5bfcda36bd0b9c892ec0990",
+      "svgSha256": "9caf6075fabdeeda1d0fdbd894b74e08ffffb9c605aaf2f223ab0bec34542c13",
+      "referencePngSha256": "95dc88c9c6cb82277534ad15d21d82112d61c7bf8f300ccfc33e508122ecd2d1",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "32dip-125pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "a7fd21bace2766b8281dac87ff3adb23fd41a3a09aa2592217e24dcaa62ac93f",
+      "svgSha256": "0d734d54db8265f635340d338d999c2a03fca7bc25bb26665972c7f85a711df6",
+      "referencePngSha256": "81a21b3976696fac481c21cb509e04335355c59695e852a1202bc1bd4128b5fb",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "32dip-125pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "bd13542ee94e4d246ed30b93f057f5dc4b3b9e2f17ab68ab9746609842163cbb",
+      "svgSha256": "9caf6075fabdeeda1d0fdbd894b74e08ffffb9c605aaf2f223ab0bec34542c13",
+      "referencePngSha256": "766a943639b09415f8a4a897ef7262bceb3ce3dccb428184f57d4d9aab10c08a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "32dip-150pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "ead2710c1d347c8632e2355a3e3abb27f5318b2b69f7b5eef02922d8de86d749",
+      "svgSha256": "0d734d54db8265f635340d338d999c2a03fca7bc25bb26665972c7f85a711df6",
+      "referencePngSha256": "01618b56176c79c3abb3d237a2581a79842cd003ce9735bc7919221eef90b842",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "32dip-150pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "75598e9d9ad2291bca5f56ae0e1d7305c09a065bcd6a0110144302fa08e5e29e",
+      "svgSha256": "9caf6075fabdeeda1d0fdbd894b74e08ffffb9c605aaf2f223ab0bec34542c13",
+      "referencePngSha256": "277c98e65aaa1b22bb43ec1260466ea17a33d23f625d5794d7b79fb207e31357",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "32dip-200pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "73847cacbc7bf49b3bda270964fb7fd09e1e1ae203cb32d787dbb25d72e09fb7",
+      "svgSha256": "0d734d54db8265f635340d338d999c2a03fca7bc25bb26665972c7f85a711df6",
+      "referencePngSha256": "31ad5b7cc0b3a1f56aea745adc839f5235759f22bade9e4f1861a94aac135a8f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom",
+      "scenario": "32dip-200pct-dark",
+      "category": "generalized-fractions",
+      "nativePngSha256": "896dd2e2704ff62f2314b17d2a77ce043c40e781a675cddc474f9eabaffd424a",
+      "svgSha256": "9caf6075fabdeeda1d0fdbd894b74e08ffffb9c605aaf2f223ab0bec34542c13",
+      "referencePngSha256": "a931c0ba981f46523f7962200f030016e79ac169b4fcb055f3205d473027364a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-dbinom",
+      "scenario": "24dip-100pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "21ff9843bade60123e44a168a18bf39bcdf109c87e6ff991da6b218fc903eb73",
+      "svgSha256": "cdc6266a06c840f21d3689529d966a24e079affdccea1167fa61f188606710bf",
+      "referencePngSha256": "81601373af27a2e0ee07a43a8463f57b44637491017199e837e777b69f14b3a1",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-binom-nested",
+      "scenario": "24dip-100pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "3c67468c9f906ed5f05ea19a47663525ca7f9ed7bd32257094c7aa34c6d60e3a",
+      "svgSha256": "751861894d78eb8cc83ad3f5ad1d0cdfd84b6a6ac3ebf2a65c3abf4df803f3cf",
+      "referencePngSha256": "32e9c0503074b0366f0e5067c5b4dfd842c68e9575597fe94f0c02cbb2a9d199",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-genfrac-scriptscript",
+      "scenario": "24dip-100pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "6433f7cd926e1d0f0d229d2b0c6008a2ab03d356bd78b8c8657ee49cacadf871",
+      "svgSha256": "313d722c642b3d89467a46ee82fb590ca12577d5b9c78d28eb43b88a57ba8581",
+      "referencePngSha256": "4c05e2041910567a4a5ad43bd9d9e0db910b6c6f5c5a2e923dceb668d34ebd10",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-cfrac",
+      "scenario": "24dip-100pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "91ae147210f3c8816b8c5dd8cf218d0a4afa81430ac54613dd6e023d167ac758",
+      "svgSha256": "ec68d2f075b39d5093d2a185aca3bf4be9dbf143f7b4b41f1f20949c229a652e",
+      "referencePngSha256": "1998a94ed6e78e266a3979bcfcdeaa3aaade215c65528a073f4f95a7485eeddf",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-over",
+      "scenario": "24dip-100pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "9cc14fb577d9e50cc2ceea640bceac59d4be5620f22437c271b3c8571a064ca0",
+      "svgSha256": "a4a0aa88b474363c990ba36568f47aa993bc62eebd69f30b87ed8c2016d5a471",
+      "referencePngSha256": "a3972252e50c953b086b28201bca53619a80c663ac799adbbd66ff347b288d46",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-root-nested-index",
+      "scenario": "24dip-100pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "b09dea8162bff4d5dbfe94268078932d38f56d53d84e557307a28f5504a6d50d",
+      "svgSha256": "6a741a88c7eb41d9d36f10a64717e9ca0073c01af8fded4287fda871f57c0f68",
+      "referencePngSha256": "025e5e5a3806269bd3e2c93bac5937880b93beee77952cdc70c2b19c3c1327e5",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-fraction-empty-denom",
+      "scenario": "24dip-100pct-light",
+      "category": "generalized-fractions",
+      "nativePngSha256": "aadf1d1c50f76cb7e15390c02f724bcc8653d12eb119f15fd6e0061ea09a88a6",
+      "svgSha256": "a19dc3113d985a159a7b98cc701a0ac3a7f94b3e38d03dc3420ad9694a63046b",
+      "referencePngSha256": "990568500298cb72c2ddc464e95d937b644f51e7b6c95811a32509f9d8adc5ca",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "16dip-100pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "712084f5eb3ab7f1dbf95b717753442979a973688ba96cb8c768d14bb8763497",
+      "svgSha256": "5636a1272d8281ef3475d99ae5ab92b1ba07e11f0aeae45b6abe2f61ce2d7376",
+      "referencePngSha256": "987810ea88ad03b1b96e473dfa0f5184c662063c98f649503ca836a828638c4e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "16dip-125pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "90f72e3612bcf8f44398f156b2819b017d335591c6aec9a232c5fe34c82f0f2c",
+      "svgSha256": "5636a1272d8281ef3475d99ae5ab92b1ba07e11f0aeae45b6abe2f61ce2d7376",
+      "referencePngSha256": "ee82603d51ded1edd9e4cf44d5ea2506e7c3d63188515d20412e39cfea172909",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "16dip-150pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "532a70f617ca6b989ad9019cda0adb2fadcf7fb15150f157db503c18f475f97d",
+      "svgSha256": "39bd299183c3804088bb8acbc1c9423fb645c1a9fb118375b1b4ed26ea8b8f4d",
+      "referencePngSha256": "031eea2038ac7f81baf7a14bf7a4817bda79098f5ca1e4cdf9658869799351b2",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "16dip-150pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "3147435771a994148e67c8d12070ac974b3164f92737e35fd4ba0766f41ec3b7",
+      "svgSha256": "5636a1272d8281ef3475d99ae5ab92b1ba07e11f0aeae45b6abe2f61ce2d7376",
+      "referencePngSha256": "70cd8a652482c3a5b7915b01d2817af17b73492966b515376047be1a1934a55d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "16dip-200pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "7b219be1f6e480beb2123d22a8e029286c200da7e30e04a13e72abd9d6e2f21e",
+      "svgSha256": "39bd299183c3804088bb8acbc1c9423fb645c1a9fb118375b1b4ed26ea8b8f4d",
+      "referencePngSha256": "7c9a4dcd54636f65acae1820a12d496a260336aa11f7d4b4384687bb4e38f4b0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "16dip-200pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "01dc8914f30675d2fe821a11a9f8b40644d8bdb34b4cd9bfeb9afea2c7a6ae5d",
+      "svgSha256": "5636a1272d8281ef3475d99ae5ab92b1ba07e11f0aeae45b6abe2f61ce2d7376",
+      "referencePngSha256": "68d65cb66d503273137ddf26b36b9941541cc11e9928c1b0534a8c04cb478a6b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "24dip-100pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "b723e3838b760d00818a3508b6de6f0a2a84ff5660d3dc84022de35c98578480",
+      "svgSha256": "4aa4f030f99ee397f4ebfb7d5203a009233d99f31149eec5af4842f7a911d940",
+      "referencePngSha256": "1955c0e425b4f147f403b9b94ae6377d2fd609bc70831054a218d7df93246898",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "24dip-125pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "c0b8b63a741ff1572900f9d1f39696cc2908478e885a3d8008a5cfa31ff2eed0",
+      "svgSha256": "4aa4f030f99ee397f4ebfb7d5203a009233d99f31149eec5af4842f7a911d940",
+      "referencePngSha256": "ecbab533981e695e0cfc3bbefb457de1b7ef1ef63b1dbaa3b04a5afda62dbbe1",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "24dip-150pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "ca244b0cae86cfbf72ff0f26f818139ca349eb47dbee90f9ec2003d1efedbaca",
+      "svgSha256": "7714d04248cbc4927f03703f551e37b5a1fd18e05174072857aac927f1e6f1c5",
+      "referencePngSha256": "e4e7ee7d1068eeaf8bde16155e5709129cbca6eec61a2c0d9be594d5256b65e6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "24dip-150pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "180c228151b399b0b7fa6470516a60a50b662171c00e4e07465fa17a4d607d9b",
+      "svgSha256": "4aa4f030f99ee397f4ebfb7d5203a009233d99f31149eec5af4842f7a911d940",
+      "referencePngSha256": "43d4bf1e6adba80bc31bf05547a72dda26ba21611a7e70ec572053753ceb5bb9",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "24dip-200pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "f53627ea71c0f8bacbc2d6dccad5c52ac9203197fc3e2bc456dbaf4ce82dd14b",
+      "svgSha256": "7714d04248cbc4927f03703f551e37b5a1fd18e05174072857aac927f1e6f1c5",
+      "referencePngSha256": "9a745427631b0b381eacc7c47659a3a573383d676037f714c6bb339367f026f2",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "24dip-200pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "9b50e3b943587e5970b438ed2bc6019240ccec081ce46080d14c3b7778483441",
+      "svgSha256": "4aa4f030f99ee397f4ebfb7d5203a009233d99f31149eec5af4842f7a911d940",
+      "referencePngSha256": "7260f5bdaaeaa8487e2da09fa5d29a92c34ce45815e23b72f7a03c36f14a6f99",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "32dip-100pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "6e2f1ce0a5b770d321b3096f730901986c73f0a0c03836fc9155108660e9de83",
+      "svgSha256": "b8b8e2e28781bf3cd22ffafa8dc9dce6aca76ab442e07229245d77d89aca3a92",
+      "referencePngSha256": "a2eae0aea0c0eb9cab6ccb340df06ae7a1f2f441d63745d94e53734ec64b7115",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "32dip-125pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "883136ff6ddbc1aad4d76a2e32c8ee532bbd2f187de3a3fb6390f4bde1f51f55",
+      "svgSha256": "b8b8e2e28781bf3cd22ffafa8dc9dce6aca76ab442e07229245d77d89aca3a92",
+      "referencePngSha256": "b5d07bc4a36f68a09a3e6478df624b2cc4f675ec33c09154d7ca7d1b93d290a7",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "32dip-150pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "86a2f296d0c939e4305f45bfe97ea1c49f5c064d052f3ac30e2b0a388739f439",
+      "svgSha256": "0e4615bbfc56d13e58889e8789b7ad61227556ca8d8251c8d0d894c811d8cec7",
+      "referencePngSha256": "18a6fe1c17d31ab80517d48df971dcf384440987dca7704aeb914863846c0e43",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "32dip-150pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "2ae2a92638ba32293129a3dc750c508db30556f3c1278b096c8c1d4d6393e27b",
+      "svgSha256": "b8b8e2e28781bf3cd22ffafa8dc9dce6aca76ab442e07229245d77d89aca3a92",
+      "referencePngSha256": "45829cbfd55d3188d71041bd8a47d70bda1bfb77450cc0cff71d8d980d1299b8",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "32dip-200pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "feefb90ff2c5a644d1ebe3d0fd1b1f93a72d4254b00f63499630b17e47de2164",
+      "svgSha256": "0e4615bbfc56d13e58889e8789b7ad61227556ca8d8251c8d0d894c811d8cec7",
+      "referencePngSha256": "8f9a804982e29d948a0cc829d36206b67158cef0db7ee4f08c55f5358ae6f8e2",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall",
+      "scenario": "32dip-200pct-dark",
+      "category": "delimiters",
+      "nativePngSha256": "eac76d4d12cc9bbac810c6a8f1d6a1c07eeeb0b5629790d51373d962264fa03b",
+      "svgSha256": "b8b8e2e28781bf3cd22ffafa8dc9dce6aca76ab442e07229245d77d89aca3a92",
+      "referencePngSha256": "396adc8b0bce12d8e95f98a869871afbca8b9ba344b22f187f148a6bf6bb81b2",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-bars",
+      "scenario": "24dip-100pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "4cbcd4440a65895b9e294d90454971353d9c10ce95c085043fa2784782f62729",
+      "svgSha256": "5233631fd8d162ef0ed1b227773dea7a95486e8e737a961db6858d984b859f61",
+      "referencePngSha256": "4a2df6f591520ae586e87310ff54a5b58e3677491004349e76988c567032cbbc",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-invisible-left",
+      "scenario": "24dip-100pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "acb1154d6bdf2c81e1f312856018be6995efa8da8c28f918eda0f979d7d9fc51",
+      "svgSha256": "96a695a3fb8f77b2d875e974969c3664e909e17e76f6ecf1ad7648ad66fa9640",
+      "referencePngSha256": "2f823bf51d5362e7bfe9b8d833d4a5f965500e0abcc1c1db28b9bfa6997e30dd",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-nested",
+      "scenario": "24dip-100pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "fec762997febb1cfdef9cef377354cd7892511cae47010d3841030bd5b61970b",
+      "svgSha256": "8392dfdab6f44d3d2dc1567d98a902b59348977e7d7ca2d275fbab60cd2059bc",
+      "referencePngSha256": "bc99cea28e79519bc573355dd11a70154a6da8d658b6354f6d6ac5ed829da354",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delimiter-tall-frac",
+      "scenario": "24dip-100pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "f4371c0b2482dc8d2fc9f2e71878b7f8c3d5720e0fcd4ae7e73b90eae356d5f8",
+      "svgSha256": "b81e44dbe6542bb5bb38a31226839c50286de46e9e914cd4f9f14935c7803e7c",
+      "referencePngSha256": "a50270400e1857674c757d52c77a6f9b3b38d1c438ac5592c5d48550f2c7bdac",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-big-size-2",
+      "scenario": "24dip-100pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "1015996c0d5408093d243c103f3bdb49b86b1815ebb1fd7fed29a2d11ebed097",
+      "svgSha256": "1cd1582addc66ab00d8ca70501f59d7f0d600a515b72f32ae01b6e5a72a11f27",
+      "referencePngSha256": "b09ad974f9e216b3daef99b6838288571c2a1de642ab1a13407f58be57891f60",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-bigg",
+      "scenario": "24dip-100pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "fb4b530ef1e8a8395663020b17a986e6366d406fb92bf4b6d0cde7d8c5991c84",
+      "svgSha256": "69397a98f7beefea55ee31566c23e55633aefd682f1213aac28269da7c53c34e",
+      "referencePngSha256": "914e2d7d68beb9d05394b9332cbdf7fa1237940071e1764f88734e89fe59d15f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-big-middle",
+      "scenario": "24dip-100pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "66f73c2af24481e0cf995e2e4366aad540d96ae982f8fdbc96767aa98e7a63e8",
+      "svgSha256": "3aba34cde1156e42863ce46a2a25e6cb0330e8837fa0fd138b915cab838bdb8e",
+      "referencePngSha256": "17c0d60f8c701c3edd87e75222a28bca0a6dd9ed07d3c75c9d6a89e810c24f2e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-delim-display-style",
+      "scenario": "24dip-100pct-light",
+      "category": "delimiters",
+      "nativePngSha256": "50377f640df83a4402edebd91426ed0c094581df9b9857863f62280a56df5da8",
+      "svgSha256": "c6aef0bffc3f1aa717a629b1c8b06dc1e9692076755574ad79c5f80e69e48ced",
+      "referencePngSha256": "2a1a261938da824b3be9f9978f23e1703e0a7b2f1f55a8c5228474133d92616e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-tilde",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "e1a82745e032e1d21857472d1016db08e81fe6bc673e641e66926ca4ece71eec",
+      "svgSha256": "a3e7e489e15a11728b994b6114c7ed0e1b21016e43e35989834294fa3217f63e",
+      "referencePngSha256": "fe2261d18483d2196adc5cfc2227d7c3416fc7933e5c1259d7efaf3b7c332df2",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "0530682c98b4e5f2fa91ac234b47151608f1ddcf2fa5b653fa2c6aa6d46f4da1",
+      "svgSha256": "ed325615d0c47d465d98317df6a6c3849cc009cc46d6f7a9dd450d6c81d02366",
+      "referencePngSha256": "70405d3b3c91fa12d6bc8275bfb159405166d0ff6c3392d516679e098b005588",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "16dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "f5eaab433335206deec231935886f43e21e44faf86415805774942cfc164019a",
+      "svgSha256": "76888d06cd989137bf672f1c527079da696d9a5b5be1f4ac14b980cc197289e3",
+      "referencePngSha256": "e6db65dce46999b5103a26394baf5ac171d2758ea38cc298f67bf4353aa2fa7c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "16dip-100pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "182756cc4eba1ce1b46c8e8681f0534c59e578bb1f03204e1176845dcac0011e",
+      "svgSha256": "163b5e16af5cf178c676ab5f580997e1463e9736877489924bedafb441b93a4e",
+      "referencePngSha256": "2c00c3bd04b7b54d1baeac3e28564f58f83d8f381412be2c9b0adf041c081254",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "16dip-125pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "b90be818196370529e46e5caa57d65df3cee4c75965f9b40bbe70a761d33de25",
+      "svgSha256": "76888d06cd989137bf672f1c527079da696d9a5b5be1f4ac14b980cc197289e3",
+      "referencePngSha256": "a3a97ac831a7978fb7e5a6ad95260c5d6376c656084e853f034498a5780d3882",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "16dip-125pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "581dd3f704139894ec27fba7a9bbe626cac31af19aff573bd64c5ebe3f2b8aa1",
+      "svgSha256": "163b5e16af5cf178c676ab5f580997e1463e9736877489924bedafb441b93a4e",
+      "referencePngSha256": "825fb1c6e55ba6ba41bff0511ce3b529af7a519030a102b3c4d6a8380c0df78f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "16dip-150pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "c72859e33c8ca1c73df250afb721d2bc695458ba41c9c23d02b73beb9862a4ae",
+      "svgSha256": "76888d06cd989137bf672f1c527079da696d9a5b5be1f4ac14b980cc197289e3",
+      "referencePngSha256": "1a57168e79fe4289b1c68955b30262f23bcc28ecfd5566f9ed77a1944d2444f9",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "16dip-150pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "b4ff23c17279a049cf1b93595d9522221dfd44a4c99ede6a24a0dfc8cda80d64",
+      "svgSha256": "163b5e16af5cf178c676ab5f580997e1463e9736877489924bedafb441b93a4e",
+      "referencePngSha256": "d79264047302264672c2983961305e05dff8c3a7d24202dbb7e3f9dc3fab81b2",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "16dip-200pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "3921eab0310cc759c134b0e6036078b875dd34f9b9eafb201f660fbb5ba7c2ac",
+      "svgSha256": "76888d06cd989137bf672f1c527079da696d9a5b5be1f4ac14b980cc197289e3",
+      "referencePngSha256": "67f15a6d893cb5fbedf9922794fcb3b042f80f78d497b38811edc293e2303a96",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "16dip-200pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "dfc93fb40a093a492331a36cc28b3c3c5fc586e1e6c1e02efb4eb6e8d0bf5fd8",
+      "svgSha256": "163b5e16af5cf178c676ab5f580997e1463e9736877489924bedafb441b93a4e",
+      "referencePngSha256": "0615b3615481ecd84f58b90396f8fc38090a1e889645fcac374441fbfbf53378",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "24dip-100pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "90437522d8546dc7a9237f8e211d737957381e103d61d5d2a9a9a41181f1ebad",
+      "svgSha256": "0dfcf88532d4d0edf853c814e16d8308658a3b79a49cd0d98a1ace7f86cbc235",
+      "referencePngSha256": "b4a329e5827c282b9beb317f18a241ab5b8c18c9579b3b4b4c920701c5d07de4",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "24dip-125pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "88e944c691f095d0d6a3646c3a0f00c2d41f4b5ab910dc9f3aca6ce2e9fb4cdf",
+      "svgSha256": "ed325615d0c47d465d98317df6a6c3849cc009cc46d6f7a9dd450d6c81d02366",
+      "referencePngSha256": "6d572f3d57fc0167ca2d1e8e1abf368805815682e819682e5abe48409adc6529",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "24dip-125pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "462312e0055184d0cb9431011b4ee68b638f379711e35068bb0dc350fffa6ddb",
+      "svgSha256": "0dfcf88532d4d0edf853c814e16d8308658a3b79a49cd0d98a1ace7f86cbc235",
+      "referencePngSha256": "c6594b6bad6487caa6facdfdfe69bb3b89013323e552bcba6e8a05e93ab3c362",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "24dip-150pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "391de17d2cde46b07caa9a7c8f6cd869dea7d54a6b6dd28887900dd668264e8a",
+      "svgSha256": "ed325615d0c47d465d98317df6a6c3849cc009cc46d6f7a9dd450d6c81d02366",
+      "referencePngSha256": "141d6e6ad2666b1343008ba1abda2798bf018456bcc19ca3da6de92c321aedc9",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "24dip-150pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "84f8b0defd7174f7fb3f427ef3880f6870d67aaa25829794a48c9781d8afd3aa",
+      "svgSha256": "0dfcf88532d4d0edf853c814e16d8308658a3b79a49cd0d98a1ace7f86cbc235",
+      "referencePngSha256": "0db546fe3956f8eee5d49206ee0a1466323d01135f5158c495e2f66efebe8b32",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "24dip-200pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "32bc465123792b0df58e7f6fe86a557ec52a9781c4105aa674d45f81b922a9de",
+      "svgSha256": "ed325615d0c47d465d98317df6a6c3849cc009cc46d6f7a9dd450d6c81d02366",
+      "referencePngSha256": "14ab6ba635d582ac4bd54bb4aafc78c48130f1ab65ab3f7b0dbc938a4cf956b3",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "24dip-200pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "65b07c74e91c6506c2b481fb2c3db0fcc3f9e0a440e22bd4f1c0914c49f8cac1",
+      "svgSha256": "0dfcf88532d4d0edf853c814e16d8308658a3b79a49cd0d98a1ace7f86cbc235",
+      "referencePngSha256": "84be3dc6c55a25842d96528d66f8d969a5baeb8d31ff0f1a9fd620da45aee71e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "32dip-100pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "e23202e5bdeb643d4bdf6537c293a68e8949d32427ebdbed2e9667a374af86eb",
+      "svgSha256": "04134320d028d53ba7fa51199fd4995b5e49589b7eb4ea9e9c810c4d8acaefc1",
+      "referencePngSha256": "2e7b2e33bc55e2d7ed9ae204c601a4429f06c226927a48a61caeca0c4abfc544",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "32dip-125pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "f78dc86ab4e55269a7465743640aaff6a4c7122fb6acd6cb447557d6718b6932",
+      "svgSha256": "04134320d028d53ba7fa51199fd4995b5e49589b7eb4ea9e9c810c4d8acaefc1",
+      "referencePngSha256": "b8ea7a019e41a26cdec8b74c1d3887f0c9e9097ea05c962f5558bc0d6b67b47e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "32dip-150pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "864d26348d191ef22c2383a020a4cd2b29bc54c207aaa3db16a2082b186e3a1e",
+      "svgSha256": "04134320d028d53ba7fa51199fd4995b5e49589b7eb4ea9e9c810c4d8acaefc1",
+      "referencePngSha256": "b5c412eaf4386be2344b02e875f5dc4f74fc313b7d679c5374923e0125d7cd29",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "32dip-200pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "6e112cc14ad5c7e43ffe25a1acdc25ac544e0991ebdecdf418d053c369fa86a3",
+      "svgSha256": "b30f3fcea144aed669377eb56a9075a14b0e1fb28d5aca565bbc9462a05e18e7",
+      "referencePngSha256": "14ae7bf023c0035e815266c87b052a8f9723f357ab67e9b01dbc7a4b4b516019",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-widehat",
+      "scenario": "32dip-200pct-dark",
+      "category": "accents-arrows",
+      "nativePngSha256": "d5acfdd529027f03ca32c823f13ab142b088da73ca9b50c23b0e4cc009efc9b3",
+      "svgSha256": "04134320d028d53ba7fa51199fd4995b5e49589b7eb4ea9e9c810c4d8acaefc1",
+      "referencePngSha256": "a40364d82093d2aa15a14bd9555098dfee58adda23756e34baffa008a1ccb65e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-overline",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "6dcee5471ffd1384a6c9b0048f4dbf45aba7817640beb69d7d560ec0c96ce6c8",
+      "svgSha256": "945eea0106b068bd07f0286a1f9765ba0774b09af233fbb3303013423d06da26",
+      "referencePngSha256": "f787e2555d70d82c3fc9d5716da74699f7b301e5aeea051dca6160cc79973b00",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-overrightarrow",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "199a25126351db7fb86873d18e319bfcc46fa69c4cf9430e3facb94b245bbf1e",
+      "svgSha256": "d14c17816de706bac879510fcc2ba9731c6d69527e2cb7fc60fd5242606275ce",
+      "referencePngSha256": "5f044099d7619c5b7deed1e86c5e809c971bb4ded1526fd79fcc13767c0d9edb",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-overleftarrow",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "148f60efcb781c85592fb97a9a79788002a179502d2af18c8700743a1bec2ec1",
+      "svgSha256": "254e2109e491826a75a8cd0f4b30ab5c6d005a5a68439cf3b76cb5a89a72f39c",
+      "referencePngSha256": "137dcf03d27167e707f6b386dbb8bbe953144ae80d1e9d6419085a3b4225842c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-overleftrightarrow",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "2f4f0e422cfc662cb1c539a7b643a34a2336c053d352167ea9d77b5ee2a3ac69",
+      "svgSha256": "f5e62bdb47e7890fc9007fa86294401aa1908228daa653de10c21fb3e68276cc",
+      "referencePngSha256": "b4f695b4f5a96839e3fb035db8d8d264ef57ff40922ce682de3184d7fcf698a4",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-underbrace",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "d47595d88457a6e266ef3484f77d2523ffe2b4d84cb27e368a5c7416d9fa920e",
+      "svgSha256": "180c169ca179209dbf01c648955e431172249a04218c337f005c140d3a821df3",
+      "referencePngSha256": "1b9b3abf6f12683b7279997d152843f6c96789667c5f2d7e666f37d147ba20b1",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-xrightarrow",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "7f2698681629374e111c393b776217cef44c99a8972d680872c66b05f012373a",
+      "svgSha256": "fae593ade8e31357c33cd3b2e733159f66a006f0d2e3fb55631072101748647e",
+      "referencePngSha256": "f175b50e0fc93fac460ac0ce05d13d9da369d7444a7052ca77c1fc0efa5bdf9d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-xleftarrow",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "efabf4263f9809d3552300c2e05d2450b245c49d916cd063e20f32a64d68982b",
+      "svgSha256": "1625d3731caa63a27f7600ced01deaf081d71e033e6d27db0492606bde12ac4a",
+      "referencePngSha256": "d47c126fcedbe261d5da4f341ffdd5a8ceb2434e11ec42da86a0fffe02df7314",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-xleftrightarrow",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "da027307a8439e04fb8bf5dea29c537d425e717e4a990ab589724d8b53d0ff78",
+      "svgSha256": "86074c36cb374031489fefcc38fa7333797529a3159a390551d6f32079aeb7ec",
+      "referencePngSha256": "78eedb68690a86ef41b4914d4c6035a624ad2ceb51ea9d0a28cea2d3ec7e7087",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-accent-scripts",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "9251fe13994927cede48c0ee0442d7594ef1bdfaa04bb7c6e41470cb2ee17493",
+      "svgSha256": "2d6bbc62491bb559c7fb5a70fbd318af971af46d77caa76dd94b18a556639b68",
+      "referencePngSha256": "e3dd9c17b31894c6cb8f5ee8766a36791e3a7f2cb3c9112e2e00f8818d271c8f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-arrow-fraction-label",
+      "scenario": "24dip-100pct-light",
+      "category": "accents-arrows",
+      "nativePngSha256": "f14cce13c8853fed4761f9acf4302f3e5c1047247d4d9b95d60d23a5065d8962",
+      "svgSha256": "f3d5e7271ae109e7f5e1b7c1c6bda40e007831f0c8ac9fbf180798e453cc8f3d",
+      "referencePngSha256": "56723dba642006b574573efe059352524da0050ae9937b7ca2ec6718fa810ccd",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-pmatrix",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "5387e71faaaff745a9bc61d305b43520a16374efc86447c89be4b44c18d73bb9",
+      "svgSha256": "c04a48483038698fa7dbb89c6c7c276c7176cb1fcbe1ba725646abf42f78bf8d",
+      "referencePngSha256": "52c3338eb52ceb631f21e85cb3e8f52b077be3907c0d7710595a5affaf626959",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-bmatrix",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "ea6c631d5e21e307e4866c8cc20b8c7aa3d23a4d1c06c49ba0c4a0482dd47f59",
+      "svgSha256": "03bc9c055f214e3c0cf6c09f7dfa8407d18808f5100fc0fca1efa1fc723e3955",
+      "referencePngSha256": "30f1eddd620638fe948a65586ef712faf3ae1c8475f844641d3f3652ba9555e0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-double-bar-matrix",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "7bc58d21c16ceaf67fe59188c15f8f52494d75ed14df43e495750c43f8a62a5c",
+      "svgSha256": "a485d94948389e9f4d25063df8b99b478df8fd03d5abf0e45241f684a58f0fa4",
+      "referencePngSha256": "60ced390384d0e6a0f4823dad9c1e0ddca16aab22c0316737bc70601bbb75946",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "e90e4e22dfe6010d70b508b3ecaac53a5c58eb6ff84b104d3909ddc5565b8b6a",
+      "svgSha256": "1171c6f8ee8510d3a16507d38d723f5a22d48f8b5c71cdbe1425453264bc64ba",
+      "referencePngSha256": "005a305ea60160f7c0e609c77cd94913bc00f165c1aa06f25eb046a57c13b0b9",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "16dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "4b946b33526bd07e1fe9cac1afee10eb2ccc89f6d688df9718c0473c9c51d283",
+      "svgSha256": "926063f80639b0f77f8035eb501909969082e5609939d487222df885a75fe399",
+      "referencePngSha256": "2c14d5f8512c0adf0cc696596416446d84829ed2f0ae52d379fd7458b179a92c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "16dip-100pct-dark",
+      "category": "environments",
+      "nativePngSha256": "fce570955a32cb5318563f79925fabfbf0387946007464b0c6ea338f3756e356",
+      "svgSha256": "56822ef7256513d195cd66ee3e39ebe8f63ff57ca69f8b09cfe11cd9565ab0a4",
+      "referencePngSha256": "791068cbd9323b932a934ead4405854c69c796542c2d0dc9e77c9c2f37afb923",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "16dip-125pct-light",
+      "category": "environments",
+      "nativePngSha256": "5aa1665b1448d9384d04af88f52399aeb0ac7ee15a77a434f007dd3ada1f4801",
+      "svgSha256": "926063f80639b0f77f8035eb501909969082e5609939d487222df885a75fe399",
+      "referencePngSha256": "aa8aa028747a02c37a7a26c7939284ca3735aa2364b7e78e89eb18672d17360a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "16dip-125pct-dark",
+      "category": "environments",
+      "nativePngSha256": "baa6c49f13ecc5eef30082f9d5f9154f384668b9c52bfa9195bfc0b932292c90",
+      "svgSha256": "56822ef7256513d195cd66ee3e39ebe8f63ff57ca69f8b09cfe11cd9565ab0a4",
+      "referencePngSha256": "e62eb88d14b593d9239da6b750ebe5c6b95a7e3ca836e1279c3a3db690bbe7b3",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "16dip-150pct-light",
+      "category": "environments",
+      "nativePngSha256": "53733f252f61a871e6a28982524e1ceb0733cb40c61cb456746be11a39abcb10",
+      "svgSha256": "926063f80639b0f77f8035eb501909969082e5609939d487222df885a75fe399",
+      "referencePngSha256": "7301e29f1c6c3fe18ddc4f4fae01f72bd0e649a8fbba5b690c76e9dd05821a91",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "16dip-150pct-dark",
+      "category": "environments",
+      "nativePngSha256": "9698e0458483f44dc8f3974805c60e7927765158099f7740047dffdc2a49d51d",
+      "svgSha256": "56822ef7256513d195cd66ee3e39ebe8f63ff57ca69f8b09cfe11cd9565ab0a4",
+      "referencePngSha256": "990ff861b5e9bba972f97ca39da643f70e3cc52e531d65d8d7592da5d62ba0ac",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "16dip-200pct-light",
+      "category": "environments",
+      "nativePngSha256": "4315c44fea97807af79ae6eb8300298d708a923d9aea159c3ba31cdc06f30c7c",
+      "svgSha256": "926063f80639b0f77f8035eb501909969082e5609939d487222df885a75fe399",
+      "referencePngSha256": "9edc1d63f186f65feab7cea79b95221e07b3f1d9a8ba287ea0e1f4a5a4d837ad",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "16dip-200pct-dark",
+      "category": "environments",
+      "nativePngSha256": "fcc1152971a08a0bb56fb9a14f72b1da1cc882eee2c3f828fb9d25a0496f365a",
+      "svgSha256": "56822ef7256513d195cd66ee3e39ebe8f63ff57ca69f8b09cfe11cd9565ab0a4",
+      "referencePngSha256": "dd6ca106054dbd10b8e557f52aa98de48631c7ddbe8e8e5839e5417970045977",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "24dip-100pct-dark",
+      "category": "environments",
+      "nativePngSha256": "6819a806f69462336eb752569064426d19319dfb956d09cb15455f478d31cf07",
+      "svgSha256": "40cafbd39504a1ac5ad5a18b57cb7ec8b986db59313b6baa92260f2ff62e2148",
+      "referencePngSha256": "93030bc9083003b0131a17d5ff4b7da66eb793724f22c961d449d9c5c395ad6b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "24dip-125pct-light",
+      "category": "environments",
+      "nativePngSha256": "05f49c2d4daf66007ee37a4c6a833af32c22c93fe978b1900f7d7cdce1265434",
+      "svgSha256": "1171c6f8ee8510d3a16507d38d723f5a22d48f8b5c71cdbe1425453264bc64ba",
+      "referencePngSha256": "984730a83e94175bcedfd485899d57e303f489fdd967fd8a4d90ae9b8ab7f0e7",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "24dip-125pct-dark",
+      "category": "environments",
+      "nativePngSha256": "c3fc33ff1ffa615b28aef5dc8267b71d18a8851ffd9fc647f03d0cddd8b63d7b",
+      "svgSha256": "40cafbd39504a1ac5ad5a18b57cb7ec8b986db59313b6baa92260f2ff62e2148",
+      "referencePngSha256": "ab8a40fa384a2410d4af0dcedd47ab73f77a45e68f732a93416ca8d8967618ed",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "24dip-150pct-light",
+      "category": "environments",
+      "nativePngSha256": "ac99b66a8b92ebc5deae4cbb2781822c3b82c6d135396c2a4091eccf0bf1d238",
+      "svgSha256": "1171c6f8ee8510d3a16507d38d723f5a22d48f8b5c71cdbe1425453264bc64ba",
+      "referencePngSha256": "9f08ecf94a3967fa0bcbeaa7df5e341ddbdee8e19a0d155dd77874a2290c8cbe",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "24dip-150pct-dark",
+      "category": "environments",
+      "nativePngSha256": "3a60c6219a3d3dd4e41289d42a23ec5eab1be4c46877a16bad1eea53ff46d13c",
+      "svgSha256": "40cafbd39504a1ac5ad5a18b57cb7ec8b986db59313b6baa92260f2ff62e2148",
+      "referencePngSha256": "24816b76c504d3a48f8eba14521a573007c9c501ff93580e2b89b8c8028422ad",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "24dip-200pct-light",
+      "category": "environments",
+      "nativePngSha256": "80399d9876a84954edb50db65a6b82df898fac390101c5976cf99bd7212773e7",
+      "svgSha256": "1171c6f8ee8510d3a16507d38d723f5a22d48f8b5c71cdbe1425453264bc64ba",
+      "referencePngSha256": "948f74689e5fcee585f7ff4249e5d8d361cc321bad916ad43c1bb6db8409d929",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "24dip-200pct-dark",
+      "category": "environments",
+      "nativePngSha256": "d76b149fffe6cfaa8bbb232919b3b28d3a1571a0b53248fce386a8e53f4ea47a",
+      "svgSha256": "40cafbd39504a1ac5ad5a18b57cb7ec8b986db59313b6baa92260f2ff62e2148",
+      "referencePngSha256": "480d7c1610f63d84fd4e72e5651dcd8803aa1768f7b7892a2b704c671abab164",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "32dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "04ccf5d4016956357416524a05f4abfe3a772104a19c16f54d353e870dd75e0d",
+      "svgSha256": "8701fc340b15e6421cbef068560239a5d72f14e8e632682d2b0909f4d81e705e",
+      "referencePngSha256": "06c24e822cc4ae3d75703a0fca37e643bca2e6afff0385cc3f5a7a5033541458",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "32dip-100pct-dark",
+      "category": "environments",
+      "nativePngSha256": "86e44cc6efb0a5f733df81654b588a0b8c575840a24666f5e3efc8f31a2d312c",
+      "svgSha256": "c292162f493646dc4300e49571e206f887564e2a03a88d571b0f455b7ad50c3a",
+      "referencePngSha256": "38e7f9ea9873bdf33125fd76ecd6b8f0a8aa34771003d874e9c267e7ee9cda26",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "32dip-125pct-light",
+      "category": "environments",
+      "nativePngSha256": "a4525736121cee6867e5f13fa530fa93d341521ddb5a071e19576481a90a6f47",
+      "svgSha256": "8701fc340b15e6421cbef068560239a5d72f14e8e632682d2b0909f4d81e705e",
+      "referencePngSha256": "478d211ec323966ade7a21e64b4563a14bd0778e09f30f694308df77c59da076",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "32dip-125pct-dark",
+      "category": "environments",
+      "nativePngSha256": "79f07d2836847b9f32b6f367165a5c3906ced25a7db510b96aac8f5fbcf00668",
+      "svgSha256": "c292162f493646dc4300e49571e206f887564e2a03a88d571b0f455b7ad50c3a",
+      "referencePngSha256": "07d066ade3ca434e8e4161eece8f4be589b79d64f83d561290f08c98fdf2f939",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "32dip-150pct-light",
+      "category": "environments",
+      "nativePngSha256": "694a4fc56b797ee9a695fdc67431dde3318da0e8b1849ad6b324e801b62ea143",
+      "svgSha256": "8701fc340b15e6421cbef068560239a5d72f14e8e632682d2b0909f4d81e705e",
+      "referencePngSha256": "6beb778f6be1b1597b5c64c2a110a74c177499903fe619adf4710277690ef9fb",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "32dip-150pct-dark",
+      "category": "environments",
+      "nativePngSha256": "25db6e22aadf16f39d0556f843659c4b7c16701c0844af3e461e3cfaae8a3e30",
+      "svgSha256": "c292162f493646dc4300e49571e206f887564e2a03a88d571b0f455b7ad50c3a",
+      "referencePngSha256": "35236c00bc54b94526e9fff535561ee74cef6e6e4e71f5bd7a6b6bf9d4442e7e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "32dip-200pct-light",
+      "category": "environments",
+      "nativePngSha256": "59a34935236045271951b91341e30aea3a3fd12b3234bd7f8d73bc96c4551473",
+      "svgSha256": "8701fc340b15e6421cbef068560239a5d72f14e8e632682d2b0909f4d81e705e",
+      "referencePngSha256": "388d0a13e1733c78bacf8baa7e878b50e840c7886ccae8939a426cf2854c9d4c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-fraction",
+      "scenario": "32dip-200pct-dark",
+      "category": "environments",
+      "nativePngSha256": "31c3e6356700b77ccfd71d43eaf464023e73ea58276c86f15f987002f87b32a4",
+      "svgSha256": "c292162f493646dc4300e49571e206f887564e2a03a88d571b0f455b7ad50c3a",
+      "referencePngSha256": "db847a9acd8ad9052605ce42cd82c021885e1cac9eb07c2f4e70bf27c7614681",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-nested",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "8f650d5d8620285644e344fd3ab557afbbf512900d78725466c5db7cbe7f2f97",
+      "svgSha256": "4e5b678028594c7b6769cd1d9c7e3c4b2dde715507b23a09fd809de98962e332",
+      "referencePngSha256": "141dfb406e419ecffea05038a7183c1bd59fb5c98a633ab6dc1c9ed793bcded9",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-matrix-script",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "3cf4e016d7f4543f4c622331eab5c265a54345e4eaec95ed21b66ccf637f86cf",
+      "svgSha256": "69dac1696a9347cf5aeef485ae0b4422a10b0ebbcd5dc4a7c10df466562a7c6d",
+      "referencePngSha256": "4768cb07e4c76062fca925499bd1b3ded04c9f8e2119ea3ab52361ba2be6344a",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-array-rules",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "6581fe984ac1b77433377bbf0f6cff3969a817c0c5b4600f857a7eb07175767d",
+      "svgSha256": "def827a17e231cf90f3f3da75f2de76fec25f80eee332affbc44409243f53889",
+      "referencePngSha256": "0011c77af3b29f5f5b61c854670cba06049fcc53f7c9d3525db0ee070dc94f16",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-array-double-rules",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "9d5a7c025bbb5e9151c2f7a21df551ad8df2f7b7a39d1de3457bef12948ad1a1",
+      "svgSha256": "a8220091fb4d1ba31055a0d69837f444d609fdbf7a37b76c032f3410995461a0",
+      "referencePngSha256": "a35feba16bd880b5b0c7219916af1b136c2e993748588f9a574404ff2ac970a6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-array-row-gap",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "c31b42893699c37cb4617fa5212a5db51fc840dd0cfed03ee46f7e918266608b",
+      "svgSha256": "0eaa25c934ed8817be2110029794376c25cab3cff6c922c52da87874adecf6db",
+      "referencePngSha256": "1cd488dd8e1da277f7e43115deb1fd352d4e7bb66ed94058191a0befb32a319f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-dcases",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "97f367d8ddd63982d969c972ccf50663ca2d07363f8c96fce7c7b5e6b5a40214",
+      "svgSha256": "09a30fce2a5a2dc211e3e392404f145c4e64f50f6de0cf0679b170e0a8041186",
+      "referencePngSha256": "551cc9b64c84239661b027459e1c699c2476b08c6ab7c4ccd75c2069e20fdf16",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "388ccbae8ec1c86d235ba4cf30ce9576c90f3c9b59a1d7cdb8a684ab151c894c",
+      "svgSha256": "cbeef1c7e69244d5833cf2dbd2670ea137252cb5cecbb02a48e125c80365a6dc",
+      "referencePngSha256": "077e639aa7490072d127d4707f418a443bfa1d9b7b8196a46c6d6e5b53d574c2",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "16dip-100pct-dark",
+      "category": "environments",
+      "nativePngSha256": "08ab1d30f338fcda5fb62c566720e9d3b4ed84909326b7ffe1fd31d9148fbc9a",
+      "svgSha256": "0f2239d20ab265475842bcfaa27ada99879d2ffb9c1411b6df54971d28d06bbc",
+      "referencePngSha256": "3d6c03ca555fb441391ed7075a5eaf38ee76e05065797ab8f593b71625c74c9d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "16dip-125pct-dark",
+      "category": "environments",
+      "nativePngSha256": "cf6eb3c0bc92c9e3a524310f22c17a4db7c648545ed4c90f7fe779990dcac680",
+      "svgSha256": "0f2239d20ab265475842bcfaa27ada99879d2ffb9c1411b6df54971d28d06bbc",
+      "referencePngSha256": "601d0c6941917de8053d20c7fadca6d0b6f24f7b8161e01a0cf858eff50559f4",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "16dip-150pct-dark",
+      "category": "environments",
+      "nativePngSha256": "494ac6dd3799c5417239a7a46fa4799858fce62ee00d0a4d919f82f0a24f34a9",
+      "svgSha256": "0f2239d20ab265475842bcfaa27ada99879d2ffb9c1411b6df54971d28d06bbc",
+      "referencePngSha256": "f3c378fb7a86b0e0765a2addff9fc1ab93aab3e18bc7457535da225a2b40d19b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "16dip-200pct-light",
+      "category": "environments",
+      "nativePngSha256": "74b03654921904eb663fd0acf352a27563a398054fbf65ef5efec9e89533618e",
+      "svgSha256": "544acd701936747d3dc0e99a9f024229973850f8111f178de290563dfedba54f",
+      "referencePngSha256": "849babd6f99156dfa56b45d1ddf5db50a8db13b30a4c7f9b3662bcfc60195049",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "16dip-200pct-dark",
+      "category": "environments",
+      "nativePngSha256": "2761670848d9730d60d64b2a6745b1296c8a657a4ed791ad122fc5ea2ed22972",
+      "svgSha256": "0f2239d20ab265475842bcfaa27ada99879d2ffb9c1411b6df54971d28d06bbc",
+      "referencePngSha256": "7169e169c5bf121f80713a316cef4cdaa98321b81d27a8c6c201a6a1fbce4629",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "24dip-100pct-dark",
+      "category": "environments",
+      "nativePngSha256": "2408323e076a92194df0d344d345b6c424eebb60ddd195fbaa1b3bc85ec1898d",
+      "svgSha256": "03f8bbab46a30b6d2cda693d2ead06dd8fb7d44416b5fb03c3e30074c4b4bd5e",
+      "referencePngSha256": "5f2736bcdb1ff2ea9e12ca560ae75792a41093a5fa60cff186a421d6a274294d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "24dip-125pct-light",
+      "category": "environments",
+      "nativePngSha256": "8c469d6bbdf5ad8cbf087030f3945913b4a17cfe91c909508061e52a8ca1b2a2",
+      "svgSha256": "cbeef1c7e69244d5833cf2dbd2670ea137252cb5cecbb02a48e125c80365a6dc",
+      "referencePngSha256": "fe324fb145ccf731382d9d4664f8d6048b12f73561e962380a1daf04359cf57e",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "24dip-125pct-dark",
+      "category": "environments",
+      "nativePngSha256": "79e52b76b76da0b0dc75a4218ca3a382c9406d016d817de32c250dcba5ba6703",
+      "svgSha256": "03f8bbab46a30b6d2cda693d2ead06dd8fb7d44416b5fb03c3e30074c4b4bd5e",
+      "referencePngSha256": "e519cff7735604a4b498199b1cee4021eec790250b0296638e3a301ebdf83701",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "24dip-150pct-light",
+      "category": "environments",
+      "nativePngSha256": "52eac76015bbb541eecd2cc0b03a45976445a9651d14898a608216a8413cf763",
+      "svgSha256": "cbeef1c7e69244d5833cf2dbd2670ea137252cb5cecbb02a48e125c80365a6dc",
+      "referencePngSha256": "9a1938d33be81d29218620d30d8b7fb9d3a6688d08a7e072e5368135d0f26b0b",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "24dip-150pct-dark",
+      "category": "environments",
+      "nativePngSha256": "09e31b5c680d0ee4178f63de4e3ff2f9e81f8655957c065baf4a4735ebdea6f5",
+      "svgSha256": "03f8bbab46a30b6d2cda693d2ead06dd8fb7d44416b5fb03c3e30074c4b4bd5e",
+      "referencePngSha256": "ad12e7fa22e179332c5074b3c11d0462b1a7ceb8f4f6444012dee76f0c34e61d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "24dip-200pct-light",
+      "category": "environments",
+      "nativePngSha256": "ddadf4290524f323c6ce4f19036c8c670101b7ba333a9596cb357482187f69d1",
+      "svgSha256": "cbeef1c7e69244d5833cf2dbd2670ea137252cb5cecbb02a48e125c80365a6dc",
+      "referencePngSha256": "c063d0e3267c670c2b52240aece3550378af3825b343090db0aa3b1b9701f05c",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "24dip-200pct-dark",
+      "category": "environments",
+      "nativePngSha256": "44facd8cb19c7e3571a1f989d1bdd517a036fd60d48285bca6f3f1d38135b767",
+      "svgSha256": "03f8bbab46a30b6d2cda693d2ead06dd8fb7d44416b5fb03c3e30074c4b4bd5e",
+      "referencePngSha256": "fb98c303ab9d78f660337ff16d2a609ee5418aec3c5916fc761bb269b2b634a6",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "32dip-100pct-dark",
+      "category": "environments",
+      "nativePngSha256": "2915e8df4227397fcfbb4d0c13650e520c30823e4874765b566b78a2ab9f1fc4",
+      "svgSha256": "0d49ce0aaeb2d51b4fa42e53ee5ddafe3af78092308cd2686e626c1e0896f434",
+      "referencePngSha256": "382b7d533c32760c5ea65d6f3cd08f346becc8fb13845de997ff074ebcc0a45f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "32dip-125pct-dark",
+      "category": "environments",
+      "nativePngSha256": "c35c0d10efb2ec99b46308387c2f40c1898b70d8ef318443e77abdb8fdc64c36",
+      "svgSha256": "0d49ce0aaeb2d51b4fa42e53ee5ddafe3af78092308cd2686e626c1e0896f434",
+      "referencePngSha256": "eb31d57bdee2c3ce6a973c0139facae2d7bd8de2909af5dff0f92c1a5a6c7acf",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "32dip-150pct-dark",
+      "category": "environments",
+      "nativePngSha256": "cf197476a272ec4db9d2f08d9578c20f38ebb56db55e92f0efb941d61b995d21",
+      "svgSha256": "0d49ce0aaeb2d51b4fa42e53ee5ddafe3af78092308cd2686e626c1e0896f434",
+      "referencePngSha256": "b82b97d6ba92f145daaa984d6b924377000fb0a57b4e625a4e02fe1a9548cc66",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "32dip-200pct-light",
+      "category": "environments",
+      "nativePngSha256": "83328de4cdf5db9c21cd63710edfc98d1e36689ca644d594eee1c9a6e4c7d744",
+      "svgSha256": "26cfea1b6c3e57321d38aeb2dd074a4154a0a819c1edd19457b2d1a4154d7b64",
+      "referencePngSha256": "03831292c934ffbe2e9ca4c390568f9552c46a97e4b1627f200b18f18f26ebbf",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned",
+      "scenario": "32dip-200pct-dark",
+      "category": "environments",
+      "nativePngSha256": "8c8df7f96783e6c2dbe27f0b34073b3847ff2832769be1e2601438aad005ddcf",
+      "svgSha256": "0d49ce0aaeb2d51b4fa42e53ee5ddafe3af78092308cd2686e626c1e0896f434",
+      "referencePngSha256": "724abdc606b172047218f39200ea5ba2b39c7e657ff0c3076ddb6eb38a6aa1a3",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned-pairs",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "764dfcb93f59e191cf2ca6086050e060587d41ceed26b0cdf49a90b6c89f9254",
+      "svgSha256": "d9c844c481320886eb3a3adbc4e88b19666010dc81b46ba44d3c041e0f1ed1fb",
+      "referencePngSha256": "783e9e782450c09113c44b353f9bbc177c32a6f301c98743fc48c213b657a924",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-aligned-frac",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "af0623ea4ef233b00c0537ec94587d0a695b419239fbd852520e12f54aa0dd3c",
+      "svgSha256": "00135ee682e1cd9ce1ad58bc59f222ced00f145cdf1ec453fde2c2d44de225f8",
+      "referencePngSha256": "fe301a884bf6992bbe1c8f20b45f614c1a36f711d9a6fea5c2a9ec24543f60b0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-gathered",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "0aaa9af9d31683130856ebea536aa062304ba4c62426ae22d801a4e7e30ed2b2",
+      "svgSha256": "13e3ac5029536f6deebb787a03fd6c9ece051a8c1bd8fd744113ad976e59a853",
+      "referencePngSha256": "bd8076eb06fcd6ba444a2ae5360938d61c1b6c37f68378509672d6165b3abb64",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-alignedat",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "f6879517d17b0500707417240ba1e54ac40c1c1c95e1bfd4cd053d1d595b6e4b",
+      "svgSha256": "33b4fed2ab9c017c57b1dce8ac721f3b4449cee4dd1e17eccdf5220d6b99610d",
+      "referencePngSha256": "4ccb83ff3d1355164ff6b88839efc89e3bee0638fad2e34503ffd269c054b965",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-substack",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "2663296ff89fdd8df8f87fdb193ca2263ad6ca250bdd3056687993b7060692ba",
+      "svgSha256": "609720bcf246540a0c3f7bef54124c0ad49581813a24ef777c5a4b1240f90719",
+      "referencePngSha256": "f78fcb468167d1cff6bcf8d8f8f44d02abf632b1d9b91a1c74c312889b3a030d",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-array-hdashline",
+      "scenario": "24dip-100pct-light",
+      "category": "environments",
+      "nativePngSha256": "f578210401444124693a4710dfd6ac95c134430a3d3d148d314ef938b71ca911",
+      "svgSha256": "bcc9503899f871e88b2c9edc42e60454f9830b139c03f970b105af2e5375f8d1",
+      "referencePngSha256": "1097a0fe2642843b0a6384c7253f4853b661c8294037e4b76ecfe4d8c7110637",
+      "reason": "Reviewed CSS dashed-border versus native explicit-dash paint phase. Logical rule envelope and all cell/glyph origins match; no missing row or line. Original edge failure retained."
+    },
+    {
+      "id": "p2-text-fonts",
+      "scenario": "16dip-125pct-dark",
+      "category": "fonts-text-macros",
+      "nativePngSha256": "b18a2a98fa92e780465d4611bc5a86b7bf5cda95d36ea81f81dcc0ea735524b7",
+      "svgSha256": "e68d632368f3859340fa45b7e2f0e9309bf8a59fa153eff542c5ab37765d221c",
+      "referencePngSha256": "aabe8c603174889c4c507848233b3d655289edd0895c227923ad07422733712f",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-text-fonts",
+      "scenario": "16dip-150pct-light",
+      "category": "fonts-text-macros",
+      "nativePngSha256": "45c4de137581de55e21f6b5dd383190bc81bc9ae4a584be23fbaf2eba9f4ca86",
+      "svgSha256": "f322c961816895cd4056f218725b7dc3c3d49d0b292c5ae17a98c47182cee3ec",
+      "referencePngSha256": "379b1be13033265059ca092acbbfc2054ff96f4326f3e406597327f2192ab9ab",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-text-fonts",
+      "scenario": "16dip-150pct-dark",
+      "category": "fonts-text-macros",
+      "nativePngSha256": "01bbcbf3bf309af69598478e2c960f5eaa6a3f5ba1003b5065d4f3d4533933aa",
+      "svgSha256": "e68d632368f3859340fa45b7e2f0e9309bf8a59fa153eff542c5ab37765d221c",
+      "referencePngSha256": "bd673b29b5e412d07012222b0b8af1716ee79c2af9ad3c4e9c337736312b86c3",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-text-fonts",
+      "scenario": "32dip-125pct-dark",
+      "category": "fonts-text-macros",
+      "nativePngSha256": "81e45ed5a9a1a9288edb27e68476d8bb34e9f31fd78d6e73255b00e048e5939f",
+      "svgSha256": "e537abcb7fc92742cbe4c4ecb7d8019ef3bc3a2405b14c56352a8453c4e795b3",
+      "referencePngSha256": "23d08097da272bb4e1340fbfa5222088c3bce3375a5a66ec8e08cf2166b93562",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-text-fonts",
+      "scenario": "32dip-150pct-light",
+      "category": "fonts-text-macros",
+      "nativePngSha256": "ab640da33212625a634dff2f292c4b53e935e34dfaa8c045ebad775015b36d76",
+      "svgSha256": "ad91fc399b142b01a96b964b2eacd0830ce3b6e7442fea8fb28a70aa3e5f5fa3",
+      "referencePngSha256": "f771b260ea3cbdc5f070fb50091173545086a723581ac1b7ea1b5522c366aa31",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-text-fonts",
+      "scenario": "32dip-150pct-dark",
+      "category": "fonts-text-macros",
+      "nativePngSha256": "4a2c5925fa617372f3dbd4f787bc53130d253d8c6e9785dc38ac5298ea393f95",
+      "svgSha256": "e537abcb7fc92742cbe4c4ecb7d8019ef3bc3a2405b14c56352a8453c4e795b3",
+      "referencePngSha256": "57fda6fde9d96e5759792c988589c333bb1414079c6284a1f1b39697d04b21e0",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-text-punctuation",
+      "scenario": "24dip-100pct-light",
+      "category": "fonts-text-macros",
+      "nativePngSha256": "de6c18bbb99db9c42d38da9ee5b80ddd52c4cd6d143a6d36831a3b8be16aa1d7",
+      "svgSha256": "d1024b7148d3aa62fe3e9ba4bb5ad163b3e753e54e68adf250a3d9222315eff2",
+      "referencePngSha256": "75f25aafdd72a5c4eaada2ec4d18bb907ee02c9f5a7981af4bb60370c2f094e1",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-macro-space",
+      "scenario": "24dip-100pct-light",
+      "category": "fonts-text-macros",
+      "nativePngSha256": "dbbb49b11b2b3b8009e1a69d34ccabdc0aa1fc891402e5dc0559866e1700a8e7",
+      "svgSha256": "43200c4c502cf137ae60c5ca28a6a1e1e148cb4f93771a5e3176508afc5799fb",
+      "referencePngSha256": "c3d1711e456968e478db0d337d9fcbc1cca5cfeee520df72d66bedf7946ed9a1",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    },
+    {
+      "id": "p2-style-matrix",
+      "scenario": "24dip-100pct-light",
+      "category": "fonts-text-macros",
+      "nativePngSha256": "3148167938748db3e9ae5f8207ed134c4152703c650a8758581c3d05ce9a308a",
+      "svgSha256": "79fd36a3de0f30b2dc3a010cc310e4da0c0e0e0dd9a76890142ef88fb6b3bb0f",
+      "referencePngSha256": "0533f4f18dd20a39ebdc621927e6f9779e40a8b166f0509c9bfa45cbf4544870",
+      "reason": "Reviewed DirectWrite/Chrome text hinting, foreground contrast, recorded-origin pixel phase and fractional rule/path coverage differences. Semantic, glyph/font, geometry and MathML hard checks pass; native/SVG edges pass in both directions; no clipping. Original automatic edge failure retained."
+    }
+  ]
+}

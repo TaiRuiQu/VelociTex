@@ -6,10 +6,12 @@ import {chromium} from 'playwright';
 import {PNG} from 'pngjs';
 import {root,sha256,writeJson} from './acquire.mjs';
 const requested=process.argv.slice(2).filter(x=>!x.startsWith('--'));
-const folders=requested.length?requested:['artifacts/p1/jit','artifacts/p1/aot'];
+const phase=process.argv.find(x=>x.startsWith('--phase='))?.slice(8)??'p1';
+if(!['p1','p2','p4'].includes(phase))throw new Error('Unknown phase');
+const folders=requested.length?requested:[`artifacts/${phase}/jit`,`artifacts/${phase}/aot`];
 const useReviewed=process.argv.includes('--reviewed');
-const reviewed=useReviewed?JSON.parse(await fs.readFile(path.join(root,'compatibility/p1-raster-review.json'),'utf8')):null;
-const reference=JSON.parse(await fs.readFile(path.join(root,'artifacts/p1/reference/reference.json'),'utf8'));
+const reviewed=useReviewed?JSON.parse(await fs.readFile(path.join(root,`compatibility/${phase}-raster-review.json`),'utf8')):null;
+const reference=JSON.parse(await fs.readFile(path.join(root,`artifacts/${phase}/reference/reference.json`),'utf8'));
 const toolchain=JSON.parse(await fs.readFile(path.join(root,'docs/reference/development-toolchain.lock.json'),'utf8'));
 if(sha256(await fs.readFile(toolchain.browserExecutable))!==toolchain.browserSha256)throw new Error('Browser drift');
 function edgePoints(image,origin,scale,background) {
@@ -70,8 +72,8 @@ try {
       const svgBytes=await page.screenshot({omitBackground:true,clip:{x:0,y:0,width:png.width/scale,height:png.height/scale}});
       await fs.writeFile(path.join(directory,'svg-view.png'),svgBytes);
       const svgImage=PNG.sync.read(svgBytes);
-      const refImage=PNG.sync.read(await fs.readFile(path.join(root,'artifacts/p1/reference',actual.id,actual.scenario,'reference.png')));
-      const transparentRefImage=PNG.sync.read(await fs.readFile(path.join(root,'artifacts/p1/reference',actual.id,actual.scenario,'reference.transparent.png')));
+      const refImage=PNG.sync.read(await fs.readFile(path.join(root,`artifacts/${phase}/reference`,actual.id,actual.scenario,'reference.png')));
+      const transparentRefImage=PNG.sync.read(await fs.readFile(path.join(root,`artifacts/${phase}/reference`,actual.id,actual.scenario,'reference.transparent.png')));
       const origin={x:-details.viewBox[0],y:actual.baseline-details.viewBox[1]};
       const nativeEdges=edgePoints(png,origin,scale),svgEdges=edgePoints(svgImage,origin,scale),refEdges=edgePoints(refImage,ref.geometry.origin,scale,ref.theme==='dark'?[22,22,22]:[255,255,255]);
       const transparentReferenceEdges=edgePoints(transparentRefImage,ref.geometry.origin,scale);
@@ -90,13 +92,13 @@ try {
     const unreviewedFailures=[];
     for(const failure of failures) {
       const entry=reviewed?.entries.find(e=>e.id===failure.id&&e.scenario===failure.scenario);
-      const referencePngSha256=sha256(await fs.readFile(path.join(root,'artifacts/p1/reference',failure.id,failure.scenario,'reference.png')));
+      const referencePngSha256=sha256(await fs.readFile(path.join(root,`artifacts/${phase}/reference`,failure.id,failure.scenario,'reference.png')));
       if(!entry||entry.nativePngSha256!==failure.pngSha256||entry.svgSha256!==failure.svgSha256||entry.referencePngSha256!==referencePngSha256||failure.edgeClipping||failure.nativeToSvg<.95||failure.svgToNative<.95)unreviewedFailures.push(failure);
     }
     await writeJson(path.join(root,folder,'image-check.json'),{schemaVersion:2,method:'Foreground boundary points, alpha>32 (native/SVG), opaque reference contrast-derived coverage>32/255; extra transparent-reference true-alpha metrics retained separately. Bidirectional nearest distance; only recorded origin/baseline alignment. 95% each direction within max(1 device px,0.5 DIP). No fitted transformations. All exported SVGs decoded independently in locked Chrome, network blocked, all PNGs decoded independently. Raw automatic failures remain failures even when an exact-hash rendering review is applied.',browserVersion:browser.version(),measurements:checks.length,failures,reviewedRenderingDifferences:failures.length-unreviewedFailures.length,unreviewedFailures,categories,checks});
     all.push({folder,measurements:checks.length,automaticFailures:failures.length,reviewedRenderingDifferences:failures.length-unreviewedFailures.length,unreviewedFailures:unreviewedFailures.length,categories});console.log(JSON.stringify(all.at(-1)));
     if(unreviewedFailures.length)console.log('Unreviewed raster failures: '+JSON.stringify(unreviewedFailures.slice(0,8).map(x=>({id:x.id,scenario:x.scenario,nativeToReference:x.nativeToReference,referenceToNative:x.referenceToNative,nativeToSvg:x.nativeToSvg,svgToNative:x.svgToNative,edgeClipping:x.edgeClipping}))));
   }
-  await writeJson(path.join(root,'artifacts/p1/image-summary.json'),all);
+  await writeJson(path.join(root,`artifacts/${phase}/image-summary.json`),all);
   if(all.some(x=>x.unreviewedFailures))process.exitCode=1;
 }finally{await browser.close();}

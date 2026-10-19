@@ -61,14 +61,16 @@ def aligned(image, origin, common_origin, canvas_size, background):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("folder", nargs="?", default="artifacts/p1/jit")
+    parser.add_argument("--phase", choices=("p1", "p2", "p4"), default="p1")
     args = parser.parse_args()
     directory = ROOT / args.folder
     report = read(directory / "report.json")
-    reference = read(ROOT / "artifacts/p1/reference/reference.json")
+    reference_root = ROOT / "artifacts" / args.phase / "reference"
+    reference = read(reference_root / "reference.json")
     checks = read(directory / "image-check.json")
     expected = {(x["id"], x["scenario"]): x for x in reference["results"]}
     measured = {(x["id"], x["scenario"]): x for x in checks["checks"]}
-    out = ROOT / "artifacts/p1/review" / directory.name
+    out = ROOT / "artifacts" / args.phase / "review" / directory.name
     out.mkdir(parents=True, exist_ok=True)
     try:
         font = ImageFont.truetype("C:/Windows/Fonts/consola.ttf", 16)
@@ -88,7 +90,7 @@ def main():
         foreground = 238 if dark else 17
         location = directory / actual["id"] / actual["scenario"]
         native_path = location / "formula.png"
-        reference_path = ROOT / "artifacts/p1/reference" / actual["id"] / actual["scenario"] / "reference.png"
+        reference_path = reference_root / actual["id"] / actual["scenario"] / "reference.png"
         native_digest = hashlib.sha256(native_path.read_bytes()).hexdigest()
         svg_digest = hashlib.sha256((location / "formula.svg").read_bytes()).hexdigest()
         if native_digest != check["pngSha256"] or svg_digest != check["svgSha256"]:
@@ -155,7 +157,7 @@ def main():
         page_index, slot = divmod(index, columns * rows)
         if slot == 0:
             sheet = Image.new("RGB", (columns * cell_width, rows * cell_height + 42), "#d3d8dc")
-            ImageDraw.Draw(sheet).text((10, 8), f"P1 {directory.name}: all pairs page {page_index+1}; N native / K KaTeX; turquoise baseline / magenta x=0", fill="#121212", font=font)
+            ImageDraw.Draw(sheet).text((10, 8), f"{args.phase.upper()} {directory.name}: all pairs page {page_index+1}; N native / K KaTeX; turquoise baseline / magenta x=0", fill="#121212", font=font)
         cell = pair.copy()
         cell.thumbnail((cell_width - 10, cell_height - 10), Image.Resampling.LANCZOS)
         sheet.paste(cell, ((slot % columns) * cell_width + 5, (slot // columns) * cell_height + 42))
@@ -177,7 +179,7 @@ def main():
         "sourceReport": str(directory / "report.json"),
         "sourceReportSha256": hashlib.sha256((directory / "report.json").read_bytes()).hexdigest(),
         "rasterCheckSha256": hashlib.sha256((directory / "image-check.json").read_bytes()).hexdigest(),
-        "referenceReportSha256": hashlib.sha256((ROOT / "artifacts/p1/reference/reference.json").read_bytes()).hexdigest(),
+        "referenceReportSha256": hashlib.sha256((reference_root / "reference.json").read_bytes()).hexdigest(),
         "summary": summary, "pairs": audit}
     (out / "review-audit.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"output": str(out), **summary}))

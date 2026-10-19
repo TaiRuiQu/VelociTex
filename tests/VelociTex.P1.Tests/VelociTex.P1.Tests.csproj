@@ -12,5 +12,8 @@
     <ProjectReference Include="../../src/VelociTex.Core/VelociTex.Core.csproj" />
     <ProjectReference Include="../../src/VelociTex.Rendering.Direct2D/VelociTex.Rendering.Direct2D.csproj" />
     <Content Include="../fixtures/p1.json" Link="fixtures/p1.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../fixtures/p2.json" Link="fixtures/p2.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Condition="Exists('../fixtures/p2.json')" />
+    <Content Include="../fixtures/p4.json" Link="fixtures/p4.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Condition="Exists('../fixtures/p4.json')" />
+    <Content Include="../../benchmarks/corpus.normal.json" Link="fixtures/corpus.normal.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

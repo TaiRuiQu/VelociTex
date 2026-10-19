@@ -3,9 +3,14 @@ namespace VelociTex;
 /// <summary>Stateless, thread-safe formula compiler. Use a distinct workspace per concurrent call.</summary>
 public sealed class MathEngine
 {
+    /// <summary>Compiles with bounded defaults and a temporary isolated workspace. Returns null output and a diagnostic on ordinary failure.</summary>
     public bool TryCompile(string latex, out MathDocument? document, out MathDiagnostic diagnostic)
         => TryCompile(latex, new MathOptions(), new MathWorkspace(), default, out document, out diagnostic);
 
+    /// <summary>Validates, expands, parses, shapes and lays out a complete formula synchronously.</summary>
+    /// <remarks>Use one workspace per concurrent call. A result never borrows workspace buffers.
+    /// Errors and cancellation return false and roll back session changes. Null arguments throw.
+    /// Unexpected exceptions from caller-supplied shaping providers propagate after cleanup.</remarks>
     public bool TryCompile(string latex, in MathOptions options, MathWorkspace workspace, CancellationToken cancellationToken, out MathDocument? document, out MathDiagnostic diagnostic)
     {
         ArgumentNullException.ThrowIfNull(latex); ArgumentNullException.ThrowIfNull(workspace);

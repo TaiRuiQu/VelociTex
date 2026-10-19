@@ -2,7 +2,7 @@
 
 [English](architecture.md) | 中文
 
-本文件描述目标架构。P1 已实现紧凑语义、基础数学布局、独立不可变结果及原生/PNG/SVG/MathML 输出；当前接口和生命周期见 [p1-api.md](p1-api.md)，实测与限制见 [P1 记录](verification/p1-2026-10-19.md)。下文部分草图仍是后续目标接口。原生选型见 [ADR 0001](decisions/0001-native-rendering.md)。需求依据见 [需求与边界](requirements.zh-CN.md)，阶段出口见 [分阶段实施](roadmap.zh-CN.md)。
+本文件描述目标架构。P2 已扩展紧凑语义和独立不可变结果，包含常用算符、矩阵、伸缩路径、真实系统字体 CJK 轮廓及有界结果缓存；原生/PNG/SVG/MathML 和隔离本地 NuGet 消费者均已实际运行。基础接口见 [p1-api.md](p1-api.md)，新增接口、实测和限制见 [P2 记录](verification/p2-2026-10-19.md) 与 [包契约](package-contract.md)。下文部分草图仍是后续目标接口，原生选型见 [ADR 0001](decisions/0001-native-rendering.md)。
 
 ## 1. 管线与模块
 

@@ -1,5 +1,5 @@
 param(
-    [ValidateSet('Build', 'Native', 'WinUI', 'P1', 'All')][string]$Target = 'Build',
+    [ValidateSet('Build', 'Native', 'WinUI', 'P1', 'P2', 'All')][string]$Target = 'Build',
     [switch]$Locked
 )
 $ErrorActionPreference = 'Stop'
@@ -27,6 +27,13 @@ try {
         Invoke-Dotnet (@('publish', 'tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj', '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=true', '-p:Platform=x64', '-o', 'artifacts/p1/publish', '--nologo') + $restore)
         & ./artifacts/p1/publish/VelociTex.P1.Tests.exe artifacts/p1/aot
         if ($LASTEXITCODE -ne 0) { throw 'P1 AOT engine assertions failed.' }
+    }
+    if ($Target -eq 'P2') {
+        Invoke-Dotnet (@('build', 'tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj', '-c', 'Release', '-p:PublishAot=false', '-p:Platform=x64', '-t:Rebuild', '--nologo') + $restore)
+        Invoke-Dotnet @('tests/VelociTex.P1.Tests/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.P1.Tests.dll', 'artifacts/p2/jit', '--phase=p2')
+        Invoke-Dotnet (@('publish', 'tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj', '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=true', '-p:Platform=x64', '-o', 'artifacts/p2/publish', '--nologo') + $restore)
+        & ./artifacts/p2/publish/VelociTex.P1.Tests.exe artifacts/p2/aot --phase=p2
+        if ($LASTEXITCODE -ne 0) { throw 'P2 AOT engine assertions failed.' }
     }
     if ($Target -in @('WinUI', 'P1', 'All')) {
         Invoke-Dotnet (@('publish', 'samples/VelociTex.WinUI.Sample/VelociTex.WinUI.Sample.csproj', '-c', 'Release', '-p:Platform=x64', '-o', 'artifacts/winui/publish', '--nologo') + $restore)

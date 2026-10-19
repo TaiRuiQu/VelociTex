@@ -6,16 +6,25 @@ using static VelociTex.Rendering.Direct2D.NativeMethods;
 namespace VelociTex.Rendering.Direct2D;
 
 /// <summary>Colors for the explicitly positioned P0 feasibility drawing.</summary>
-public enum ProbeTheme { Light, Dark }
+internal enum ProbeTheme
+{
+    /// <summary>Dark probe glyphs for a light background.</summary>
+    Light,
+    /// <summary>Light probe glyphs for a dark background.</summary>
+    Dark
+}
 
 /// <summary>
 /// Native feasibility probe only: positions are hard-coded and this class is not a formula engine.
 /// Instances must be used and disposed on one thread; the caller owns target BeginDraw/EndDraw.
 /// </summary>
-public sealed unsafe partial class NativeProbeRenderer : IDisposable
+internal sealed unsafe partial class NativeProbeRenderer : IDisposable
 {
+    /// <summary>Width of the hard-coded P0 verification chart in DIP.</summary>
     public const float Width = 640;
+    /// <summary>Height of the hard-coded P0 verification chart in DIP.</summary>
     public const float Height = 180;
+    /// <summary>Primary baseline of the hard-coded P0 verification chart in DIP.</summary>
     public const float Baseline = 112;
     private nint _writeFactory, _factory, _main, _italic;
     private readonly bool _uninitialize;
@@ -24,6 +33,7 @@ public sealed unsafe partial class NativeProbeRenderer : IDisposable
     private static readonly Rect[] Rules = [new(236, 94, 352, 96), new(426, 65, 485, 67)];
     private static readonly Point[] Radical = [new(394, 101), new(401, 96), new(410, 116), new(423, 65), new(429, 65), new(412, 126), new(407, 126), new(399, 104), new(395, 106)];
 
+    /// <summary>Loads the fixed private fonts from a caller-owned directory for P0 verification.</summary>
     public NativeProbeRenderer(string fontDirectory)
     {
         int hr = CoInitializeEx(0, 0);
@@ -289,6 +299,7 @@ public sealed unsafe partial class NativeProbeRenderer : IDisposable
         finally {Release(ref sink);}
     }
 
+    /// <summary>Releases the P0 verification faces and native factories on the owning thread.</summary>
     public void Dispose()
     {
         if(_disposed)return;
@@ -300,4 +311,4 @@ public sealed unsafe partial class NativeProbeRenderer : IDisposable
 }
 
 /// <summary>Observed native private-font face mapping, used only for P0 verification.</summary>
-public readonly record struct NativeFontProbeResult(string FileName,ushort GlyphCount,int CodePointCount,uint[] MissingCodePoints,uint[] MismatchedCodePoints);
+internal readonly record struct NativeFontProbeResult(string FileName,ushort GlyphCount,int CodePointCount,uint[] MissingCodePoints,uint[] MismatchedCodePoints);

@@ -7,7 +7,7 @@ using static VelociTex.Rendering.Direct2D.NativeMethods;
 
 namespace VelociTex.Rendering.Direct2D;
 
-public sealed unsafe partial class NativeProbeRenderer
+internal sealed unsafe partial class NativeProbeRenderer
 {
     /// <summary>Exports the same hard-coded geometry as self-contained SVG paths using private-font outlines.</summary>
     public void WriteSvg(string path, ProbeTheme theme = ProbeTheme.Light)

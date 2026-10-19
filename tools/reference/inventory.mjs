@@ -66,13 +66,13 @@ const byKind={};
 for(const item of entries) byKind[item.kind]=(byKind[item.kind]??0)+1;
 // Phase overlays only add audited fixture evidence. They never shrink scope or
 // turn a handful of use cases into a complete registration compatibility claim.
-try {
-  const p1=JSON.parse(await fs.readFile(path.join(root,'compatibility/p1-coverage.json'),'utf8'));
-  for(const evidence of p1.entries) {
+for(const phase of ['p1','p2','p4'])try {
+  const overlay=JSON.parse(await fs.readFile(path.join(root,`compatibility/${phase}-coverage.json`),'utf8'));
+  for(const evidence of overlay.entries) {
     const item=entries.find(x=>x.id===evidence.id);
-    if(!item||item.scope!=='included')throw new Error('Invalid P1 coverage overlay identity');
+    if(!item||item.scope!=='included')throw new Error('Invalid phase coverage overlay identity');
     item.fixtureStatus='partially-verified';
-    item.phaseEvidence={phase:'P1',fixtureIds:evidence.fixtureIds,reason:evidence.reason};
+    item.phaseEvidence={phase:phase.toUpperCase(),fixtureIds:evidence.fixtureIds,reason:evidence.reason};
     for(const dimension of Object.keys(item.status))item.status[dimension]='partially-verified';
   }
 }catch(error){if(error.code!=='ENOENT')throw error;}

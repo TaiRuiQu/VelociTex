@@ -6,9 +6,15 @@ using static VelociTex.Rendering.Direct2D.NativeMethods;
 namespace VelociTex.Rendering.Direct2D;
 
 /// <summary>A finite sRGB foreground color. Explicit formula colors are a later compatibility increment.</summary>
+/// <param name="R">Red component between zero and one.</param>
+/// <param name="G">Green component between zero and one.</param>
+/// <param name="B">Blue component between zero and one.</param>
+/// <param name="A">Opacity between zero and one; the default is fully opaque.</param>
 public readonly record struct MathDrawingColor(float R,float G,float B,float A=1)
 {
+    /// <summary>Gets the standard dark foreground for a light background.</summary>
     public static MathDrawingColor Black => new(.08f,.10f,.14f);
+    /// <summary>Gets the standard light foreground for a dark background.</summary>
     public static MathDrawingColor White => new(.94f,.95f,.98f);
     internal void Validate()
     {
@@ -21,8 +27,10 @@ public sealed class PreparedMath : IDisposable
 {
     internal WindowsMathRenderer Owner {get;}
     internal bool IsDisposed {get;private set;}
+    /// <summary>Gets the independently owned document retained by this preparation.</summary>
     public MathDocument Document {get;}
     internal PreparedMath(WindowsMathRenderer owner,MathDocument document){Owner=owner;Document=document;}
+    /// <summary>Releases this preparation on its owner's thread. The managed document remains valid.</summary>
     public void Dispose(){if(IsDisposed)return;Owner.VerifyDisposalThread();IsDisposed=true;}
 }
 
@@ -42,9 +50,11 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
     private long _outlineBytes;
 
     /// <summary>Creates an owned WARP-backed ID2D1Device reference for a Composition host.</summary>
+    /// <returns>A native COM reference. The caller must release it with Marshal.Release.</returns>
     public static nint CreateWarpD2DDevice()=>NativeProbeRenderer.CreateWarpD2DDevice();
 
     /// <summary>Uses a private directory, or extracts unchanged embedded Core font bytes into an owned temporary directory.</summary>
+    /// <param name="fontDirectory">Caller-owned private font directory, or null to extract and later delete the unchanged embedded fonts.</param>
     public WindowsMathRenderer(string? fontDirectory=null)
     {
         int hr=CoInitializeEx(0,0);
@@ -72,6 +82,9 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
         catch{Dispose();throw;}
     }
 
+    /// <summary>Validates private-font glyphs and retains the document for native drawing.</summary>
+    /// <param name="document">An independently owned compilation result.</param>
+    /// <returns>A disposable preparation usable only with this renderer on its creating thread.</returns>
     public PreparedMath Prepare(MathDocument document)
     {
         CheckThread();ArgumentNullException.ThrowIfNull(document);
@@ -85,6 +98,11 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
     }
 
     /// <summary>The caller owns target BeginDraw/EndDraw. Glyph positions and paths come solely from the prepared Core document.</summary>
+    /// <param name="prepared">A live preparation created by this renderer.</param>
+    /// <param name="renderTarget">A caller-owned ID2D1RenderTarget or device-context pointer.</param>
+    /// <param name="color">A finite sRGB foreground.</param>
+    /// <param name="offsetX">Horizontal translation in DIP.</param>
+    /// <param name="offsetY">Vertical translation in DIP.</param>
     public void Draw(PreparedMath prepared,nint renderTarget,MathDrawingColor color,double offsetX=0,double offsetY=0)
     {
         CheckPrepared(prepared);color.Validate();
@@ -187,6 +205,8 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
     private void CheckThread(){ObjectDisposedException.ThrowIf(_disposed,this);if(Environment.CurrentManagedThreadId!=_threadId)throw new InvalidOperationException("Native math resources must be used on their creating thread.");}
     internal void VerifyDisposalThread(){if(Environment.CurrentManagedThreadId!=_threadId)throw new InvalidOperationException("Dispose native math preparations on their creating thread.");}
     private void CheckPrepared(PreparedMath prepared){CheckThread();ArgumentNullException.ThrowIfNull(prepared);ObjectDisposedException.ThrowIf(prepared.IsDisposed,prepared);if(!ReferenceEquals(prepared.Owner,this))throw new ArgumentException("The prepared result belongs to another renderer.",nameof(prepared));}
+    /// <summary>Releases native fonts, factories and cached outlines, then removes any owned temporary font directory.</summary>
+    /// <exception cref="InvalidOperationException">Called from a thread other than the creating thread.</exception>
     public void Dispose()
     {
         if(_disposed)return;

@@ -11,6 +11,7 @@
     <Project Path="tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj" />
   </Folder>
   <Folder Name="/samples/">
+    <Project Path="samples/VelociTex.Export.Sample/VelociTex.Export.Sample.csproj" />
     <Project Path="samples/VelociTex.WinUI.Sample/VelociTex.WinUI.Sample.csproj" />
   </Folder>
   <Folder Name="/tools/">

@@ -18,8 +18,9 @@ fonts system-wide.
 Microsoft Windows App SDK, Windows SDK build tools, and CsWinRT are development
 and Windows host dependencies, pinned centrally in `Directory.Packages.props`.
 Their NuGet packages retain their upstream license notices when copied into
-self-contained probe applications. The P0 probe is a development artifact;
-there is no NuGet library release yet.
+self-contained applications. Local preview nupkgs retain these dependency
+identities and include all notices in this file and `licenses/`. They are local
+integration artifacts and have not been published to an external feed.
 
 Node.js, TypeScript, Playwright, and pngjs are reference-tool dependencies only.
 Python is a font verification tool only. No browser, JavaScript engine, Python,

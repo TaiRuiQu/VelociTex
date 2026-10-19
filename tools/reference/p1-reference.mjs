@@ -10,9 +10,11 @@ import {loadSource} from './load-source.mjs';
 const require=createRequire(import.meta.url);
 const katex=require(path.join(packageRoot,'dist/katex.js'));
 const source=loadSource();
-const corpusFile=path.join(root,'tests/fixtures/p1.json');
+const phase=process.argv.find(x=>x.startsWith('--phase='))?.slice(8)??'p1';
+if(!['p1','p2','p4'].includes(phase))throw new Error('Unknown verification phase');
+const corpusFile=path.join(root,`tests/fixtures/${phase}.json`);
 const corpusBytes=await fs.readFile(corpusFile),corpus=JSON.parse(corpusBytes);
-const out=path.join(root,'artifacts/p1/reference');
+const out=path.join(root,`artifacts/${phase}/reference`);
 const toolchain=JSON.parse(await fs.readFile(path.join(root,'docs/reference/development-toolchain.lock.json'),'utf8'));
 const files=JSON.parse(await fs.readFile(path.join(root,'docs/reference/katex-0.19.0.files.json'),'utf8'));
 for(const file of files.packageFiles) {
@@ -56,7 +58,7 @@ await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const browser=await chromium.launch({executablePath:toolchain.browserExecutable,headless:true,args:['--force-color-profile=srgb','--disable-lcd-text']});
 try {
   if(browser.version()!==toolchain.browserVersion||katex.version!==lock.npm.version)throw new Error('Reference version changed');
-  const selected=new Set(['single-x','both-scripts','frac-display','sqrt-frac','roman','macro-arg']);
+  const selected=new Set(phase==='p1'?['single-x','both-scripts','frac-display','sqrt-frac','roman','macro-arg']:['p2-integral-display','p2-sum-display','p2-binom','p2-delimiter-tall','p2-widehat','p2-matrix-fraction','p2-aligned','p2-text-fonts']);
   const scenarios=[{fontSizeDip:24,dpiScale:1,theme:'light'}];
   if(process.argv.includes('--full-matrix'))for(const fontSizeDip of [16,24,32])for(const dpiScale of [1,1.25,1.5,2])for(const theme of ['light','dark'])if(fontSizeDip!==24||dpiScale!==1||theme!=='light')scenarios.push({fontSizeDip,dpiScale,theme});
   const results=[],assets=[];
@@ -90,7 +92,8 @@ try {
             glyphs.push({text:char,x:r.x-left,y:glyphBaseline-baseline,fontSizeDip:parseFloat(css.fontSize),fontFamily:css.fontFamily,fontStyle:css.fontStyle,fontWeight:css.fontWeight});i+=char.length;
           }m.remove();
         }
-        const rules=[...html.querySelectorAll('.frac-line')].map(e=>{const r=e.getBoundingClientRect(),border=parseFloat(getComputedStyle(e).borderBottomWidth);return{x:r.x-left,y:r.bottom-border-baseline,width:r.width,height:border,layoutBoxHeight:r.height};});
+        const ruleElements=[...html.querySelectorAll('.frac-line,.overline-line,.underline-line,.vertical-separator,.katex-hline,.katex-hdashline')];
+        const rules=ruleElements.flatMap(e=>{const r=e.getBoundingClientRect(),css=getComputedStyle(e),border=parseFloat(css.borderBottomWidth),vertical=parseFloat(css.borderRightWidth);if(!border&&!vertical)return[];return[{x:(vertical?r.right-vertical:r.x)-left,y:(vertical?r.y:r.bottom-border)-baseline,width:vertical||r.width,height:vertical?r.height:border,layoutBoxHeight:r.height,kind:e.className,dashed:css.borderBottomStyle==='dashed'||css.borderRightStyle==='dashed'}];});
         const paths=[...html.querySelectorAll('svg')].map(e=>{const r=e.getBoundingClientRect(),m=e.querySelector('path').getScreenCTM();return{x:r.x-left,y:r.y-baseline,width:r.width,height:r.height,viewBox:e.getAttribute('viewBox'),preserveAspectRatio:e.getAttribute('preserveAspectRatio'),transform:{x:m.e-left,y:m.f-baseline,scaleX:m.a,scaleY:m.d}};});
         const normalizeXml=node=>node.nodeType===Node.TEXT_NODE?{type:'text',text:node.data}:{namespace:node.namespaceURI,name:node.localName,attributes:Object.fromEntries([...node.attributes].map(a=>[a.name,a.value]).sort(([a],[b])=>a.localeCompare(b))),children:[...node.childNodes].map(normalizeXml)};
         return{advanceDip:rects.reduce((v,r)=>v+r.width,0),ascentDip:baseline-top,depthDip:bottom-baseline,origin:{x:left-outer.x,y:baseline-outer.y},glyphs,rules,paths,mathml:normalizeXml(host.querySelector('math')),mathmlText:new XMLSerializer().serializeToString(host.querySelector('math')),effectiveEmDip:parseFloat(getComputedStyle(host.querySelector('.katex')).fontSize)};
@@ -112,6 +115,6 @@ try {
     await context.close();console.log(`${scenarioId}: reference complete`);
   }
   await writeJson(path.join(out,'reference.json'),{schemaVersion:1,sourceCommit:lock.source.commit,corpusSha256:sha256(corpusBytes),semantics:semantic,results});
-  await writeJson(path.join(root,'docs/reference/p1-reference.evidence.json'),{schemaVersion:2,sourceCommit:lock.source.commit,npmSha256:lock.npm.sha256,corpusSha256:sha256(corpusBytes),browserVersion:browser.version(),browserSha256:toolchain.browserSha256,valid:semantic.filter(x=>x.result==='valid').length,invalid:semantic.filter(x=>x.result==='invalid').length,scenarios:scenarios.length,measurements:results.length,sourceAndDistributionSemanticsAgree:true,measurement:'Advance uses real .katex-base width; natural ascent/depth uses direct .katex-strut rectangles, avoiding CSS inline line boxes. Formula and individual text baselines measured with zero-size inline markers, positions relative to natural formula left / baseline. Fraction rules measure painted border-bottom, retaining its separate CSS layout height. No C# data used.',assets});
+  await writeJson(path.join(root,`docs/reference/${phase}-reference.evidence.json`),{schemaVersion:2,sourceCommit:lock.source.commit,npmSha256:lock.npm.sha256,corpusSha256:sha256(corpusBytes),browserVersion:browser.version(),browserSha256:toolchain.browserSha256,valid:semantic.filter(x=>x.result==='valid').length,invalid:semantic.filter(x=>x.result==='invalid').length,scenarios:scenarios.length,measurements:results.length,sourceAndDistributionSemanticsAgree:true,measurement:'Advance uses real .katex-base width; natural ascent/depth uses direct .katex-strut rectangles, avoiding CSS inline line boxes. Formula and individual text baselines measured with zero-size inline markers, positions relative to natural formula left / baseline. Fraction rules measure painted border-bottom, retaining its separate CSS layout height. No C# data used.',assets});
   console.log(JSON.stringify({valid:semantic.filter(x=>x.result==='valid').length,invalid:semantic.filter(x=>x.result==='invalid').length,measurements:results.length}));
 }finally{await browser.close();await new Promise(r=>server.close(r));}
