@@ -1,0 +1,111 @@
+name: WASM and npm
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      release-tag:
+        type: string
+        required: false
+        default: ''
+    outputs:
+      artifact-name:
+        value: ${{ jobs.browser.outputs.artifact-name }}
+      version:
+        value: ${{ jobs.browser.outputs.version }}
+      dist-tag:
+        value: ${{ jobs.browser.outputs.dist-tag }}
+      filename:
+        value: ${{ jobs.browser.outputs.filename }}
+      sha256:
+        value: ${{ jobs.browser.outputs.sha256 }}
+
+permissions:
+  contents: read
+
+jobs:
+  browser:
+    outputs:
+      artifact-name: wasm-npm-${{ github.run_id }}-${{ github.run_attempt }}
+      version: ${{ steps.distribution.outputs.version }}
+      dist-tag: ${{ steps.distribution.outputs.dist_tag }}
+      filename: ${{ steps.distribution.outputs.filename }}
+      sha256: ${{ steps.distribution.outputs.sha256 }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+      DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE: 'true'
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
+        with:
+          global-json-file: global.json
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22.23.2'
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - name: Validate the shared release tag
+        id: version
+        if: inputs.release-tag != ''
+        env:
+          RELEASE_TAG: ${{ inputs.release-tag }}
+        run: |
+          node npm/velocitex/scripts/release.mjs tag
+          if ($LASTEXITCODE -ne 0) { throw 'Invalid npm release tag or source revision.' }
+      - name: Verify npm release guards
+        run: |
+          ./tools/Test-NpmPublish.ps1
+      - name: Install pinned development tools
+        run: |
+          dotnet workload install wasm-tools --skip-manifest-update
+          if ($LASTEXITCODE -ne 0) { throw 'WASM workload install failed.' }
+          python -m pip install -r tools/VelociTex.DataGeneration/requirements-wasm.txt
+          if ($LASTEXITCODE -ne 0) { throw 'FontTools install failed.' }
+          npm ci --prefix tools/reference
+          if ($LASTEXITCODE -ne 0) { throw 'Reference tool install failed.' }
+          ./tools/reference/node_modules/.bin/playwright install --with-deps chromium
+          if ($LASTEXITCODE -ne 0) { throw 'Browser install failed.' }
+      - name: Verify contours, portable assertions and AOT output
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          python tools/VelociTex.DataGeneration/generate_svg_outlines.py --check
+          if ($LASTEXITCODE -ne 0) { throw 'Font outline drift.' }
+          ./build-wasm.ps1 -Locked -PackageVersion $env:RELEASE_VERSION
+      - name: Verify the installed distribution and record its exact bytes
+        id: distribution
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          $packagePath = if ($env:RELEASE_VERSION) { 'artifacts/wasm/npm-package' } else { 'npm/velocitex' }
+          ./verify-wasm.ps1 -SkipBuild -PackagePath $packagePath
+          node npm/velocitex/scripts/release.mjs manifest $packagePath artifacts/wasm
+          if ($LASTEXITCODE -ne 0) { throw 'npm release manifest failed.' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: wasm-npm-${{ github.run_id }}-${{ github.run_attempt }}
+          if-no-files-found: error
+          path: |
+            artifacts/wasm/${{ steps.distribution.outputs.filename }}
+            artifacts/wasm/npm-release.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: wasm-npm-and-browser-evidence
+          path: |
+            artifacts/wasm/browser/
+          if-no-files-found: ignore

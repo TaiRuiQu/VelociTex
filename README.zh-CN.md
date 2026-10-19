@@ -1,10 +1,15 @@
 # VelociTex
 
+现已新增可选 **WASM / JS 浏览器预览版**，复用 C# Core，提供 npm ES Module、
+TypeScript 类型和 `await renderAll()`。参阅 [网页使用说明](docs/wasm-js.zh-CN.md)、
+[npm 文档](npm/velocitex/README.md)和[验证记录](docs/verification/wasm-2026-10-19.md)。
+目前可以构建及安装本地 npm 分发包，尚未发布到 npm；浏览器字体回退仍有限制。
+
 [English](README.md) | 中文
 
 面向原生 Windows 应用的 C# 数学排版与渲染库。目标是在 WinUI 3 上还原 **KaTeX 0.19.0 的核心数学排版**，导出 PNG / SVG / MathML，并优先替换 `../oh-my-study/` 的公式显示链路。
 
-**截至 2026-10-19：P0～P4 实现已交付，P5 本地候选准备已完成。** `1.0.0-rc.1` 保持 KaTeX 0.19.0 基线，已有真实隔离的 JIT/AOT 与 WinUI 包消费者。P4 范围内 2939 个注册身份均有源码观察用例；3659 个有效和 50 个错误输入在每种运行时的 3843 场景中通过独立硬检查，下游原生显示已接入。用户允许抗锯齿差异，排版和裁切仍严格检查。详见 [P5 记录](docs/verification/p5-2026-10-19.md)。正式 1.0 退出仍待旧硬件、真实显示器 DPI、Windows 10 最低版本、硬件 GPU/设备和屏幕阅读器语音验收；未对外发布。
+**截至 2026-10-19：P0～P4 实现已交付，P5 本地候选准备已完成。** `1.0.0-rc.1` 保持 KaTeX 0.19.0 基线，已有真实隔离的 JIT/AOT 与 WinUI 包消费者。P4 范围内 2939 个注册身份均有源码观察用例；3659 个有效和 50 个错误输入在每种运行时的 3843 场景中通过独立硬检查，下游原生显示已接入。用户允许抗锯齿差异，排版和裁切仍严格检查。详见 [P5 记录](docs/verification/p5-2026-10-19.md)。正式 1.0 退出仍待旧硬件、真实显示器 DPI、Windows 10 最低版本、硬件 GPU/设备和屏幕阅读器语音验收。网页绑定已独立发布为 npm 预览版 `velocitex@0.1.0-preview.2`，可用 `npm install velocitex@next` 安装，包内包含渲染对比图。
 
 ## 已确认的方向
 

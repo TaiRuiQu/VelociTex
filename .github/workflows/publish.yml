@@ -1,4 +1,4 @@
-name: Publish NuGet and GitHub Release
+name: Publish NuGet, npm and GitHub Release
 
 on:
   push:
@@ -14,6 +14,14 @@ concurrency:
 jobs:
   lint:
     uses: ./.github/workflows/lint.yml
+
+  npm-verify:
+    name: Verify npm release
+    needs: lint
+    if: github.repository == 'TaiRuiQu/VelociTex'
+    uses: ./.github/workflows/wasm.yml
+    with:
+      release-tag: ${{ github.ref_name }}
 
   package:
     name: Verify and pack release
@@ -105,7 +113,7 @@ jobs:
 
   publish:
     name: Trusted publish to nuget.org
-    needs: package
+    needs: [package, npm-verify]
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment: nuget
@@ -162,9 +170,80 @@ jobs:
             if ($LASTEXITCODE -ne 0) { throw "NuGet push failed: $id" }
           }
 
+  npm-publish:
+    name: Trusted publish to npmjs.org
+    needs: [package, npm-verify]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment: npm
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: ${{ needs.npm-verify.outputs.artifact-name }}
+          path: npm-release
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22.23.2'
+      - name: Install OIDC-capable npm CLI
+        run: |
+          npm install --global npm@11.16.0 --ignore-scripts --no-audit --no-fund
+          if ($LASTEXITCODE -ne 0) { throw 'npm CLI installation failed.' }
+          npm --version
+      - name: Verify the tested tarball before publishing
+        env:
+          PACKAGE_VERSION: ${{ needs.package.outputs.version }}
+          WEB_VERSION: ${{ needs.npm-verify.outputs.version }}
+          DIST_TAG: ${{ needs.npm-verify.outputs.dist-tag }}
+          PACKAGE_FILE: ${{ needs.npm-verify.outputs.filename }}
+          PACKAGE_SHA256: ${{ needs.npm-verify.outputs.sha256 }}
+          SOURCE_REVISION: ${{ github.sha }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $report = Get-Content npm-release/npm-release.json -Raw | ConvertFrom-Json
+          $expectedFile = "velocitex-$env:PACKAGE_VERSION.tgz"
+          $expectedTag = if ($env:PACKAGE_VERSION.Contains('-')) { 'next' } else { 'latest' }
+          if ($env:WEB_VERSION -cne $env:PACKAGE_VERSION -or $env:PACKAGE_FILE -cne $expectedFile -or $env:DIST_TAG -cne $expectedTag) {
+            throw 'NuGet/npm release versions or npm dist-tag disagree.'
+          }
+          if ($report.schemaVersion -ne 1 -or $report.name -cne 'velocitex' -or $report.version -cne $env:PACKAGE_VERSION -or
+              $report.filename -cne $expectedFile -or $report.distTag -cne $expectedTag -or $report.sourceRevision -cne $env:SOURCE_REVISION -or
+              $report.sourceHasChanges -ne $false -or $report.aot -ne $true -or $report.configuration -cne 'Release' -or
+              $report.sha256 -cne $env:PACKAGE_SHA256 -or @(Get-ChildItem npm-release/*.tgz).Count -ne 1) {
+            throw 'npm artifact is not a clean, verified Release AOT distribution from this tag.'
+          }
+          $tarball = Join-Path 'npm-release' $expectedFile
+          if ((Get-FileHash -LiteralPath $tarball -Algorithm SHA256).Hash.ToLowerInvariant() -cne $report.sha256) { throw 'npm tarball hash mismatch.' }
+          $packageJson = & tar -xOf $tarball package/package.json
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to inspect npm metadata.' }
+          $metadata = ($packageJson -join "`n") | ConvertFrom-Json
+          $buildJson = & tar -xOf $tarball package/dist/build-info.json
+          if ($LASTEXITCODE -ne 0) { throw 'Unable to inspect npm build info.' }
+          $build = ($buildJson -join "`n") | ConvertFrom-Json
+          if ($metadata.name -cne 'velocitex' -or $metadata.version -cne $env:PACKAGE_VERSION -or
+              $metadata.repository.url -cne 'https://github.com/TaiRuiQu/VelociTex.git' -or
+              $metadata.publishConfig.registry -cne 'https://registry.npmjs.org/' -or $metadata.publishConfig.access -cne 'public' -or
+              $build.sourceRevision -cne $env:SOURCE_REVISION -or $build.sourceHasChanges -ne $false -or
+              $build.aot -ne $true -or $build.configuration -cne 'Release' -or $build.packageVersion -cne $env:PACKAGE_VERSION -or $build.versionSource -cne 'release-tag') {
+            throw 'Packed npm identity, build or source metadata is invalid.'
+          }
+      - name: Publish the verified archive with OIDC and provenance
+        env:
+          PACKAGE_FILE: ${{ needs.npm-verify.outputs.filename }}
+          DIST_TAG: ${{ needs.npm-verify.outputs.dist-tag }}
+        run: |
+          npm publish "npm-release/$env:PACKAGE_FILE" --access public --tag $env:DIST_TAG --provenance --ignore-scripts --registry https://registry.npmjs.org/
+          if ($LASTEXITCODE -ne 0) { throw 'npm trusted publishing failed.' }
+
   release:
     name: Create GitHub Release
-    needs: [package, publish]
+    needs: [package, publish, npm-publish]
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:

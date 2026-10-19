@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <NuGetLockFilePath Condition="'$(PublishAot)' == 'true'">packages.aot.lock.json</NuGetLockFilePath>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../VelociTex.Core/VelociTex.Core.csproj" />
+    <EmbeddedResource Include="Generated/glyph-outlines.json" />
+  </ItemGroup>
+</Project>

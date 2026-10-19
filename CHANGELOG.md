@@ -1,5 +1,22 @@
 # Changelog
 
+## Optional web preview — 2026-10-19
+
+- Extend `v*` release CI to publish NuGet and npm together at the tag version,
+  using npm Trusted Publishing after actual archive/browser verification.
+
+- Add a separate .NET WASM AOT binding, portable SVG backend, npm ESM package,
+  TypeScript types and asynchronous `render`, `renderToString` and `renderAll`.
+- Add deterministic locked-font contours, static asset deployment helper,
+  isolated npm/browser consumers and a dedicated web CI workflow.
+- Publish `velocitex@0.1.0-preview.2` to npm's `next` channel with four rendering
+  comparison images in the README and tarball. Benchmark code and results are
+  excluded from this distribution.
+- Browser fallback fonts remain incomplete; 29 otherwise-valid P4 inputs
+  explicitly report missing glyphs. This npm preview does not replace the frozen
+  native candidate. See
+  `docs/verification/wasm-2026-10-19.md`.
+
 ## Unreleased release-candidate preparation
 
 - Add ordered native painting, explicit colors and affine transforms; native,

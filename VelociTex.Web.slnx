@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/VelociTex.Core/VelociTex.Core.csproj" />
+  <Project Path="src/VelociTex.Rendering.Svg/VelociTex.Rendering.Svg.csproj" />
+  <Project Path="src/VelociTex.Wasm/VelociTex.Wasm.csproj" />
+  <Project Path="tests/VelociTex.Web.Tests/VelociTex.Web.Tests.csproj" />
+</Solution>

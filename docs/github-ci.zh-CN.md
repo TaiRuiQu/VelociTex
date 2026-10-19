@@ -1,6 +1,10 @@
-# GitHub CI 与 NuGet Trusted Publishing
+# GitHub CI、NuGet 与 npm Trusted Publishing
 
 [English](github-ci.md) | 中文
+
+同一个 `v*` 发布标签现在也会发布 WASM npm 包，版本直接取自标签。
+新增的 `npm` GitHub 环境和 npm Trusted Publisher 设置见[npm 发布说明](npm-publishing.zh-CN.md)。
+两套验证都通过后才上传 NuGet/npm，GitHub Release 等两边发布成功后再创建。
 
 ## 已配置的流程
 

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VelociTex WebAssembly sample</title>
+<style>
+  body { max-width: 800px; margin: 48px auto; padding: 0 24px; font: 18px/1.7 system-ui, sans-serif; color: #182036; }
+  h1 { font-size: 28px; } #status { font-size: 14px; } code { font-size: 15px; }
+  @media (prefers-color-scheme: dark) { body { background: #182036; color: #f6f6ff; } }
+</style>
+<h1>VelociTex · WebAssembly</h1>
+<p id="status" role="status">Loading the math engine…</p>
+<article>
+  <p>Inline math: \(E=mc^2\), a fraction \(\frac{a+b}{c}\), and a radical \(\sqrt{x^2+y^2}\).</p>
+  <p>Display math:</p>
+  $$\int_0^\infty e^{-x^2}\,dx=\frac{\sqrt{\pi}}{2}$$
+  <div data-math="\begin{pmatrix}a&amp;b\\c&amp;d\end{pmatrix}" data-display-mode="true"></div>
+  <p>Colors: \(\textcolor{red}{x}+\textcolor{blue}{y}\).</p>
+  <p><code>\(Code stays untouched.\)</code></p>
+</article>
+<script type="module">
+  import { renderAll } from '../../npm/velocitex/dist/index.mjs';
+  const status = document.querySelector('#status');
+  try {
+    const report = await renderAll(document.querySelector('article'));
+    status.textContent = `${report.rendered} formulas rendered; ${report.errors.length} errors.`;
+  } catch (error) { status.textContent = error.message; }
+</script>
+</html>

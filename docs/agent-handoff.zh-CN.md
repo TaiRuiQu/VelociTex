@@ -7,6 +7,19 @@
 
 ## 当前交付
 
+后续新增 npm CI 发布：与 NuGet 同用 `v*` 标签，npm 版本取自标签，预览版到 `next`、
+正式版到 `latest`；两套验证都通过才上传，GitHub Release 等双方发布成功。
+需单独配置 GitHub `npm` 环境和 npm 对 **`publish.yml`** 的 Trusted Publisher，
+显式允许 `npm publish`。见[设置说明](npm-publishing.zh-CN.md)和
+[本地验证](verification/npm-ci-2026-10-19.md)。实际账号配置、托管运行和上传尚未验证。
+
+用户于 2026-10-19 追加要求独立的 WASM / JS npm 绑定。代码位于
+`src/VelociTex.Wasm`、`src/VelociTex.Rendering.Svg`、`npm/velocitex`，通过
+`build-wasm.ps1` / `VelociTex.Web.slnx` 单独构建。见[网页使用说明](wasm-js.zh-CN.md)和
+[验证记录](verification/wasm-2026-10-19.md)。网页层复用 Core，不向原生包加入浏览器依赖。
+字体回退尚未实现，P4 中 29 个原有效输入在网页预览版明确报告 `UnknownSymbol`。
+npm 预览包仅在本地构建，尚未对外发布；不能与冻结的原生 RC1 制品混淆。
+
 P0～P4 已实现并提交：P2 `867283c`、P3 `cd05074`、P4 `1b0c777`。
 本地 `1.0.0-rc.1` 候选来自干净的 P4 源版本
 `1b0c77774418fd349c36b8b4cd0c89a135f70fba`，已有真实隔离 JIT/AOT、WinUI 和下游

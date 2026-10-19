@@ -8,6 +8,29 @@ in the [design review](verification/design-review.2026-10-19.md).
 
 ## Current delivery
 
+The user subsequently requested an optional WASM / JS binding for npm on
+2026-10-19. Its source is in `src/VelociTex.Wasm`, `src/VelociTex.Rendering.Svg`
+and `npm/velocitex`, built separately via `build-wasm.ps1` / `VelociTex.Web.slnx`.
+See [the web verification record](verification/wasm-2026-10-19.md) and
+[npm contract](../npm/velocitex/README.md). It reuses Core without adding browser
+dependencies to native packages. Web fallback fonts are not implemented: 29
+otherwise-valid P4 cases report `UnknownSymbol`. The npm preview
+has now been published as `velocitex@0.1.0-preview.2` on npm's `next` channel.
+Its README and tarball contain four rendering comparison images and no benchmark
+code, reports or performance charts. The exact registry integrity, fresh public
+installation, TypeScript, 3,630 successful/79 diagnostic browser parity cases,
+and all four public CDN image hashes were checked on 2026-10-19. Publication
+evidence is under ignored `artifacts/publishing/preview2-*`. This was an explicitly
+authorized manual npm preview publication; hosted npm OIDC is still unverified.
+Do not confuse it with the frozen native RC1 artifacts.
+
+The user paused the end-to-end WinApp/browser benchmark to prioritize this npm
+publication. Experimental `FrameBenchmarkWindow.cs` / `PresentationCapture.cs`
+and their sample routing edits remain local and incomplete: they compiled, but
+the real-window input-to-frame experiment and screenshot acceptance have not
+run. They are excluded from the npm dependency graph and tarball. Earlier
+parse/export/software-target timings are not input-to-present measurements.
+
 P0–P4 are implemented and committed. P2 is `867283c`, P3 is `cd05074`, and P4 is
 `1b0c777`. The local `1.0.0-rc.1` candidates use clean P4 source revision
 `1b0c77774418fd349c36b8b4cd0c89a135f70fba`; isolated JIT/AOT, WinUI and downstream
@@ -51,7 +74,8 @@ old CPU and low-memory hardware, physical monitor DPI transitions, minimum
 Windows 10 real-machine acceptance, hardware GPU/device invalidation and exact
 native/GPU peak accounting, and screen-reader audio. SourceLink syntax and
 embedded source checksums pass, but the local commit is not claimed remotely
-available. There is no external publication or push authorization.
+available by those historical checks. The user has since explicitly authorized
+the npm preview publication above; no new native/stable release was triggered.
 
 The frozen candidate also has 27 XML record-property members with an isolated
 `>` text fragment. XML remains valid and summaries exist; fix the source comment
@@ -63,6 +87,15 @@ JIT/AOT consumers and real-app screenshots after WinUI changes. Required layout
 scratch/results/exports allocate; report managed and native costs honestly.
 
 ## Reproduction and reading
+
+The release workflow now also verifies and publishes the npm WASM distribution
+on the same `v*` tag, using the tag version without modifying tracked npm
+metadata. Both verification suites gate both registry jobs, and GitHub Release
+creation waits for both publications. npm requires its own `npm` GitHub
+environment and Trusted Publisher for **`publish.yml`**, explicitly permitting
+`npm publish`; see [npm setup](npm-publishing.md) and
+[local CI verification](verification/npm-ci-2026-10-19.md). Account settings and
+real hosted OIDC/publication remain unverified; no release was triggered here.
 
 GitHub Actions Lint, version-tag-triggered NuGet Trusted Publishing and automatic
 GitHub Release creation are configured

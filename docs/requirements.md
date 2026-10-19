@@ -4,6 +4,14 @@ English | [中文](requirements.zh-CN.md)
 
 Confirmed date: 2026-10-19. Source of requirements: Current user Q&A session. This document distinguishes between "user-confirmed" items and "engineering proposals" to avoid conflating optimization ideas with product requirements during implementation.
 
+Additional user request on 2026-10-19: provide a separately packaged WASM / JS
+binding, distributed as an npm package with simple APIs such as `renderAll()`.
+This explicitly extends the platform scope for the optional web adapter. Native
+Core/Windows/WinUI packages retain their existing dependency boundaries. The
+browser preview contract and its font-fallback limitations are documented in
+[the npm guide](../npm/velocitex/README.md); it does not establish browser parity,
+performance superiority or external publication by itself.
+
 Later confirmation on 2026-10-19: anti-aliasing differences are acceptable; correct mathematical typesetting is the acceptance criterion. Pixel-edge differences remain diagnostic, while semantic and layout correctness, colors, missing glyphs and clipping remain hard checks.
 
 ## 1. Product Goals (User Confirmed)
@@ -40,6 +48,9 @@ Out of scope for now:
 - `mhchem`, automatic web page scanning, copy-tex, and other contrib extensions.
 - Arbitrary LaTeX packages, complete TeX document compilation, and JS callback-style extension macros.
 - Compatibility commitments to other KaTeX versions.
+
+The subsequent WASM / JS request adds DOM scanning through the optional host
+adapter's `renderAll()`; this does not introduce a DOM or web scanning into Core.
 
 **Where the source code registers something does not decide its scope.** P0 extracts a complete list from the registry, symbol table, built-in macros, and environments, then annotates every item individually. Internal helper commands that core math depends on must keep their required semantics even when their names mention HTML; they cannot be deleted by file name. Math environments such as `CD` cannot be filed as extensions just because they are rarely used. The list is derived from the [0.19.0 function entry points](https://github.com/KaTeX/KaTeX/blob/v0.19.0/src/functions.ts), the [environment entry points](https://github.com/KaTeX/KaTeX/blob/v0.19.0/src/environments.ts), and their transitive registration dependencies.
 

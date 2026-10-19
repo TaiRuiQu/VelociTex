@@ -10,6 +10,11 @@ artifacts/
 *.suo
 *.binlog
 *.pdb
+npm/velocitex/dist/
+npm/velocitex/LICENSE
+npm/velocitex/licenses/
+npm/velocitex/THIRD-PARTY-NOTICES.md
+*.tgz
 # Keep small generated source data, reference manifests, and dependency locks.
 !**/packages.lock.json
 !**/package-lock.json

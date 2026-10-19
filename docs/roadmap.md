@@ -6,6 +6,11 @@ P0 through P4 have implemented deliverables and actual checks on 2026-10-19. P3 
 
 ## Phase Overview
 
+The separately requested WASM / JS npm preview is an optional P7 web layer,
+implemented alongside the frozen native candidate. Its verification and remaining
+browser/font/publication work are recorded in
+[the web record](verification/wasm-2026-10-19.md); it does not clear native P5 gates.
+
 | Phase | Goal | Dependencies | Deliverable |
 | --- | --- | --- | --- |
 | P0 | Reference baseline, native / AOT feasibility, and acceptance tools | Confirmed requirements | Upstream list, runnable native probe, comparison pipeline, budget calibration |

@@ -1,5 +1,11 @@
 # Package and lifecycle contract
 
+The subsequently requested browser/npm adapter is separate from these native
+NuGet contracts. Its asynchronous JS API, static-asset setup and known font
+limitations are specified in [the npm guide](../npm/velocitex/README.md). It
+reuses Core through .NET WASM AOT and the portable SVG renderer; native packages
+do not depend on it.
+
 The historical local `0.2.0-preview.1` packages are the P2 integration surface.
 `0.4.0-preview.1` is the next local compatibility preview. A version override can
 produce a local release candidate after its source and verification gates are

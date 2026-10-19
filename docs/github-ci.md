@@ -1,6 +1,12 @@
-# GitHub CI and NuGet Trusted Publishing
+# GitHub CI, NuGet and npm Trusted Publishing
 
 English | [中文](github-ci.zh-CN.md)
+
+The same `v*` tag now also publishes the optional WASM npm package at the tag's
+version. See [npm release setup](npm-publishing.md) ([中文](npm-publishing.zh-CN.md))
+for the required `npm` GitHub environment and npm Trusted Publisher. This extends
+the release workflow below: both native and web verification must pass before
+either publish job starts, and GitHub Release creation waits for both registries.
 
 ## Workflows
 
