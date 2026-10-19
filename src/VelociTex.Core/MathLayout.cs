@@ -38,6 +38,35 @@ internal static partial class MathLayout
     private readonly record struct GlyphLookup(int GlyphIndex, TexGlyphMetric Metric, bool HasMetric);
     internal static bool ProfileEnabled;
     internal static readonly long[] ProfileTicks = new long[4];
+    [ThreadStatic] private static LayoutScratch? Scratch;
+    private sealed class LayoutScratch
+    {
+        internal Box[] Boxes = [];
+        internal LayoutContext[] Styles = [];
+        internal bool[] ScriptBases = [];
+        internal double[] X = [], Y = [];
+        internal Frame[] Frames = [];
+        internal int[] Sequence = [], CollectStack = [], ColorStack = [];
+        internal MathAtom[] Atoms = [];
+        internal MathColor?[] Colors = [];
+        internal bool[] Hidden = [];
+        internal Placement[] Placements = [];
+        internal readonly List<Decoration> Decorations = [];
+        internal readonly List<MathGlyph> Glyphs = [];
+        internal readonly List<MathRule> Rules = [];
+        internal readonly List<MathPath> Paths = [];
+        internal readonly List<MathTextGlyph> TextGlyphs = [];
+        internal readonly List<MathTextRun> TextRuns = [];
+        internal readonly List<MathPaintCommand> PaintCommands = [];
+        internal readonly List<MathPaintState> PaintStates = [];
+        internal readonly Dictionary<MathPaintState, int> PaintStateIds = [];
+    }
+    private static T[] Ensure<T>(ref T[] buffer, int length)
+    {
+        if (buffer.Length >= length) return buffer;
+        buffer = new T[length];
+        return buffer;
+    }
     private static readonly Dictionary<long, GlyphLookup> GlyphLookups = BuildGlyphLookups();
     private static Dictionary<long, GlyphLookup> BuildGlyphLookups()
     {
@@ -67,19 +96,23 @@ internal static partial class MathLayout
         long profileStart = 0, profileArrays = 0, profileColors = 0, profileBuild = 0;
         if (ProfileEnabled) profileStart = Stopwatch.GetTimestamp();
         int count = nodes.Length;
-        var boxes = new Box[count];
-        var styles = new LayoutContext[count];
-        var scriptBases=new bool[count];
-        for(int i=0;i<count;i++)if(nodes[i].Kind==NodeKind.Script&&nodes[i].FirstChild>=0)scriptBases[nodes[i].FirstChild]=true;
-        var x = new double[count];
-        var y = new double[count];
-        var frames = new Frame[checked(count * 2 + 4)];
-        var sequence = new int[count];
-        var collectStack = new int[count];
-        var atoms = new MathAtom[count];
-        var colors = new MathColor?[count];
-        var hidden = new bool[count];
-        var colorStack = new int[count]; int colorTop = 0;
+        var scratch = Scratch ??= new LayoutScratch();
+        var boxes = Ensure(ref scratch.Boxes, count);
+        var styles = Ensure(ref scratch.Styles, count);
+        var scriptBases = Ensure(ref scratch.ScriptBases, count);
+        Array.Clear(scriptBases, 0, count);
+        for (int i = 0; i < count; i++) if (nodes[i].Kind == NodeKind.Script && nodes[i].FirstChild >= 0) scriptBases[nodes[i].FirstChild] = true;
+        var x = Ensure(ref scratch.X, count);
+        var y = Ensure(ref scratch.Y, count);
+        var frames = Ensure(ref scratch.Frames, checked(count * 2 + 4));
+        var sequence = Ensure(ref scratch.Sequence, count);
+        var collectStack = Ensure(ref scratch.CollectStack, count);
+        var atoms = Ensure(ref scratch.Atoms, count);
+        var colors = Ensure(ref scratch.Colors, count);
+        Array.Clear(colors, 0, count);
+        var hidden = Ensure(ref scratch.Hidden, count);
+        Array.Clear(hidden, 0, count);
+        var colorStack = Ensure(ref scratch.ColorStack, count); int colorTop = 0;
         if (ProfileEnabled) profileArrays = Stopwatch.GetTimestamp();
         colorStack[colorTop++] = root;
         while (colorTop != 0)
@@ -92,7 +125,7 @@ internal static partial class MathLayout
             else { ColorChild(colored.FirstChild); ColorChild(colored.SecondChild); ColorChild(colored.ThirdChild); ColorChild(colored.FourthChild); }
             void ColorChild(int child) { if (child >= 0) { colors[child] = colors[colorNode]; hidden[child] = hidden[colorNode]; colorStack[colorTop++] = child; } }
         }
-        var decorations = new List<Decoration>();
+        var decorations = scratch.Decorations; decorations.Clear();
         if (ProfileEnabled) profileColors = Stopwatch.GetTimestamp();
         int top = 0, batches = 0;
         frames[top++] = new(root, new(options.DisplayMode ? (byte)0 : (byte)2), false);
@@ -485,15 +518,15 @@ internal static partial class MathLayout
             // body receives the host's centering/flush-left offset.
             for(int i=0;i<count;i++)if(nodes[i].Kind is NodeKind.Tag or NodeKind.MatrixRow && nodes[i].SecondChild>=0)x[nodes[i].SecondChild]-=rootOffset;
         }
-        var glyphs = new List<MathGlyph>();
-        var rules = new List<MathRule>();
-        var paths = new List<MathPath>();
-        var textGlyphs = new List<MathTextGlyph>();
-        var textRuns=new List<MathTextRun>();
-        var paintCommands = new List<MathPaintCommand>();
-        var paintStates = new List<MathPaintState> { new(null, MathTransform.Identity) };
-        var paintStateIds = new Dictionary<MathPaintState, int> { [paintStates[0]] = 0 };
-        var placements = new Placement[checked(count * 3 + 4)];
+        var glyphs = scratch.Glyphs; glyphs.Clear();
+        var rules = scratch.Rules; rules.Clear();
+        var paths = scratch.Paths; paths.Clear();
+        var textGlyphs = scratch.TextGlyphs; textGlyphs.Clear();
+        var textRuns = scratch.TextRuns; textRuns.Clear();
+        var paintCommands = scratch.PaintCommands; paintCommands.Clear();
+        var paintStates = scratch.PaintStates; paintStates.Clear(); paintStates.Add(new(null, MathTransform.Identity));
+        var paintStateIds = scratch.PaintStateIds; paintStateIds.Clear(); paintStateIds[paintStates[0]] = 0;
+        var placements = Ensure(ref scratch.Placements, checked(count * 3 + 4));
         int placementCount = 0;
         int activePaintState = 0; bool activeVisible = true;
         placements[placementCount++] = new(root, rootOffset, outer.Height);
@@ -692,7 +725,9 @@ internal static partial class MathLayout
             ProfileTicks[0] = profileArrays - profileStart; ProfileTicks[1] = profileColors - profileArrays;
             ProfileTicks[2] = profileBuild - profileColors; ProfileTicks[3] = end - profileBuild;
         }
-        return new(glyphs.ToArray(), rules.ToArray(), paths.ToArray(), new(Math.Max(0, outer.Width) * fontSize, (outer.Height + outer.Depth) * fontSize), outer.Height * fontSize, bounds, textGlyphs.ToArray(), paintCommands.ToArray(), paintStates.ToArray(),textRuns.ToArray());
+        LayoutOutput output = new(glyphs.ToArray(), rules.ToArray(), paths.ToArray(), new(Math.Max(0, outer.Width) * fontSize, (outer.Height + outer.Depth) * fontSize), outer.Height * fontSize, bounds, textGlyphs.ToArray(), paintCommands.ToArray(), paintStates.ToArray(), textRuns.ToArray());
+        glyphs.Clear(); rules.Clear(); paths.Clear(); textGlyphs.Clear(); textRuns.Clear(); paintCommands.Clear(); paintStates.Clear(); paintStateIds.Clear(); decorations.Clear();
+        return output;
 
         void Push(int child, LayoutContext childStyle) { if (child >= 0) frames[top++] = new(child, childStyle, false); }
         void EmitGlyph(int font, int glyphIndex, int codePoint, double gx, double gy, double emSize)

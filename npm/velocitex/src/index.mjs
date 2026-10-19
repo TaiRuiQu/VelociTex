@@ -6,13 +6,36 @@ let compilerSvg;
 let compilerMathml;
 let compilerSvgSimple;
 let compilerMathmlSimple;
-let compilerMetrics;
+let compilerSvgSharedSimple;let compilerMetrics;
 let compilerMetricsSimple;
 let compilerMetricsSvg;
 let ping;
 let serial = 0;
 const instanceId = `vt${Math.random().toString(36).slice(2)}_`;
 const hidden = 'position:absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap';
+const svgNamespace = 'http://www.w3.org/2000/svg';
+let definitionsHost;
+const installedDefinitions = new Set();
+
+function installDefinitions(definitions) {
+  if (!definitions) return;
+  if (!definitionsHost) {
+    if (typeof globalThis.document === 'undefined') return;
+    definitionsHost = document.createElementNS(svgNamespace, 'svg');
+    definitionsHost.setAttribute('aria-hidden', 'true');
+    definitionsHost.setAttribute('style', hidden);
+    definitionsHost.append(document.createElementNS(svgNamespace, 'defs'));
+    document.body.append(definitionsHost);
+  }
+  const target = definitionsHost.firstChild;
+  for (const chunk of definitions.split('<path ')) {
+    if (!chunk) continue;
+    const id = /^id="([^"]+)"/.exec(chunk)?.[1];
+    if (id && installedDefinitions.has(id)) continue;
+    target.insertAdjacentHTML('beforeend', '<path ' + chunk);
+    if (id) installedDefinitions.add(id);
+  }
+}
 
 /** Initialize once; render functions also initialize automatically. */
 export function init(options = {}) {
@@ -31,6 +54,7 @@ export function init(options = {}) {
       compilerMathml = exports.VelociTex.Wasm.BrowserBindings.CompileMathMl;
       compilerSvgSimple = exports.VelociTex.Wasm.BrowserBindings.CompileSvgSimple;
       compilerMathmlSimple = exports.VelociTex.Wasm.BrowserBindings.CompileMathMlSimple;
+      compilerSvgSharedSimple = exports.VelociTex.Wasm.BrowserBindings.CompileSharedSimple;
       compilerMetrics = exports.VelociTex.Wasm.BrowserBindings.CompileMetrics;
       compilerMetricsSimple = exports.VelociTex.Wasm.BrowserBindings.CompileMetricsSimple;
       compilerMetricsSvg = exports.VelociTex.Wasm.BrowserBindings.CompileMetricsSvg;
@@ -94,7 +118,7 @@ function compileOptions(options) {
 
 function canUseSimpleOptions(options) {
   for (const key of Object.keys(options)) {
-    if (!['displayMode', 'output', 'throwOnError', 'trust'].includes(key)) return false;
+    if (!['displayMode', 'output', 'throwOnError', 'trust', '__shared'].includes(key)) return false;
   }
   return true;
 }
@@ -109,6 +133,12 @@ async function compile(source, options) {
   }
   await init();
   const prefix = instanceId + (++serial);
+  if (options.__shared === true && canUseSimpleOptions(options)) {
+    const raw = compilerSvgSharedSimple(source, !!options.displayMode, instanceId, prefix);
+    if (raw[0] === 'E') throw new ParseError(source, JSON.parse(raw.slice(1)));
+    const [definitions, svg, mathml, width, height, baseline, logicalWidth, logicalHeight] = raw.slice(1).split('\u0001');
+    return { success: true, svg, mathml, width: Number(width), height: Number(height), baseline: Number(baseline), logicalWidth: Number(logicalWidth), logicalHeight: Number(logicalHeight), __defs: definitions };
+  }
   if (options.output === 'svg' || options.output === 'mathml') {
     const simple = canUseSimpleOptions(options);
     const raw = options.output === 'svg'
@@ -178,8 +208,17 @@ export async function renderToString(source, options = {}) {
 /** Replace one element with a complete formula. Original source remains available for copying. */
 export async function render(source, element, options = {}) {
   if (!element || element.nodeType !== 1) throw new TypeError('render requires a target Element.');
-  const html = await renderToString(source, options);
-  element.innerHTML = html;
+  let result;
+  try { result = await compile(source, { ...options, __shared: true }); }
+  catch (error) {
+    if (!(error instanceof ParseError) || options.throwOnError !== false) throw error;
+    element.innerHTML = errorMarkup(error, options);
+    element.setAttribute('data-velocitex-rendered', '');
+    element.setAttribute('data-velocitex-source', source);
+    return;
+  }
+  installDefinitions(result.__defs);
+  element.innerHTML = markup(result, options);
   element.setAttribute('data-velocitex-rendered', '');
   element.setAttribute('data-velocitex-source', source);
 }

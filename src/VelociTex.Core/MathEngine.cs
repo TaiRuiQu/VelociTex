@@ -71,8 +71,7 @@ public sealed partial class MathEngine
         finally { if (sessionEntered) options.Session!.Leave(); workspace.Leave(); }
     }
 
-    private static bool Valid(in MathOptions o) => double.IsFinite(o.FontSize) && o.FontSize is > 0 and <= 1024 &&
-        o.MaxInputLength is > 0 and <= 1_048_576 && o.MaxNodes is > 0 and <= 262_144 && o.MaxNesting is > 0 and <= 1024 &&
+    private static bool Valid(in MathOptions o) => double.IsFinite(o.FontSize) && o.FontSize is > 0 and <= 1024 &&        o.MaxInputLength is > 0 and <= 1_048_576 && o.MaxNodes is > 0 and <= 262_144 && o.MaxNesting is > 0 and <= 1024 &&
         o.MaxExpansion is > 0 and <= 1_000_000 && o.MaxTokens is > 0 and <= 1_048_576 &&
         !double.IsNaN(o.MaxSize) && o.MaxSize >= 0 && double.IsFinite(o.MinRuleThickness) && o.MinRuleThickness >= 0 &&
         double.IsFinite(o.DisplayWidth) && o.DisplayWidth is >= 0 and <= 32768 && o.EquationNumber is > 0 and <= 1_000_000 &&

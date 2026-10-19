@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using System.Xml;
 
 namespace VelociTex.Rendering.Svg;
 
@@ -28,13 +27,36 @@ public static class MathSvgWriter
         return new(x, y, Math.Max(1, width), Math.Max(1, height));
     }
 
+    /// <summary>Standalone SVG plus glyph definitions that may be shared by a page.</summary>
+    public readonly record struct SharedSvg(string Svg, string Definitions);
+
     /// <summary>Writes standalone SVG. The caller supplies a document-unique ASCII ID prefix.</summary>
     public static string Write(MathDocument document, string idPrefix)
     {
         ArgumentNullException.ThrowIfNull(document);
+        ValidatePrefix(idPrefix);
+        return WriteCore(document, idPrefix, idPrefix, stableGlyphIds: false, includeGlyphDefinitions: true, definitions: null);
+    }
+
+    /// <summary>Writes SVG with stable glyph IDs and separate definitions for page-level sharing.</summary>
+    public static SharedSvg WriteShared(MathDocument document, string glyphPrefix, string clipPrefix)
+    {
+        ArgumentNullException.ThrowIfNull(document);
+        ValidatePrefix(glyphPrefix); ValidatePrefix(clipPrefix);
+        var definitions = new StringBuilder(2048);
+        string svg = WriteCore(document, glyphPrefix, clipPrefix, stableGlyphIds: true, includeGlyphDefinitions: false, definitions);
+        return new(svg, definitions.ToString());
+    }
+
+    private static void ValidatePrefix(string idPrefix)
+    {
         ArgumentException.ThrowIfNullOrEmpty(idPrefix);
         if (idPrefix.Length > 96 || !char.IsAsciiLetter(idPrefix[0]) || idPrefix.Any(c => !char.IsAsciiLetterOrDigit(c) && c is not '_' and not '-'))
             throw new ArgumentException("Use an ASCII letter followed by letters, digits, underscores or hyphens, at most 96 characters.", nameof(idPrefix));
+    }
+
+    private static string WriteCore(MathDocument document, string glyphPrefix, string clipPrefix, bool stableGlyphIds, bool includeGlyphDefinitions, StringBuilder? definitions)
+    {
         var bounds = GetViewport(document);
         var output = new StringBuilder(1024 + document.Glyphs.Length * 96);
         output.Append("<svg xmlns=\"http://www.w3.org/2000/svg\"");
@@ -50,15 +72,18 @@ public static class MathSvgWriter
         {
             var key = (glyph.FontId, glyph.GlyphId);
             if (glyphIds.ContainsKey(key)) continue;
-            string id = idPrefix + "g" + glyphIds.Count;
+            string id = stableGlyphIds ? glyphPrefix + "g" + glyph.FontId + "_" + glyph.GlyphId : glyphPrefix + "g" + glyphIds.Count;
             glyphIds.Add(key, id);
             var font = Fonts.Value[glyph.FontId];
-            output.Append("<path id=\"").Append(id).Append("\" d=\"").Append(font.Paths[glyph.GlyphId]).Append("\"/>");
+            if (includeGlyphDefinitions)
+                output.Append("<path id=\"").Append(id).Append("\" d=\"").Append(font.Paths[glyph.GlyphId]).Append("\"/>");
+            else
+                definitions!.Append("<path id=\"").Append(id).Append("\" d=\"").Append(font.Paths[glyph.GlyphId]).Append("\"/>");
             Bound();
         }
         for (int i = 0; i < document.Paths.Length; i++)
         {
-            output.Append("<clipPath id=\"").Append(idPrefix).Append('c').Append(i).Append("\" clipPathUnits=\"userSpaceOnUse\">");
+            output.Append("<clipPath id=\"").Append(clipPrefix).Append('c').Append(i).Append("\" clipPathUnits=\"userSpaceOnUse\">");
             var clip = document.Paths.Span[i].ClipBounds;
             Rect(clip.X, clip.Y, clip.Width, clip.Height); output.Append("</clipPath>");
             Bound();
@@ -69,22 +94,26 @@ public static class MathSvgWriter
         {
             var state = document.PaintStates.Span[command.StateIndex];
             if (state.Color is { A: 0 }) continue;
-            output.Append("<g");
-            if (state.Color is { } color)
+            bool wrapped = state.Color is not null || state.Transform != MathTransform.Identity;
+            if (wrapped)
             {
-                output.Append(" fill=\"#");
-                HexByte(color.R); HexByte(color.G); HexByte(color.B); output.Append('"');
-                if (color.A != 255) NumberAttribute("fill-opacity", color.A / 255d);
+                output.Append("<g");
+                if (state.Color is { } color)
+                {
+                    output.Append(" fill=\"#");
+                    HexByte(color.R); HexByte(color.G); HexByte(color.B); output.Append('"');
+                    if (color.A != 255) NumberAttribute("fill-opacity", color.A / 255d);
+                }
+                if (state.Transform != MathTransform.Identity)
+                {
+                    var t = state.Transform;
+                    output.Append(" transform=\"matrix(");
+                    Number(t.M11); output.Append(' '); Number(t.M12); output.Append(' ');
+                    Number(t.M21); output.Append(' '); Number(t.M22); output.Append(' ');
+                    Number(t.Dx); output.Append(' '); Number(t.Dy); output.Append(")\"");
+                }
+                output.Append('>');
             }
-            if (state.Transform != MathTransform.Identity)
-            {
-                var t = state.Transform;
-                output.Append(" transform=\"matrix(");
-                Number(t.M11); output.Append(' '); Number(t.M12); output.Append(' ');
-                Number(t.M21); output.Append(' '); Number(t.M22); output.Append(' ');
-                Number(t.Dx); output.Append(' '); Number(t.Dy); output.Append(")\"");
-            }
-            output.Append('>');
             switch (command.Kind)
             {
                 case MathPaintKind.Glyph:
@@ -99,7 +128,7 @@ public static class MathSvgWriter
                     break;
                 case MathPaintKind.Path:
                     var path = document.Paths.Span[command.Index];
-                    output.Append("<g clip-path=\"url(#").Append(idPrefix).Append('c').Append(command.Index).Append(")\"><path transform=\"translate(");
+                    output.Append("<g clip-path=\"url(#").Append(clipPrefix).Append('c').Append(command.Index).Append(")\"><path transform=\"translate(");
                     Number(path.X); output.Append(' '); Number(path.Y); output.Append(") scale(");
                     Number(path.ScaleX); output.Append(' '); Number(path.ScaleY); output.Append(")\" d=\"");
                     output.Append(PathData(path.Segments));
@@ -107,7 +136,8 @@ public static class MathSvgWriter
                     break;
                 default: throw new InvalidOperationException("Unknown paint instruction.");
             }
-            output.Append("</g>"); Bound();
+            if (wrapped) output.Append("</g>");
+            Bound();
         }
         output.Append("</svg>"); Bound();
         return output.ToString();

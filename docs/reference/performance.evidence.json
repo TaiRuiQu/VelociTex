@@ -34,7 +34,15 @@
     "mathmlOnlyP50RangeMs": [0.0369, 0.0371],
     "mathmlOnlyP95RangeMs": [0.0837, 0.0841],
     "mathmlOnlyMeanMs": 0.040857,
-    "direct2dSvgMeanMs": 0.156276
+    "direct2dSvgMeanMs": 0.156276,
+    "layoutScratchSpotCheck": {
+      "samples": 6000,
+      "compileP50Ms": 0.0429,
+      "compileManagedBytes": 4328,
+      "portableSvgP50Ms": 0.0563,
+      "portableSvgP95Ms": 0.1081,
+      "note": "Single run after layout scratch pooling; the five-run conservative values above are used for acceptance."
+    }
   },
   "katex": {
     "htmlP50Ms": 0.2,
@@ -60,19 +68,30 @@
     "screenshot": "docs/verification/performance-winui-page.png"
   },
   "wasm": {
-    "parseSvgP50Ms": 0.24,
-    "parseSvgP95Ms": 0.43,
-    "parseSvgMeanMs": 0.264718,
+    "parseSvgP50Ms": 0.23,
+    "parseSvgP95Ms": 0.41,
+    "parseSvgMeanMs": 0.25,
     "parseMathmlP50Ms": 0.11,
-    "parseMathmlMeanMs": 0.133484,
-    "compileSimpleP50Ms": 0.115,
+    "parseMathmlMeanMs": 0.137,
+    "compileSimpleP50Ms": 0.11,
     "svgExportP50Ms": 0.05,
     "interopPingP50Ms": 0.005,
-    "domSyncP50Ms": 2.405,
-    "page100SyncMs": 183.47,
-    "page100PaintMs": 217.74,
+    "domSyncP50Ms": 2.105,
+    "page100SyncMs": 163.39,
+    "page100PaintMs": 183.54,
     "iterations": 300,
-    "pageRounds": 5
+    "pageRounds": 5,
+    "sharedGlyphDefinitions": true
+  },
+  "katexWasmRun": {
+    "htmlP50Ms": 0.19,
+    "htmlP95Ms": 0.38,
+    "htmlMeanMs": 0.209,
+    "mathmlP50Ms": 0.04,
+    "mathmlMeanMs": 0.049,
+    "domSyncP50Ms": 2.455,
+    "page100SyncMs": 194.75,
+    "page100PaintMs": 234.7
   },
   "ratios": {
     "nativePortableSvgVsKatexHtmlMean": 3.538,
@@ -80,8 +99,9 @@
     "winuiSingleVsKatexDomSyncMean": 5.781,
     "winuiPageSyncVsKatexPageSync": 2.486,
     "winuiPageSecondFrameVsKatexPagePaint": 2.179,
-    "wasmParseSvgVsKatexHtmlMean": 0.762,
-    "wasmPageSyncVsKatexPageSync": 1.157
+    "wasmParseSvgVsKatexHtmlMean": 0.836,
+    "wasmPageSyncVsKatexPageSync": 1.192,
+    "wasmPagePaintVsKatexPagePaint": 1.279
   },
   "correctness": {
     "p1": { "valid": 64, "invalid": 12, "exports": 202, "jit": "pass", "aot": "pass" },
@@ -91,7 +111,7 @@
     "wasmBrowserParity": { "valid": 3630, "diagnostics": 79, "passed": true },
     "isolatedNpmConsumer": {
       "package": "artifacts/wasm/velocitex-0.1.0-preview.2.tgz",
-      "sha256": "cea6bee6cc53ba268345f5ce10506b5844127cad22702204cb3b33ed1786d01f",
+      "sha256": "d2c7271345b70865fa39a648acea52e512633b8c64640c37f87c6d68a7ed895e",
       "browserParityPassed": true,
       "typescriptCheckPassed": true
     }
@@ -99,7 +119,8 @@
   "artifacts": {
     "core": "artifacts/performance/core-final2/run-{1..5}",
     "katex": "artifacts/performance/katex-final",
-    "wasm": "artifacts/performance/wasm-final",
+    "wasm": "artifacts/performance/wasm-aot8",
     "winui": "artifacts/performance/winui-final2"
   }
 }
+

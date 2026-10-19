@@ -140,6 +140,26 @@ public static partial class BrowserBindings
         return "M" + mathml!;
     }
 
+    /// <summary>Fast shared-definition result: SVG with stable glyph IDs, separate defs, MathML and dimensions.</summary>
+    [JSExport]
+    public static string CompileSharedSimple(string source, bool displayMode, string glyphPrefix, string clipPrefix)
+    {
+        MathOptions options = new() { DisplayMode = displayMode };
+        if (!Engine.TryCompile(source, in options, Workspace, default, out var document, out var diagnostic))
+            return "E" + DiagnosticJson(diagnostic);
+        var viewport = MathSvgWriter.GetViewport(document!);
+        var shared = MathSvgWriter.WriteShared(document!, glyphPrefix, clipPrefix);
+        string mathml = MathMlWriter.Write(document!);
+        var builder = new StringBuilder(shared.Svg.Length + shared.Definitions.Length + mathml.Length + 96);
+        builder.Append('S').Append(shared.Definitions).Append('\u0001').Append(shared.Svg).Append('\u0001').Append(mathml)
+            .Append('\u0001').Append(viewport.Width.ToString("R", CultureInfo.InvariantCulture))
+            .Append('\u0001').Append(viewport.Height.ToString("R", CultureInfo.InvariantCulture))
+            .Append('\u0001').Append((document!.Baseline - viewport.Y).ToString("R", CultureInfo.InvariantCulture))
+            .Append('\u0001').Append(document.LogicalSize.Width.ToString("R", CultureInfo.InvariantCulture))
+            .Append('\u0001').Append(document.LogicalSize.Height.ToString("R", CultureInfo.InvariantCulture));
+        return builder.ToString();
+    }
+
     private static (MathOptions Options, string Output) ParseOptions(string optionsJson)
     {
         if (optionsJson.Length > 1_048_576) throw new ArgumentException("Options JSON exceeds the 1 MiB character limit.");
