@@ -38,6 +38,18 @@ resources must be accessed and disposed on the creating thread; WinUI must be
 accessed on its owning UI thread. Null results clear MathView. The host retains
 and shows original input when compilation returns a diagnostic.
 
+`MathEngine.TryCompileToMathMl` is the MathML-only path: it validates, expands
+macros and parses the same source but deliberately skips layout, shaping and
+drawing-result allocation. Its output is byte-identical to
+`MathMlWriter.Write(document)` for the same source and options, and it returns
+independently owned warnings. Use `TryCompile` when a drawable document is also
+needed.
+
+`MathView` reuses its renderer, WARP device and graphics device across result and
+DPI changes. Views on the same UI thread share those device resources, and the
+last unloaded view releases them; no device is created per formula. Per-view
+Composition surfaces and prepared results remain independently owned.
+
 MathView has a focus stop and a scoped Control+C accelerator. Copy uses the
 entire `MathDocument.Source`, including source that scrolls outside the viewport.
 `AccessibleDescription` supports binding and supplies a human-readable UIA

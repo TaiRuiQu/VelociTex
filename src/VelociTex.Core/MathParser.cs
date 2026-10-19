@@ -225,6 +225,18 @@ internal static class MathParser
                 case ParseTaskKind.Atom:
                     if (position == parseEnd) Fail(MathDiagnosticCode.MissingArgument, CurrentRange(), "Missing argument.");
                     var token = w.Expanded[position++];
+                    if (!token.NoExpand && token.Text.Length == 1 && IsPlainAtomCharacter(token.Text[0]) &&
+                        FindSymbol(token.Text, task.Text, out var plainDefinition) && plainDefinition.CodePoint >= 0 &&
+                        plainDefinition.Group is not ("op-token" or "accent-token"))
+                    {
+                        result = Add(w, options, new(NodeKind.Symbol, token.Origin)
+                        {
+                            CodePoint = plainDefinition.CodePoint, FontIdOverride = -1, Atom = plainDefinition.Atom,
+                            Font = task.Font == MathFont.Default ? plainDefinition.Font : task.Font,
+                            SymbolFont = plainDefinition.Font, TextMode = task.Text, IsMathOrd = plainDefinition.IsMathOrd
+                        });
+                        break;
+                    }
                     if (FindCommand(token.Text, out var commandRule))
                     {
                         if (task.Text && !commandRule.AllowedInText || !task.Text && !commandRule.AllowedInMath) Fail(MathDiagnosticCode.UnexpectedToken, token.Origin, "Command is not allowed in this input mode.");
@@ -741,29 +753,31 @@ internal static class MathParser
     private static void Fail(MathDiagnosticCode code, SourceRange range, string message) => throw new CompileFailure(new(code, range, message));
     private static bool FindSymbol(ReadOnlySpan<char> name, bool text, out SymbolDefinition definition)
     {
-        var lower = 0; var upper = SymbolData.Symbols.Length - 1;
-        while (lower <= upper)
-        {
-            var middle = lower + (upper - lower) / 2; var value = SymbolData.Symbols[middle];
-            var compare = text.CompareTo(value.TextMode); if (compare == 0) compare = name.CompareTo(value.Name.AsSpan(), StringComparison.Ordinal);
-            if (compare == 0) { definition = value; return true; } if (compare < 0) upper = middle - 1; else lower = middle + 1;
-        }
-        definition = default; return false;
+        var map = text ? TextSymbolMap : MathSymbolMap;
+        return map.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(name, out definition);
     }
     private static bool FindCommand(ReadOnlySpan<char> name, out CommandDefinition definition)
+        => CommandMap.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(name, out definition);
+    private static readonly Dictionary<string, SymbolDefinition> MathSymbolMap = BuildSymbolMap(false);
+    private static readonly Dictionary<string, SymbolDefinition> TextSymbolMap = BuildSymbolMap(true);
+    private static readonly Dictionary<string, CommandDefinition> CommandMap = BuildCommandMap();
+    private static Dictionary<string, SymbolDefinition> BuildSymbolMap(bool text)
     {
-        var lower = 0; var upper = CommandData.Definitions.Length - 1;
-        while (lower <= upper)
-        {
-            var middle = lower + (upper - lower) / 2; var value = CommandData.Definitions[middle]; var compare = name.CompareTo(value.Name, StringComparison.Ordinal);
-            if (compare == 0) { definition = value; return true; } if (compare < 0) upper = middle - 1; else lower = middle + 1;
-        }
-        definition = default; return false;
+        var map = new Dictionary<string, SymbolDefinition>(StringComparer.Ordinal);
+        foreach (var symbol in SymbolData.Symbols) if (symbol.TextMode == text) map.TryAdd(symbol.Name, symbol);
+        return map;
+    }
+    private static Dictionary<string, CommandDefinition> BuildCommandMap()
+    {
+        var map = new Dictionary<string, CommandDefinition>(StringComparer.Ordinal);
+        foreach (var command in CommandData.Definitions) map.TryAdd(command.Name, command);
+        return map;
     }
     private static bool TryStyle(ReadOnlySpan<char> name, out MathStyle style)
     {
         style = name switch { "\\displaystyle" => MathStyle.Display, "\\textstyle" => MathStyle.Text, "\\scriptstyle" => MathStyle.Script, "\\scriptscriptstyle" => MathStyle.ScriptScript, _ => (MathStyle)(-1) }; return (int)style >= 0;
     }
+    private static bool IsPlainAtomCharacter(char value) => value is > '\u0020' and < '\u007f' and not ('\\' or '{' or '}' or '^' or '_' or '&' or '\'' or '$' or '#');
     private static int DelimiterFromText(ReadOnlySpan<char> text, SourceRange range)
     {
         text = text.Trim();

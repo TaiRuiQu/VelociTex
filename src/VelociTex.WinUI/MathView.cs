@@ -30,8 +30,8 @@ public sealed unsafe partial class MathView : Grid,IDisposable
     private CompositionSurfaceBrush? _brush;
     private SpriteVisual? _visual;
     private XamlRoot? _observedRoot;
-    private nint _device;
     private double _scale=1;
+    private int _surfacePixelWidth,_surfacePixelHeight;
     private MathDrawingColor? _color;
     private bool _disposed;
     /// <summary>Gets or binds an independently owned, precompiled formula. Null clears the display.</summary>
@@ -100,32 +100,51 @@ public sealed unsafe partial class MathView : Grid,IDisposable
     {
         if(Math.Abs(sender.RasterizationScale-_scale)>.0001)Rebuild();
     }
-    /// <summary>Recreates owned native resources. A scale override is used only by automated surface-density acceptance.</summary>
+    /// <summary>Rebuilds the displayed formula while retaining the expensive native devices.</summary>
     public void Rebuild(double? scaleOverride=null)
     {
-        ObjectDisposedException.ThrowIf(_disposed,this);Release();MathDocument? document=Result;if(document is null||!IsLoaded)return;
+        ObjectDisposedException.ThrowIf(_disposed,this);MathDocument? document=Result;if(document is null||!IsLoaded)return;
         _scale=scaleOverride??XamlRoot?.RasterizationScale??1;
         if(!double.IsFinite(_scale)||_scale<=0||_scale>8)throw new ArgumentOutOfRangeException(nameof(scaleOverride));
         double pixelWidth=Math.Ceiling(Width*_scale),pixelHeight=Math.Ceiling(Height*_scale);
         if(pixelWidth>8192||pixelHeight>8192||pixelWidth*pixelHeight>4_194_304)throw new InvalidOperationException("The native surface exceeds the 8192 pixel side or 4 megapixel limit.");
         try
         {
-            _renderer=new WindowsMathRenderer();_prepared=_renderer.Prepare(document);
-            Compositor compositor=ElementCompositionPreview.GetElementVisual(this).Compositor;
-            _device=WindowsMathRenderer.CreateWarpD2DDevice();
-            nint compositorPointer=WinRT.MarshalInspectable<Compositor>.FromManaged(compositor),interop=0,graphicsPointer=0;
-            try
-            {
-                Guid iid=new("FAB19398-6D19-4D8A-B752-8F096C396069");Check(Marshal.QueryInterface(compositorPointer,in iid,out interop));
-                Check(((delegate* unmanaged[Stdcall]<nint,nint,nint*,int>)(*(nint**)interop)[3])(interop,_device,&graphicsPointer));
-                _graphics=WinRT.MarshalInspectable<CompositionGraphicsDevice>.FromAbi(graphicsPointer);
-            }
-            finally{Free(ref graphicsPointer);Free(ref interop);Free(ref compositorPointer);}
-            _surface=_graphics.CreateDrawingSurface(new Windows.Foundation.Size(pixelWidth,pixelHeight),DirectXPixelFormat.B8G8R8A8UIntNormalized,DirectXAlphaMode.Premultiplied);
-            _brush=compositor.CreateSurfaceBrush(_surface);_visual=compositor.CreateSpriteVisual();_visual.Size=new((float)Width,(float)Height);_visual.Brush=_brush;
-            ElementCompositionPreview.SetElementChildVisual(this,_visual);Redraw();
+            // Renderer, WARP device and graphics device are independent of one
+            // formula. Reuse them and only recreate the fixed-size surface when
+            // the logical size actually changes; this keeps result swaps out of
+            // the font-extraction, device-creation and DPI paths.
+            EnsureCore();EnsureSurface((int)pixelWidth,(int)pixelHeight);
+            _prepared?.Dispose();_prepared=_renderer!.Prepare(document);
+            _visual!.Size=new((float)Width,(float)Height);Redraw();
         }
         catch{Release();throw;}
+    }
+    private void EnsureCore()
+    {
+        if(_renderer is not null)return;
+        Compositor compositor=ElementCompositionPreview.GetElementVisual(this).Compositor;
+        var shared=MathViewSharedResources.Acquire(compositor);
+        _renderer=shared.Renderer;_graphics=shared.Graphics;
+        try
+        {
+            _visual=compositor.CreateSpriteVisual();
+            ElementCompositionPreview.SetElementChildVisual(this,_visual);
+        }
+        catch
+        {
+            _renderer=null;_graphics=null;MathViewSharedResources.Release();throw;
+        }
+    }
+    private void EnsureSurface(int pixelWidth,int pixelHeight)
+    {
+        if(_surface is not null&&_surfacePixelWidth==pixelWidth&&_surfacePixelHeight==pixelHeight)return;
+        Compositor compositor=ElementCompositionPreview.GetElementVisual(this).Compositor;
+        CompositionDrawingSurface surface=_graphics!.CreateDrawingSurface(new Windows.Foundation.Size(pixelWidth,pixelHeight),DirectXPixelFormat.B8G8R8A8UIntNormalized,DirectXAlphaMode.Premultiplied);
+        CompositionSurfaceBrush brush=compositor.CreateSurfaceBrush(surface);
+        CompositionSurfaceBrush? oldBrush=_brush;CompositionDrawingSurface? oldSurface=_surface;
+        _surface=surface;_brush=brush;_surfacePixelWidth=pixelWidth;_surfacePixelHeight=pixelHeight;
+        _visual!.Brush=brush;oldBrush?.Dispose();oldSurface?.Dispose();
     }
     /// <summary>Redraws the retained result using the current color and surface density.</summary>
     public void Redraw()
@@ -157,8 +176,10 @@ public sealed unsafe partial class MathView : Grid,IDisposable
     private void Release()
     {
         ElementCompositionPreview.SetElementChildVisual(this,null);
-        _visual?.Dispose();_visual=null;_brush?.Dispose();_brush=null;_surface?.Dispose();_surface=null;_graphics?.Dispose();_graphics=null;
-        _prepared?.Dispose();_prepared=null;_renderer?.Dispose();_renderer=null;Free(ref _device);
+        _visual?.Dispose();_visual=null;_brush?.Dispose();_brush=null;_surface?.Dispose();_surface=null;_graphics=null;
+        _prepared?.Dispose();_prepared=null;
+        if(_renderer is not null){_renderer=null;MathViewSharedResources.Release();}
+        _surfacePixelWidth=_surfacePixelHeight=0;
     }
     /// <summary>Releases owned native resources on the creating UI thread. Subsequent drawing is invalid.</summary>
     public void Dispose()

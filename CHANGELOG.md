@@ -1,5 +1,23 @@
 # Changelog
 
+## Performance work — 2026-10-20
+
+- Add cached built-in macro lookup, fast ordinary-symbol parser/macro paths,
+  static span-keyed symbol/command/glyph maps, pooled MathML nodes and a
+  semantics-only MathML API.
+- Add cached portable-SVG path geometry, cached generated stretchy/radical path
+  arrays and a fast fixed-point coordinate formatter.
+- Reuse native renderer/WARP/Composition resources per `MathView` and share them
+  across the controls of a page; cache private-font validation and Direct2D
+  glyph geometries.
+- Add WASM output selection, direct SVG/MathML string exports, default-limit fast
+  exports and AOT diagnostics; publish the AOT runtime into the npm dist.
+- Add reproducible native/KaTeX/WASM/WinUI benchmarks for single formulas,
+  complex typesetting and a 100-formula page. Measured native SVG parsing is
+  3.54x faster and the WinUI page is 2.49x faster than browser KaTeX; the MathML
+  3x and WASM 50% targets are explicitly not met. See
+  `docs/verification/performance-2026-10-20.md`.
+
 ## Optional web preview — 2026-10-19
 
 - Extend `v*` release CI to publish NuGet and npm together at the tag version,

@@ -44,7 +44,7 @@ public sealed partial class ProbeApp : Application
     protected override void OnLaunched(LaunchActivatedEventArgs launched)
     {
         Program.Log("Launching window");
-        window = args.Contains("--p0") ? new ProbeWindow(args) : new FormulaWindow(args);
+        window = args.Contains("--perf") ? new PerfWindow(args) : args.Contains("--p0") ? new ProbeWindow(args) : new FormulaWindow(args);
         window.Activate();
         Program.Log("Window activated");
     }

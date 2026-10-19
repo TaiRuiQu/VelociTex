@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace VelociTex;
 
 /// <summary>
@@ -33,9 +35,37 @@ internal static partial class MathLayout
     private static ReadOnlySpan<byte> SubStyles => [5, 5, 5, 5, 7, 7, 7, 7];
     private static ReadOnlySpan<byte> NumeratorStyles => [2, 3, 4, 5, 6, 7, 6, 7];
     private static ReadOnlySpan<byte> DenominatorStyles => [3, 3, 5, 5, 7, 7, 7, 7];
+    private readonly record struct GlyphLookup(int GlyphIndex, TexGlyphMetric Metric, bool HasMetric);
+    internal static bool ProfileEnabled;
+    internal static readonly long[] ProfileTicks = new long[4];
+    private static readonly Dictionary<long, GlyphLookup> GlyphLookups = BuildGlyphLookups();
+    private static Dictionary<long, GlyphLookup> BuildGlyphLookups()
+    {
+        var map = new Dictionary<long, GlyphLookup>(4096);
+        for (int font = 0; font < FontData.Fonts.Length; font++)
+        {
+            FontDescriptor descriptor = FontData.Fonts[font];
+            for (int glyph = descriptor.GlyphStart; glyph < descriptor.GlyphStart + descriptor.GlyphCount; glyph++)
+            {
+                int codePoint = FontData.Glyphs[glyph].CodePoint;
+                int low = descriptor.MetricStart, high = low + descriptor.MetricCount - 1;
+                GlyphLookup lookup = new(glyph, default, false);
+                while (low <= high)
+                {
+                    int middle = (low + high) >>> 1, current = FontData.TexMetrics[middle].CodePoint;
+                    if (current == codePoint) { lookup = new(glyph, FontData.TexMetrics[middle], true); break; }
+                    if (current < codePoint) low = middle + 1; else high = middle - 1;
+                }
+                map[(long)font << 32 | (uint)codePoint] = lookup;
+            }
+        }
+        return map;
+    }
 
     internal static LayoutOutput Build(SemanticNode[] nodes, int root, in MathOptions options, CancellationToken cancellationToken)
     {
+        long profileStart = 0, profileArrays = 0, profileColors = 0, profileBuild = 0;
+        if (ProfileEnabled) profileStart = Stopwatch.GetTimestamp();
         int count = nodes.Length;
         var boxes = new Box[count];
         var styles = new LayoutContext[count];
@@ -50,6 +80,7 @@ internal static partial class MathLayout
         var colors = new MathColor?[count];
         var hidden = new bool[count];
         var colorStack = new int[count]; int colorTop = 0;
+        if (ProfileEnabled) profileArrays = Stopwatch.GetTimestamp();
         colorStack[colorTop++] = root;
         while (colorTop != 0)
         {
@@ -62,6 +93,7 @@ internal static partial class MathLayout
             void ColorChild(int child) { if (child >= 0) { colors[child] = colors[colorNode]; hidden[child] = hidden[colorNode]; colorStack[colorTop++] = child; } }
         }
         var decorations = new List<Decoration>();
+        if (ProfileEnabled) profileColors = Stopwatch.GetTimestamp();
         int top = 0, batches = 0;
         frames[top++] = new(root, new(options.DisplayMode ? (byte)0 : (byte)2), false);
         while (top != 0)
@@ -400,9 +432,9 @@ internal static partial class MathLayout
                         viewBoxHeight = Math.Floor(1000 * localHeight + extraVinculum) + 80;
                         advance = 1.056 * scale;
                         minWidth = 0.742 * scale;
-                        path = RadicalPathData.Tall(viewBoxHeight);
+                        path = MathPathCache.Radical(viewBoxHeight);
                     }
-                    if (extraVinculum > 0) path = RadicalPathData.WithRule(size, extraVinculum, viewBoxHeight);
+                    if (extraVinculum > 0) path = MathPathCache.RadicalWithRule(size, extraVinculum, viewBoxHeight);
                     double rule = (MathConstants.sqrtRuleThickness(metricIndex) + extraVinculum) * multiplier * scale;
                     double delimiterDepth = texHeight - rule;
                     if (delimiterDepth > innerHeight + inner.Depth + clearance) clearance = (clearance + delimiterDepth - innerHeight - inner.Depth) / 2;
@@ -440,6 +472,7 @@ internal static partial class MathLayout
         }
 
         cancellationToken.ThrowIfCancellationRequested();
+        if (ProfileEnabled) profileBuild = Stopwatch.GetTimestamp();
         double fontSize = options.FontSize;
         Box outer = boxes[root];
         double rootOffset=0;
@@ -653,6 +686,12 @@ internal static partial class MathLayout
             void AddPaint(MathPaintKind kind, int index, int? explicitState = null) { if (!hidden[id] && paintStates[explicitState ?? stateId].Color?.A != 0) paintCommands.Add(new(kind, index, explicitState ?? stateId)); }
         }
         var bounds = double.IsPositiveInfinity(inkLeft) ? new MathBounds(0, 0, 0, 0) : new MathBounds(inkLeft, inkTop, inkRight - inkLeft, inkBottom - inkTop);
+        if (ProfileEnabled)
+        {
+            long end = Stopwatch.GetTimestamp();
+            ProfileTicks[0] = profileArrays - profileStart; ProfileTicks[1] = profileColors - profileArrays;
+            ProfileTicks[2] = profileBuild - profileColors; ProfileTicks[3] = end - profileBuild;
+        }
         return new(glyphs.ToArray(), rules.ToArray(), paths.ToArray(), new(Math.Max(0, outer.Width) * fontSize, (outer.Height + outer.Depth) * fontSize), outer.Height * fontSize, bounds, textGlyphs.ToArray(), paintCommands.ToArray(), paintStates.ToArray(),textRuns.ToArray());
 
         void Push(int child, LayoutContext childStyle) { if (child >= 0) frames[top++] = new(child, childStyle, false); }
@@ -740,27 +779,16 @@ internal static partial class MathLayout
 
     private static bool Find(int font, int codePoint, out int glyphIndex, out TexGlyphMetric metric)
     {
-        FontDescriptor descriptor = FontData.Fonts[font];
-        int low = descriptor.GlyphStart, high = low + descriptor.GlyphCount - 1;
-        glyphIndex = -1; metric = default;
-        while (low <= high)
-        {
-            int middle = (low + high) >>> 1, cp = FontData.Glyphs[middle].CodePoint;
-            if (cp < codePoint) low = middle + 1;
-            else if (cp > codePoint) high = middle - 1;
-            else { glyphIndex = middle; break; }
-        }
-        if (glyphIndex < 0) return false;
-        low = descriptor.MetricStart; high = low + descriptor.MetricCount - 1;
-        while (low <= high)
-        {
-            int middle = (low + high) >>> 1, cp = FontData.TexMetrics[middle].CodePoint;
-            if (cp < codePoint) low = middle + 1;
-            else if (cp > codePoint) high = middle - 1;
-            else { metric = FontData.TexMetrics[middle]; return true; }
-        }
-        if(font==3&&Find(4,codePoint,out _,out metric))return true;
-        if(font==1&&Find(2,codePoint,out _,out metric))return true;
+        if (!GlyphLookups.TryGetValue((long)font << 32 | (uint)codePoint, out GlyphLookup found))
+        { glyphIndex = -1; metric = default; return false; }
+        glyphIndex = found.GlyphIndex;
+        if (found.HasMetric) { metric = found.Metric; return true; }
+        metric = default;
+        // A glyph without a TeX metric borrows metrics from the matching
+        // private face while retaining its own glyph index. This mirrors the
+        // original table search; dropping the glyph index would index -1.
+        if (font == 3 && Find(4, codePoint, out _, out metric)) return true;
+        if (font == 1 && Find(2, codePoint, out _, out metric)) return true;
         return false;
     }
 

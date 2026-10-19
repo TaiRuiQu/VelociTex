@@ -36,7 +36,8 @@ try {
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'licenses') -Destination $packagePath -Recurse -Force
     $metadata = Get-Content (Join-Path $packagePath 'package.json') -Raw | ConvertFrom-Json
     $info = [ordered]@{ configuration = 'Release'; aot = !$NoAot; sdk = (& dotnet --version); katex = '0.19.0'; sourceRevision = (& git rev-parse HEAD); sourceHasChanges = [bool](& git status --porcelain); packageVersion = $metadata.version; versionSource = 'package.json' }
-    $info | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $distPath 'build-info.json') -Encoding utf8NoBOM
+    $json = $info | ConvertTo-Json
+    [IO.File]::WriteAllText((Join-Path $distPath 'build-info.json'), $json, (New-Object System.Text.UTF8Encoding($false)))
     Write-Host "WASM npm assets built at $distPath"
     if ($PackageVersion) {
         $stagedPath = Join-Path $PSScriptRoot 'artifacts/wasm/npm-package'

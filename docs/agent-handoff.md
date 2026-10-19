@@ -31,6 +31,17 @@ the real-window input-to-frame experiment and screenshot acceptance have not
 run. They are excluded from the npm dependency graph and tarball. Earlier
 parse/export/software-target timings are not input-to-present measurements.
 
+On 2026-10-20 the user pulled the WASM binding into scope and set new measurable
+targets (3x pure parse, 2x WinUI end-to-end, 50% WASM versus browser KaTeX) with
+single, complex and multi-formula page workloads. The local performance work and
+all actual numbers are in
+[performance verification](verification/performance-2026-10-20.md). Native
+portable-SVG parsing and both WinUI single/page targets currently pass; the
+MathML 3x and WASM 50% targets do not. WASM AOT diagnostics show the compile
+floor alone exceeds the 2x parse budget, so further gains need an algorithmic
+reduction or a different browser runtime, not another export tweak. Benchmarks
+live in `benchmarks/`; large raw evidence remains under ignored `artifacts/`.
+
 P0–P4 are implemented and committed. P2 is `867283c`, P3 is `cd05074`, and P4 is
 `1b0c777`. The local `1.0.0-rc.1` candidates use clean P4 source revision
 `1b0c77774418fd349c36b8b4cd0c89a135f70fba`; isolated JIT/AOT, WinUI and downstream

@@ -150,6 +150,23 @@ Browser calculation time must not include two `requestAnimationFrame`-spanning d
 
 A claimable ≥10× must name the exact metric and workload, give the frozen corpus distribution, per-category ratios, confidence or stability evidence, and the memory cost. When a local stage reaches ≥10×, only that stage may be claimed; if the end-to-end result is still bounded by the frame period, that limitation keeps being reported separately instead of being generalized into an overall multiple.
 
+### 7.1 Single, complex, and multi-formula page workloads
+
+A performance claim must cover more than a single short formula. At minimum, run
+the frozen 60-formula normal corpus, a complex subset (5×5 matrices, aligned
+systems, integrals/sums, nested fractions) and a deterministic 100-formula page.
+Measure both call-to-completed-DOM/drawing and painted/presented frames, and
+record the observed frame interval whenever a frame-bound number is reported.
+Native and browser frame periods may differ; divide by the measured interval
+before comparing presentation ratios. The shared harnesses and exact commands
+are documented in `benchmarks/README.md`.
+
+On 2026-10-20 the user added three explicit performance goals for this scope:
+pure parsing to SVG/MathML at least 3× faster than KaTeX, WinUI end-to-end at
+least 2× faster than browser KaTeX, and the WASM binding at least 50% faster than
+browser KaTeX. The measured status and unmet targets are recorded in
+`docs/verification/performance-2026-10-20.md`.
+
 ## 8. AOT, Stability, and Package Consumption
 
 - Run display, PNG, SVG, MathML, font loading, and COM callbacks in both JIT and a real Native AOT consumer program; `IsAotCompatible` or a successful build never substitutes for running it.

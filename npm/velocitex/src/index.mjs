@@ -2,6 +2,14 @@ const defaultRuntimeUrl = new URL('./runtime/', import.meta.url);
 let runtimeUrl = defaultRuntimeUrl;
 let initialization;
 let compiler;
+let compilerSvg;
+let compilerMathml;
+let compilerSvgSimple;
+let compilerMathmlSimple;
+let compilerMetrics;
+let compilerMetricsSimple;
+let compilerMetricsSvg;
+let ping;
 let serial = 0;
 const instanceId = `vt${Math.random().toString(36).slice(2)}_`;
 const hidden = 'position:absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap';
@@ -19,6 +27,14 @@ export function init(options = {}) {
       const runtime = await dotnet.withDiagnosticTracing(false).create();
       const exports = await runtime.getAssemblyExports(runtime.getConfig().mainAssemblyName);
       compiler = exports.VelociTex.Wasm.BrowserBindings.Compile;
+      compilerSvg = exports.VelociTex.Wasm.BrowserBindings.CompileSvg;
+      compilerMathml = exports.VelociTex.Wasm.BrowserBindings.CompileMathMl;
+      compilerSvgSimple = exports.VelociTex.Wasm.BrowserBindings.CompileSvgSimple;
+      compilerMathmlSimple = exports.VelociTex.Wasm.BrowserBindings.CompileMathMlSimple;
+      compilerMetrics = exports.VelociTex.Wasm.BrowserBindings.CompileMetrics;
+      compilerMetricsSimple = exports.VelociTex.Wasm.BrowserBindings.CompileMetricsSimple;
+      compilerMetricsSvg = exports.VelociTex.Wasm.BrowserBindings.CompileMetricsSvg;
+      ping = exports.VelociTex.Wasm.BrowserBindings.Ping;
     })().catch(error => {
       initialization = undefined;
       throw new Error(`Unable to initialize VelociTex WASM at ${runtimeUrl.href}. Serve the complete runtime directory over HTTP(S). ${error.message}`, { cause: error });
@@ -69,7 +85,18 @@ function compileOptions(options) {
       result.macros[name] = definition;
     }
   }
+  if (options.output != null) {
+    if (!['html', 'svg', 'mathml'].includes(options.output)) throw new TypeError('output must be html, svg or mathml.');
+    result.output = options.output;
+  }
   return JSON.stringify(result);
+}
+
+function canUseSimpleOptions(options) {
+  for (const key of Object.keys(options)) {
+    if (!['displayMode', 'output', 'throwOnError', 'trust'].includes(key)) return false;
+  }
+  return true;
 }
 
 async function compile(source, options) {
@@ -81,7 +108,16 @@ async function compile(source, options) {
     throw new ParseError(source, { code: 'InputLimit', message: 'Input length budget exceeded.', start: limit, length: source.length - limit });
   }
   await init();
-  const result = JSON.parse(compiler(source, json, instanceId + (++serial)));
+  const prefix = instanceId + (++serial);
+  if (options.output === 'svg' || options.output === 'mathml') {
+    const simple = canUseSimpleOptions(options);
+    const raw = options.output === 'svg'
+      ? (simple ? compilerSvgSimple(source, !!options.displayMode, prefix) : compilerSvg(source, json, prefix))
+      : (simple ? compilerMathmlSimple(source, !!options.displayMode, prefix) : compilerMathml(source, json, prefix));
+    if (raw[0] === 'E') throw new ParseError(source, JSON.parse(raw.slice(1)));
+    return options.output === 'svg' ? { success: true, svg: raw.slice(1) } : { success: true, mathml: raw.slice(1) };
+  }
+  const result = JSON.parse(compiler(source, json, prefix));
   if (!result.success) throw new ParseError(source, result);
   return result;
 }
@@ -100,6 +136,35 @@ function errorMarkup(error, options) {
   if (!/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)) throw new TypeError('errorColor must be a hexadecimal color.');
   return `<span class="velocitex velocitex-error" style="color:${color}" title="${escapeHtml(error.message)}">${escapeHtml(error.source)}</span>`;
 }
+
+/** Diagnostic timing of the parse/layout pipeline only, without SVG/MathML export. */
+export async function compileMetrics(source, options = {}) {
+  if (typeof source !== "string") throw new TypeError("Formula source must be a string.");
+  await init();
+  const [time, success] = compilerMetrics(source, compileOptions(options), instanceId + (++serial)).split("|");
+  return { compileMs: Number(time), success: success === "1" };
+}
+
+/** Diagnostic timing with no options JSON parsing. */
+export async function compileMetricsSimple(source, displayMode = false) {
+  if (typeof source !== "string") throw new TypeError("Formula source must be a string.");
+  await init();
+  const [time, success] = compilerMetricsSimple(source, displayMode).split("|");
+  return { compileMs: Number(time), success: success === "1" };
+}
+
+/** Diagnostic split of compile versus SVG serialization time. */
+export async function compileMetricsSvg(source, options = {}) {
+  if (typeof source !== "string") throw new TypeError("Formula source must be a string.");
+  await init();
+  const raw = compilerMetricsSvg(source, compileOptions(options), instanceId + (++serial));
+  if (raw[0] === "E") throw new ParseError(source, JSON.parse(raw.slice(1)));
+  const [compileMs, exportMs, length] = raw.split("|");
+  return { compileMs: Number(compileMs), exportMs: Number(exportMs), length: Number(length) };
+}
+
+/** Diagnostic interop round trip. */
+export async function diagnosticPing(value = "") { await init(); return ping(value); }
 
 /** Return self-contained HTML, SVG or MathML. No CSS or web-font installation is required. */
 export async function renderToString(source, options = {}) {

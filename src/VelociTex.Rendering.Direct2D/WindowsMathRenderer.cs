@@ -40,42 +40,34 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
     private readonly int _threadId=Environment.CurrentManagedThreadId;
     private readonly bool _uninitialize;
     private readonly string _fontDirectory;
-    private readonly bool _ownsFontDirectory;
     private readonly nint[] _faces=new nint[MathFontCatalog.Count];
     private nint _writeFactory,_factory,_renderingParams;
     private bool _disposed;
     private readonly Dictionary<(int Font,ushort Glyph,double Size),string> _outlines=[];
     private readonly Dictionary<(int Font,ushort Glyph,double Size),MathPathSegment[]> _drawingOutlines=[];
-    private long _drawingOutlineBytes;
+    private readonly HashSet<(int Font,ushort Glyph)> _validatedGlyphs=[];
+    private readonly Dictionary<(nint Factory,int Font,ushort Glyph,double Size),nint> _glyphGeometries=[];
+    private long _drawingOutlineBytes,_glyphGeometryBytes;
     private const int OutlineCacheLimit=4096;
     private const long OutlineCacheByteLimit=16*1024*1024;
     private long _outlineBytes;
+    private static readonly object SharedFontGate=new();
+    private static string? SharedFontDirectory;
 
     /// <summary>Creates an owned WARP-backed ID2D1Device reference for a Composition host.</summary>
     /// <returns>A native COM reference. The caller must release it with Marshal.Release.</returns>
     public static nint CreateWarpD2DDevice()=>NativeProbeRenderer.CreateWarpD2DDevice();
 
-    /// <summary>Uses a private directory, or extracts unchanged embedded Core font bytes into an owned temporary directory.</summary>
-    /// <param name="fontDirectory">Caller-owned private font directory, or null to extract and later delete the unchanged embedded fonts.</param>
+    /// <summary>Uses a caller-owned private font directory, or a shared extracted copy of the unchanged embedded fonts.</summary>
+    /// <param name="fontDirectory">Caller-owned private font directory, or null to extract the embedded fonts once per process.</param>
     public WindowsMathRenderer(string? fontDirectory=null)
     {
         int hr=CoInitializeEx(0,0);
         if(hr<0&&hr!=unchecked((int)0x80010106))Check(hr);
         _uninitialize=hr>=0;
-        _ownsFontDirectory=fontDirectory is null;
-        _fontDirectory=fontDirectory is null?Path.Combine(Path.GetTempPath(),"VelociTex",Guid.NewGuid().ToString("N")):Path.GetFullPath(fontDirectory);
+        _fontDirectory=fontDirectory is null?GetSharedFontDirectory():Path.GetFullPath(fontDirectory);
         try
         {
-            if(_ownsFontDirectory)
-            {
-                Directory.CreateDirectory(_fontDirectory);
-                for(int id=0;id<MathFontCatalog.Count;id++)
-                {
-                    using Stream source=MathFontCatalog.OpenFont(id);
-                    using FileStream target=File.Create(Path.Combine(_fontDirectory,MathFontCatalog.GetResourceFileName(id)));
-                    source.CopyTo(target);
-                }
-            }
             Guid iid=new("b859ee5a-d838-4b5b-a2e8-1adc7d93db48");nint write=0;
             Check(DWriteCreateFactory(1,&iid,&write));_writeFactory=write;
             nint rendering=0;
@@ -89,6 +81,52 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
         catch{Dispose();throw;}
     }
 
+    // Extracting twenty small TTFs for every renderer made first display and
+    // every result swap pay file I/O. The immutable bytes are process-wide, so
+    // extract them once and share the directory read-only across renderers.
+    // A host-provided or app-bundled directory avoids extraction entirely.
+    private static string GetSharedFontDirectory()
+    {
+        lock(SharedFontGate)
+        {
+            if(SharedFontDirectory is not null)return SharedFontDirectory;
+            string? configured=Environment.GetEnvironmentVariable("VELOCITEX_FONT_DIRECTORY");
+            string bundled=Path.Combine(AppContext.BaseDirectory,"Fonts");
+            string[] candidates=
+            [
+                ..(string.IsNullOrWhiteSpace(configured)?Array.Empty<string>():new[]{Path.GetFullPath(configured)}),
+                bundled,
+                Path.Combine(Path.GetTempPath(),"VelociTex","fonts-1"),
+                Path.Combine(AppContext.BaseDirectory,"VelociTexFonts")
+            ];
+            foreach(string directory in candidates)
+            {
+                try
+                {
+                    if(PrepareFontDirectory(directory)){SharedFontDirectory=directory;return directory;}
+                }
+                catch(IOException){}
+                catch(UnauthorizedAccessException){}
+            }
+            throw new IOException("No writable directory is available for the embedded KaTeX fonts; set VELOCITEX_FONT_DIRECTORY.");
+        }
+    }
+    private static bool PrepareFontDirectory(string directory)
+    {
+        if(File.Exists(Path.Combine(directory,MathFontCatalog.GetResourceFileName(0))))return true;
+        Directory.CreateDirectory(directory);
+        for(int id=0;id<MathFontCatalog.Count;id++)
+        {
+            string path=Path.Combine(directory,MathFontCatalog.GetResourceFileName(id));
+            if(File.Exists(path))continue;
+            string temporary=path+"."+Environment.ProcessId.ToString(CultureInfo.InvariantCulture)+".tmp";
+            using(Stream source=MathFontCatalog.OpenFont(id))
+            using(FileStream target=File.Create(temporary))source.CopyTo(target);
+            File.Move(temporary,path,true);
+        }
+        return true;
+    }
+
     /// <summary>Validates private-font glyphs and retains the document for native drawing.</summary>
     /// <param name="document">An independently owned compilation result.</param>
     /// <returns>A disposable preparation usable only with this renderer on its creating thread.</returns>
@@ -97,6 +135,7 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
         CheckThread();ArgumentNullException.ThrowIfNull(document);
         foreach(MathGlyph glyph in document.Glyphs.Span)
         {
+            if(!_validatedGlyphs.Add((glyph.FontId,glyph.GlyphId)))continue;
             nint face=GetFace(glyph.FontId);
             ushort count=((delegate* unmanaged[Stdcall]<nint,ushort>)Slot(face,9))(face);
             if(glyph.GlyphId==0||glyph.GlyphId>=count)throw new InvalidOperationException("The document references a missing private-font glyph.");
@@ -175,17 +214,26 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
         }
         void DrawGlyph(MathGlyph glyph,nint drawBrush,nint drawFactory)
         {
-            var key=(glyph.FontId,glyph.GlyphId,glyph.FontSize);
-            if(!_drawingOutlines.TryGetValue(key,out var outline))
+            var outlineKey=(glyph.FontId,glyph.GlyphId,glyph.FontSize);
+            var geometryKey=(drawFactory,glyph.FontId,glyph.GlyphId,glyph.FontSize);
+            if(!_glyphGeometries.TryGetValue(geometryKey,out nint geometry))
             {
-                outline=NativeGlyphOutline.GetSegments(GetFace(glyph.FontId),glyph.GlyphId,(float)glyph.FontSize);
-                long bytes=outline.Length*64L+128;
-                if(_drawingOutlines.Count+_outlines.Count>=OutlineCacheLimit||_drawingOutlineBytes+_outlineBytes+bytes>OutlineCacheByteLimit)ClearOutlineCaches();
-                if(bytes<=OutlineCacheByteLimit){_drawingOutlines.Add(key,outline);_drawingOutlineBytes+=bytes;}
+                if(!_drawingOutlines.TryGetValue(outlineKey,out var outline))
+                {
+                    outline=NativeGlyphOutline.GetSegments(GetFace(glyph.FontId),glyph.GlyphId,(float)glyph.FontSize);
+                    long outlineBytes=outline.Length*64L+128;
+                    if(_drawingOutlines.Count+_outlines.Count>=OutlineCacheLimit||_drawingOutlineBytes+_outlineBytes+outlineBytes>OutlineCacheByteLimit)ClearOutlineCaches();
+                    if(outlineBytes<=OutlineCacheByteLimit){_drawingOutlines.Add(outlineKey,outline);_drawingOutlineBytes+=outlineBytes;}
+                }
+                if(outline.Length==0)return;
+                geometry=CreateGeometry(drawFactory,outline);
+                long bytes=256+outline.Length*48L;
+                if(_glyphGeometries.Count>=OutlineCacheLimit||_glyphGeometryBytes+bytes>OutlineCacheByteLimit)ClearGeometryCache();
+                if(bytes<=OutlineCacheByteLimit){_glyphGeometries.Add(geometryKey,geometry);_glyphGeometryBytes+=bytes;}
             }
-            if(outline.Length==0)return;
             Matrix matrix=default;((delegate* unmanaged[Stdcall]<nint,Matrix*,void>)Slot(renderTarget,31))(renderTarget,&matrix);
-            DrawPath(renderTarget,drawFactory,drawBrush,new(outline,glyph.X,glyph.Y,1,1,new(-32768,-32768,65536,65536)),matrix);
+            matrix.Dx+=(float)glyph.X;matrix.Dy+=(float)glyph.Y;
+            DrawCachedGeometry(renderTarget,geometry,drawBrush,matrix);
         }
         void DrawRule(MathRule rule,nint drawBrush)
         {
@@ -202,6 +250,57 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
     };
 
     private void ClearOutlineCaches(){_outlines.Clear();_drawingOutlines.Clear();_outlineBytes=_drawingOutlineBytes=0;}
+    private void ClearGeometryCache()
+    {
+        foreach(nint item in _glyphGeometries.Values){nint value=item;Release(ref value);}
+        _glyphGeometries.Clear();_glyphGeometryBytes=0;
+    }
+
+    private static nint CreateGeometry(nint factory,ReadOnlySpan<MathPathSegment> segments)
+    {
+        nint geometry=0,sink=0;
+        try
+        {
+            Check(((delegate* unmanaged[Stdcall]<nint,nint*,int>)Slot(factory,10))(factory,&geometry));
+            Check(((delegate* unmanaged[Stdcall]<nint,nint*,int>)Slot(geometry,17))(geometry,&sink));
+            ((delegate* unmanaged[Stdcall]<nint,uint,void>)Slot(sink,3))(sink,1);
+            bool open=false;
+            foreach(MathPathSegment segment in segments)
+            {
+                switch(segment.Operation)
+                {
+                    case MathPathOperation.Move:
+                        if(open)((delegate* unmanaged[Stdcall]<nint,uint,void>)Slot(sink,8))(sink,0);
+                        ((delegate* unmanaged[Stdcall]<nint,Point,uint,void>)Slot(sink,5))(sink,new((float)segment.X1,(float)segment.Y1),0);open=true;break;
+                    case MathPathOperation.Line:
+                        Point point=new((float)segment.X1,(float)segment.Y1);
+                        ((delegate* unmanaged[Stdcall]<nint,Point*,uint,void>)Slot(sink,6))(sink,&point,1);break;
+                    case MathPathOperation.Cubic:
+                        Bezier curve=new(){P1=new((float)segment.X1,(float)segment.Y1),P2=new((float)segment.X2,(float)segment.Y2),P3=new((float)segment.X3,(float)segment.Y3)};
+                        ((delegate* unmanaged[Stdcall]<nint,Bezier*,uint,void>)Slot(sink,7))(sink,&curve,1);break;
+                    case MathPathOperation.Close:
+                        ((delegate* unmanaged[Stdcall]<nint,uint,void>)Slot(sink,8))(sink,1);open=false;break;
+                }
+            }
+            if(open)((delegate* unmanaged[Stdcall]<nint,uint,void>)Slot(sink,8))(sink,0);
+            Check(((delegate* unmanaged[Stdcall]<nint,int>)Slot(sink,9))(sink));
+            nint result=geometry;geometry=0;return result;
+        }
+        finally{Release(ref sink);Release(ref geometry);}
+    }
+
+    private static void DrawCachedGeometry(nint target,nint geometry,nint brush,in Matrix transform)
+    {
+        Rect clip=new(-32768,-32768,32768,32768);
+        ((delegate* unmanaged[Stdcall]<nint,Rect*,uint,void>)Slot(target,45))(target,&clip,0);
+        try
+        {
+            Matrix value=transform;
+            ((delegate* unmanaged[Stdcall]<nint,Matrix*,void>)Slot(target,30))(target,&value);
+            ((delegate* unmanaged[Stdcall]<nint,nint,nint,nint,void>)Slot(target,23))(target,geometry,brush,0);
+        }
+        finally{((delegate* unmanaged[Stdcall]<nint,void>)Slot(target,46))(target);}
+    }
 
     private static void DrawPath(nint target,nint factory,nint brush,MathPath path,Matrix original)
     {
@@ -272,9 +371,8 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
     {
         if(_disposed)return;
         if(Environment.CurrentManagedThreadId!=_threadId)throw new InvalidOperationException("Dispose native math resources on their creating thread.");
-        _disposed=true;for(int i=0;i<_faces.Length;i++)Release(ref _faces[i]);Release(ref _renderingParams);Release(ref _factory);Release(ref _writeFactory);_outlines.Clear();_outlineBytes=0;_drawingOutlines.Clear();_drawingOutlineBytes=0;
+        _disposed=true;for(int i=0;i<_faces.Length;i++)Release(ref _faces[i]);Release(ref _renderingParams);Release(ref _factory);Release(ref _writeFactory);_outlines.Clear();_outlineBytes=0;_drawingOutlines.Clear();_drawingOutlineBytes=0;_validatedGlyphs.Clear();ClearGeometryCache();
         if(_uninitialize)CoUninitialize();
-        if(_ownsFontDirectory&&Directory.Exists(_fontDirectory))Directory.Delete(_fontDirectory,true);
     }
     private static string Number(double value)=>value.ToString("0.########",CultureInfo.InvariantCulture);
 }

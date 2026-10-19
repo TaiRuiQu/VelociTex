@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("VelociTex.P1.Tests")]
 [assembly: InternalsVisibleTo("VelociTex.Native.Probe")]
+[assembly: InternalsVisibleTo("VelociTex.Benchmarks")]
 
 namespace VelociTex;
 

@@ -22,6 +22,15 @@ The typesetting reference is locked to exactly one version, **KaTeX 0.19.0**. Th
 
 Performance has two tiers: the first version restores fidelity while staying fast enough, and later versions pursue an order-of-magnitude speedup over KaTeX in the browser. The ≥10× target is not a first-version release requirement.
 
+On 2026-10-20 the user set three measurable performance goals for the new WASM
+binding and the existing native paths: pure parsing to SVG/MathML at least **3×**
+faster than KaTeX, WinUI end-to-end display at least **2×** faster than browser
+KaTeX, and the WASM binding at least **50%** faster than browser KaTeX. Tests must
+cover single formulas, complex typesetting and multi-formula pages. The current
+measured status (including which goals are met) is recorded in
+[Performance verification](verification/performance-2026-10-20.md); setting a
+target does not itself establish it.
+
 ## 2. Platform and Runtime (User Confirmed)
 
 | Item | Confirmed Boundary |

@@ -1,7 +1,7 @@
+using System.Buffers;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Xml;
 
 namespace VelociTex;
 
@@ -12,33 +12,44 @@ public static class MathMlWriter
     public static string Write(MathDocument document, bool includeAnnotation = true)
     {
         ArgumentNullException.ThrowIfNull(document);
-        var output = new StringBuilder();
-        using var writer = XmlWriter.Create(output, new XmlWriterSettings { OmitXmlDeclaration = true, ConformanceLevel = ConformanceLevel.Fragment,NewLineHandling=NewLineHandling.Entitize });
-        Write(document, writer, includeAnnotation); writer.Flush(); return output.ToString();
+        return Write(document.Source, document.Options, document.Nodes, document.Root, includeAnnotation);
+    }
+
+    /// <summary>Writes presentation MathML from retained semantics without requiring layout or drawing data.</summary>
+    internal static string Write(string source, MathOptions options, SemanticNode[] semantic, int root, bool includeAnnotation = true)
+    {
+        var output = new StringBuilder(256 + semantic.Length * 40 + source.Length);
+        Write(source, options, semantic, root, output, includeAnnotation);
+        return output.ToString();
     }
 
     /// <summary>Writes UTF-8 presentation MathML while leaving the caller-owned output stream open.</summary>
     public static void Write(MathDocument document, Stream output, bool includeAnnotation = true)
     {
         ArgumentNullException.ThrowIfNull(output);
-        using var writer = XmlWriter.Create(output, new XmlWriterSettings { OmitXmlDeclaration = true, Encoding = new UTF8Encoding(false), CloseOutput = false,NewLineHandling=NewLineHandling.Entitize });
-        Write(document, writer, includeAnnotation);
+        string text = Write(document, includeAnnotation);
+        using var writer = new StreamWriter(output, new UTF8Encoding(false), 4096, leaveOpen: true);
+        writer.Write(text);
     }
 
-    private static void Write(MathDocument document, XmlWriter writer, bool includeAnnotation)
+    private static void Write(string source, MathOptions options, SemanticNode[] semantic, int root, StringBuilder writer, bool includeAnnotation)
     {
-        ArgumentNullException.ThrowIfNull(document);
-        var semantic = document.Nodes;
-        var mapped = new int[semantic.Length];
-        Array.Fill(mapped,-1);
-        var styles = new MathStyle[semantic.Length];
-        var sizes = new byte[semantic.Length]; sizes[document.Root] = 6;
-        var colors = new string?[semantic.Length];
-        var parents = new int[semantic.Length];
-        Array.Fill(parents, -1);
-        styles[document.Root] = document.Options.DisplayMode ? MathStyle.Display : MathStyle.Text;
-        var nodes = new List<MmlNode>(semantic.Length + 2);
-        var stack = new List<(int Node, bool Visit)> { (document.Root, false) };
+        int length = semantic.Length;
+        int[] mapped = ArrayPool<int>.Shared.Rent(length);
+        MathStyle[] styles = ArrayPool<MathStyle>.Shared.Rent(length);
+        byte[] sizes = ArrayPool<byte>.Shared.Rent(length);
+        string?[] colors = ArrayPool<string?>.Shared.Rent(length);
+        int[] parents = ArrayPool<int>.Shared.Rent(length);
+        Array.Fill(mapped, -1, 0, length);
+        Array.Fill(parents, -1, 0, length);
+        Array.Clear(sizes, 0, length);
+        Array.Clear(colors, 0, length);
+        try
+        {
+        sizes[root] = 6;
+        styles[root] = options.DisplayMode ? MathStyle.Display : MathStyle.Text;
+        using MmlBuffer nodes = new(length * 2 + 8);
+        var stack = new List<(int Node, bool Visit)>(length + 4) { (root, false) };
         while (stack.Count != 0)
         {
             var (index, visit) = stack[^1]; stack.RemoveAt(stack.Count - 1);
@@ -71,7 +82,7 @@ public static class MathMlWriter
                     if(node.Text is "\\nobreak" or "\\allowbreak") {mapped[index]=Add(new("mspace"));break;}
                     if(node.Text=="cdnull"){mapped[index]=Add(new("mi"," ","normal"));break;}
                     if(node.Text=="\\\\")
-                    { mapped[index]=Add(new("mspace"){LineBreak=!document.Options.DisplayMode||document.Options.StrictMode!=MathStrictMode.Error?"newline":null,Height=node.Length1.Number!=0?Em(Length(node.Length1,index)):null});break; }
+                    { mapped[index]=Add(new("mspace"){LineBreak=!options.DisplayMode||options.StrictMode!=MathStrictMode.Error?"newline":null,Height=node.Length1.Number!=0?Em(Length(node.Length1,index)):null});break; }
                     if (node.Text is "\\kern" or "\\mkern" or "\\hskip" or "\\mskip")
                     { mapped[index] = MakeSpace(Length(node.Length1, index)); break; }
                     var spaceText = node.Value switch
@@ -108,7 +119,7 @@ public static class MathMlWriter
                     }
                     if (count == 1 && node.Value == 1 && literalOrdgroup && !node.TextMode && Ref(first).Tag == "mo" && node.FirstChild>=0&&
                         semantic[node.FirstChild].Kind is NodeKind.Symbol or NodeKind.Operator) Ref(first).SuppressSpacing = true;
-                    mapped[index] = count == 1 && (index != document.Root || Ref(first).Tag == "mrow") ? first : Add(new("mrow") { First = first });
+                    mapped[index] = count == 1 && (index != root || Ref(first).Tag == "mrow") ? first : Add(new("mrow") { First = first });
                     break;
                 case NodeKind.Font:
                     var fontChild = mapped[node.FirstChild];
@@ -210,7 +221,7 @@ public static class MathMlWriter
                         int leftGlue = Add(new("mtd") { ClassName = "mtr-glue" }), rightGlue = Add(new("mtd") { ClassName = "mtr-glue" }), equationTag = Add(new("mtd") { ClassName = "mml-eqn-num" });
                         int lastCell = rowChildren; if (lastCell >= 0) while(Ref(lastCell).Next >= 0)lastCell = Ref(lastCell).Next;
                         Ref(leftGlue).Next=rowChildren; if(lastCell>=0)Ref(lastCell).Next=rightGlue;else Ref(leftGlue).Next=rightGlue;
-                        if(document.Options.Leqno){Ref(equationTag).Next=leftGlue;rowChildren=equationTag;}else{Ref(rightGlue).Next=equationTag;rowChildren=leftGlue;}
+                        if(options.Leqno){Ref(equationTag).Next=leftGlue;rowChildren=equationTag;}else{Ref(rightGlue).Next=equationTag;rowChildren=leftGlue;}
                     }
                     mapped[index] = Add(new("mtr") { First = rowChildren }); break;
                 case NodeKind.Matrix:
@@ -268,64 +279,66 @@ public static class MathMlWriter
             }
         }
         const string ns = "http://www.w3.org/1998/Math/MathML";
-        writer.WriteStartElement("math", ns);
-        if (document.Options.DisplayMode) writer.WriteAttributeString("display", "block");
-        if (includeAnnotation) writer.WriteStartElement("semantics", ns);
-        var tasks = new List<(int Node, bool Close)> { (mapped[document.Root], false) };
+        writer.Append("<math xmlns=\"").Append(ns).Append('"');
+        if (options.DisplayMode) writer.Append(" display=\"block\"");
+        writer.Append('>');
+        if (includeAnnotation) writer.Append("<semantics>");
+        var tasks = new List<(int Node, bool Close)>(semantic.Length * 2 + 4) { (mapped[root], false) };
         while (tasks.Count != 0)
         {
             var (index, close) = tasks[^1]; tasks.RemoveAt(tasks.Count - 1);
-            if (close) { writer.WriteEndElement(); continue; }
             var node = nodes[index];
+            if (close) { writer.Append("</").Append(node.Tag).Append('>'); continue; }
             if (node.Next >= 0) tasks.Add((node.Next, false));
-            if (node.Tag == "#text") { writer.WriteString(node.Text); continue; }
+            if (node.Tag == "#text") { AppendText(writer, node.Text); continue; }
             if (node.Tag == "#fragment") { if (node.First >= 0) tasks.Add((node.First, false)); continue; }
-            writer.WriteStartElement(node.Tag, ns);
-            if (node.Variant is not null) writer.WriteAttributeString("mathvariant", node.Variant);
-            if (node.Separator) writer.WriteAttributeString("separator", "true");
-            if (node.NoStretch) writer.WriteAttributeString("stretchy", "false");
-            if (node.SuppressSpacing) { if (node.LSpace is null) writer.WriteAttributeString("lspace", "0em"); if (node.RSpace is null) writer.WriteAttributeString("rspace", "0em"); }
-            if (node.Width is not null) writer.WriteAttributeString("width", node.Width);
-            if (node.LineThickness is not null) writer.WriteAttributeString("linethickness", node.LineThickness);
-            if (node.Fence is not null) writer.WriteAttributeString("fence", node.Fence);
-            if (node.Stretchy is not null) writer.WriteAttributeString("stretchy", node.Stretchy);
-            if (node.MinSize is not null) writer.WriteAttributeString("minsize", node.MinSize);
-            if (node.MaxSize is not null) writer.WriteAttributeString("maxsize", node.MaxSize);
-            if (node.LSpace is not null) writer.WriteAttributeString("lspace", node.LSpace);
-            if (node.RSpace is not null) writer.WriteAttributeString("rspace", node.RSpace);
-            if (node.Accent is not null) writer.WriteAttributeString("accent", node.Accent);
-            if (node.AccentUnder is not null) writer.WriteAttributeString("accentunder", node.AccentUnder);
-            if (node.LargeOpFalse) writer.WriteAttributeString("largeop", "false");
-            if (node.RowSpacing is not null) writer.WriteAttributeString("rowspacing", node.RowSpacing);
-            if (node.ColumnSpacing is not null) writer.WriteAttributeString("columnspacing", node.ColumnSpacing);
-            if (node.ColumnAlign is not null) writer.WriteAttributeString("columnalign", node.ColumnAlign);
-            if (node.ColumnLines is not null) writer.WriteAttributeString("columnlines", node.ColumnLines);
-            if (node.RowLines is not null) writer.WriteAttributeString("rowlines", node.RowLines);
-            if (node.Notation is not null) writer.WriteAttributeString("notation", node.Notation);
-            if (node.MathColor is not null) writer.WriteAttributeString("mathcolor", node.MathColor);
-            if (node.MathBackground is not null) writer.WriteAttributeString("mathbackground", node.MathBackground);
-            if (node.MathSize is not null) writer.WriteAttributeString("mathsize", node.MathSize);
-            if (node.Height is not null) writer.WriteAttributeString("height", node.Height);
-            if (node.Depth is not null) writer.WriteAttributeString("depth", node.Depth);
-            if (node.VOffset is not null) writer.WriteAttributeString("voffset", node.VOffset);
-            if (node.CssStyle is not null) writer.WriteAttributeString("style", node.CssStyle);
-            if (node.ClassName is not null) writer.WriteAttributeString("class", node.ClassName);
-            if (node.LineBreak is not null) writer.WriteAttributeString("linebreak", node.LineBreak);
+            writer.Append('<').Append(node.Tag);
+            if (node.Variant is not null) Attribute(writer, "mathvariant", node.Variant);
+            if (node.Separator) writer.Append(" separator=\"true\"");
+            if (node.NoStretch) writer.Append(" stretchy=\"false\"");
+            if (node.SuppressSpacing) { if (node.LSpace is null) writer.Append(" lspace=\"0em\""); if (node.RSpace is null) writer.Append(" rspace=\"0em\""); }
+            if (node.Width is not null) Attribute(writer, "width", node.Width);
+            if (node.LineThickness is not null) Attribute(writer, "linethickness", node.LineThickness);
+            if (node.Fence is not null) Attribute(writer, "fence", node.Fence);
+            if (node.Stretchy is not null) Attribute(writer, "stretchy", node.Stretchy);
+            if (node.MinSize is not null) Attribute(writer, "minsize", node.MinSize);
+            if (node.MaxSize is not null) Attribute(writer, "maxsize", node.MaxSize);
+            if (node.LSpace is not null) Attribute(writer, "lspace", node.LSpace);
+            if (node.RSpace is not null) Attribute(writer, "rspace", node.RSpace);
+            if (node.Accent is not null) Attribute(writer, "accent", node.Accent);
+            if (node.AccentUnder is not null) Attribute(writer, "accentunder", node.AccentUnder);
+            if (node.LargeOpFalse) writer.Append(" largeop=\"false\"");
+            if (node.RowSpacing is not null) Attribute(writer, "rowspacing", node.RowSpacing);
+            if (node.ColumnSpacing is not null) Attribute(writer, "columnspacing", node.ColumnSpacing);
+            if (node.ColumnAlign is not null) Attribute(writer, "columnalign", node.ColumnAlign);
+            if (node.ColumnLines is not null) Attribute(writer, "columnlines", node.ColumnLines);
+            if (node.RowLines is not null) Attribute(writer, "rowlines", node.RowLines);
+            if (node.Notation is not null) Attribute(writer, "notation", node.Notation);
+            if (node.MathColor is not null) Attribute(writer, "mathcolor", node.MathColor);
+            if (node.MathBackground is not null) Attribute(writer, "mathbackground", node.MathBackground);
+            if (node.MathSize is not null) Attribute(writer, "mathsize", node.MathSize);
+            if (node.Height is not null) Attribute(writer, "height", node.Height);
+            if (node.Depth is not null) Attribute(writer, "depth", node.Depth);
+            if (node.VOffset is not null) Attribute(writer, "voffset", node.VOffset);
+            if (node.CssStyle is not null) Attribute(writer, "style", node.CssStyle);
+            if (node.ClassName is not null) Attribute(writer, "class", node.ClassName);
+            if (node.LineBreak is not null) Attribute(writer, "linebreak", node.LineBreak);
             if (node.Tag == "mstyle" && node.MathColor is null && node.MathSize is null && node.CssStyle is null)
             {
-                writer.WriteAttributeString("scriptlevel", node.ScriptLevelOnly ? "1" : node.Style is MathStyle.Display or MathStyle.Text ? "0" : node.Style == MathStyle.Script ? "1" : "2");
-                if (!node.ScriptLevelOnly) writer.WriteAttributeString("displaystyle", node.Style == MathStyle.Display ? "true" : "false");
+                Attribute(writer, "scriptlevel", node.ScriptLevelOnly ? "1" : node.Style is MathStyle.Display or MathStyle.Text ? "0" : node.Style == MathStyle.Script ? "1" : "2");
+                if (!node.ScriptLevelOnly) Attribute(writer, "displaystyle", node.Style == MathStyle.Display ? "true" : "false");
             }
-            if (node.Buffer is not null) writer.WriteString(node.Buffer.ToString()); else if (node.Text is not null) writer.WriteString(node.Text);
+            writer.Append('>');
+            if (node.Buffer is not null) AppendText(writer, node.Buffer.ToString()); else if (node.Text is not null) AppendText(writer, node.Text);
             tasks.Add((index, true));
             if (node.First >= 0) tasks.Add((node.First, false));
         }
         if (includeAnnotation)
-        { writer.WriteStartElement("annotation", ns); writer.WriteAttributeString("encoding", "application/x-tex"); writer.WriteString(document.Source); writer.WriteEndElement(); writer.WriteEndElement(); }
-        writer.WriteEndElement();
+        { writer.Append("<annotation encoding=\"application/x-tex\">"); AppendText(writer, source); writer.Append("</annotation></semantics>"); }
+        writer.Append("</math>");
 
-        int Add(MmlNode node) { var index = nodes.Count; nodes.Add(node); return index; }
-        ref MmlNode Ref(int index) => ref CollectionsMarshal.AsSpan(nodes)[index];
+        int Add(MmlNode node) => nodes.Add(node);
+        ref MmlNode Ref(int index) => ref nodes[index];
         bool PlainOperatorName(int first)
         {
             if(first<0)return true;
@@ -342,7 +355,7 @@ public static class MathMlWriter
             };
             return Add(new(text is null ? "mspace" : "#text", text) { Width = text is null ? Em(width) : null });
         }
-        double Length(TexLength length, int nodeIndex) => MathLayout.MathMlLength(length, styles[nodeIndex], sizes[nodeIndex], document.Options);
+        double Length(TexLength length, int nodeIndex) => MathLayout.MathMlLength(length, styles[nodeIndex], sizes[nodeIndex], options);
         int BuildBoxMathMl(in SemanticNode box, int nodeIndex)
         {
             int body = box.FirstChild >= 0 ? mapped[box.FirstChild] : Add(new("mrow"));
@@ -376,7 +389,7 @@ public static class MathMlWriter
             if (colorBox)
             {
                 item.Width = "+6pt"; item.Height = "+6pt"; item.LSpace = "3pt"; item.VOffset = "3pt";
-                if (enclose.Text == "\\fcolorbox") item.CssStyle = "border: " + Em(Math.Max(.04,document.Options.MinRuleThickness)) + " solid " + enclose.Text3;
+                if (enclose.Text == "\\fcolorbox") item.CssStyle = "border: " + Em(Math.Max(.04,options.MinRuleThickness)) + " solid " + enclose.Text3;
             }
             return Add(item);
         }
@@ -444,6 +457,41 @@ public static class MathMlWriter
             }
             return false;
         }
+        }
+        finally
+        {
+            ArrayPool<int>.Shared.Return(mapped);
+            ArrayPool<MathStyle>.Shared.Return(styles);
+            ArrayPool<byte>.Shared.Return(sizes);
+            ArrayPool<string?>.Shared.Return(colors, clearArray: true);
+            ArrayPool<int>.Shared.Return(parents);
+        }
+    }
+    private static void Attribute(StringBuilder output,string name,string value)
+    {
+        output.Append(' ').Append(name).Append("=\"");
+        AppendEscaped(output,value,true);
+        output.Append('"');
+    }
+    private static void AppendText(StringBuilder output,string? text)
+    {
+        if(!string.IsNullOrEmpty(text))AppendEscaped(output,text,false);
+    }
+    private static void AppendEscaped(StringBuilder output,string text,bool attribute)
+    {
+        int start=0;
+        for(int i=0;i<text.Length;i++)
+        {
+            string? replacement=text[i] switch
+            {
+                '&'=>"&amp;",'<'=>"&lt;",'>'=>"&gt;",'"' when attribute=>"&quot;",
+                '\r'=>"&#xD;",'\n'=>"&#xA;",'\t'=>"&#x9;",_=>null
+            };
+            if(replacement is null)continue;
+            if(i>start)output.Append(text,start,i-start);
+            output.Append(replacement);start=i+1;
+        }
+        if(start<text.Length)output.Append(text,start,text.Length-start);
     }
     private static string Em(double value) => value.ToString("0.####", CultureInfo.InvariantCulture) + "em";
     private static int FenceCodePoint(int codePoint) => codePoint switch { '|' => 0x2223, 0x2016 => 0x2225, _ => codePoint };
@@ -492,6 +540,30 @@ public static class MathMlWriter
             if (current == codePoint) return true; if (current < codePoint) lower = middle + 1; else upper = middle - 1;
         }
         return false;
+    }
+    private sealed class MmlBuffer : IDisposable
+    {
+        private MmlNode[] _items;
+        internal MmlBuffer(int capacity) => _items = ArrayPool<MmlNode>.Shared.Rent(Math.Max(4, capacity));
+        internal int Count { get; private set; }
+        internal int Add(MmlNode node)
+        {
+            if (Count == _items.Length)
+            {
+                MmlNode[] larger = ArrayPool<MmlNode>.Shared.Rent(_items.Length * 2);
+                Array.Copy(_items, larger, Count);
+                ArrayPool<MmlNode>.Shared.Return(_items, clearArray: true);
+                _items = larger;
+            }
+            _items[Count] = node;
+            return Count++;
+        }
+        internal ref MmlNode this[int index] => ref _items[index];
+        public void Dispose()
+        {
+            ArrayPool<MmlNode>.Shared.Return(_items, clearArray: true);
+            _items = [];
+        }
     }
     private struct MmlNode(string tag, string? text = null, string? variant = null)
     {

@@ -6,6 +6,8 @@ A C# math typesetting and rendering library for native Windows apps. It aims to 
 
 **Status as of 2026-10-19: P0–P4 implementation is delivered, and local P5 candidate preparation is complete.** The `1.0.0-rc.1` packages use frozen KaTeX 0.19.0 rules and have real isolated JIT/AOT and WinUI consumers. P4 covers all 2,939 included registration identities with source-observed use cases; 3,659 valid inputs and 50 errors pass 3,843 independent hard-check scenarios per runtime. Downstream native display is integrated. Antialiasing differences are accepted; layout and clipping remain mandatory. See the [P5 record](docs/verification/p5-2026-10-19.md). Formal 1.0 exit remains pending old-hardware, physical monitor DPI, minimum Windows 10, hardware GPU/device and screen-reader audio acceptance; the npm browser preview is published separately below.
 
+**Performance status as of 2026-10-20:** native portable-SVG parsing is 3.54× faster than KaTeX in the frozen single/complex/page workloads, and the Native-AOT WinUI path is 5.78× faster for one warmed formula and 2.49× faster for a 100-formula page. The MathML 3× target and the 50% WASM target are not met yet; the measured bottleneck and diagnostics are in the [performance record](docs/verification/performance-2026-10-20.md). These are development-VM numbers, not old-CPU acceptance.
+
 ## Confirmed Direction
 
 - C# / .NET 10; Windows 10/11 x64 for the first release, keeping Native AOT compatibility.

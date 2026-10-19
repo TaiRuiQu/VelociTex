@@ -126,7 +126,7 @@ internal static partial class MathLayout
             double height = (large ? .659 : .499) * scale;
             double top = (large ? .08 * scale : 0) + result.GlyphY - height;
             double left = centered ? (result.Width - width) / 2 : 0;
-            AddPath(ref result, StretchyPathData.Get((triple ? "oiiintSize" : "oiintSize") + (large ? "2" : "1")), left, top, .001 * scale, .001 * scale, new(left, top, width, height), decorations);
+            AddPath(ref result, MathPathCache.Get((triple ? "oiiintSize" : "oiintSize") + (large ? "2" : "1")), left, top, .001 * scale, .001 * scale, new(left, top, width, height), decorations);
         }
         return result;
     }
@@ -251,7 +251,7 @@ internal static partial class MathLayout
         if (label is not null)
         {
             double viewHeight = Math.Round(realHeight * 1000, MidpointRounding.AwayFromZero);
-            AddPath(ref box, StretchyPathData.Tall(label, Math.Round((realHeight - th - bh) * 1000, MidpointRounding.AwayFromZero)), 0, -height, .001, .001,
+            AddPath(ref box, MathPathCache.TallPath(label, (long)Math.Round((realHeight - th - bh) * 1000, MidpointRounding.AwayFromZero)), 0, -height, .001, .001,
                 new(0, -height, width, viewHeight / 1000), decorations);
             return box;
         }
@@ -259,13 +259,13 @@ internal static partial class MathLayout
         AddGlyph(ref box, font, topGlyph, top, 0, -height + topMetric.Height, 1, decorations);
         double innerHeight = (realHeight - th - bh - mh) / (middle == 0 ? 1 : 2) + .016;
         double lowerTop = depth - bh + .008 - innerHeight;
-        AddPath(ref box, StretchyPathData.Inner(repeat, Math.Round(innerHeight * 1000, MidpointRounding.AwayFromZero)), 0, lowerTop, .001, .001, new(0, lowerTop, width, innerHeight), decorations);
+        AddPath(ref box, MathPathCache.InnerPath(repeat, (long)Math.Round(innerHeight * 1000, MidpointRounding.AwayFromZero)), 0, lowerTop, .001, .001, new(0, lowerTop, width, innerHeight), decorations);
         if (middle != 0)
         {
             double middleBaseline = lowerTop + .008 - middleMetric.Depth;
             AddGlyph(ref box, font, middleGlyph, middle, 0, middleBaseline, 1, decorations);
             double upperTop = middleBaseline - middleMetric.Height + .008 - innerHeight;
-            AddPath(ref box, StretchyPathData.Inner(repeat, Math.Round(innerHeight * 1000, MidpointRounding.AwayFromZero)), 0, upperTop, .001, .001, new(0, upperTop, width, innerHeight), decorations);
+            AddPath(ref box, MathPathCache.InnerPath(repeat, (long)Math.Round(innerHeight * 1000, MidpointRounding.AwayFromZero)), 0, upperTop, .001, .001, new(0, upperTop, width, innerHeight), decorations);
         }
         return box;
     }
@@ -371,7 +371,7 @@ internal static partial class MathLayout
                 string name = (tilde ? "tilde" : label[1..]) + image;
                 double underKern = label == "\\utilde" ? .12 * scale : 0;
                 double width = Math.Max(0, body.Width - 2 * skew), top = under ? body.Depth + underKern : -body.Height - h * scale;
-                AddPath(ref result, StretchyPathData.Get(name), 2 * skew, top, width / vw, h * scale / vh, new(2 * skew, top, width, h * scale), decorations);
+                AddPath(ref result, MathPathCache.Get(name), 2 * skew, top, width / vw, h * scale / vh, new(2 * skew, top, width, h * scale), decorations);
                 if (under) result.Depth += h * scale + underKern; else result.Height += h * scale;
             }
             else
@@ -396,7 +396,7 @@ internal static partial class MathLayout
         if (accentBelow) clearance += accentDepth;
         double ax = (accentFull ? (Math.Max(body.Width,accentWidth)-accentWidth)/2 : body.Width / 2 - accentWidth / 2) + skew;
         double ay = -body.Height + clearance - accentDepth + (accentFull ? .2 * scale : 0);
-        if (label == "\\vec") AddPath(ref result, StretchyPathData.Get("vec"), ax, ay - accentHeight, .001 * scale, .001 * scale, new(ax, ay - accentHeight, accentWidth, accentHeight), decorations);
+        if (label == "\\vec") AddPath(ref result, MathPathCache.Get("vec"), ax, ay - accentHeight, .001 * scale, .001 * scale, new(ax, ay - accentHeight, accentWidth, accentHeight), decorations);
         else AddGlyph(ref result, accentFont, accentGlyph, label=="\\^"?0x02c6:node.CodePoint, ax, ay, scale, decorations);
         result.Height = Math.Max(result.Height, accentHeight - ay + (accentFull ? .2 * scale : 0));
         result.Depth = Math.Max(result.Depth, accentDepth + ay - (accentFull ? .2 * scale : 0));
@@ -450,20 +450,20 @@ internal static partial class MathLayout
         if (info.Right is null)
         {
             double dx = info.AlignRight ? width - 400_000 * pathScale : 0;
-            AddPath(ref box, StretchyPathData.Get(info.Left), x + dx, y, pathScale, pathScale, new(x, y, width, height), decorations); return;
+            AddPath(ref box, MathPathCache.Get(info.Left), x + dx, y, pathScale, pathScale, new(x, y, width, height), decorations); return;
         }
         if (info.Middle is null)
         {
             double half = width * .502;
-            AddPath(ref box, StretchyPathData.Get(info.Left), x, y, pathScale, pathScale, new(x, y, half, height), decorations);
-            AddPath(ref box, StretchyPathData.Get(info.Right), x + width - 400_000 * pathScale, y, pathScale, pathScale, new(x + width - half, y, half, height), decorations);
+            AddPath(ref box, MathPathCache.Get(info.Left), x, y, pathScale, pathScale, new(x, y, half, height), decorations);
+            AddPath(ref box, MathPathCache.Get(info.Right), x + width - 400_000 * pathScale, y, pathScale, pathScale, new(x + width - half, y, half, height), decorations);
         }
         else
         {
             double quarter = width * .251;
-            AddPath(ref box, StretchyPathData.Get(info.Left), x, y, pathScale, pathScale, new(x, y, quarter, height), decorations);
-            AddPath(ref box, StretchyPathData.Get(info.Middle), x + width / 2 - 200_000 * pathScale, y, pathScale, pathScale, new(x + width / 4, y, width / 2, height), decorations);
-            AddPath(ref box, StretchyPathData.Get(info.Right), x + width - 400_000 * pathScale, y, pathScale, pathScale, new(x + width - quarter, y, quarter, height), decorations);
+            AddPath(ref box, MathPathCache.Get(info.Left), x, y, pathScale, pathScale, new(x, y, quarter, height), decorations);
+            AddPath(ref box, MathPathCache.Get(info.Middle), x + width / 2 - 200_000 * pathScale, y, pathScale, pathScale, new(x + width / 4, y, width / 2, height), decorations);
+            AddPath(ref box, MathPathCache.Get(info.Right), x + width - 400_000 * pathScale, y, pathScale, pathScale, new(x + width - quarter, y, quarter, height), decorations);
         }
     }
 

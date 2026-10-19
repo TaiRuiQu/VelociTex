@@ -3,6 +3,7 @@ namespace VelociTex;
 internal static class MacroExpander
 {
     private static readonly Dictionary<string, MacroDefinition> BuiltIns = CreateBuiltIns();
+    private static readonly Dictionary<string, MacroDefinition>.AlternateLookup<ReadOnlySpan<char>> BuiltInLookup = BuiltIns.GetAlternateLookup<ReadOnlySpan<char>>();
     private static readonly string CellScopeMarker = new('\0', 1);
     private static readonly string TextModeMarker = new('\0', 2), RestoreModeMarker = new('\0', 3);
     private static readonly string BraketScopeEndMarker = new('\0', 4);
@@ -20,7 +21,6 @@ internal static class MacroExpander
 
     internal static void Expand(string source, in MathOptions options, MathWorkspace w, CancellationToken cancellationToken)
     {
-        foreach (var pair in BuiltIns) w.Definitions.Add(pair.Key, pair.Value);
         options.Session?.CopyTo(w.Definitions);
         ValidatePersistentBudget(w.Definitions, options);
         long macroSourceUnits = 0, macroTokenCount = 0;
@@ -54,12 +54,19 @@ internal static class MacroExpander
             if (ReferenceEquals(token.Source, BraketScopeEndMarker) && token.Length == 0) { CloseScope(w); continue; }
             if (token.Length == 0 && ReferenceEquals(token.Source, TextModeMarker)) { w.ExpansionModes.Add(textMode); textMode = true; continue; }
             if (token.Length == 0 && ReferenceEquals(token.Source, RestoreModeMarker)) { textMode = w.ExpansionModes[^1]; w.ExpansionModes.RemoveAt(w.ExpansionModes.Count - 1); continue; }
+            MacroDefinition macro = default;
+            var isMacro = !token.NoExpand && token.Text.Length > 0 && TryGetDefinition(w, token.Text, out macro);
+            if (token.Length != 0 && !isMacro && !token.TreatAsRelax && token.Text[0] != '\\' &&
+                !token.Is("$") && !token.Is("{") && !token.Is("}") && !token.Is("&"))
+            {
+                if (w.Expanded.Count >= options.MaxTokens) Fail(MathDiagnosticCode.TokenLimit, token, "Expanded token budget exceeded.");
+                w.Expanded.Add(token);
+                continue;
+            }
             if (token.Is("$") && (textMode || mathSwitches.Count > 0 && mathSwitches[^1] == 1))
             { if (textMode) { mathSwitches.Add(1); textMode = false; } else { mathSwitches.RemoveAt(mathSwitches.Count - 1); textMode = true; } }
             else if (token.Is("\\(") && textMode) { mathSwitches.Add(2); textMode = false; }
             else if (token.Is("\\)") && mathSwitches.Count > 0 && mathSwitches[^1] == 2) { mathSwitches.RemoveAt(mathSwitches.Count - 1); textMode = true; }
-            MacroDefinition macro = default;
-            var isMacro = !token.NoExpand && token.Text.Length > 0 && w.Definitions.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(token.Text, out macro);
             var customOverride = isMacro && !macro.BuiltIn;
             if (isMacro && macro.Callback is >= 1 and <= 4)
             {
@@ -118,7 +125,7 @@ internal static class MacroExpander
                 if (token.Is("\\futurelet") || token.Is("\\\\globalfuture")) { if (w.Pending.Count == 0) Fail(MathDiagnosticCode.MissingArgument, token, "Futurelet requires two tokens."); middle = Pop(w); }
                 else if (w.Pending.Count > 0 && w.Pending[^1].Is("=")) { Pop(w); SkipSpaces(w); }
                 if (w.Pending.Count == 0) Fail(MathDiagnosticCode.MissingArgument, token, "Let requires a right-hand token.");
-                var rhs = Pop(w); var value = w.Definitions.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(rhs.Text, out var existing) ? existing with { BuiltIn = false } : new MacroDefinition([rhs with { NoExpand = true }], 0);
+                var rhs = Pop(w); var value = TryGetDefinition(w, rhs.Text, out var existing) ? existing with { BuiltIn = false } : new MacroDefinition([rhs with { NoExpand = true }], 0);
                 Assign(w, name, value, token.Is("\\\\globallet") || token.Is("\\\\globalfuture"));
                 if (middle is not null) { Push(w, rhs, options.MaxTokens); Push(w, middle.Value, options.MaxTokens); }
                 continue;
@@ -200,7 +207,7 @@ internal static class MacroExpander
             }
             if (token.Is("\\begin"))
             {
-                if (w.Definitions.TryGetValue("\\arraystretch", out var stretchDefinition))
+                if (TryGetDefinition(w, "\\arraystretch", out var stretchDefinition))
                 {
                     var expanded = ExpandDefinition(w, options, stretchDefinition.Body.ToList(), ref expansions, cancellationToken); var text = new System.Text.StringBuilder(); foreach (var part in expanded) text.Append(part.Text);
                     if (!double.TryParse(text.ToString(), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var stretch)) stretch = double.NaN;
@@ -256,7 +263,7 @@ internal static class MacroExpander
     }
     private static bool IsExpandable(MathWorkspace w, ReadOnlySpan<char> name)
     {
-        if (w.Definitions.GetAlternateLookup<ReadOnlySpan<char>>().ContainsKey(name)) return true;
+        if (TryGetDefinition(w, name, out _)) return true;
         if (name is "\\noexpand" or "\\expandafter" or "\\@firstoftwo" or "\\@secondoftwo" or "\\@ifnextchar" or "\\TextOrMath" or "\\char" or "\\message" or "\\errmessage" or "\\show" or "\\dots" or "\\dotso" or "\\dotsc" or "\\cdots" or "\\bra@ket" or "\\bra@set" or "\\tag@literal") return true;
         foreach (var command in CommandData.Definitions) if (!command.Primitive && name.SequenceEqual(command.Name)) return true;
         return false;
@@ -280,7 +287,7 @@ internal static class MacroExpander
         }
         if (token.Is("\\noexpand"))
         { if (w.Pending.Count == 0) Fail(MathDiagnosticCode.MissingArgument, token, "Noexpand requires a token."); Push(w, Pop(w) with { NoExpand = true }, options.MaxTokens); return; }
-        if (!w.Definitions.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(token.Text, out var macro)) { Push(w, token, options.MaxTokens); return; }
+        if (!TryGetDefinition(w, token.Text, out var macro)) { Push(w, token, options.MaxTokens); return; }
         if (++expansions > options.MaxExpansion) Fail(MathDiagnosticCode.ExpansionLimit, token, "Macro expansion budget exceeded.");
         Span<(int Start, int Length)> args = stackalloc (int, int)[9];
         if (macro.Delimiters is not null) foreach (var prefix in macro.Delimiters[0]) if (w.Pending.Count == 0 || !Pop(w).Text.SequenceEqual(prefix.Text)) Fail(MathDiagnosticCode.MissingArgument, token, "Macro invocation does not match its prefix.");
@@ -301,7 +308,7 @@ internal static class MacroExpander
         while (w.Pending.Count > boundary)
         {
             cancellationToken.ThrowIfCancellationRequested(); var token = w.Pending[^1];
-            if (!token.NoExpand && (token.Is("\\noexpand") || w.Definitions.GetAlternateLookup<ReadOnlySpan<char>>().ContainsKey(token.Text))) { ExpandOne(w, options, ref expansions, cancellationToken); continue; }
+            if (!token.NoExpand && (token.Is("\\noexpand") || HasDefinition(w, token.Text))) { ExpandOne(w, options, ref expansions, cancellationToken); continue; }
             result.Add(Pop(w) with { NoExpand = false, TreatAsRelax = false }); if (result.Count > options.MaxTokens) Fail(MathDiagnosticCode.TokenLimit, token, "Expanded definition token budget exceeded.");
         }
         if (result.Count > options.MaxExpansion - expansions) throw new CompileFailure(new(MathDiagnosticCode.ExpansionLimit, body.Count > 0 ? body[0].Origin : new(0, 0), "Expanded definition output budget exceeded."));
@@ -410,13 +417,13 @@ internal static class MacroExpander
             Pop(w); var arity = new System.Text.StringBuilder();
             while (w.Pending.Count != 0 && !w.Pending[^1].Is("]"))
             {
-                if (!w.Pending[^1].NoExpand && w.Definitions.GetAlternateLookup<ReadOnlySpan<char>>().ContainsKey(w.Pending[^1].Text)) { ExpandOne(w, options, ref expansions, cancellationToken); continue; }
+                if (!w.Pending[^1].NoExpand && HasDefinition(w, w.Pending[^1].Text)) { ExpandOne(w, options, ref expansions, cancellationToken); continue; }
                 arity.Append(Pop(w).Text);
             }
             if (w.Pending.Count == 0 || !Pop(w).Is("]") || !int.TryParse(arity.ToString().Trim(), out count) || count is < 0 or > 9) Fail(MathDiagnosticCode.InvalidMacroDefinition, command, "Macro arity must be a bounded integer from zero through nine.");
         }
         var body = ReadDefinitionBody(w, options, command, cancellationToken);
-        var exists = w.Definitions.ContainsKey(name) || Array.BinarySearch(SymbolData.KnownCommands, name, StringComparer.Ordinal) >= 0 || SymbolData.Symbols.Any(s => s.Name == name);
+        var exists = HasDefinition(w, name) || Array.BinarySearch(SymbolData.KnownCommands, name, StringComparer.Ordinal) >= 0 || SymbolData.Symbols.Any(s => s.Name == name);
         if (command.Is("\\newcommand") && exists || command.Is("\\renewcommand") && !exists) Fail(MathDiagnosticCode.InvalidMacroDefinition, nameToken, "Macro declaration conflicts with its existing definition.");
         if (!command.Is("\\providecommand") || !exists) Assign(w, name, new(Compact(body, command.Origin, options.MaxTokens), count), false);
     }
@@ -510,6 +517,16 @@ internal static class MacroExpander
         if (tokens.Length > maximum) throw new CompileFailure(new(MathDiagnosticCode.TokenLimit, origin, "Macro replacement token budget exceeded."));
         return tokens;
     }
+    private static bool TryGetDefinition(MathWorkspace w,ReadOnlySpan<char> name,out MacroDefinition macro)
+    {
+        if(w.Definitions.GetAlternateLookup<ReadOnlySpan<char>>().TryGetValue(name,out macro))return true;
+        // All single-character ASCII built-ins are active characters; '~' is
+        // currently the only one. Ordinary letters, digits and operators can
+        // skip the static table without changing semantics.
+        if(name.Length==1&&name[0]<'\u0080'&&name[0]!='~')return false;
+        return BuiltInLookup.TryGetValue(name,out macro);
+    }
+    private static bool HasDefinition(MathWorkspace w,ReadOnlySpan<char> name)=>TryGetDefinition(w,name,out _);
     private static void ValidateName(string name, SourceRange range)
     { if (string.IsNullOrEmpty(name) || name is "\\" or "{" or "}" or "$" or "&" or "#" or "^" or "_") throw new CompileFailure(new(MathDiagnosticCode.InvalidMacroDefinition, range, "Expected a valid control sequence or active character.")); }
     private static void SkipSpaces(MathWorkspace w) { while (w.Pending.Count != 0 && char.IsWhiteSpace(w.Pending[^1].Text[0])) Pop(w); }

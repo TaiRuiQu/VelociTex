@@ -24,6 +24,7 @@
     <ProjectReference Include="../../src/VelociTex.Rendering.Direct2D/VelociTex.Rendering.Direct2D.csproj" />
     <ProjectReference Include="../../src/VelociTex.WinUI/VelociTex.WinUI.csproj" />
     <Content Include="../../src/VelociTex.Core/Resources/Fonts/*.ttf" Link="Fonts/%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="../../benchmarks/corpus.normal.json" Link="corpus.normal.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
   <Target Name="IncludeNativeXamlPublishResources" BeforeTargets="ComputeFilesToPublish">
     <ItemGroup>
