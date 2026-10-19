@@ -1,0 +1,2 @@
+# Unified patch context deliberately carries a leading space on empty lines.
+*.patch text eol=lf -whitespace
