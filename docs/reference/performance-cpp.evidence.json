@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "recordedAt": "2026-10-20T08:40:00+08:00",
-  "sourceRevision": "58b55b2",
-  "workingTreeModified": true,
+  "sourceRevision": "fef45e0",
+  "workingTreeModified": false,
   "supersedes": "performance.evidence.json",
   "targets": {
     "pureParseSvg3x": "pass",
