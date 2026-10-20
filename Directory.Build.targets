@@ -1,0 +1,5 @@
+<Project>
+  <UsingTask TaskName="ComputeManagedAssemblies"
+             AssemblyFile="$(NuGetPackageRoot)microsoft.net.illink.tasks\10.0.13\tools\net\ILLink.Tasks.dll"
+             Condition="'$(PublishAot)' == 'true' and '$(VelociTexDisableIlcTaskHostWorkaround)' != 'true'" />
+</Project>

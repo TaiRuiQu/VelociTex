@@ -1,4 +1,4 @@
-namespace VelociTex;
+﻿namespace VelociTex;
 
 /// <summary>Supplies actual font outlines for text scalars absent from the locked math fonts.</summary>
 /// <remarks>Shaping runs inside complete compilation, before the immutable drawing result is
@@ -18,19 +18,19 @@ public interface IMathTextShaper
 public interface IMathTextRunShaper : IMathTextShaper
 {
     /// <summary>Shapes a complete bounded text run with a baseline at zero and downward Y.</summary>
-    bool TryShapeRun(string text,MathFont font,out MathTextRunShape shape);
+    bool TryShapeRun(string text, MathFont font, out MathTextRunShape shape);
 }
 
 /// <summary>Actual contextual text advance and positioned em-normalized font outlines.</summary>
 /// <param name="Advance">Natural advance in em.</param><param name="Paths">Positioned independently owned outlines.</param>
 /// <param name="InkBounds">Conservative union of all positioned outline ink.</param>
-public readonly record struct MathTextRunShape(double Advance,ReadOnlyMemory<MathPath> Paths,MathBounds InkBounds);
+public readonly record struct MathTextRunShape(double Advance, ReadOnlyMemory<MathPath> Paths, MathBounds InkBounds);
 
 /// <summary>Original text provenance for contextual outlines already included in a document's Paths.</summary>
 /// <param name="Text">Original run text.</param><param name="X">Baseline X in DIP.</param><param name="Y">Baseline Y in DIP.</param><param name="FontSize">Actual em size in DIP.</param>
 /// <param name="FirstPath">First positioned outline index in the document's Paths.</param><param name="PathCount">Number of run outline paths.</param>
 /// <param name="Advance">Actual shaped run advance in DIP.</param>
-public readonly record struct MathTextRun(string Text,double X,double Y,double FontSize,int FirstPath=0,int PathCount=0,double Advance=0);
+public readonly record struct MathTextRun(string Text, double X, double Y, double FontSize, int FirstPath = 0, int PathCount = 0, double Advance = 0);
 
 /// <summary>An independently owned fallback outline, its actual advance, conservative ink bounds and font family.</summary>
 /// <param name="Advance">Horizontal advance in em units.</param>

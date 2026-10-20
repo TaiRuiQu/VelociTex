@@ -1,4 +1,4 @@
-using VelociTex;
+﻿using VelociTex;
 
 namespace VelociTex.NativeMath;
 
@@ -17,7 +17,9 @@ public static class FastMathEngine
         if (options == new MathOptions { DisplayMode = options.DisplayMode } &&
             NativeMathMl.TryRender(latex, options.DisplayMode, out string native))
         {
-            mathml = native; warnings = []; diagnostic = default;
+            mathml = native;
+            warnings = [];
+            diagnostic = default;
             return true;
         }
         var workspace = new MathWorkspace();

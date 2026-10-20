@@ -18,13 +18,18 @@ try {
             '\.(csproj|props|targets|slnx|xaml|manifest)$|(^|/)NuGet\.Config$' {
                 $null = [xml](Get-Content -LiteralPath $file -Raw)
             }
-            '\.json$' { $null = Get-Content -LiteralPath $file -Raw | ConvertFrom-Json -AsHashtable -Depth 100 }
+            # Node validates against the real JSON grammar; Windows PowerShell's
+            # ConvertFrom-Json rejects the nesting depth of the fixture corpus.
+            '\.json$' {
+                & node tools/check-json.mjs $file
+                if ($LASTEXITCODE -ne 0) { throw "JSON syntax check failed: $file" }
+            }
             '\.mjs$' {
                 & node --check $file
                 if ($LASTEXITCODE -ne 0) { throw "JavaScript syntax check failed: $file" }
             }
             '\.py$' {
-                & python -c 'import ast, pathlib, sys; p = pathlib.Path(sys.argv[1]); ast.parse(p.read_text(encoding="utf-8-sig"), filename=str(p))' $file
+                & python tools/check-python.py $file
                 if ($LASTEXITCODE -ne 0) { throw "Python syntax check failed: $file" }
             }
         }

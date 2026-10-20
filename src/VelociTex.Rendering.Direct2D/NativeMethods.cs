@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace VelociTex.Rendering.Direct2D;
@@ -8,7 +8,7 @@ internal static unsafe partial class NativeMethods
 {
     [LibraryImport("ole32.dll")] internal static partial int CoInitializeEx(nint reserved, uint flags);
     [LibraryImport("ole32.dll")] internal static partial void CoUninitialize();
-    [LibraryImport("ole32.dll")] internal static partial int CreateStreamOnHGlobal(nint memory,int deleteOnRelease,nint* stream);
+    [LibraryImport("ole32.dll")] internal static partial int CreateStreamOnHGlobal(nint memory, int deleteOnRelease, nint* stream);
     [LibraryImport("ole32.dll")] internal static partial int CoCreateInstance(Guid* clsid, nint outer, uint context, Guid* iid, nint* result);
     [LibraryImport("dwrite.dll")] internal static partial int DWriteCreateFactory(uint factoryType, Guid* iid, nint* factory);
     [LibraryImport("d2d1.dll")] internal static partial int D2D1CreateFactory(uint factoryType, Guid* iid, nint options, nint* factory);
@@ -21,7 +21,8 @@ internal static unsafe partial class NativeMethods
     {
         nint item = value;
         value = 0;
-        if (item != 0) ((delegate* unmanaged[Stdcall]<nint, uint>)Slot(item, 2))(item);
+        if (item != 0)
+            ((delegate* unmanaged[Stdcall]<nint, uint>)Slot(item, 2))(item);
     }
     internal static nint Query(nint value, Guid iid)
     {
@@ -44,7 +45,8 @@ internal static unsafe partial class NativeMethods
     [StructLayout(LayoutKind.Sequential)] internal struct BitmapProperties { internal PixelFormat PixelFormat; internal float DpiX, DpiY; internal uint Options; internal nint ColorContext; }
     [StructLayout(LayoutKind.Sequential)] internal struct MappedRect { internal uint Pitch; internal byte* Bits; }
     [StructLayout(LayoutKind.Sequential)] internal struct Bezier { internal Point P1, P2, P3; }
-    [StructLayout(LayoutKind.Sequential)] internal struct GlyphRun
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct GlyphRun
     {
         internal nint FontFace;
         internal float EmSize;
@@ -55,7 +57,8 @@ internal static unsafe partial class NativeMethods
         internal int IsSideways;
         internal uint BidiLevel;
     }
-    [StructLayout(LayoutKind.Sequential)] internal struct GlyphMetrics
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct GlyphMetrics
     {
         internal int LeftSideBearing;
         internal uint AdvanceWidth;

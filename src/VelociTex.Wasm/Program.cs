@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
 using System.Text;
@@ -37,16 +37,24 @@ public static partial class BrowserBindings
             {
                 var viewport = MathSvgWriter.GetViewport(document!);
                 writer.WriteBoolean("success", true);
-                if (wantSvg) writer.WriteString("svg", MathSvgWriter.Write(document!, idPrefix));
-                if (wantMathMl) writer.WriteString("mathml", MathMlWriter.Write(document!));
-                writer.WriteNumber("width", viewport.Width); writer.WriteNumber("height", viewport.Height);
+                if (wantSvg)
+                    writer.WriteString("svg", MathSvgWriter.Write(document!, idPrefix));
+                if (wantMathMl)
+                    writer.WriteString("mathml", MathMlWriter.Write(document!));
+                writer.WriteNumber("width", viewport.Width);
+                writer.WriteNumber("height", viewport.Height);
                 writer.WriteNumber("baseline", document!.Baseline - viewport.Y);
-                writer.WriteNumber("logicalWidth", document.LogicalSize.Width); writer.WriteNumber("logicalHeight", document.LogicalSize.Height);
+                writer.WriteNumber("logicalWidth", document.LogicalSize.Width);
+                writer.WriteNumber("logicalHeight", document.LogicalSize.Height);
                 writer.WriteStartArray("warnings");
                 foreach (var warning in document.Warnings.Span)
                 {
-                    writer.WriteStartObject(); writer.WriteString("code", warning.Code); writer.WriteString("message", warning.Message);
-                    writer.WriteNumber("start", warning.Range.Start); writer.WriteNumber("length", warning.Range.Length); writer.WriteEndObject();
+                    writer.WriteStartObject();
+                    writer.WriteString("code", warning.Code);
+                    writer.WriteString("message", warning.Message);
+                    writer.WriteNumber("start", warning.Range.Start);
+                    writer.WriteNumber("length", warning.Range.Length);
+                    writer.WriteEndObject();
                 }
                 writer.WriteEndArray();
             }
@@ -118,7 +126,8 @@ public static partial class BrowserBindings
 
     private static (MathOptions Options, string Output) ParseOptions(string optionsJson)
     {
-        if (optionsJson.Length > 1_048_576) throw new ArgumentException("Options JSON exceeds the 1 MiB character limit.");
+        if (optionsJson.Length > 1_048_576)
+            throw new ArgumentException("Options JSON exceeds the 1 MiB character limit.");
         using var json = JsonDocument.Parse(optionsJson);
         var o = json.RootElement;
         var defaults = new MathOptions();
@@ -126,16 +135,25 @@ public static partial class BrowserBindings
         if (o.TryGetProperty("macros", out var definitions))
         {
             macros = new(StringComparer.Ordinal);
-            foreach (var macro in definitions.EnumerateObject()) macros.Add(macro.Name, macro.Value.GetString()!);
+            foreach (var macro in definitions.EnumerateObject())
+                macros.Add(macro.Name, macro.Value.GetString()!);
         }
         var options = defaults with
         {
-            FontSize = Number("fontSize", 24), DisplayMode = Flag("displayMode"), Macros = macros,
-            MaxInputLength = Integer("maxInputLength", defaults.MaxInputLength), MaxNodes = Integer("maxNodes", defaults.MaxNodes),
-            MaxNesting = Integer("maxNesting", defaults.MaxNesting), MaxTokens = Integer("maxTokens", defaults.MaxTokens),
-            MaxExpansion = Integer("maxExpand", defaults.MaxExpansion), MaxSize = Number("maxSize", defaults.MaxSize),
-            MinRuleThickness = Number("minRuleThickness", 0), ColorIsTextColor = Flag("colorIsTextColor"),
-            Leqno = Flag("leqno"), Fleqn = Flag("fleqn"), DisplayWidth = Number("displayWidth", 0),
+            FontSize = Number("fontSize", 24),
+            DisplayMode = Flag("displayMode"),
+            Macros = macros,
+            MaxInputLength = Integer("maxInputLength", defaults.MaxInputLength),
+            MaxNodes = Integer("maxNodes", defaults.MaxNodes),
+            MaxNesting = Integer("maxNesting", defaults.MaxNesting),
+            MaxTokens = Integer("maxTokens", defaults.MaxTokens),
+            MaxExpansion = Integer("maxExpand", defaults.MaxExpansion),
+            MaxSize = Number("maxSize", defaults.MaxSize),
+            MinRuleThickness = Number("minRuleThickness", 0),
+            ColorIsTextColor = Flag("colorIsTextColor"),
+            Leqno = Flag("leqno"),
+            Fleqn = Flag("fleqn"),
+            DisplayWidth = Number("displayWidth", 0),
             StrictMode = o.TryGetProperty("strict", out var strict) ? strict.GetString() switch { "error" => MathStrictMode.Error, "ignore" => MathStrictMode.Ignore, _ => MathStrictMode.Warn } : MathStrictMode.Warn,
         };
         string output = o.TryGetProperty("output", out var outputElement) ? outputElement.GetString() ?? "html" : "html";
@@ -149,13 +167,16 @@ public static partial class BrowserBindings
     private static string DiagnosticJson(MathDiagnostic diagnostic)
     {
         using var buffer = new MemoryStream();
-        using (var writer = new Utf8JsonWriter(buffer)) { writer.WriteStartObject(); WriteDiagnostic(writer, diagnostic); writer.WriteEndObject(); }
+        using (var writer = new Utf8JsonWriter(buffer))
+        { writer.WriteStartObject(); WriteDiagnostic(writer, diagnostic); writer.WriteEndObject(); }
         return Encoding.UTF8.GetString(buffer.GetBuffer(), 0, checked((int)buffer.Length));
     }
     private static void WriteDiagnostic(Utf8JsonWriter writer, MathDiagnostic diagnostic)
     {
         writer.WriteBoolean("success", false);
-        writer.WriteString("code", diagnostic.Code.ToString()); writer.WriteString("message", diagnostic.Message);
-        writer.WriteNumber("start", diagnostic.Range.Start); writer.WriteNumber("length", diagnostic.Range.Length);
+        writer.WriteString("code", diagnostic.Code.ToString());
+        writer.WriteString("message", diagnostic.Message);
+        writer.WriteNumber("start", diagnostic.Range.Start);
+        writer.WriteNumber("length", diagnostic.Range.Length);
     }
 }

@@ -109,7 +109,7 @@ console.log(report.rendered, report.errors);
 - `render(source, element, options?)`: replaces the element's contents.
 - `renderToString(source, options?)`: returns HTML by default (SVG plus visually
   hidden semantic MathML, unless the native fast path handles it). `output: 'svg' |
-  'mathml'` selects one standalone format. `fastMathml: false` forces the exact
+'mathml'` selects one standalone format. `fastMathml: false` forces the exact
   C# SVG/MathML contract.
 - `renderAll(root = document.body, options?)`: scans `[data-math]` elements and
   text containing `$$…$$`, `\[…\]`, or `\(…\)`. Repeated calls skip rendered

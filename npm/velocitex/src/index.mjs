@@ -19,14 +19,17 @@ async function ensureFast() {
         const mod = await import('./fastmath.mjs');
         fastReady = await mod.initFastMath(new URL('./runtime/fastmath.js', import.meta.url).href);
         if (fastReady) fastRender = mod.renderFastMath;
-      } catch { fastReady = false; }
+      } catch {
+        fastReady = false;
+      }
     })();
   }
   await fastInitialization;
   return fastReady;
 }
 const instanceId = `vt${Math.random().toString(36).slice(2)}_`;
-const hidden = 'position:absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap';
+const hidden =
+  'position:absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap';
 const svgNamespace = 'http://www.w3.org/2000/svg';
 let definitionsHost;
 const installedDefinitions = new Set();
@@ -53,13 +56,18 @@ function installDefinitions(definitions) {
 
 /** Initialize once; render functions also initialize automatically. */
 export function init(options = {}) {
-  const requested = options.assetBaseUrl == null ? runtimeUrl : new URL(options.assetBaseUrl, globalThis.location?.href ?? import.meta.url);
+  const requested =
+    options.assetBaseUrl == null
+      ? runtimeUrl
+      : new URL(options.assetBaseUrl, globalThis.location?.href ?? import.meta.url);
   if (!requested.pathname.endsWith('/')) requested.pathname += '/';
-  if (initialization && requested.href !== runtimeUrl.href) throw new Error('VelociTex is already initializing with a different assetBaseUrl.');
+  if (initialization && requested.href !== runtimeUrl.href)
+    throw new Error('VelociTex is already initializing with a different assetBaseUrl.');
   if (!initialization) {
     runtimeUrl = requested;
     initialization = (async () => {
-      if (typeof globalThis.document === 'undefined') throw new Error('VelociTex WASM requires a browser. renderToString is not a Node.js SSR API.');
+      if (typeof globalThis.document === 'undefined')
+        throw new Error('VelociTex WASM requires a browser. renderToString is not a Node.js SSR API.');
       const { dotnet } = await import(/* @vite-ignore */ new URL('dotnet.js', runtimeUrl).href);
       const runtime = await dotnet.withDiagnosticTracing(false).create();
       const exports = await runtime.getAssemblyExports(runtime.getConfig().mainAssemblyName);
@@ -69,9 +77,12 @@ export function init(options = {}) {
       compilerSvgSimple = exports.VelociTex.Wasm.BrowserBindings.CompileSvgSimple;
       compilerMathmlSimple = exports.VelociTex.Wasm.BrowserBindings.CompileMathMlSimple;
       compilerSvgSharedSimple = exports.VelociTex.Wasm.BrowserBindings.CompileSharedSimple;
-    })().catch(error => {
+    })().catch((error) => {
       initialization = undefined;
-      throw new Error(`Unable to initialize VelociTex WASM at ${runtimeUrl.href}. Serve the complete runtime directory over HTTP(S). ${error.message}`, { cause: error });
+      throw new Error(
+        `Unable to initialize VelociTex WASM at ${runtimeUrl.href}. Serve the complete runtime directory over HTTP(S). ${error.message}`,
+        { cause: error }
+      );
     });
   }
   return initialization;
@@ -88,13 +99,23 @@ export class ParseError extends Error {
 }
 
 function escapeHtml(value) {
-  return value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+  return value.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
 
 function compileOptions(options) {
   const result = {};
   const booleans = ['displayMode', 'colorIsTextColor', 'leqno', 'fleqn'];
-  const numbers = ['fontSize', 'maxInputLength', 'maxNodes', 'maxNesting', 'maxTokens', 'maxExpand', 'maxSize', 'minRuleThickness', 'displayWidth'];
+  const numbers = [
+    'fontSize',
+    'maxInputLength',
+    'maxNodes',
+    'maxNesting',
+    'maxTokens',
+    'maxExpand',
+    'maxSize',
+    'minRuleThickness',
+    'displayWidth',
+  ];
   for (const key of booleans) {
     if (options[key] == null) continue;
     if (typeof options[key] !== 'boolean') throw new TypeError(`${key} must be a boolean.`);
@@ -103,16 +124,20 @@ function compileOptions(options) {
   for (const key of numbers) {
     if (options[key] == null) continue;
     if (key === 'maxSize' && options[key] === Infinity) continue;
-    if (typeof options[key] !== 'number' || !Number.isFinite(options[key])) throw new TypeError(`${key} must be a finite number.`);
-    if (key.startsWith('max') && key !== 'maxSize' && !Number.isInteger(options[key])) throw new TypeError(`${key} must be an integer.`);
+    if (typeof options[key] !== 'number' || !Number.isFinite(options[key]))
+      throw new TypeError(`${key} must be a finite number.`);
+    if (key.startsWith('max') && key !== 'maxSize' && !Number.isInteger(options[key]))
+      throw new TypeError(`${key} must be an integer.`);
     result[key] = options[key];
   }
   if (options.strict != null) {
     result.strict = options.strict === true ? 'error' : options.strict === false ? 'ignore' : options.strict;
-    if (!['ignore', 'warn', 'error'].includes(result.strict)) throw new TypeError('strict must be ignore, warn, error, true or false.');
+    if (!['ignore', 'warn', 'error'].includes(result.strict))
+      throw new TypeError('strict must be ignore, warn, error, true or false.');
   }
   if (options.macros != null) {
-    if (typeof options.macros !== 'object' || Array.isArray(options.macros)) throw new TypeError('macros must be a record of string definitions.');
+    if (typeof options.macros !== 'object' || Array.isArray(options.macros))
+      throw new TypeError('macros must be a record of string definitions.');
     result.macros = Object.create(null);
     for (const [name, definition] of Object.entries(options.macros)) {
       if (typeof definition !== 'string') throw new TypeError(`Macro ${name} must be a string.`);
@@ -146,25 +171,47 @@ async function compile(source, options) {
   // Validate before starting a large download for a malformed request.
   const limit = options.maxInputLength ?? 32768;
   if (limit > 0 && limit <= 1048576 && source.length > limit) {
-    throw new ParseError(source, { code: 'InputLimit', message: 'Input length budget exceeded.', start: limit, length: source.length - limit });
+    throw new ParseError(source, {
+      code: 'InputLimit',
+      message: 'Input length budget exceeded.',
+      start: limit,
+      length: source.length - limit,
+    });
   }
-  if (options.output !== 'svg' && options.fastMathml !== false && canUseFastOptions(options) && await ensureFast()) {
+  if (options.output !== 'svg' && options.fastMathml !== false && canUseFastOptions(options) && (await ensureFast())) {
     const mathml = fastRender(source, !!options.displayMode);
     if (mathml) return { success: true, mathml, __fast: true };
   }
   await init();
-  const prefix = instanceId + (++serial);
+  const prefix = instanceId + ++serial;
   if (options.__shared === true && canUseSimpleOptions(options)) {
     const raw = compilerSvgSharedSimple(source, !!options.displayMode, instanceId, prefix);
     if (raw[0] === 'E') throw new ParseError(source, JSON.parse(raw.slice(1)));
-    const [definitions, svg, mathml, width, height, baseline, logicalWidth, logicalHeight] = raw.slice(1).split('\u0001');
-    return { success: true, svg, mathml, width: Number(width), height: Number(height), baseline: Number(baseline), logicalWidth: Number(logicalWidth), logicalHeight: Number(logicalHeight), __defs: definitions };
+    const [definitions, svg, mathml, width, height, baseline, logicalWidth, logicalHeight] = raw
+      .slice(1)
+      .split('\u0001');
+    return {
+      success: true,
+      svg,
+      mathml,
+      width: Number(width),
+      height: Number(height),
+      baseline: Number(baseline),
+      logicalWidth: Number(logicalWidth),
+      logicalHeight: Number(logicalHeight),
+      __defs: definitions,
+    };
   }
   if (options.output === 'svg' || options.output === 'mathml') {
     const simple = canUseSimpleOptions(options);
-    const raw = options.output === 'svg'
-      ? (simple ? compilerSvgSimple(source, !!options.displayMode, prefix) : compilerSvg(source, json, prefix))
-      : (simple ? compilerMathmlSimple(source, !!options.displayMode, prefix) : compilerMathml(source, json, prefix));
+    const raw =
+      options.output === 'svg'
+        ? simple
+          ? compilerSvgSimple(source, !!options.displayMode, prefix)
+          : compilerSvg(source, json, prefix)
+        : simple
+          ? compilerMathmlSimple(source, !!options.displayMode, prefix)
+          : compilerMathml(source, json, prefix);
     if (raw[0] === 'E') throw new ParseError(source, JSON.parse(raw.slice(1)));
     return options.output === 'svg' ? { success: true, svg: raw.slice(1) } : { success: true, mathml: raw.slice(1) };
   }
@@ -179,23 +226,29 @@ function markup(result, options) {
   if (options.output != null && options.output !== 'html') throw new TypeError('output must be html, svg or mathml.');
   if (result.__fast) {
     const formula = `<span class="velocitex velocitex-fast" style="display:inline-block;line-height:normal">${result.mathml}</span>`;
-    return options.displayMode ? `<span class="velocitex-display" style="display:block;text-align:center;margin:1em 0">${formula}</span>` : formula;
+    return options.displayMode
+      ? `<span class="velocitex-display" style="display:block;text-align:center;margin:1em 0">${formula}</span>`
+      : formula;
   }
   const svg = result.svg.replace('<svg ', '<svg aria-hidden="true" style="display:block" ');
   const formula = `<span class="velocitex" style="position:relative;display:inline-block;line-height:0;vertical-align:${result.baseline - result.height}px"><span style="${hidden}">${result.mathml}</span>${svg}</span>`;
-  return options.displayMode ? `<span class="velocitex-display" style="display:block;text-align:center;margin:1em 0">${formula}</span>` : formula;
+  return options.displayMode
+    ? `<span class="velocitex-display" style="display:block;text-align:center;margin:1em 0">${formula}</span>`
+    : formula;
 }
 
 function errorMarkup(error, options) {
   const color = options.errorColor ?? '#cc0000';
-  if (!/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)) throw new TypeError('errorColor must be a hexadecimal color.');
+  if (!/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color))
+    throw new TypeError('errorColor must be a hexadecimal color.');
   return `<span class="velocitex velocitex-error" style="color:${color}" title="${escapeHtml(error.message)}">${escapeHtml(error.source)}</span>`;
 }
 
 /** Return self-contained HTML, SVG or MathML. No CSS or web-font installation is required. */
 export async function renderToString(source, options = {}) {
-  try { return markup(await compile(source, options), options); }
-  catch (error) {
+  try {
+    return markup(await compile(source, options), options);
+  } catch (error) {
     if (!(error instanceof ParseError) || options.throwOnError !== false) throw error;
     return errorMarkup(error, options);
   }
@@ -205,8 +258,9 @@ export async function renderToString(source, options = {}) {
 export async function render(source, element, options = {}) {
   if (!element || element.nodeType !== 1) throw new TypeError('render requires a target Element.');
   let result;
-  try { result = await compile(source, { ...options, __shared: true }); }
-  catch (error) {
+  try {
+    result = await compile(source, { ...options, __shared: true });
+  } catch (error) {
     if (!(error instanceof ParseError) || options.throwOnError !== false) throw error;
     element.innerHTML = errorMarkup(error, options);
     element.setAttribute('data-velocitex-rendered', '');
@@ -224,7 +278,8 @@ const defaultDelimiters = [
   { left: '\\[', right: '\\]', display: true },
   { left: '\\(', right: '\\)', display: false },
 ];
-const excluded = 'script,style,pre,code,textarea,select,option,noscript,svg,math,[contenteditable]:not([contenteditable="false"]),[data-velocitex-rendered],.velocitex,.velocitex-ignore';
+const excluded =
+  'script,style,pre,code,textarea,select,option,noscript,svg,math,[contenteditable]:not([contenteditable="false"]),[data-velocitex-rendered],.velocitex,.velocitex-ignore';
 function escaped(text, index) {
   let count = 0;
   while (index > 0 && text[--index] === '\\') count++;
@@ -236,13 +291,17 @@ function splitMath(text, delimiters) {
   let copied = 0;
   for (let i = 0; i < text.length; i++) {
     if (escaped(text, i)) continue;
-    const delimiter = delimiters.find(d => text.startsWith(d.left, i));
+    const delimiter = delimiters.find((d) => text.startsWith(d.left, i));
     if (!delimiter) continue;
     const start = i + delimiter.left.length;
-    let depth = 0, end = -1;
+    let depth = 0,
+      end = -1;
     for (let j = start; j < text.length; j++) {
       if (escaped(text, j)) continue;
-      if (depth === 0 && text.startsWith(delimiter.right, j)) { end = j; break; }
+      if (depth === 0 && text.startsWith(delimiter.right, j)) {
+        end = j;
+        break;
+      }
       if (text[j] === '{') depth++;
       if (text[j] === '}') depth = Math.max(0, depth - 1);
     }
@@ -258,12 +317,24 @@ function splitMath(text, delimiters) {
 
 /** Render [data-math] elements and delimited text; repeated calls skip rendered output. */
 export async function renderAll(root = globalThis.document?.body, options = {}) {
-  if (!root || ![1, 9, 11].includes(root.nodeType)) throw new TypeError('renderAll requires an Element, Document or DocumentFragment.');
-  const delimiters = (options.delimiters ?? defaultDelimiters).map(d => ({ ...d }));
-  if (delimiters.some(d => typeof d.left !== 'string' || !d.left || typeof d.right !== 'string' || !d.right || typeof d.display !== 'boolean')) throw new TypeError('Each delimiter requires nonempty left/right strings and a display boolean.');
+  if (!root || ![1, 9, 11].includes(root.nodeType))
+    throw new TypeError('renderAll requires an Element, Document or DocumentFragment.');
+  const delimiters = (options.delimiters ?? defaultDelimiters).map((d) => ({ ...d }));
+  if (
+    delimiters.some(
+      (d) =>
+        typeof d.left !== 'string' ||
+        !d.left ||
+        typeof d.right !== 'string' ||
+        !d.right ||
+        typeof d.display !== 'boolean'
+    )
+  )
+    throw new TypeError('Each delimiter requires nonempty left/right strings and a display boolean.');
   delimiters.sort((a, b) => b.left.length - a.left.length);
   const max = options.maxFormulas ?? 1000;
-  if (!Number.isInteger(max) || max <= 0 || max > 10000) throw new TypeError('maxFormulas must be an integer between 1 and 10000.');
+  if (!Number.isInteger(max) || max <= 0 || max > 10000)
+    throw new TypeError('maxFormulas must be an integer between 1 and 10000.');
   const selector = options.selector ?? '[data-math]';
   const settings = { throwOnError: false, ...options };
   const report = { rendered: 0, errors: [] };
@@ -286,21 +357,30 @@ export async function renderAll(root = globalThis.document?.body, options = {}) 
     if (!root.contains(element)) continue; // A selected ancestor may already have replaced this node.
     if (element.closest(excluded)) continue;
     const source = element.getAttribute('data-math') ?? element.textContent;
-    const displayMode = element.hasAttribute('data-display-mode') ? element.getAttribute('data-display-mode') !== 'false' : !!settings.displayMode;
+    const displayMode = element.hasAttribute('data-display-mode')
+      ? element.getAttribute('data-display-mode') !== 'false'
+      : !!settings.displayMode;
     element.innerHTML = await one(source, displayMode, element);
     element.setAttribute('data-velocitex-rendered', '');
     element.setAttribute('data-velocitex-source', source);
   }
   const doc = root.ownerDocument ?? root;
-  const walker = doc.createTreeWalker(root, 4, { acceptNode(node) { return node.parentElement?.closest(excluded) ? 2 : 1; } });
+  const walker = doc.createTreeWalker(root, 4, {
+    acceptNode(node) {
+      return node.parentElement?.closest(excluded) ? 2 : 1;
+    },
+  });
   const nodes = [];
   while (walker.nextNode()) nodes.push(walker.currentNode);
   for (const node of nodes) {
     const parts = splitMath(node.data, delimiters);
-    if (!parts.some(p => p.source !== undefined)) continue;
+    if (!parts.some((p) => p.source !== undefined)) continue;
     const fragment = doc.createDocumentFragment();
     for (const part of parts) {
-      if (part.source === undefined) { fragment.append(doc.createTextNode(part.text)); continue; }
+      if (part.source === undefined) {
+        fragment.append(doc.createTextNode(part.text));
+        continue;
+      }
       const host = doc.createElement('span');
       host.innerHTML = await one(part.source, part.display, host);
       host.setAttribute('data-velocitex-rendered', '');

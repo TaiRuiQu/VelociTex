@@ -3,19 +3,41 @@
 root = true
 
 [*]
-charset = utf-8
+# C# sources contain Unicode literals (math operators, Indic/Thai/Hangul
+# shaping tests). Both csc and dotnet format encode those files as UTF-8 with
+# a BOM; omitting the BOM makes the formatter rewrite every source file.
+charset = utf-8-bom
 insert_final_newline = true
 trim_trailing_whitespace = true
+
+# Generated data and lock files are byte-exact inputs to the build.
+[{src/VelociTex.Core/Generated/*.cs,*.json}]
+insert_final_newline = false
+trim_trailing_whitespace = false
 
 [*.{cs,csproj,props,targets}]
 indent_style = space
 indent_size = 4
 end_of_line = lf
 
+[*.slnx]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+
 [*.{js,mjs,json}]
 indent_style = space
 indent_size = 2
 end_of_line = lf
+
+# JSON is formatted by Prettier, not dotnet format; these settings only keep
+# IDE editors consistent with .prettierrc.json.
+[*.json]
+indent_style = space
+indent_size = 2
+json_indent_size = 2
+json_indent_style = space
+json_insert_final_newline = true
 
 [*.{cpp,hpp,h,c,cc}]
 indent_style = space

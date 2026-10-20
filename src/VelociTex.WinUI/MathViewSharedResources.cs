@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
 using VelociTex.Rendering.Direct2D;
 
@@ -18,7 +18,8 @@ internal static unsafe class MathViewSharedResources
     internal static (WindowsMathRenderer Renderer, CompositionGraphicsDevice Graphics) Acquire(Compositor compositor)
     {
         int thread = Environment.CurrentManagedThreadId;
-        if (_renderer is not null && thread != _threadId) throw new InvalidOperationException("MathView resources are bound to the UI thread that created them.");
+        if (_renderer is not null && thread != _threadId)
+            throw new InvalidOperationException("MathView resources are bound to the UI thread that created them.");
         if (_renderer is null)
         {
             WindowsMathRenderer renderer = new();
@@ -37,17 +38,24 @@ internal static unsafe class MathViewSharedResources
             catch
             {
                 graphics?.Dispose();
-                if (device != 0) { nint value = device; Release(ref value); }
+                if (device != 0)
+                { nint value = device; Release(ref value); }
                 renderer.Dispose();
                 throw;
             }
             finally
             {
-                if (graphicsPointer != 0) { nint value = graphicsPointer; Release(ref value); }
-                if (interop != 0) { nint value = interop; Release(ref value); }
-                if (compositorPointer != 0) { nint value = compositorPointer; Release(ref value); }
+                if (graphicsPointer != 0)
+                { nint value = graphicsPointer; Release(ref value); }
+                if (interop != 0)
+                { nint value = interop; Release(ref value); }
+                if (compositorPointer != 0)
+                { nint value = compositorPointer; Release(ref value); }
             }
-            _renderer = renderer; _device = device; _graphics = graphics; _threadId = thread;
+            _renderer = renderer;
+            _device = device;
+            _graphics = graphics;
+            _threadId = thread;
         }
         _users++;
         return (_renderer, _graphics!);
@@ -55,12 +63,18 @@ internal static unsafe class MathViewSharedResources
 
     internal static void Release()
     {
-        if (_users == 0) return;
-        if (--_users != 0) return;
-        _graphics?.Dispose(); _graphics = null;
-        _renderer?.Dispose(); _renderer = null;
-        if (_device != 0) { nint value = _device; Release(ref value); }
-        _device = 0; _threadId = -1;
+        if (_users == 0)
+            return;
+        if (--_users != 0)
+            return;
+        _graphics?.Dispose();
+        _graphics = null;
+        _renderer?.Dispose();
+        _renderer = null;
+        if (_device != 0)
+        { nint value = _device; Release(ref value); }
+        _device = 0;
+        _threadId = -1;
     }
 
     private static void Check(int hr) { if (hr < 0) Marshal.ThrowExceptionForHR(hr); }

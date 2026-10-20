@@ -1,4 +1,4 @@
-using VelociTex;
+﻿using VelociTex;
 using VelociTex.Rendering.Direct2D;
 
 var source = args.Length > 0 ? args[0] : @"\frac{a}{b}+\sqrt{x}";

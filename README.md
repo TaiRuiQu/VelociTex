@@ -9,12 +9,12 @@ Direct2D, without a browser or JavaScript runtime.
 
 ## Choose a package
 
-| Package | Use |
-| --- | --- |
-| `VelociTex.Core` | Compile formulas, inspect dimensions and diagnostics, export MathML |
-| `VelociTex.Rendering.Direct2D` | Render on Windows x64 and export PNG / SVG |
-| `VelociTex.WinUI` | Display formulas with the native `MathView` control |
-| npm `velocitex` | Render formulas in a browser, with TypeScript declarations |
+| Package                        | Use                                                                 |
+| ------------------------------ | ------------------------------------------------------------------- |
+| `VelociTex.Core`               | Compile formulas, inspect dimensions and diagnostics, export MathML |
+| `VelociTex.Rendering.Direct2D` | Render on Windows x64 and export PNG / SVG                          |
+| `VelociTex.WinUI`              | Display formulas with the native `MathView` control                 |
+| npm `velocitex`                | Render formulas in a browser, with TypeScript declarations          |
 
 The source distribution also includes a portable SVG backend and an optional
 C++ MathML adapter.

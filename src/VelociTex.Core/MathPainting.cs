@@ -1,4 +1,4 @@
-namespace VelociTex;
+﻿namespace VelociTex;
 
 /// <summary>An explicit sRGB color used by retained formula painting commands.</summary>
 public readonly record struct MathColor(byte R, byte G, byte B, byte A = 255);

@@ -14,4 +14,7 @@
   <Folder Name="/samples/">
     <Project Path="samples/VelociTex.Export.Sample/VelociTex.Export.Sample.csproj" />
   </Folder>
+  <Folder Name="/tools/">
+    <Project Path="tools/VelociTex.PackageInspection/VelociTex.PackageInspection.csproj" />
+  </Folder>
 </Solution>

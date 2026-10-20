@@ -110,7 +110,7 @@ jobs:
   publish:
     name: Trusted publish to nuget.org
     needs: [package, npm-verify]
-    runs-on: ubuntu-24.04
+    runs-on: windows-2025
     timeout-minutes: 15
     environment: nuget
     permissions:
@@ -169,7 +169,7 @@ jobs:
   npm-publish:
     name: Trusted publish to npmjs.org
     needs: [package, npm-verify]
-    runs-on: ubuntu-24.04
+    runs-on: windows-2025
     timeout-minutes: 15
     environment: npm
     permissions:
@@ -240,7 +240,7 @@ jobs:
   release:
     name: Create GitHub Release
     needs: [package, publish, npm-publish]
-    runs-on: ubuntu-24.04
+    runs-on: windows-2025
     timeout-minutes: 10
     permissions:
       contents: write

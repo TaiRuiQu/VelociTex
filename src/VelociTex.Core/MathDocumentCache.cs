@@ -1,4 +1,4 @@
-namespace VelociTex;
+﻿namespace VelociTex;
 
 /// <summary>A thread-safe, bounded least-recently-used cache of independently owned formula results.</summary>
 /// <remarks>Native preparations, images and GPU surfaces are not cached. Sessions, custom macros and
@@ -20,7 +20,8 @@ public sealed class MathDocumentCache
     {
         ArgumentOutOfRangeException.ThrowIfNegative(maximumBytes);
         ArgumentOutOfRangeException.ThrowIfNegative(maximumItems);
-        MaximumBytes = maximumBytes; MaximumItems = maximumItems;
+        MaximumBytes = maximumBytes;
+        MaximumItems = maximumItems;
     }
 
     /// <summary>Gets the maximum estimated retained managed payload in bytes.</summary>
@@ -44,8 +45,12 @@ public sealed class MathDocumentCache
     public bool TryCompile(MathEngine engine, string latex, in MathOptions options, MathWorkspace workspace,
         CancellationToken cancellationToken, out MathDocument? document, out MathDiagnostic diagnostic, out bool cacheHit)
     {
-        ArgumentNullException.ThrowIfNull(engine); ArgumentNullException.ThrowIfNull(latex); ArgumentNullException.ThrowIfNull(workspace);
-        document = null; diagnostic = default; cacheHit = false;
+        ArgumentNullException.ThrowIfNull(engine);
+        ArgumentNullException.ThrowIfNull(latex);
+        ArgumentNullException.ThrowIfNull(workspace);
+        document = null;
+        diagnostic = default;
+        cacheHit = false;
         if (cancellationToken.IsCancellationRequested)
         { diagnostic = new(MathDiagnosticCode.Cancelled, new(0, latex.Length), "Compilation was cancelled."); return false; }
         var eligible = MaximumBytes > 0 && MaximumItems > 0 && options.Macros is null && options.Session is null && options.TextShaper is null && options.StrictHandler is null && !ContainsDefinition(latex);
@@ -56,30 +61,44 @@ public sealed class MathDocumentCache
             {
                 if (_items.TryGetValue(key, out var cached))
                 {
-                    _recency.Remove(cached); _recency.AddFirst(cached);
-                    document = cached.Value.Document; cacheHit = true;
+                    _recency.Remove(cached);
+                    _recency.AddFirst(cached);
+                    document = cached.Value.Document;
+                    cacheHit = true;
                 }
             }
             if (cacheHit)
             {
-                if (!cancellationToken.IsCancellationRequested) return true;
-                document = null; cacheHit = false;
-                diagnostic = new(MathDiagnosticCode.Cancelled, new(0, latex.Length), "Compilation was cancelled."); return false;
+                if (!cancellationToken.IsCancellationRequested)
+                    return true;
+                document = null;
+                cacheHit = false;
+                diagnostic = new(MathDiagnosticCode.Cancelled, new(0, latex.Length), "Compilation was cancelled.");
+                return false;
             }
         }
-        if (!engine.TryCompile(latex, in options, workspace, cancellationToken, out document, out diagnostic)) return false;
-        if (!eligible) return true;
+        if (!engine.TryCompile(latex, in options, workspace, cancellationToken, out document, out diagnostic))
+            return false;
+        if (!eligible)
+            return true;
         var bytes = Estimate(document!);
-        if (bytes > MaximumBytes) return true;
+        if (bytes > MaximumBytes)
+            return true;
         lock (_gate)
         {
             // Another independent workspace may have compiled the same formula meanwhile.
-            if (_items.ContainsKey(key)) return true;
+            if (_items.ContainsKey(key))
+                return true;
             while (_items.Count >= MaximumItems || _bytes > MaximumBytes - bytes)
             {
-                var last = _recency.Last!; _items.Remove(last.Value.Key); _recency.RemoveLast(); _bytes -= last.Value.Bytes;
+                var last = _recency.Last!;
+                _items.Remove(last.Value.Key);
+                _recency.RemoveLast();
+                _bytes -= last.Value.Bytes;
             }
-            var node = _recency.AddFirst(new Entry(key, document!, bytes)); _items.Add(key, node); _bytes += bytes;
+            var node = _recency.AddFirst(new Entry(key, document!, bytes));
+            _items.Add(key, node);
+            _bytes += bytes;
         }
         return true;
     }
@@ -92,7 +111,9 @@ public sealed class MathDocumentCache
         // Conservative bypass also covers escaped text and definitions in comments. Do not
         // execute macros while deciding eligibility or retain mutable user dictionaries as keys.
         ReadOnlySpan<string> names = ["\\def", "\\gdef", "\\edef", "\\xdef", "\\let", "\\futurelet", "\\global", "\\newcommand", "\\renewcommand", "\\providecommand"];
-        foreach (var name in names) if (source.Contains(name, StringComparison.Ordinal)) return true;
+        foreach (var name in names)
+            if (source.Contains(name, StringComparison.Ordinal))
+                return true;
         return false;
     }
     private static long Estimate(MathDocument document)
@@ -103,11 +124,16 @@ public sealed class MathDocumentCache
         long bytes = 512 + 2L * document.Source.Length + (System.Runtime.CompilerServices.Unsafe.SizeOf<SemanticNode>() + 32L) * document.Nodes.Length +
             64L * document.Glyphs.Length + 96L * document.TextGlyphs.Length + 48L * document.Rules.Length + 128L * document.Paths.Length +
             24L * document.PaintCommands.Length + 80L * document.PaintStates.Length + 64L * document.Warnings.Length + 96L * document.TextRuns.Length;
-        foreach(var run in document.TextRuns.Span)bytes+=32+2L*run.Text.Length;
-        foreach (var warning in document.Warnings.Span) bytes += 64 + 2L * (warning.Code.Length + warning.Message.Length);
-        foreach (var text in document.TextGlyphs.Span) bytes += 32 + 2L * text.FontFamily.Length;
-        foreach (var node in document.Nodes.AsSpan()) bytes += 128 + 2L * ((node.Text?.Length ?? 0) + (node.Text2?.Length ?? 0) + (node.Text3?.Length ?? 0) + (node.Alignment?.Length ?? 0));
-        foreach (var path in document.Paths.Span) bytes += 64L * path.Segments.Length;
+        foreach (var run in document.TextRuns.Span)
+            bytes += 32 + 2L * run.Text.Length;
+        foreach (var warning in document.Warnings.Span)
+            bytes += 64 + 2L * (warning.Code.Length + warning.Message.Length);
+        foreach (var text in document.TextGlyphs.Span)
+            bytes += 32 + 2L * text.FontFamily.Length;
+        foreach (var node in document.Nodes.AsSpan())
+            bytes += 128 + 2L * ((node.Text?.Length ?? 0) + (node.Text2?.Length ?? 0) + (node.Text3?.Length ?? 0) + (node.Alignment?.Length ?? 0));
+        foreach (var path in document.Paths.Span)
+            bytes += 64L * path.Segments.Length;
         return bytes;
     }
     private readonly record struct Key(string Source, MathOptions Options);

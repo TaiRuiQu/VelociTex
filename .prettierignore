@@ -1,10 +1,29 @@
+# Third-party and installed dependencies.
 node_modules/
+**/node_modules/
+
+# Build products.
 bin/
 obj/
 artifacts/
 build/
+dist/
 *.min.js
 *.min.css
 package-lock.json
 *.lock.json
-dist/
+
+# Machine-generated data. These files are produced by the locked generators in
+# tools/reference and tools/VelociTex.DataGeneration and are verified byte for
+# byte, so reformatting them would break the generators' checks.
+**/Generated/
+tools/reference/data/
+npm/velocitex/dist/
+**/*.inc
+
+# Prettier does not parse C++; clang-format owns the native sources.
+*.cpp
+*.hpp
+*.h
+*.c
+*.cc

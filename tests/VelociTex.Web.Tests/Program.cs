@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Xml.Linq;
 using VelociTex;
 using VelociTex.Rendering.Svg;
@@ -19,7 +19,8 @@ foreach (var fixture in corpus.RootElement.GetProperty("cases").EnumerateArray()
     string source = fixture.GetProperty("latex").GetString()!;
     var options = new MathOptions { StrictMode = MathStrictMode.Ignore };
     var jsOptions = new Dictionary<string, JsonElement>();
-    if (fixture.TryGetProperty("displayMode", out var display)) { options = options with { DisplayMode = display.GetBoolean() }; jsOptions["displayMode"] = display; }
+    if (fixture.TryGetProperty("displayMode", out var display))
+    { options = options with { DisplayMode = display.GetBoolean() }; jsOptions["displayMode"] = display; }
     if (fixture.TryGetProperty("macros", out var macros))
     {
         options = options with { Macros = macros.EnumerateObject().ToDictionary(m => m.Name, m => m.Value.GetString()!) };
@@ -44,16 +45,20 @@ foreach (var fixture in corpus.RootElement.GetProperty("cases").EnumerateArray()
                 "globalGroup" or "output" or "throwOnError" or "errorColor" => options,
                 _ => throw new InvalidOperationException("Unmapped fixture setting: " + setting.Name),
             };
-            if (setting.Name is not ("globalGroup" or "output" or "throwOnError" or "errorColor" or "strict")) jsOptions[setting.Name] = value;
+            if (setting.Name is not ("globalGroup" or "output" or "throwOnError" or "errorColor" or "strict"))
+                jsOptions[setting.Name] = value;
         }
     }
     bool success = engine.TryCompile(source, in options, workspace, default, out var document, out var diagnostic);
     writer.WriteStartObject();
-    writer.WriteString("id", fixture.GetProperty("id").GetString()); writer.WriteString("source", source);
+    writer.WriteString("id", fixture.GetProperty("id").GetString());
+    writer.WriteString("source", source);
     writer.WriteStartObject("options");
-    foreach (var option in jsOptions) { writer.WritePropertyName(option.Key); option.Value.WriteTo(writer); }
+    foreach (var option in jsOptions)
+    { writer.WritePropertyName(option.Key); option.Value.WriteTo(writer); }
     writer.WriteString("strict", options.StrictMode.ToString().ToLowerInvariant());
-    writer.WriteEndObject(); writer.WriteBoolean("success", success);
+    writer.WriteEndObject();
+    writer.WriteBoolean("success", success);
     if (success)
     {
         string svg = MathSvgWriter.Write(document!, "parity");
@@ -63,16 +68,23 @@ foreach (var fixture in corpus.RootElement.GetProperty("cases").EnumerateArray()
         foreach (var reference in xml.Descendants(ns + "use").Attributes("href"))
             Assert(definitions.Contains(reference.Value[1..]), "Every glyph reference resolves");
         Assert(!svg.Contains("NaN", StringComparison.Ordinal) && !svg.Contains("Infinity", StringComparison.Ordinal), "Finite export coordinates");
-        writer.WriteString("svg", svg); writer.WriteString("mathml", MathMlWriter.Write(document!)); valid++;
+        writer.WriteString("svg", svg);
+        writer.WriteString("mathml", MathMlWriter.Write(document!));
+        valid++;
     }
     else
     {
-        writer.WriteString("code", diagnostic.Code.ToString()); writer.WriteNumber("start", diagnostic.Range.Start); writer.WriteNumber("length", diagnostic.Range.Length);
-        invalid++; if (diagnostic.Code == MathDiagnosticCode.UnknownSymbol) missingGlyphs++;
+        writer.WriteString("code", diagnostic.Code.ToString());
+        writer.WriteNumber("start", diagnostic.Range.Start);
+        writer.WriteNumber("length", diagnostic.Range.Length);
+        invalid++;
+        if (diagnostic.Code == MathDiagnosticCode.UnknownSymbol)
+            missingGlyphs++;
     }
     writer.WriteEndObject();
 }
-writer.WriteEndArray(); writer.Flush();
+writer.WriteEndArray();
+writer.Flush();
 Assert(engine.TryCompile("x", out var small, out _), "Seed compilation");
 bool rejected = false;
 try { MathSvgWriter.Write(small!, "\" onload=\"alert(1)"); } catch (ArgumentException) { rejected = true; }
@@ -83,5 +95,6 @@ Console.WriteLine($"Portable SVG assertions passed; parity oracle: {valid} valid
 
 static void Assert(bool condition, string description)
 {
-    if (!condition) throw new InvalidOperationException(description);
+    if (!condition)
+        throw new InvalidOperationException(description);
 }

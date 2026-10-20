@@ -8,12 +8,12 @@ VelociTex 是独立的 TeX 数学排版与渲染组件，数学规则固定为 *
 
 ## 选择组件
 
-| 组件 | 用途 |
-| --- | --- |
-| `VelociTex.Core` | 编译公式，获取尺寸、基线和诊断，导出 MathML |
-| `VelociTex.Rendering.Direct2D` | Windows x64 原生绘制及 PNG / SVG 导出 |
-| `VelociTex.WinUI` | 使用原生 `MathView` 控件显示公式 |
-| npm `velocitex` | 浏览器渲染与 TypeScript 类型声明 |
+| 组件                           | 用途                                        |
+| ------------------------------ | ------------------------------------------- |
+| `VelociTex.Core`               | 编译公式，获取尺寸、基线和诊断，导出 MathML |
+| `VelociTex.Rendering.Direct2D` | Windows x64 原生绘制及 PNG / SVG 导出       |
+| `VelociTex.WinUI`              | 使用原生 `MathView` 控件显示公式            |
+| npm `velocitex`                | 浏览器渲染与 TypeScript 类型声明            |
 
 源码分发另包含跨平台 SVG 后端和可选的 C++ MathML 适配器。
 

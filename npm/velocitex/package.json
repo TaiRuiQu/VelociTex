@@ -4,22 +4,51 @@
   "description": "KaTeX 0.19.0 math rules with a C++ MathML fast path and C# WebAssembly fallback",
   "type": "module",
   "license": "MIT AND OFL-1.1",
-  "publishConfig": { "access": "public", "registry": "https://registry.npmjs.org/" },
-  "repository": { "type": "git", "url": "https://github.com/TaiRuiQu/VelociTex.git", "directory": "npm/velocitex" },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TaiRuiQu/VelociTex.git",
+    "directory": "npm/velocitex"
+  },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.mjs" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs"
+    },
     "./runtime/*": "./dist/runtime/*",
     "./package.json": "./package.json"
   },
-  "files": ["dist", "images", "scripts/copy-assets.mjs", "LICENSE", "licenses", "THIRD-PARTY-NOTICES.md"],
-  "bin": { "velocitex-copy-assets": "./scripts/copy-assets.mjs" },
+  "files": [
+    "dist",
+    "images",
+    "scripts/copy-assets.mjs",
+    "LICENSE",
+    "licenses",
+    "THIRD-PARTY-NOTICES.md"
+  ],
+  "bin": {
+    "velocitex-copy-assets": "./scripts/copy-assets.mjs"
+  },
   "scripts": {
     "build": "pwsh -NoProfile -File ../../build-wasm.ps1",
     "prepack": "node scripts/check-package.mjs",
     "copy-assets": "node scripts/copy-assets.mjs"
   },
-  "engines": { "node": ">=22" },
-  "keywords": ["math", "latex", "tex", "wasm", "webassembly", "katex", "typesetting"]
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "math",
+    "latex",
+    "tex",
+    "wasm",
+    "webassembly",
+    "katex",
+    "typesetting"
+  ]
 }

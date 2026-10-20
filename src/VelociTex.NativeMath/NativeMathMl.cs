@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -17,7 +17,8 @@ public static class NativeMathMl
 
     static NativeMathMl()
     {
-        try { NativeLibrary.SetDllImportResolver(typeof(NativeMathMl).Assembly, Resolver); }
+        try
+        { NativeLibrary.SetDllImportResolver(typeof(NativeMathMl).Assembly, Resolver); }
         catch (InvalidOperationException) { }
     }
 
@@ -29,7 +30,8 @@ public static class NativeMathMl
     {
         ArgumentNullException.ThrowIfNull(latex);
         mathml = string.Empty;
-        if (!IsAvailable) return false;
+        if (!IsAvailable)
+            return false;
         int maxBytes = Encoding.UTF8.GetMaxByteCount(latex.Length);
         byte[]? rentedInput = null;
         Span<byte> input = maxBytes <= 2048 ? stackalloc byte[maxBytes] : (rentedInput = System.Buffers.ArrayPool<byte>.Shared.Rent(maxBytes));
@@ -47,7 +49,8 @@ public static class NativeMathMl
                     fixed (byte* outputPtr = output)
                         size = vt_mathml2(inputPtr, inputLength, outputPtr, output.Length, displayMode ? 1 : 0);
                 }
-                if (size < 0) return false;
+                if (size < 0)
+                    return false;
                 if (size > output.Length)
                 {
                     System.Buffers.ArrayPool<byte>.Shared.Return(rentedOutput);
@@ -59,7 +62,8 @@ public static class NativeMathMl
                         fixed (byte* outputPtr = output)
                             size = vt_mathml2(inputPtr, inputLength, outputPtr, output.Length, displayMode ? 1 : 0);
                     }
-                    if (size < 0 || size > output.Length) return false;
+                    if (size < 0 || size > output.Length)
+                        return false;
                 }
                 mathml = Encoding.UTF8.GetString(output[..size]);
                 return true;
@@ -89,12 +93,14 @@ public static class NativeMathMl
 
     private static IntPtr Resolve(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
     {
-        if (!string.Equals(libraryName, LibraryName, StringComparison.Ordinal)) return IntPtr.Zero;
+        if (!string.Equals(libraryName, LibraryName, StringComparison.Ordinal))
+            return IntPtr.Zero;
         string fileName = OperatingSystem.IsWindows() ? "VelociTex.NativeMath.dll" :
             OperatingSystem.IsMacOS() ? "libVelociTex.NativeMath.dylib" : "libVelociTex.NativeMath.so";
         foreach (string directory in Candidates())
         {
-            if (NativeLibrary.TryLoad(Path.Combine(directory, fileName), out IntPtr handle)) return handle;
+            if (NativeLibrary.TryLoad(Path.Combine(directory, fileName), out IntPtr handle))
+                return handle;
         }
         return IntPtr.Zero;
     }
@@ -102,7 +108,8 @@ public static class NativeMathMl
     private static IEnumerable<string> Candidates()
     {
         string? configured = Environment.GetEnvironmentVariable("VELOCITEX_NATIVE_DIR");
-        if (!string.IsNullOrWhiteSpace(configured)) yield return configured;
+        if (!string.IsNullOrWhiteSpace(configured))
+            yield return configured;
         yield return AppContext.BaseDirectory;
         string? current = AppContext.BaseDirectory;
         for (int i = 0; i < 6 && current is not null; i++)

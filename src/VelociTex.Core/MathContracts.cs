@@ -1,4 +1,4 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("VelociTex.Core.Tests")]
 
@@ -233,21 +233,27 @@ public sealed class MathDocument
     private SemanticNode[]? _nodes;
     private MathWarning[]? _warnings;
     private LayoutStorage? _layout;
-    private sealed class LayoutStorage(LayoutOutput value) { internal readonly LayoutOutput Value=value; }
-    internal MathDocument(string source,in MathOptions options,NativeResultHandle native)
+    private sealed class LayoutStorage(LayoutOutput value) { internal readonly LayoutOutput Value = value; }
+    internal MathDocument(string source, in MathOptions options, NativeResultHandle native)
     {
-        _native=native;NativeInterop.Check(NativeInterop.ResultView(native.DangerousGetHandle(),out _view));
-        Source=source;Options=options with {Macros=null,Session=null,TextShaper=null,StrictHandler=null};
-        LogicalSize=new(_view.Width,_view.Height);Baseline=_view.Baseline;InkBounds=_view.InkBounds;
+        _native = native;
+        NativeInterop.Check(NativeInterop.ResultView(native.DangerousGetHandle(), out _view));
+        Source = source;
+        Options = options with { Macros = null, Session = null, TextShaper = null, StrictHandler = null };
+        LogicalSize = new(_view.Width, _view.Height);
+        Baseline = _view.Baseline;
+        InkBounds = _view.InkBounds;
     }
-    internal NativeResultHandle NativeHandle=>_native;
+    internal NativeResultHandle NativeHandle => _native;
     private LayoutOutput Layout
     {
         get
         {
-            var storage=Volatile.Read(ref _layout);
-            if(storage is not null)return storage.Value;
-            lock(_native){storage=_layout;if(storage is null){storage=new(NativeInterop.Layout(_native,in _view));Volatile.Write(ref _layout,storage);}return storage.Value;}
+            var storage = Volatile.Read(ref _layout);
+            if (storage is not null)
+                return storage.Value;
+            lock (_native)
+            { storage = _layout; if (storage is null) { storage = new(NativeInterop.Layout(_native, in _view)); Volatile.Write(ref _layout, storage); } return storage.Value; }
         }
     }
     /// <summary>Complete original source without host math delimiters; suitable for whole-formula copying.</summary>
@@ -279,11 +285,11 @@ public sealed class MathDocument
     /// <summary>Bounded independently owned compatibility warnings from successful compilation.</summary>
     public ReadOnlyMemory<MathWarning> Warnings
     {
-        get {var value=Volatile.Read(ref _warnings);if(value is not null)return value;lock(_native)return _warnings??=NativeInterop.Warnings(_native,in _view);}
+        get { var value = Volatile.Read(ref _warnings); if (value is not null) return value; lock (_native) return _warnings ??= NativeInterop.Warnings(_native, in _view); }
     }
     internal SemanticNode[] Nodes
     {
-        get {var value=Volatile.Read(ref _nodes);if(value is not null)return value;lock(_native)return _nodes??=NativeInterop.Nodes(_native,in _view);}
+        get { var value = Volatile.Read(ref _nodes); if (value is not null) return value; lock (_native) return _nodes ??= NativeInterop.Nodes(_native, in _view); }
     }
     internal int Root => _view.Root;
 }
@@ -331,7 +337,9 @@ internal struct SemanticNode
     internal bool IsMathOrd;
     internal SemanticNode(NodeKind kind, SourceRange range)
     {
-        this = default; Kind = kind; Range = range;
+        this = default;
+        Kind = kind;
+        Range = range;
         FirstChild = NextSibling = SecondChild = ThirdChild = FourthChild = -1;
         FontIdOverride = -1;
         Style = MathStyle.Text;

@@ -19,7 +19,7 @@ env:
 jobs:
   workflows:
     name: Workflow lint
-    runs-on: ubuntu-24.04
+    runs-on: windows-2025
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -45,8 +45,18 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22.23.2'
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
       - name: Parse sources and build with compiler/analyzer warnings as errors
         run: ./tools/Test-CILint.ps1
+      - name: Verify source formatting
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          if ($LASTEXITCODE -ne 0) { throw 'Formatter dependency install failed.' }
+          python -m pip install -r tools/requirements-format.txt
+          if ($LASTEXITCODE -ne 0) { throw 'clang-format install failed.' }
+          ./tools/Test-Format.ps1
       - name: Run core regression tests (JIT)
         run: |
           dotnet run --project tests/VelociTex.Core.Tests/VelociTex.Core.Tests.csproj -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -- artifacts/tests/jit

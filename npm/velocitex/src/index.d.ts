@@ -29,7 +29,11 @@ export interface RenderOptions {
   fleqn?: boolean;
   displayWidth?: number;
 }
-export interface Delimiter { left: string; right: string; display: boolean; }
+export interface Delimiter {
+  left: string;
+  right: string;
+  display: boolean;
+}
 export interface RenderAllOptions extends RenderOptions {
   /** Default [data-math]. The attribute or the matched element's text supplies TeX. */
   selector?: string;
@@ -51,6 +55,15 @@ export interface RenderAllResult {
 export function init(options?: InitOptions): Promise<void>;
 export function render(source: string, element: Element, options?: RenderOptions): Promise<void>;
 export function renderToString(source: string, options?: RenderOptions): Promise<string>;
-export function renderAll(root?: Element | Document | DocumentFragment, options?: RenderAllOptions): Promise<RenderAllResult>;
-declare const velocitex: { init: typeof init; render: typeof render; renderToString: typeof renderToString; renderAll: typeof renderAll; ParseError: typeof ParseError };
+export function renderAll(
+  root?: Element | Document | DocumentFragment,
+  options?: RenderAllOptions
+): Promise<RenderAllResult>;
+declare const velocitex: {
+  init: typeof init;
+  render: typeof render;
+  renderToString: typeof renderToString;
+  renderAll: typeof renderAll;
+  ParseError: typeof ParseError;
+};
 export default velocitex;

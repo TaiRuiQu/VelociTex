@@ -1,0 +1,12 @@
+{
+  "name": "velocitex-workspace-tools",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Pinned source formatters; install with npm ci before running tools/Test-Format.ps1.",
+  "devDependencies": {
+    "prettier": "3.9.10"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
