@@ -3,8 +3,8 @@ param(
 )
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
-$isWindows = $env:OS -eq 'Windows_NT'
-$separator = if ($isWindows) { ';' } else { ':' }
+$onWindows = $env:OS -eq 'Windows_NT'
+$separator = if ($onWindows) { ';' } else { ':' }
 
 $dotnetRoot = if ($env:DOTNET_ROOT) { $env:DOTNET_ROOT } else { Split-Path (Get-Command dotnet).Source }
 $packs = Join-Path $dotnetRoot 'packs'
@@ -29,7 +29,7 @@ if ($python) { $pathParts += $python }
 if ($node) { $pathParts += (Join-Path $node 'bin') }
 $nodeCommand = Get-Command node -ErrorAction SilentlyContinue
 if (!$nodeCommand -and !$node) { throw 'Node.js is required for the Emscripten build.' }
-$nodePath = if ($nodeCommand) { $nodeCommand.Source } elseif ($isWindows) { Join-Path $node 'bin/node.exe' } else { Join-Path $node 'bin/node' }
+$nodePath = if ($nodeCommand) { $nodeCommand.Source } elseif ($onWindows) { Join-Path $node 'bin/node.exe' } else { Join-Path $node 'bin/node' }
 
 $pathParts += (Join-Path $sdk 'emscripten')
 $pathParts += (Join-Path $sdk 'bin')
@@ -58,7 +58,7 @@ $arguments = @(
     '-sEXPORTED_RUNTIME_METHODS=HEAPU8,UTF8ToString,stringToUTF8,lengthBytesUTF8',
     '-o', $output, $source
 )
-$emccName = if ($isWindows) { 'emcc.bat' } else { 'emcc' }
+$emccName = if ($onWindows) { 'emcc.bat' } else { 'emcc' }
 $emcc = Join-Path $sdk "emscripten/$emccName"
 & $emcc @arguments
 if ($LASTEXITCODE -ne 0) { throw "emcc failed with exit code $LASTEXITCODE" }
