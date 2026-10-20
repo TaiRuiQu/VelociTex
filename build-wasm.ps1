@@ -16,6 +16,9 @@ try {
         if ($resolvedPublish -ne (Join-Path $PSScriptRoot 'artifacts/wasm/publish')) { throw 'Unexpected WASM publish path.' }
         Remove-Item -LiteralPath $resolvedPublish -Recurse -Force
     }
+    # Compile the C++ core to a static library that the WASM runtime links in.
+    & (Join-Path $PSScriptRoot 'native/build-wasm-core.ps1')
+    if ($LASTEXITCODE -ne 0) { throw 'C++ Core WASM build failed.' }
     $arguments = @('publish', 'src/VelociTex.Wasm/VelociTex.Wasm.csproj', '-c', 'Release', '-o', $publishPath, '--nologo', "-p:RunAOTCompilation=$((!$NoAot).ToString().ToLowerInvariant())")
     # SDK WebAssembly/ILLink packs are signed per platform and their NuGet content
     # hashes differ between the Windows and Linux SDK distributions. RestoreLockedMode

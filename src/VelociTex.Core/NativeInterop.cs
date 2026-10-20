@@ -92,6 +92,10 @@ internal static unsafe partial class NativeInterop
         internal MathPaintCommand* PaintCommands; internal int PaintCount;
         internal int PathCount, StateCount, TextGlyphCount, TextRunCount, WarningCount, NodeCount, Root;
     }
+    // Browser builds link the C++ core into dotnet.native.wasm instead of loading
+    // a DLL (native/build-wasm-core.ps1). The .NET SDK scans these declarations
+    // and the native archive's file name to emit its P/Invoke table, which is why
+    // the archive is named exactly after this library.
     [LibraryImport(Library, EntryPoint = "vt_core_workspace_create")] internal static partial nint WorkspaceCreate();
     [LibraryImport(Library, EntryPoint = "vt_core_workspace_clear")] internal static partial int WorkspaceClear(nint workspace);
     [LibraryImport(Library, EntryPoint = "vt_core_workspace_destroy")] internal static partial void WorkspaceDestroy(nint workspace);

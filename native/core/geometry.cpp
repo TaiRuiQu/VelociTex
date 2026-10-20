@@ -3,16 +3,26 @@
 #include "layout_support.hpp"
 
 #include <map>
+#if defined(__EMSCRIPTEN__)
+// The browser build has no threads (WasmEnableThreads is false), so the
+// process-wide caches below need no lock there. Removing it also avoids
+// pulling wasm atomics into the runtime for a single-threaded target.
+#define VT_CACHE_LOCK(named_mutex)
+#else
 #include <mutex>
+#define VT_CACHE_LOCK(named_mutex) std::lock_guard named_mutex
+#endif
 namespace velocitex {
 #include "RadicalPathData.inc"
 #include "StretchyPathData.inc"
 namespace MathPathCache {
 template <class Key, class Create>
 std::vector<MathPathSegment> cached(const Key& key, Create create) {
+#if !defined(__EMSCRIPTEN__)
     static std::mutex mutex;
+#endif
     static std::map<Key, std::vector<MathPathSegment>> cache;
-    std::lock_guard lock(mutex);
+    VT_CACHE_LOCK(lock(mutex));
     auto found = cache.find(key);
     if (found != cache.end())
         return found->second;

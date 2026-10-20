@@ -2,6 +2,7 @@
 
 #include "core.hpp"
 
+#include <atomic>
 #include <type_traits>
 
 using namespace velocitex;
@@ -32,6 +33,19 @@ void diagnostic(const MathDiagnostic& d, vt_diagnostic* output) {
     last_diagnostic = d;
     if (output)
         *output = {int32_t(d.Code), {d.Range.Start, d.Range.Length}, str(std::u16string_view(last_diagnostic.Message))};
+}
+// The host stores the cancellation flag through its own atomic write; an
+// acquire load here observes everything the host published before setting it.
+int32_t acquire_load(const int32_t* flag) {
+#if defined(__EMSCRIPTEN__)
+    // Emscripten's libc++ has no std::atomic_ref, and wasm32 has no separate
+    // 64-bit atomic ABI for a plain int32_t slot. The browser runs the compile
+    // callback on one thread, and a volatile load re-reads shared memory on
+    // every check, so it observes a cancellation written between checks.
+    return *static_cast<const volatile int32_t*>(flag);
+#else
+    return std::atomic_ref<const int32_t>(*flag).load(std::memory_order_acquire);
+#endif
 }
 bool valid_string(vt_string16 s) {
     return s.Length >= 0 && (s.Data || s.Length == 0);
@@ -142,7 +156,8 @@ MathOptions convert(const vt_options& o, HostShaper& shaper, int source_length) 
         };
     if (o.CancellationFlag)
         result.CheckCancellation = [flag = o.CancellationFlag, source_length] {
-            if (std::atomic_ref<const int32_t>(*flag).load(std::memory_order_relaxed))
+            // Emscripten's libc++ has no std::atomic_ref; see acquire_load.
+            if (acquire_load(flag))
                 throw CompileFailure(
                     {MathDiagnosticCode::Cancelled, {0, source_length}, u"Compilation was cancelled."});
         };

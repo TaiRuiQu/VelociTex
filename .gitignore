@@ -31,3 +31,6 @@ native/**/port_parser.py
 
 # Default export-example destination.
 /output/
+
+# Stray output of a PowerShell redirect (`> 0`); never a source file.
+/0

@@ -19,6 +19,13 @@
     <ProjectReference Include="../VelociTex.Core/VelociTex.Core.csproj" />
     <ProjectReference Include="../VelociTex.Rendering.Svg/VelociTex.Rendering.Svg.csproj" />
   </ItemGroup>
+  <!-- The C++ core is linked into the .NET runtime's Wasm module instead of being
+       loaded as a DLL. The archive file name must match the [LibraryImport] module
+       name so the SDK records these natives in its P/Invoke table. -->
+  <ItemGroup>
+    <NativeFileReference Include="$(MSBuildThisFileDirectory)..\..\artifacts\wasm\native\VelociTex.Core.Native.a"
+                         Condition="Exists('$(MSBuildThisFileDirectory)..\..\artifacts\wasm\native\VelociTex.Core.Native.a')" />
+  </ItemGroup>
   <!-- The browser SDK defaults Mono AOT to `no-opt`. Keep LLVM AOT enabled but
        let it optimize the generated bitcode; this is the compile-time/quality
        tradeoff required by the performance target. -->
