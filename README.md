@@ -63,6 +63,7 @@ await renderAll();
 ## Documentation
 
 - [Native usage](docs/native-usage.md) · [中文](docs/native-usage.zh-CN.md)
+- [Benchmarks](docs/benchmarks.md) · methodology and charts
 - [API, ownership and resource limits](docs/package-contract.md)
 - [Browser API and deployment](npm/velocitex/README.md) · [中文](docs/wasm-js.zh-CN.md)
 - [Export example](samples/VelociTex.Export.Sample/README.md)

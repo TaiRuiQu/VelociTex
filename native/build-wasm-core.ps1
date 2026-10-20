@@ -82,8 +82,18 @@ foreach ($source in $sources) {
     # -fwasm-exceptions matches the SDK's runtime link (WasmEnableExceptionHandling).
     # The default -fexceptions (Emscripten SJLJ) emits __cxa_find_matching_catch_*
     # helpers that only Emscripten's own link wires up.
-    & $emcc $optimization -std=c++20 -fwasm-exceptions -fno-rtti -I $coreDir -c (Join-Path $coreDir "$source.cpp") -o $object
-    if ($LASTEXITCODE -ne 0) { throw "emcc failed for $source.cpp." }
+    $stderrPath = Join-Path $objects (($source -replace '/', '_') + '.stderr.txt')
+    # Windows PowerShell 5.1 promotes native stderr to a terminating error when
+    # $ErrorActionPreference is Stop. Emscripten writes warnings to stderr, so
+    # capture the stream and fail only on the actual exit code.
+    $process = Start-Process -FilePath $emcc -ArgumentList @(
+        $optimization, '-std=c++20', '-fwasm-exceptions', '-fno-rtti', '-I', $coreDir,
+        '-c', (Join-Path $coreDir "$source.cpp"), '-o', $object
+    ) -NoNewWindow -Wait -PassThru -RedirectStandardError $stderrPath
+    if ($process.ExitCode -ne 0) {
+        if (Test-Path -LiteralPath $stderrPath) { Get-Content -LiteralPath $stderrPath | Write-Host }
+        throw "emcc failed for $source.cpp."
+    }
     $produced.Add($object)
 }
 

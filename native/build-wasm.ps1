@@ -60,7 +60,13 @@ $arguments = @(
 )
 $emccName = if ($onWindows) { 'emcc.bat' } else { 'emcc' }
 $emcc = Join-Path $sdk "emscripten/$emccName"
-& $emcc @arguments
-if ($LASTEXITCODE -ne 0) { throw "emcc failed with exit code $LASTEXITCODE" }
+$stderrPath = Join-Path $outDir 'emcc.stderr.txt'
+# Windows PowerShell 5.1 turns native stderr into a terminating error under
+# $ErrorActionPreference=Stop; capture it and fail only on the real exit code.
+$process = Start-Process -FilePath $emcc -ArgumentList $arguments -NoNewWindow -Wait -PassThru -RedirectStandardError $stderrPath
+if ($process.ExitCode -ne 0) {
+    if (Test-Path -LiteralPath $stderrPath) { Get-Content -LiteralPath $stderrPath | Write-Host }
+    throw "emcc failed with exit code $($process.ExitCode)"
+}
 Get-ChildItem $outDir | Select-Object Name, Length
 

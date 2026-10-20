@@ -1,6 +1,6 @@
 param(
     [string]$OutputDirectory = 'artifacts/packages/release',
-    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '1.0.0-preview4',
+    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '1.0.0-preview5',
     [switch]$Locked,
     [switch]$VerifyDeterminism
 )

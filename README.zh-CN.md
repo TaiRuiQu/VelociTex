@@ -61,6 +61,7 @@ await renderAll();
 ## 用户文档
 
 - [原生组件使用](docs/native-usage.zh-CN.md) · [English](docs/native-usage.md)
+- [性能基准](docs/benchmarks.md) · 方法、原始数据与图表
 - [API、资源所有权与限制](docs/package-contract.md)
 - [网页 API 与部署](docs/wasm-js.zh-CN.md) · [English](npm/velocitex/README.md)
 - [导出示例](samples/VelociTex.Export.Sample/README.md)

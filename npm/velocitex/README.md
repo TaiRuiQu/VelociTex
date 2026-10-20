@@ -63,33 +63,23 @@ than KaTeX's SVG. Set `fastMathml: false` or `output: 'svg'` for the exact
 C#/KaTeX-compatible SVG output. Unsupported commands automatically use that full
 C# path, so correctness is preserved.
 
-## Rendering examples
+## Rendering comparison
 
-The same formulas are shown at the same 32-pixel math em size and foreground
-color. Each image compares actual **Windows native DirectWrite/Direct2D output**,
-the **VelociTex WASM binding**, and **KaTeX 0.19.0**. The examples cover algebra,
-calculus, matrices, aligned equations, colors, accents and mathematical fonts.
+The same representative formula groups are shown at the same 32-pixel math em
+size and foreground color, on a pure white background. Each row compares actual
+**Windows native DirectWrite/Direct2D output**, the **VelociTex WASM binding**,
+and **KaTeX 0.19.0**. The groups cover algebra, calculus, matrices and piecewise
+functions, colors, accents and mathematical fonts.
 
-### Algebra and nested fractions
+![Rendering comparison: Windows native, VelociTex WASM and KaTeX 0.19.0](https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview5/images/comparison-overview.png)
 
-![Algebra: Windows native, VelociTex WASM and KaTeX 0.19.0](https://cdn.jsdelivr.net/npm/velocitex@0.1.0-preview.2/images/comparison-algebra.png)
-
-### Calculus
-
-![Calculus: Windows native, VelociTex WASM and KaTeX 0.19.0](https://cdn.jsdelivr.net/npm/velocitex@0.1.0-preview.2/images/comparison-calculus.png)
-
-### Matrices, piecewise functions and aligned equations
-
-![Structures: Windows native, VelociTex WASM and KaTeX 0.19.0](https://cdn.jsdelivr.net/npm/velocitex@0.1.0-preview.2/images/comparison-structures.png)
-
-### Dark theme, colors, fonts and decorations
-
-![Dark theme: Windows native, VelociTex WASM and KaTeX 0.19.0](https://cdn.jsdelivr.net/npm/velocitex@0.1.0-preview.2/images/comparison-dark.png)
-
-These 16 examples show closely matching mathematical layout, with visible
+The four groups show closely matching mathematical layout, with visible
 antialiasing and minor subpixel differences. They do not establish pixel identity
-or compatibility for every possible input. The original comparison PNGs are
+or compatibility for every possible input. The original comparison PNG is
 included in the package's `images/` directory; known font limitations are below.
+
+Performance methodology, raw JSON and matplotlib charts are documented in the
+repository's [benchmark guide](https://github.com/TaiRuiQu/VelociTex/blob/main/benchmarks/README.md).
 
 ## APIs
 

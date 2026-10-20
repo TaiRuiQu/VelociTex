@@ -859,8 +859,12 @@ struct Parser {
     bool Environment(const std::string& env, size_t start) {
         bool matrix = env == "matrix" || env == "pmatrix" || env == "bmatrix" || env == "Bmatrix" || env == "vmatrix" ||
                       env == "Vmatrix" || env == "smallmatrix" || env == "array";
-        bool aligned = env == "aligned" || env == "align" || env == "alignedat" || env == "gathered" || env == "cases";
-        if ((!matrix && !aligned) || env == "array" || env == "alignedat") {
+        // `cases` needs a stretchy left brace and a two-column layout. Emitting
+        // it as a plain aligned table produced silently wrong output, so leave
+        // it to the exact C# path until the fence is implemented here.
+        bool aligned = env == "aligned" || env == "align" || env == "alignedat" || env == "gathered";
+        if ((!matrix && !aligned) || env == "array" || env == "alignedat" || env == "cases" || env == "dcases" ||
+            env == "rcases" || env == "drcases") {
             ok = false;
             return false;
         }

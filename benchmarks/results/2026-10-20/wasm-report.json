@@ -1,0 +1,4608 @@
+{
+  "schemaVersion": 1,
+  "kind": "VelociTex WASM binding browser benchmark",
+  "utc": "2026-10-20T07:26:00.639Z",
+  "engine": "velocitex",
+  "katexVersion": "0.19.0",
+  "workloadSha256": "4d460c4b3b506eca3c324112acd73ef81d044b6b668d751f9acbc8cc79e70b08",
+  "headless": true,
+  "chrome": {
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+    "devicePixelRatio": 1,
+    "cores": 4,
+    "memory": 8,
+    "crossOriginIsolated": true,
+    "timerResolution": 5.375
+  },
+  "iterations": 60,
+  "e2eIterations": 10,
+  "pageRounds": 6,
+  "frameWaitNote": "sync is measured after a forced layout. painted waits for the second requestAnimationFrame callback after the DOM change, so the frame containing the change has been presented; it includes compositor frame pacing.",
+  "result": {
+    "engine": "velocitex",
+    "initMs": 256.54999999701977,
+    "parse": {
+      "single": {
+        "mathml": {
+          "samples": [
+            {
+              "id": "single-gaussian",
+              "ms": 0.5649999976158142,
+              "bytes": 460
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.36499999463558197,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.16499999910593033,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.33500000089406967,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11999999731779099,
+              "bytes": 217
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19999999552965164,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.32499999552965164,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.21000000089406967,
+              "bytes": 764
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.24000000208616257,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19500000029802322,
+              "bytes": 460
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.32499999552965164,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.25,
+              "bytes": 667
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.22999999672174454,
+              "bytes": 460
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.21000000089406967,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.23499999940395355,
+              "bytes": 217
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19999999552965164,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.2150000035762787,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.1600000038743019,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.21000000089406967,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.23499999940395355,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.22500000149011612,
+              "bytes": 764
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.23000000417232513,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17499999701976776,
+              "bytes": 406
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.375,
+              "bytes": 667
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.23999999463558197,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13499999791383743,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2199999988079071,
+              "bytes": 764
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.23499999940395355,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.19500000029802322,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.22999999672174454,
+              "bytes": 460
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23000000417232513,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2199999988079071,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.20499999821186066,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17499999701976776,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.22500000149011612,
+              "bytes": 460
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.21000000089406967,
+              "bytes": 624
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.24499999731779099,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13000000268220901,
+              "bytes": 217
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.2199999988079071,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13000000268220901,
+              "bytes": 217
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.20000000298023224,
+              "bytes": 624
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.22999999672174454,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.21000000089406967,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2149999961256981,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16499999910593033,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2199999988079071,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.20500000566244125,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20500000566244125,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23499999940395355,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23499999940395355,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2150000035762787,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.21000000089406967,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.21000000089406967,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13000000268220901,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20999999344348907,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2199999988079071,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2150000035762787,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.22999999672174454,
+              "bytes": 764
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.21000000089406967,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16999999433755875,
+              "bytes": 406
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.1900000050663948,
+              "bytes": 460
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.29999999701976776,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13499999791383743,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20000000298023224,
+              "bytes": 667
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19999999552965164,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20500000566244125,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.22500000149011612,
+              "bytes": 764
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.20499999821186066,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13499999791383743,
+              "bytes": 217
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.1899999976158142,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19500000029802322,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.20499999821186066,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19500000029802322,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19500000029802322,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20500000566244125,
+              "bytes": 667
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.2150000035762787,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.21000000089406967,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.21000000089406967,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.21000000089406967,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2150000035762787,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23999999463558197,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.4699999988079071,
+              "bytes": 667
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.21000000089406967,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.12999999523162842,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23000000417232513,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.29999999701976776,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.22999999672174454,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2200000062584877,
+              "bytes": 624
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.23999999463558197,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.19500000029802322,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.22500000149011612,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.22500000149011612,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.14499999582767487,
+              "bytes": 217
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2150000035762787,
+              "bytes": 624
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23000000417232513,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.14000000059604645,
+              "bytes": 217
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.12999999523162842,
+              "bytes": 217
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17500000447034836,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23499999940395355,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13500000536441803,
+              "bytes": 217
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1899999976158142,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.22499999403953552,
+              "bytes": 764
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.21000000089406967,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.23499999940395355,
+              "bytes": 667
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.21000000089406967,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.14000000059604645,
+              "bytes": 217
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.4100000038743019,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23499999940395355,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.22500000149011612,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23000000417232513,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2549999952316284,
+              "bytes": 764
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.24000000208616257,
+              "bytes": 406
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.14000000059604645,
+              "bytes": 217
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.12000000476837158,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.2199999988079071,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1850000023841858,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.25,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.14000000059604645,
+              "bytes": 217
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19999999552965164,
+              "bytes": 624
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23000000417232513,
+              "bytes": 764
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1850000023841858,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.23499999940395355,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1899999976158142,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17500000447034836,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.22500000149011612,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13499999791383743,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.23499999940395355,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.14000000059604645,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2150000035762787,
+              "bytes": 764
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.21000000089406967,
+              "bytes": 460
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19500000029802322,
+              "bytes": 624
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.21000000089406967,
+              "bytes": 764
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1850000023841858,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17500000447034836,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2199999988079071,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.21000000089406967,
+              "bytes": 624
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.2199999988079071,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2199999988079071,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.21000000089406967,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16499999910593033,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.2149999961256981,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.24000000208616257,
+              "bytes": 667
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.20000000298023224,
+              "bytes": 460
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2199999988079071,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.21000000089406967,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.14000000059604645,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2149999961256981,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.2200000062584877,
+              "bytes": 667
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20499999821186066,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1899999976158142,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.23000000417232513,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.1899999976158142,
+              "bytes": 460
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.20499999821186066,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11999999731779099,
+              "bytes": 217
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.20000000298023224,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.20499999821186066,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20499999821186066,
+              "bytes": 667
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19500000029802322,
+              "bytes": 624
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17499999701976776,
+              "bytes": 406
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11500000208616257,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20499999821186066,
+              "bytes": 667
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.1849999949336052,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1900000050663948,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.1599999964237213,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.21000000089406967,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17999999970197678,
+              "bytes": 406
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1899999976158142,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.20499999821186066,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.20000000298023224,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19999999552965164,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.21000000089406967,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11500000208616257,
+              "bytes": 217
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1599999964237213,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19500000029802322,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1899999976158142,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.1850000023841858,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11999999731779099,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19500000029802322,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11500000208616257,
+              "bytes": 217
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.14999999850988388,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1550000011920929,
+              "bytes": 406
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19999999552965164,
+              "bytes": 667
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19500000029802322,
+              "bytes": 667
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19500000029802322,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.20499999821186066,
+              "bytes": 460
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1850000023841858,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.17499999701976776,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.1899999976158142,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16499999910593033,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1850000023841858,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.17999999970197678,
+              "bytes": 624
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.20000000298023224,
+              "bytes": 764
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16999999433755875,
+              "bytes": 406
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11500000208616257,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.20000000298023224,
+              "bytes": 764
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1599999964237213,
+              "bytes": 406
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.10999999940395355,
+              "bytes": 217
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.0949999988079071,
+              "bytes": 217
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.17999999970197678,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19500000029802322,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11499999463558197,
+              "bytes": 217
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1550000011920929,
+              "bytes": 406
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1900000050663948,
+              "bytes": 667
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19500000029802322,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.14999999850988388,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19500000029802322,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.17999999970197678,
+              "bytes": 460
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.20000000298023224,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11499999463558197,
+              "bytes": 217
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.16499999910593033,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.1849999949336052,
+              "bytes": 460
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19500000029802322,
+              "bytes": 460
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11999999731779099,
+              "bytes": 217
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1550000011920929,
+              "bytes": 406
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1850000023841858,
+              "bytes": 667
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1849999949336052,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2199999988079071,
+              "bytes": 764
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17500000447034836,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.19500000029802322,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1900000050663948,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.19500000029802322,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.20499999821186066,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.20499999821186066,
+              "bytes": 460
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19500000029802322,
+              "bytes": 624
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1899999976158142,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.14999999850988388,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.1599999964237213,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1850000023841858,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.14999999850988388,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.17499999701976776,
+              "bytes": 624
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1849999949336052,
+              "bytes": 667
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.17999999970197678,
+              "bytes": 624
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.20499999821186066,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.2549999952316284,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.24500000476837158,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.22500000149011612,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.21000000089406967,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17999999970197678,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19500000029802322,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20499999821186066,
+              "bytes": 667
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20499999821186066,
+              "bytes": 667
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20999999344348907,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.14500000327825546,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.20499999821186066,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2150000035762787,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.12000000476837158,
+              "bytes": 217
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.17999999970197678,
+              "bytes": 624
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20000000298023224,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1600000038743019,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.14500000327825546,
+              "bytes": 406
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19500000029802322,
+              "bytes": 667
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1900000050663948,
+              "bytes": 624
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1549999937415123,
+              "bytes": 406
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.21000000089406967,
+              "bytes": 667
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19500000029802322,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1550000011920929,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.20500000566244125,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19999999552965164,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.23499999940395355,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1600000038743019,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.17500000447034836,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1899999976158142,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19500000029802322,
+              "bytes": 667
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11500000208616257,
+              "bytes": 217
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1850000023841858,
+              "bytes": 624
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1550000011920929,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1549999937415123,
+              "bytes": 406
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11500000208616257,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.16500000655651093,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16499999910593033,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.14499999582767487,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.17000000178813934,
+              "bytes": 460
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1899999976158142,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11500000208616257,
+              "bytes": 217
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.17999999970197678,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.125,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19499999284744263,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16500000655651093,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1850000023841858,
+              "bytes": 624
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16499999910593033,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.23499999940395355,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13499999791383743,
+              "bytes": 217
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1850000023841858,
+              "bytes": 624
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16499999910593033,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1550000011920929,
+              "bytes": 406
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.17999999970197678,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17499999701976776,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.22500000149011612,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19500000029802322,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.10999999940395355,
+              "bytes": 217
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20000000298023224,
+              "bytes": 667
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.1850000023841858,
+              "bytes": 460
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2150000035762787,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.19499999284744263,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1850000023841858,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2149999961256981,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.2199999988079071,
+              "bytes": 460
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16499999910593033,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17999999970197678,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.21000000089406967,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19999999552965164,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1600000038743019,
+              "bytes": 406
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19499999284744263,
+              "bytes": 667
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1900000050663948,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1849999949336052,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.17500000447034836,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.17499999701976776,
+              "bytes": 667
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.20000000298023224,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.19500000029802322,
+              "bytes": 764
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.10500000417232513,
+              "bytes": 217
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.19500000029802322,
+              "bytes": 764
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.1900000050663948,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1900000050663948,
+              "bytes": 667
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.19500000029802322,
+              "bytes": 460
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1900000050663948,
+              "bytes": 667
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1899999976158142,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1850000023841858,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.17999999970197678,
+              "bytes": 624
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.21000000089406967,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.16499999910593033,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1600000038743019,
+              "bytes": 406
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1849999949336052,
+              "bytes": 667
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19500000029802322,
+              "bytes": 667
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.17999999970197678,
+              "bytes": 406
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.1899999976158142,
+              "bytes": 667
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.32999999821186066,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.20499999821186066,
+              "bytes": 624
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.25,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.21000000089406967,
+              "bytes": 624
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.13499999791383743,
+              "bytes": 217
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.20000000298023224,
+              "bytes": 406
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.1899999976158142,
+              "bytes": 764
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.14999999850988388,
+              "bytes": 667
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.9149999991059303,
+              "bytes": 624
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1899999976158142,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.20000000298023224,
+              "bytes": 624
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.19500000029802322,
+              "bytes": 667
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1850000023841858,
+              "bytes": 624
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.17999999970197678,
+              "bytes": 624
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.17999999970197678,
+              "bytes": 460
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.20000000298023224,
+              "bytes": 624
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.2149999961256981,
+              "bytes": 764
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.1850000023841858,
+              "bytes": 624
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1599999964237213,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.14499999582767487,
+              "bytes": 406
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.1550000011920929,
+              "bytes": 406
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2199999988079071,
+              "bytes": 624
+            }
+          ],
+          "summary": {
+            "name": "mathml",
+            "samples": 360,
+            "p50Ms": 0.19500000029802322,
+            "p95Ms": 0.24499999731779099,
+            "p99Ms": 0.4100000038743019,
+            "maximumMs": 0.9149999991059303,
+            "meanMs": 0.1947777777289351,
+            "totalMs": 70.11999998241663
+          }
+        },
+        "svg": {
+          "samples": [
+            {
+              "id": "single-determinant",
+              "ms": 0.6950000002980232,
+              "bytes": 6903
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.25,
+              "bytes": 4572
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.41499999910593033,
+              "bytes": 8008
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.375,
+              "bytes": 6903
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.42500000447034836,
+              "bytes": 9586
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.44999999552965164,
+              "bytes": 9586
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.39000000059604645,
+              "bytes": 8008
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.375,
+              "bytes": 8008
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.2199999988079071,
+              "bytes": 4572
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.22500000149011612,
+              "bytes": 4572
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.380000002682209,
+              "bytes": 8008
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.35999999940395355,
+              "bytes": 6903
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.45499999821186066,
+              "bytes": 9586
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.3999999985098839,
+              "bytes": 8008
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.41499999910593033,
+              "bytes": 8640
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.36500000208616257,
+              "bytes": 6903
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.35999999940395355,
+              "bytes": 7208
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.2149999961256981,
+              "bytes": 4572
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.35499999672174454,
+              "bytes": 6903
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.39499999582767487,
+              "bytes": 8008
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.4099999964237213,
+              "bytes": 8008
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.4000000059604645,
+              "bytes": 8008
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.4000000059604645,
+              "bytes": 8008
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.23000000417232513,
+              "bytes": 4572
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.4450000002980232,
+              "bytes": 9586
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.4450000002980232,
+              "bytes": 7208
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.5249999985098839,
+              "bytes": 9586
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.375,
+              "bytes": 6903
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.38499999791383743,
+              "bytes": 6903
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.4649999961256981,
+              "bytes": 9586
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.42499999701976776,
+              "bytes": 9586
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.4000000059604645,
+              "bytes": 8640
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.2199999988079071,
+              "bytes": 4572
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.21000000089406967,
+              "bytes": 4572
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.2150000035762787,
+              "bytes": 4572
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.3399999961256981,
+              "bytes": 6903
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.45000000298023224,
+              "bytes": 9586
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.3700000047683716,
+              "bytes": 7208
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.3399999961256981,
+              "bytes": 6903
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.2199999988079071,
+              "bytes": 4572
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.20999999344348907,
+              "bytes": 4572
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.4000000059604645,
+              "bytes": 9586
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.41499999910593033,
+              "bytes": 9586
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.4399999976158142,
+              "bytes": 9586
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.380000002682209,
+              "bytes": 8008
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.3400000035762787,
+              "bytes": 6903
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.21000000089406967,
+              "bytes": 4572
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.3400000035762787,
+              "bytes": 7208
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.39000000059604645,
+              "bytes": 8008
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.2199999988079071,
+              "bytes": 4572
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.21000000089406967,
+              "bytes": 4572
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.375,
+              "bytes": 8640
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.41499999910593033,
+              "bytes": 9586
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.36500000208616257,
+              "bytes": 7208
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.4000000059604645,
+              "bytes": 8008
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.42500000447034836,
+              "bytes": 7208
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.3999999985098839,
+              "bytes": 8640
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.3500000014901161,
+              "bytes": 7208
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.33500000089406967,
+              "bytes": 6903
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.380000002682209,
+              "bytes": 8008
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.369999997317791,
+              "bytes": 7208
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.380000002682209,
+              "bytes": 8640
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.23000000417232513,
+              "bytes": 4572
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.35999999940395355,
+              "bytes": 7208
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.369999997317791,
+              "bytes": 8008
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.39499999582767487,
+              "bytes": 8640
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.255000002682209,
+              "bytes": 6903
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.14000000059604645,
+              "bytes": 4572
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11999999731779099,
+              "bytes": 4572
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.11500000208616257,
+              "bytes": 4572
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.20500000566244125,
+              "bytes": 7208
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2549999952316284,
+              "bytes": 8640
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.23000000417232513,
+              "bytes": 7208
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.41499999910593033,
+              "bytes": 9586
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.3500000014901161,
+              "bytes": 6903
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.30000000447034836,
+              "bytes": 6903
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.33500000089406967,
+              "bytes": 6903
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.41499999910593033,
+              "bytes": 9586
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.380000002682209,
+              "bytes": 7208
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.3100000023841858,
+              "bytes": 9586
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.3149999976158142,
+              "bytes": 9586
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.3450000062584877,
+              "bytes": 7208
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.29999999701976776,
+              "bytes": 6903
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.4399999976158142,
+              "bytes": 8640
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.510000005364418,
+              "bytes": 8008
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.2149999961256981,
+              "bytes": 4572
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.38499999791383743,
+              "bytes": 8008
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.4650000035762787,
+              "bytes": 7208
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.380000002682209,
+              "bytes": 6903
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.5099999979138374,
+              "bytes": 8640
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.35500000417232513,
+              "bytes": 6903
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.41499999910593033,
+              "bytes": 8640
+            },
+            {
+              "id": "single-determinant",
+              "ms": 1.4249999970197678,
+              "bytes": 6903
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.35999999940395355,
+              "bytes": 8640
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.29500000178813934,
+              "bytes": 8008
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.32499999552965164,
+              "bytes": 9586
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.4450000002980232,
+              "bytes": 7208
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.2750000059604645,
+              "bytes": 8640
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.2800000011920929,
+              "bytes": 7208
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.2549999952316284,
+              "bytes": 9586
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.3400000035762787,
+              "bytes": 8640
+            },
+            {
+              "id": "single-derivative",
+              "ms": 0.2549999952316284,
+              "bytes": 9586
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.3500000014901161,
+              "bytes": 8008
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.5200000032782555,
+              "bytes": 8640
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.38500000536441803,
+              "bytes": 7208
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.20000000298023224,
+              "bytes": 4572
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.35499999672174454,
+              "bytes": 7208
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.23000000417232513,
+              "bytes": 7208
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.2749999985098839,
+              "bytes": 8008
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.45499999821186066,
+              "bytes": 8640
+            },
+            {
+              "id": "single-binomial",
+              "ms": 1.219999998807907,
+              "bytes": 8640
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.5150000005960464,
+              "bytes": 8640
+            },
+            {
+              "id": "single-energy",
+              "ms": 0.21000000089406967,
+              "bytes": 4572
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.41499999910593033,
+              "bytes": 8640
+            },
+            {
+              "id": "single-determinant",
+              "ms": 0.4699999988079071,
+              "bytes": 6903
+            },
+            {
+              "id": "single-gaussian",
+              "ms": 0.47999999672174454,
+              "bytes": 8008
+            },
+            {
+              "id": "single-quadratic",
+              "ms": 0.24499999731779099,
+              "bytes": 7208
+            },
+            {
+              "id": "single-derivative",
+              "ms": 3.4299999997019768,
+              "bytes": 9586
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.38499999791383743,
+              "bytes": 8640
+            },
+            {
+              "id": "single-binomial",
+              "ms": 0.36500000208616257,
+              "bytes": 8640
+            }
+          ],
+          "summary": {
+            "name": "svg",
+            "samples": 120,
+            "p50Ms": 0.369999997317791,
+            "p95Ms": 0.5150000005960464,
+            "p99Ms": 1.4249999970197678,
+            "maximumMs": 3.4299999997019768,
+            "meanMs": 0.39262500032782555,
+            "totalMs": 47.115000039339066
+          }
+        }
+      },
+      "long": {
+        "mathml": {
+          "samples": [
+            {
+              "id": "long-cases",
+              "ms": 0.5499999970197678,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.47999999672174454,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 1.0049999952316284,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7850000038743019,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.6899999976158142,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 1.3500000014901161,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.9800000041723251,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.744999997317791,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.5049999952316284,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.4450000002980232,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.755000002682209,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8200000002980232,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8949999958276749,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7649999931454659,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.45499999821186066,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7700000032782555,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7000000029802322,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8200000002980232,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7949999943375587,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.45500000566244125,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.4450000002980232,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.4400000050663948,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.4450000002980232,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.42499999701976776,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8299999982118607,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7199999988079071,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.4399999976158142,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.9199999943375587,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7000000029802322,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7650000005960464,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7299999967217445,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.3049999997019768,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.5949999988079071,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.49000000208616257,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4599999934434891,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.4450000002980232,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.39500000327825546,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.255000002682209,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.28999999910593033,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.4000000059604645,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.47999999672174454,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.3999999985098839,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.25999999791383743,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.23000000417232513,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.48000000417232513,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.39500000327825546,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.5450000017881393,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.4050000011920929,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6599999964237213,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7049999982118607,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6099999994039536,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.38499999791383743,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.6900000050663948,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.6950000002980232,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6400000005960464,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.41499999910593033,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.35500000417232513,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6499999985098839,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7049999982118607,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.6799999997019768,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.3799999952316284,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.35500000417232513,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.36499999463558197,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6000000014901161,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.3700000047683716,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.35500000417232513,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.35500000417232513,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.35499999672174454,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6050000041723251,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6000000014901161,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.5900000035762787,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6600000038743019,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7000000029802322,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6150000020861626,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.6999999955296516,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.39000000059604645,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7900000065565109,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.3999999985098839,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7150000035762787,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.619999997317791,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7299999967217445,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.744999997317791,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.4000000059604645,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.7049999982118607,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.3700000047683716,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.3500000014901161,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6000000014901161,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.614999994635582,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.28999999910593033,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.38499999791383743,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.39500000327825546,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.25,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.375,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.25,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.48499999940395355,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.33000000566244125,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.6950000002980232,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.27000000327825546,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.25,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.6450000032782555,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.6549999937415123,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.630000002682209,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.5349999964237213,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.4050000011920929,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.26500000059604645,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.23499999940395355,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.39000000059604645,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4450000002980232,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.38499999791383743,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.25,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4399999976158142,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.5800000056624413,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6699999943375587,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8350000008940697,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.25,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.39000000059604645,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.42000000178813934,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.23499999940395355,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.4299999997019768,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.375,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4099999964237213,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.39500000327825546,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4349999949336052,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.38500000536441803,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.23999999463558197,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4050000011920929,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4399999976158142,
+              "bytes": 4826
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.24000000208616257,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.3999999985098839,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.5150000005960464,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.375,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.3799999952316284,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6000000014901161,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.39000000059604645,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.3049999997019768,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.22999999672174454,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.375,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.42000000178813934,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.36499999463558197,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.380000002682209,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.375,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.23499999940395355,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.5350000038743019,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.41499999910593033,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.42499999701976776,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4350000023841858,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.39499999582767487,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4100000038743019,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.380000002682209,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4299999997019768,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4049999937415123,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.38500000536441803,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.24000000208616257,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4100000038743019,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4450000002980232,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.36499999463558197,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.5,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.26999999582767487,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.22500000149011612,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.35999999940395355,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4349999949336052,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4100000038743019,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.5749999955296516,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6000000014901161,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.6200000047683716,
+              "bytes": 4749
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.5250000059604645,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.27000000327825546,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.23499999940395355,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.2199999988079071,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.23000000417232513,
+              "bytes": 2268
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.5199999958276749,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4299999997019768,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.375,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4050000011920929,
+              "bytes": 4826
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.41499999910593033,
+              "bytes": 4826
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.35999999940395355,
+              "bytes": 4749
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.23499999940395355,
+              "bytes": 2268
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.25,
+              "bytes": 2268
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.380000002682209,
+              "bytes": 4749
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.4050000011920929,
+              "bytes": 4826
+            }
+          ],
+          "summary": {
+            "name": "mathml",
+            "samples": 180,
+            "p50Ms": 0.42499999701976776,
+            "p95Ms": 0.7949999943375587,
+            "p99Ms": 1.0049999952316284,
+            "maximumMs": 1.3500000014901161,
+            "meanMs": 0.48522222232487466,
+            "totalMs": 87.34000001847744
+          }
+        },
+        "svg": {
+          "samples": [
+            {
+              "id": "long-aligned",
+              "ms": 1.1499999985098839,
+              "bytes": 33169
+            },
+            {
+              "id": "long-cases",
+              "ms": 1.0399999991059303,
+              "bytes": 24672
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7749999985098839,
+              "bytes": 29402
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.9450000002980232,
+              "bytes": 33169
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7299999967217445,
+              "bytes": 29402
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.9200000017881393,
+              "bytes": 33169
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.9049999937415123,
+              "bytes": 33169
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.8100000023841858,
+              "bytes": 29402
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.9350000023841858,
+              "bytes": 33169
+            },
+            {
+              "id": "long-aligned",
+              "ms": 1.285000003874302,
+              "bytes": 33169
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.9749999940395355,
+              "bytes": 29402
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.9650000035762787,
+              "bytes": 24672
+            },
+            {
+              "id": "long-aligned",
+              "ms": 1.344999998807907,
+              "bytes": 33169
+            },
+            {
+              "id": "long-aligned",
+              "ms": 1.3400000035762787,
+              "bytes": 33169
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.9649999961256981,
+              "bytes": 24672
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.9000000059604645,
+              "bytes": 24672
+            },
+            {
+              "id": "long-aligned",
+              "ms": 1.369999997317791,
+              "bytes": 33169
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 1.0850000008940697,
+              "bytes": 29402
+            },
+            {
+              "id": "long-cases",
+              "ms": 1.0649999976158142,
+              "bytes": 24672
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 1.0999999940395355,
+              "bytes": 29402
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 1.0900000035762787,
+              "bytes": 29402
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.9450000002980232,
+              "bytes": 24672
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.989999994635582,
+              "bytes": 24672
+            },
+            {
+              "id": "long-aligned",
+              "ms": 1.380000002682209,
+              "bytes": 33169
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 1.135000005364418,
+              "bytes": 29402
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.9349999949336052,
+              "bytes": 24672
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 1.0600000023841858,
+              "bytes": 29402
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.864999994635582,
+              "bytes": 29402
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.9950000047683716,
+              "bytes": 33169
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.9849999994039536,
+              "bytes": 33169
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7899999991059303,
+              "bytes": 29402
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.8200000002980232,
+              "bytes": 29402
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.7049999982118607,
+              "bytes": 24672
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.6799999997019768,
+              "bytes": 24672
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.6600000038743019,
+              "bytes": 24672
+            },
+            {
+              "id": "long-aligned",
+              "ms": 1.1700000017881393,
+              "bytes": 33169
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.9350000023841858,
+              "bytes": 24672
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7950000017881393,
+              "bytes": 29402
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.8049999997019768,
+              "bytes": 24672
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.75,
+              "bytes": 24672
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 1.1299999952316284,
+              "bytes": 29402
+            },
+            {
+              "id": "long-aligned",
+              "ms": 1.005000002682209,
+              "bytes": 33169
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.885000005364418,
+              "bytes": 33169
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7599999979138374,
+              "bytes": 29402
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.6400000005960464,
+              "bytes": 24672
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.739999994635582,
+              "bytes": 29402
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.9000000059604645,
+              "bytes": 29402
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.6550000011920929,
+              "bytes": 24672
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7250000014901161,
+              "bytes": 29402
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8900000005960464,
+              "bytes": 33169
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8900000005960464,
+              "bytes": 33169
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.6599999964237213,
+              "bytes": 24672
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7199999988079071,
+              "bytes": 29402
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8900000005960464,
+              "bytes": 33169
+            },
+            {
+              "id": "long-maxwell",
+              "ms": 0.7349999994039536,
+              "bytes": 29402
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.625,
+              "bytes": 24672
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.6050000041723251,
+              "bytes": 24672
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8849999979138374,
+              "bytes": 33169
+            },
+            {
+              "id": "long-cases",
+              "ms": 0.6449999958276749,
+              "bytes": 24672
+            },
+            {
+              "id": "long-aligned",
+              "ms": 0.8999999985098839,
+              "bytes": 33169
+            }
+          ],
+          "summary": {
+            "name": "svg",
+            "samples": 60,
+            "p50Ms": 0.9000000059604645,
+            "p95Ms": 1.3400000035762787,
+            "p99Ms": 1.380000002682209,
+            "maximumMs": 1.380000002682209,
+            "meanMs": 0.9163333332786957,
+            "totalMs": 54.979999996721745
+          }
+        }
+      },
+      "page": {
+        "mathml": {
+          "samples": [
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 0.9799999967217445,
+              "bytes": 4170
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 0.8099999949336052,
+              "bytes": 4170
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 0.7000000029802322,
+              "bytes": 4170
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 0.9600000008940697,
+              "bytes": 4170
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 0.8599999994039536,
+              "bytes": 4170
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 0.755000002682209,
+              "bytes": 4170
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 0.8449999988079071,
+              "bytes": 3788
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 0.6150000020861626,
+              "bytes": 3788
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 0.8799999952316284,
+              "bytes": 3788
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 0.8950000032782555,
+              "bytes": 3788
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 0.9450000002980232,
+              "bytes": 3788
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 1.094999998807907,
+              "bytes": 3788
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 1.035000003874302,
+              "bytes": 3238
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 0.9749999940395355,
+              "bytes": 3238
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 0.9950000047683716,
+              "bytes": 3238
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 0.6550000011920929,
+              "bytes": 3238
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 0.6649999991059303,
+              "bytes": 3238
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 0.5399999991059303,
+              "bytes": 3238
+            }
+          ],
+          "summary": {
+            "name": "mathml",
+            "samples": 18,
+            "p50Ms": 0.8599999994039536,
+            "p95Ms": 1.094999998807907,
+            "p99Ms": 1.094999998807907,
+            "maximumMs": 1.094999998807907,
+            "meanMs": 0.8447222221228812,
+            "totalMs": 15.20499999821186
+          }
+        },
+        "svg": {
+          "samples": [
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 1.5449999943375587,
+              "bytes": 63174
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 2.4600000008940697,
+              "bytes": 63174
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 1.5700000002980232,
+              "bytes": 63174
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 1.5200000032782555,
+              "bytes": 63174
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 1.5749999955296516,
+              "bytes": 63174
+            },
+            {
+              "id": "page-algebra",
+              "formulas": 10,
+              "ms": 1.540000006556511,
+              "bytes": 63174
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 2.1950000002980232,
+              "bytes": 56677
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 1.4500000029802322,
+              "bytes": 56677
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 1.4349999949336052,
+              "bytes": 56677
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 1.7200000062584877,
+              "bytes": 56677
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 1.5399999991059303,
+              "bytes": 56677
+            },
+            {
+              "id": "page-calculus",
+              "formulas": 9,
+              "ms": 1.4149999991059303,
+              "bytes": 56677
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 2.774999998509884,
+              "bytes": 60066
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 1.3900000005960464,
+              "bytes": 60066
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 1.3999999985098839,
+              "bytes": 60066
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 1.3799999952316284,
+              "bytes": 60066
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 1.5150000005960464,
+              "bytes": 60066
+            },
+            {
+              "id": "page-physics",
+              "formulas": 8,
+              "ms": 1.7250000014901161,
+              "bytes": 60066
+            }
+          ],
+          "summary": {
+            "name": "svg",
+            "samples": 18,
+            "p50Ms": 1.5399999991059303,
+            "p95Ms": 2.774999998509884,
+            "p99Ms": 2.774999998509884,
+            "maximumMs": 2.774999998509884,
+            "meanMs": 1.6749999999172158,
+            "totalMs": 30.149999998509884
+          }
+        }
+      }
+    },
+    "endToEnd": {
+      "single": {
+        "samples": [
+          {
+            "id": "single-energy",
+            "syncMs": 2.7299999967217445,
+            "paintedMs": 15.974999994933569
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 11.399999998509884,
+            "paintedMs": 32.25499999612566
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 8.644999995827675,
+            "paintedMs": 31.509999994039617
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 19.375,
+            "paintedMs": 32.12499999612578
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 1.8049999997019768,
+            "paintedMs": 32.814999993741594
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 2.0099999979138374,
+            "paintedMs": 31.78999999791381
+          },
+          {
+            "id": "single-energy",
+            "syncMs": 1.25,
+            "paintedMs": 31.979999995529624
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 8.880000002682209,
+            "paintedMs": 32.10499999821195
+          },
+          {
+            "id": "single-energy",
+            "syncMs": 1.2299999967217445,
+            "paintedMs": 32.32999999493359
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 2.005000002682209,
+            "paintedMs": 32.88999999731777
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 1.7549999952316284,
+            "paintedMs": 32.10499999344347
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 2.0950000062584877,
+            "paintedMs": 32.82499999970196
+          },
+          {
+            "id": "single-energy",
+            "syncMs": 1.244999997317791,
+            "paintedMs": 32.27999999314534
+          },
+          {
+            "id": "single-energy",
+            "syncMs": 1.2700000032782555,
+            "paintedMs": 32.56999999970185
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 2.6200000047683716,
+            "paintedMs": 32.52499999791371
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 1.875,
+            "paintedMs": 32.42999999433778
+          },
+          {
+            "id": "single-energy",
+            "syncMs": 1.214999996125698,
+            "paintedMs": 32.769999993145575
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 2.1049999967217445,
+            "paintedMs": 32.56999999493382
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 1.9149999991059303,
+            "paintedMs": 32.90499999374151
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 2.094999998807907,
+            "paintedMs": 32.19999999552965
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 1.864999994635582,
+            "paintedMs": 32.309999994933605
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 2.0150000005960464,
+            "paintedMs": 32.019999998509775
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 2.0150000005960464,
+            "paintedMs": 32.594999994039426
+          },
+          {
+            "id": "single-energy",
+            "syncMs": 1.1799999997019768,
+            "paintedMs": 32.604999994635364
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 1.7650000005960464,
+            "paintedMs": 32.06999999821164
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 2.0349999964237213,
+            "paintedMs": 32.42499999493339
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 1.7700000032782555,
+            "paintedMs": 32.435000000297805
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 2.035000003874302,
+            "paintedMs": 32.929999997615596
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 2.185000002384186,
+            "paintedMs": 32.23500000000013
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 1.964999996125698,
+            "paintedMs": 32.39999999433758
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 2.119999997317791,
+            "paintedMs": 32.03999999493362
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 2.1099999994039536,
+            "paintedMs": 31.50999999642363
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 1.7849999964237213,
+            "paintedMs": 32.54999999552956
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 1.719999998807907,
+            "paintedMs": 32.43999999612561
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 1.8350000008940697,
+            "paintedMs": 32.42499999821166
+          },
+          {
+            "id": "single-energy",
+            "syncMs": 1.25,
+            "paintedMs": 32.67999999344329
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 1.8849999979138374,
+            "paintedMs": 31.984999993145266
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 2.3350000008940697,
+            "paintedMs": 32.31999999672189
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 2.0750000029802322,
+            "paintedMs": 32.88999999701991
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 1.839999996125698,
+            "paintedMs": 31.619999993741658
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 3.344999998807907,
+            "paintedMs": 32.57499999463562
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 2.9600000008940697,
+            "paintedMs": 32.18999999672178
+          },
+          {
+            "id": "single-energy",
+            "syncMs": 1.8100000023841858,
+            "paintedMs": 31.179999998807943
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 3.3650000020861626,
+            "paintedMs": 32.754999997019695
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 2.6500000059604645,
+            "paintedMs": 32.009999999701904
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 2.5150000005960464,
+            "paintedMs": 32.46999999582749
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 2.7549999952316284,
+            "paintedMs": 32.72999999374133
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 2.75,
+            "paintedMs": 31.87999999493377
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 2.785000003874302,
+            "paintedMs": 32.189999997317955
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 3.244999997317791,
+            "paintedMs": 32.52999999612575
+          },
+          {
+            "id": "single-energy",
+            "syncMs": 1.535000003874302,
+            "paintedMs": 31.674999999404008
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 2.7650000005960464,
+            "paintedMs": 32.53999999403959
+          },
+          {
+            "id": "single-gaussian",
+            "syncMs": 2.1450000032782555,
+            "paintedMs": 31.874999997616214
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 2.7949999943375587,
+            "paintedMs": 32.89499999344389
+          },
+          {
+            "id": "single-derivative",
+            "syncMs": 2.274999998509884,
+            "paintedMs": 32.034999994039936
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 2.0549999997019768,
+            "paintedMs": 31.904999994039827
+          },
+          {
+            "id": "single-quadratic",
+            "syncMs": 2.3849999979138374,
+            "paintedMs": 32.73499999493379
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 2.0449999943375587,
+            "paintedMs": 32.21999999433774
+          },
+          {
+            "id": "single-determinant",
+            "syncMs": 1.8049999997019768,
+            "paintedMs": 32.37999999821204
+          },
+          {
+            "id": "single-binomial",
+            "syncMs": 2.2650000005960464,
+            "paintedMs": 32.85999999493379
+          }
+        ],
+        "summary": {
+          "name": "painted",
+          "samples": 60,
+          "p50Ms": 32.32999999493359,
+          "p95Ms": 32.88999999731777,
+          "p99Ms": 32.929999997615596,
+          "maximumMs": 32.929999997615596,
+          "meanMs": 32.051166662618535,
+          "totalMs": 1923.069999757112
+        },
+        "syncSummary": {
+          "name": "sync",
+          "samples": 60,
+          "p50Ms": 2.0449999943375587,
+          "p95Ms": 8.644999995827675,
+          "p99Ms": 19.375,
+          "maximumMs": 19.375,
+          "meanMs": 2.759249999622504,
+          "totalMs": 165.55499997735023
+        }
+      },
+      "long": {
+        "samples": [
+          {
+            "id": "long-cases",
+            "syncMs": 21.410000003874302,
+            "paintedMs": 32.30499999791391
+          },
+          {
+            "id": "long-cases",
+            "syncMs": 4.71000000089407,
+            "paintedMs": 32.21499999701973
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 15.905000001192093,
+            "paintedMs": 31.38499999880787
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 18.450000002980232,
+            "paintedMs": 32.09499999970194
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 5.6500000059604645,
+            "paintedMs": 31.96499999970183
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 6.860000006854534,
+            "paintedMs": 32.159999999999854
+          },
+          {
+            "id": "long-cases",
+            "syncMs": 5.179999999701977,
+            "paintedMs": 32.904999997317645
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 5.780000001192093,
+            "paintedMs": 32.85000000029777
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 5.75,
+            "paintedMs": 32.7649999994037
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 5.7349999994039536,
+            "paintedMs": 32.54999999582742
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 6.659999996423721,
+            "paintedMs": 32.739999996125334
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 7.074999995529652,
+            "paintedMs": 32.72499999552929
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 5.685000002384186,
+            "paintedMs": 32.27000000000044
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 5.969999998807907,
+            "paintedMs": 32.899999995232065
+          },
+          {
+            "id": "long-cases",
+            "syncMs": 4.469999998807907,
+            "paintedMs": 32.92499999642405
+          },
+          {
+            "id": "long-cases",
+            "syncMs": 4.149999998509884,
+            "paintedMs": 32.79999999642405
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 5.594999998807907,
+            "paintedMs": 32.04499999642394
+          },
+          {
+            "id": "long-cases",
+            "syncMs": 4.655000001192093,
+            "paintedMs": 32.08999999821208
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 5.419999994337559,
+            "paintedMs": 31.969999993443707
+          },
+          {
+            "id": "long-cases",
+            "syncMs": 4.514999993145466,
+            "paintedMs": 32.769999993145575
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 7.464999996125698,
+            "paintedMs": 31.844999996125807
+          },
+          {
+            "id": "long-cases",
+            "syncMs": 4.259999997913837,
+            "paintedMs": 31.40999999374162
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 6.160000003874302,
+            "paintedMs": 31.445000000298023
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 6.054999999701977,
+            "paintedMs": 32.07999999344338
+          },
+          {
+            "id": "long-cases",
+            "syncMs": 4.679999999701977,
+            "paintedMs": 32
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 6.089999996125698,
+            "paintedMs": 32.389999995827566
+          },
+          {
+            "id": "long-cases",
+            "syncMs": 4.634999997913837,
+            "paintedMs": 32.429999997615596
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 7.560000002384186,
+            "paintedMs": 31.934999997615705
+          },
+          {
+            "id": "long-maxwell",
+            "syncMs": 5.350000001490116,
+            "paintedMs": 32.264999998509666
+          },
+          {
+            "id": "long-aligned",
+            "syncMs": 6.839999996125698,
+            "paintedMs": 32.16999999493328
+          }
+        ],
+        "summary": {
+          "name": "painted",
+          "samples": 30,
+          "p50Ms": 32.21499999701973,
+          "p95Ms": 32.904999997317645,
+          "p99Ms": 32.92499999642405,
+          "maximumMs": 32.92499999642405,
+          "meanMs": 32.27999999716876,
+          "totalMs": 968.3999999150628
+        },
+        "syncSummary": {
+          "name": "sync",
+          "samples": 30,
+          "p50Ms": 5.7349999994039536,
+          "p95Ms": 18.450000002980232,
+          "p99Ms": 21.410000003874302,
+          "maximumMs": 21.410000003874302,
+          "meanMs": 6.957333333045244,
+          "totalMs": 208.71999999135733
+        }
+      },
+      "page": {
+        "samples": [
+          {
+            "id": "page-algebra",
+            "formulas": 10,
+            "syncMs": 39.09499999880791,
+            "paintedMs": 49.19999999523134,
+            "perFormulaPaintedMs": 4.919999999523133
+          },
+          {
+            "id": "page-algebra",
+            "formulas": 10,
+            "syncMs": 9.440000005066395,
+            "paintedMs": 31.94999999880747,
+            "perFormulaPaintedMs": 3.1949999998807472
+          },
+          {
+            "id": "page-algebra",
+            "formulas": 10,
+            "syncMs": 9.41499999910593,
+            "paintedMs": 32.484999996126135,
+            "perFormulaPaintedMs": 3.2484999996126134
+          },
+          {
+            "id": "page-algebra",
+            "formulas": 10,
+            "syncMs": 11.384999997913837,
+            "paintedMs": 32.454999995828075,
+            "perFormulaPaintedMs": 3.2454999995828073
+          },
+          {
+            "id": "page-algebra",
+            "formulas": 10,
+            "syncMs": 10.219999998807907,
+            "paintedMs": 32.379999993741876,
+            "perFormulaPaintedMs": 3.2379999993741877
+          },
+          {
+            "id": "page-algebra",
+            "formulas": 10,
+            "syncMs": 10.334999993443489,
+            "paintedMs": 31.654999993145793,
+            "perFormulaPaintedMs": 3.165499999314579
+          },
+          {
+            "id": "page-calculus",
+            "formulas": 9,
+            "syncMs": 21.475000001490116,
+            "paintedMs": 32.824999998510066,
+            "perFormulaPaintedMs": 3.647222222056674
+          },
+          {
+            "id": "page-calculus",
+            "formulas": 9,
+            "syncMs": 9.370000004768372,
+            "paintedMs": 32.254999999106076,
+            "perFormulaPaintedMs": 3.583888888789564
+          },
+          {
+            "id": "page-calculus",
+            "formulas": 9,
+            "syncMs": 8.604999996721745,
+            "paintedMs": 32.274999995827784,
+            "perFormulaPaintedMs": 3.5861111106475314
+          },
+          {
+            "id": "page-calculus",
+            "formulas": 9,
+            "syncMs": 12.265000000596046,
+            "paintedMs": 32.164999997317864,
+            "perFormulaPaintedMs": 3.573888888590874
+          },
+          {
+            "id": "page-calculus",
+            "formulas": 9,
+            "syncMs": 8.524999998509884,
+            "paintedMs": 32.14499999493364,
+            "perFormulaPaintedMs": 3.571666666103738
+          },
+          {
+            "id": "page-calculus",
+            "formulas": 9,
+            "syncMs": 9.554999999701977,
+            "paintedMs": 31.82499999821175,
+            "perFormulaPaintedMs": 3.536111110912417
+          },
+          {
+            "id": "page-physics",
+            "formulas": 8,
+            "syncMs": 28.359999999403954,
+            "paintedMs": 31.75499999880776,
+            "perFormulaPaintedMs": 3.96937499985097
+          },
+          {
+            "id": "page-physics",
+            "formulas": 8,
+            "syncMs": 8.005000002682209,
+            "paintedMs": 31.914999996125516,
+            "perFormulaPaintedMs": 3.9893749995156895
+          },
+          {
+            "id": "page-physics",
+            "formulas": 8,
+            "syncMs": 9.024999998509884,
+            "paintedMs": 32.144999993741294,
+            "perFormulaPaintedMs": 4.018124999217662
+          },
+          {
+            "id": "page-physics",
+            "formulas": 8,
+            "syncMs": 8.990000002086163,
+            "paintedMs": 31.92999999850963,
+            "perFormulaPaintedMs": 3.9912499998137037
+          },
+          {
+            "id": "page-physics",
+            "formulas": 8,
+            "syncMs": 8.07999999821186,
+            "paintedMs": 32.59499999374111,
+            "perFormulaPaintedMs": 4.074374999217639
+          },
+          {
+            "id": "page-physics",
+            "formulas": 8,
+            "syncMs": 8.229999996721745,
+            "paintedMs": 32.94499999612526,
+            "perFormulaPaintedMs": 4.118124999515658
+          }
+        ],
+        "summary": {
+          "name": "painted",
+          "samples": 18,
+          "p50Ms": 32.164999997317864,
+          "p95Ms": 49.19999999523134,
+          "p99Ms": 49.19999999523134,
+          "maximumMs": 49.19999999523134,
+          "meanMs": 33.16111110743547,
+          "totalMs": 596.8999999338384
+        },
+        "syncSummary": {
+          "name": "sync",
+          "samples": 18,
+          "p50Ms": 9.41499999910593,
+          "p95Ms": 39.09499999880791,
+          "p99Ms": 39.09499999880791,
+          "maximumMs": 39.09499999880791,
+          "meanMs": 12.79861111069719,
+          "totalMs": 230.37499999254942
+        },
+        "perFormulaSummary": {
+          "name": "perFormula",
+          "samples": 18,
+          "p50Ms": 3.583888888789564,
+          "p95Ms": 4.919999999523133,
+          "p99Ms": 4.919999999523133,
+          "maximumMs": 4.919999999523133,
+          "meanMs": 3.704000771195566,
+          "totalMs": 66.67201388152019
+        }
+      }
+    },
+    "frameInterval": {
+      "name": "frame",
+      "samples": 20,
+      "p50Ms": 16.664999999999964,
+      "p95Ms": 16.670000000000073,
+      "p99Ms": 16.670000000000073,
+      "maximumMs": 16.670000000000073,
+      "meanMs": 16.666250000000037,
+      "totalMs": 333.3250000000007
+    },
+    "crossOriginIsolated": true,
+    "fontStatus": "loaded",
+    "katexVersion": "0.19.0",
+    "pageScreenshot": true
+  },
+  "wallMs": 7330.7807999999995
+}

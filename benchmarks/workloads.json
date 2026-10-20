@@ -1,0 +1,322 @@
+{
+  "schemaVersion": 1,
+  "katexVersion": "0.19.0",
+  "note": "Frozen workload for the 2026-10-20 three-way benchmark. All sources are complete formulas without outer delimiters.",
+  "workloads": {
+    "single": {
+      "label": "Single formula",
+      "cases": [
+        {
+          "id": "single-energy",
+          "latex": "E = mc^2",
+          "displayMode": false
+        },
+        {
+          "id": "single-quadratic",
+          "latex": "x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}",
+          "displayMode": true
+        },
+        {
+          "id": "single-gaussian",
+          "latex": "\\int_{-\\infty}^{\\infty} e^{-x^2}\\,dx = \\sqrt{\\pi}",
+          "displayMode": true
+        },
+        {
+          "id": "single-binomial",
+          "latex": "(a+b)^n=\\sum_{k=0}^{n}\\binom{n}{k}a^{n-k}b^k",
+          "displayMode": true
+        },
+        {
+          "id": "single-determinant",
+          "latex": "\\det\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}=ad-bc",
+          "displayMode": true
+        },
+        {
+          "id": "single-derivative",
+          "latex": "\\lim_{h\\to 0}\\frac{f(x+h)-f(x)}{h}=f'(x)",
+          "displayMode": true
+        }
+      ]
+    },
+    "long": {
+      "label": "Single long formula",
+      "cases": [
+        {
+          "id": "long-aligned",
+          "latex": "\\begin{aligned}F(x) &= \\sum_{k=1}^{n}\\frac{(-1)^{k+1}}{k}\\left(\\frac{x}{1+x^2}\\right)^k + \\int_0^x \\frac{e^{-t^2}}{\\sqrt{1+t^4}}\\,dt\\\\ &= \\frac{\\sqrt[3]{a^2+b^2}}{1+\\frac{1}{1+\\frac{1}{x}}} - \\prod_{j=1}^{m}\\left(1+\\frac{x_j^2}{j^2+1}\\right)\\\\ &\\quad + \\begin{pmatrix} a_{11} & a_{12} & \\cdots & a_{1n} \\\\ a_{21} & a_{22} & \\cdots & a_{2n} \\\\ \\vdots & \\vdots & \\ddots & \\vdots \\\\ a_{m1} & a_{m2} & \\cdots & a_{mn} \\end{pmatrix}\\end{aligned}",
+          "displayMode": true
+        },
+        {
+          "id": "long-cases",
+          "latex": "f(x)=\\begin{cases}\\dfrac{\\sqrt{x^2+2x+1}}{1+\\sqrt[5]{\\dfrac{1}{1+\\dfrac{1}{1+x}}}} & x\\ge 0,\\\\[2mm]\\displaystyle\\sum_{k=0}^{\\infty}\\frac{(-1)^k x^{2k+1}}{(2k+1)!} & x<0,\\end{cases}\\qquad \\hat{\\theta}=\\overline{z}+\\vec{v}\\cdot\\vec{w}",
+          "displayMode": true
+        },
+        {
+          "id": "long-maxwell",
+          "latex": "\\begin{aligned}\\mathcal{L}\\{f\\}(s)&=\\int_0^\\infty e^{-st}f(t)\\,dt,\\\\ H(x)&=\\begin{pmatrix}1&0&0&\\cdots&0\\\\0&1&0&\\cdots&0\\\\\\vdots&&\\ddots&&\\vdots\\\\0&\\cdots&&1&0\\\\0&\\cdots&&0&1\\end{pmatrix},\\\\ \\nabla\\cdot\\mathbf{E}&=\\frac{\\rho}{\\varepsilon_0},\\quad \\nabla\\times\\mathbf{B}=\\mu_0\\mathbf{J}+\\mu_0\\varepsilon_0\\frac{\\partial\\mathbf{E}}{\\partial t}.\\end{aligned}",
+          "displayMode": true
+        }
+      ]
+    },
+    "page": {
+      "label": "Mixed text and formula page",
+      "cases": [
+        {
+          "id": "page-algebra",
+          "title": "代数与几何",
+          "paragraphs": [
+            [
+              {
+                "text": "设实系数二次方程 "
+              },
+              {
+                "latex": "ax^2+bx+c=0",
+                "displayMode": false
+              },
+              {
+                "text": "，其判别式为 "
+              },
+              {
+                "latex": "\\Delta=b^2-4ac",
+                "displayMode": false
+              },
+              {
+                "text": "。当 "
+              },
+              {
+                "latex": "\\Delta\\ge 0",
+                "displayMode": false
+              },
+              {
+                "text": " 时，两根由求根公式给出："
+              }
+            ],
+            [
+              {
+                "latex": "x_{1,2}=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}",
+                "displayMode": false
+              }
+            ],
+            [
+              {
+                "text": "在平面直角坐标系中，圆 "
+              },
+              {
+                "latex": "(x-a)^2+(y-b)^2=r^2",
+                "displayMode": false
+              },
+              {
+                "text": " 与直线 "
+              },
+              {
+                "latex": "Ax+By+C=0",
+                "displayMode": false
+              },
+              {
+                "text": " 的相交情况取决于圆心到直线的距离 "
+              },
+              {
+                "latex": "d=\\frac{|Aa+Bb+C|}{\\sqrt{A^2+B^2}}",
+                "displayMode": false
+              },
+              {
+                "text": "。"
+              }
+            ],
+            [
+              {
+                "text": "对矩阵 "
+              },
+              {
+                "latex": "A=\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}",
+                "displayMode": false
+              },
+              {
+                "text": "，其行列式与逆矩阵分别为 "
+              },
+              {
+                "latex": "\\det A=ad-bc",
+                "displayMode": false
+              },
+              {
+                "text": "、"
+              },
+              {
+                "latex": "A^{-1}=\\frac{1}{ad-bc}\\begin{pmatrix}d&-b\\\\-c&a\\end{pmatrix}",
+                "displayMode": false
+              },
+              {
+                "text": "。"
+              }
+            ]
+          ]
+        },
+        {
+          "id": "page-calculus",
+          "title": "微积分",
+          "paragraphs": [
+            [
+              {
+                "text": "函数 "
+              },
+              {
+                "latex": "f(x)",
+                "displayMode": false
+              },
+              {
+                "text": " 在 "
+              },
+              {
+                "latex": "x_0",
+                "displayMode": false
+              },
+              {
+                "text": " 处可导，当且仅当差商极限存在："
+              }
+            ],
+            [
+              {
+                "latex": "f'(x_0)=\\lim_{h\\to 0}\\frac{f(x_0+h)-f(x_0)}{h}",
+                "displayMode": false
+              }
+            ],
+            [
+              {
+                "text": "由微积分基本定理，连续函数 "
+              },
+              {
+                "latex": "f",
+                "displayMode": false
+              },
+              {
+                "text": " 满足 "
+              },
+              {
+                "latex": "\\int_a^b f'(x)\\,dx=f(b)-f(a)",
+                "displayMode": false
+              },
+              {
+                "text": "；而高斯积分 "
+              },
+              {
+                "latex": "\\int_{-\\infty}^{\\infty}e^{-x^2}\\,dx=\\sqrt{\\pi}",
+                "displayMode": false
+              },
+              {
+                "text": " 在概率论中具有核心地位。"
+              }
+            ],
+            [
+              {
+                "text": "常用的幂级数展开包括 "
+              },
+              {
+                "latex": "e^x=\\sum_{k=0}^{\\infty}\\frac{x^k}{k!}",
+                "displayMode": false
+              },
+              {
+                "text": "、"
+              },
+              {
+                "latex": "\\sin x=\\sum_{k=0}^{\\infty}\\frac{(-1)^k x^{2k+1}}{(2k+1)!}",
+                "displayMode": false
+              },
+              {
+                "text": " 与 "
+              },
+              {
+                "latex": "\\frac{1}{1-x}=\\sum_{k=0}^{\\infty}x^k",
+                "displayMode": false
+              },
+              {
+                "text": "。"
+              }
+            ]
+          ]
+        },
+        {
+          "id": "page-physics",
+          "title": "物理与概率",
+          "paragraphs": [
+            [
+              {
+                "text": "质能方程 "
+              },
+              {
+                "latex": "E=mc^2",
+                "displayMode": false
+              },
+              {
+                "text": " 将质量与能量联系起来；麦克斯韦方程组中的高斯定律写作 "
+              },
+              {
+                "latex": "\\nabla\\cdot\\mathbf{E}=\\frac{\\rho}{\\varepsilon_0}",
+                "displayMode": false
+              },
+              {
+                "text": "。"
+              }
+            ],
+            [
+              {
+                "text": "在理想气体模型中，状态方程为 "
+              },
+              {
+                "latex": "pV=nRT",
+                "displayMode": false
+              },
+              {
+                "text": "，分子的平均平动动能为 "
+              },
+              {
+                "latex": "\\bar{E}_k=\\frac{3}{2}k_BT",
+                "displayMode": false
+              },
+              {
+                "text": "。"
+              }
+            ],
+            [
+              {
+                "text": "若随机变量 "
+              },
+              {
+                "latex": "X\\sim\\mathcal{N}(\\mu,\\sigma^2)",
+                "displayMode": false
+              },
+              {
+                "text": "，其概率密度为 "
+              },
+              {
+                "latex": "p(x)=\\frac{1}{\\sigma\\sqrt{2\\pi}}\\exp\\left(-\\frac{(x-\\mu)^2}{2\\sigma^2}\\right)",
+                "displayMode": false
+              },
+              {
+                "text": "，特征函数为 "
+              },
+              {
+                "latex": "\\varphi(t)=e^{i\\mu t-\\sigma^2t^2/2}",
+                "displayMode": false
+              },
+              {
+                "text": "。"
+              }
+            ],
+            [
+              {
+                "text": "黑体辐射的普朗克公式为 "
+              },
+              {
+                "latex": "B_\\nu(T)=\\frac{2h\\nu^3}{c^2}\\frac{1}{e^{h\\nu/(k_BT)}-1}",
+                "displayMode": false
+              },
+              {
+                "text": "，其低频极限回到瑞利—金斯定律。"
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  }
+}

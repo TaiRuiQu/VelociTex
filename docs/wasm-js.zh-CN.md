@@ -4,8 +4,8 @@
 .NET WASM AOT 数学核心。无需 Blazor，也不要求访客安装 .NET。
 数学规则仍固定在 KaTeX 0.19.0。
 
-`0.1.0-preview.2` 已发布到 npm 的 `next` 通道，包内 README 和 `images/`
-包含四张原生 / WASM / KaTeX 0.19.0 渲染对比图。
+`1.0.0-preview5` 已发布到 npm 的 `next` 通道，包内 README 和 `images/`
+包含一张原生 / WASM / KaTeX 0.19.0 渲染对比图（四组代表性公式）。
 
 ## 安装和调用
 
@@ -74,6 +74,8 @@ KaTeX 数学选项，详见包内 TypeScript 声明。
 
 - 浏览器尚无 Windows DirectWrite 字体回退；中文数学文字及其他依赖缺失字体或
   上下文塑形的输入返回 `UnknownSymbol`。普通正文中文不受影响。
+- C++ MathML 快速路径暂不处理 `cases` 等需要伸缩围栏的环境，会回退到精确的
+  C# 输出；`fastMathml: false` 可强制使用 C# 路径。
 - 这是浏览器端 API，`renderToString()` 也需要浏览器；尚未实现 Node.js SSR。
 - 不包含 KaTeX contrib、HTML 注入、链接、外部图片、自动公式换行和公式编辑功能。
 - 代码为 MIT；KaTeX 原字体及提取轮廓保留 OFL-1.1 / RFN，分发包包含独立许可证。

@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>VelociTex browser benchmark</title>
+    <link rel="stylesheet" href="/katex/katex.min.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+        color: #181b21;
+        font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      }
+      #stage {
+        position: relative;
+        width: 1160px;
+        padding: 24px;
+        box-sizing: border-box;
+      }
+      .para {
+        font-size: 18px;
+        line-height: 2.2;
+        margin: 0 0 10px;
+        white-space: normal;
+      }
+      .math {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 24px;
+      }
+      .page-title {
+        font-size: 22px;
+        font-weight: 600;
+        margin: 0 0 12px;
+      }
+      .row {
+        display: block;
+        margin: 8px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script src="/katex/katex.min.js"></script>
+    <script type="module" src="/runner.js"></script>
+  </body>
+</html>

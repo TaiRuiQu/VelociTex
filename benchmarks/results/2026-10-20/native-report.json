@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "kind": "VelociTex Windows native parse/export benchmark",
+  "utc": "2026-10-20T07:14:11.7972103+00:00",
+  "sourceRevision": "b086400bd75e72ec16264bbb193cbd5b70a1ba76",
+  "configuration": "Release",
+  "nativeAot": false,
+  "processArchitecture": "X64",
+  "os": "Microsoft Windows NT 10.0.20348.0",
+  "processorCount": 4,
+  "runtime": ".NET 10.0.13",
+  "workloadSha256": "4d460c4b3b506eca3c324112acd73ef81d044b6b668d751f9acbc8cc79e70b08",
+  "timedRegion": "Stopwatch.GetTimestamp around one complete call. compileOnly includes parse, macros and layout; mathml skips layout; svg uses WindowsMathRenderer.WriteSvg. One page sample times every formula in that page sequentially.",
+  "iterations": 300,
+  "workloads": {
+    "single": {
+      "samplesPerWorkload": 6,
+      "formulasPerSample": 6,
+      "samples": 300,
+      "compileOnly": {
+        "samples": 300,
+        "p50Ms": 0.0955,
+        "p95Ms": 0.1438,
+        "p99Ms": 0.2712,
+        "maximumMs": 0.3882,
+        "meanMs": 0.0933273333333333,
+        "totalMs": 27.99819999999999
+      },
+      "mathMl": {
+        "samples": 300,
+        "p50Ms": 0.0962,
+        "p95Ms": 0.1308,
+        "p99Ms": 0.1934,
+        "maximumMs": 0.3494,
+        "meanMs": 0.09040533333333328,
+        "totalMs": 27.121599999999987
+      },
+      "svg": {
+        "samples": 300,
+        "p50Ms": 0.4645,
+        "p95Ms": 0.5235,
+        "p99Ms": 16.8857,
+        "maximumMs": 32.5988,
+        "meanMs": 0.6993313333333331,
+        "totalMs": 209.79939999999993
+      }
+    },
+    "long": {
+      "samplesPerWorkload": 3,
+      "formulasPerSample": 3,
+      "samples": 300,
+      "compileOnly": {
+        "samples": 300,
+        "p50Ms": 0.5838,
+        "p95Ms": 0.7995,
+        "p99Ms": 1.0216,
+        "maximumMs": 48.1929,
+        "meanMs": 0.8909719999999997,
+        "totalMs": 267.2915999999999
+      },
+      "mathMl": {
+        "samples": 300,
+        "p50Ms": 0.6458,
+        "p95Ms": 0.946,
+        "p99Ms": 6.8474,
+        "maximumMs": 32.4458,
+        "meanMs": 0.9227200000000004,
+        "totalMs": 276.81600000000014
+      },
+      "svg": {
+        "samples": 300,
+        "p50Ms": 2.0456,
+        "p95Ms": 15.664,
+        "p99Ms": 34.3506,
+        "maximumMs": 35.0751,
+        "meanMs": 3.6399269999999992,
+        "totalMs": 1091.9780999999998
+      }
+    },
+    "page": {
+      "samplesPerWorkload": 3,
+      "formulasPerSample": 27,
+      "samples": 37,
+      "compileOnly": {
+        "samples": 37,
+        "p50Ms": 0.5412,
+        "p95Ms": 0.6634,
+        "p99Ms": 0.6997,
+        "maximumMs": 0.6997,
+        "meanMs": 0.5437513513513513,
+        "totalMs": 20.1188
+      },
+      "mathMl": {
+        "samples": 37,
+        "p50Ms": 0.5988,
+        "p95Ms": 1.4667,
+        "p99Ms": 17.625,
+        "maximumMs": 17.625,
+        "meanMs": 1.087243243243243,
+        "totalMs": 40.227999999999994
+      },
+      "svg": {
+        "samples": 37,
+        "p50Ms": 3.2729,
+        "p95Ms": 13.5634,
+        "p99Ms": 35.5553,
+        "maximumMs": 35.5553,
+        "meanMs": 4.661702702702703,
+        "totalMs": 172.483
+      }
+    }
+  },
+  "exports": {
+    "single-energy": {
+      "mathmlBytes": 217,
+      "svgBytes": 9292
+    },
+    "single-quadratic": {
+      "mathmlBytes": 406,
+      "svgBytes": 13803
+    },
+    "single-gaussian": {
+      "mathmlBytes": 460,
+      "svgBytes": 17256
+    },
+    "single-binomial": {
+      "mathmlBytes": 624,
+      "svgBytes": 20831
+    },
+    "single-determinant": {
+      "mathmlBytes": 764,
+      "svgBytes": 12686
+    },
+    "single-derivative": {
+      "mathmlBytes": 667,
+      "svgBytes": 19557
+    },
+    "long-aligned": {
+      "mathmlBytes": 4826,
+      "svgBytes": 67873
+    },
+    "long-cases": {
+      "mathmlBytes": 2268,
+      "svgBytes": 46576
+    },
+    "long-maxwell": {
+      "mathmlBytes": 4749,
+      "svgBytes": 55326
+    },
+    "page-algebra-0": {
+      "mathmlBytes": 270,
+      "svgBytes": 11431
+    },
+    "page-algebra-1": {
+      "mathmlBytes": 274,
+      "svgBytes": 8663
+    },
+    "page-algebra-2": {
+      "mathmlBytes": 208,
+      "svgBytes": 2907
+    },
+    "page-algebra-3": {
+      "mathmlBytes": 469,
+      "svgBytes": 16321
+    },
+    "page-algebra-4": {
+      "mathmlBytes": 432,
+      "svgBytes": 14558
+    },
+    "page-algebra-5": {
+      "mathmlBytes": 245,
+      "svgBytes": 13530
+    },
+    "page-algebra-6": {
+      "mathmlBytes": 464,
+      "svgBytes": 17286
+    },
+    "page-algebra-7": {
+      "mathmlBytes": 678,
+      "svgBytes": 10702
+    },
+    "page-algebra-8": {
+      "mathmlBytes": 250,
+      "svgBytes": 12687
+    },
+    "page-algebra-9": {
+      "mathmlBytes": 880,
+      "svgBytes": 20084
+    },
+    "page-calculus-0": {
+      "mathmlBytes": 224,
+      "svgBytes": 5538
+    },
+    "page-calculus-1": {
+      "mathmlBytes": 182,
+      "svgBytes": 4098
+    },
+    "page-calculus-2": {
+      "mathmlBytes": 722,
+      "svgBytes": 25288
+    },
+    "page-calculus-3": {
+      "mathmlBytes": 157,
+      "svgBytes": 1922
+    },
+    "page-calculus-4": {
+      "mathmlBytes": 556,
+      "svgBytes": 18538
+    },
+    "page-calculus-5": {
+      "mathmlBytes": 441,
+      "svgBytes": 17308
+    },
+    "page-calculus-6": {
+      "mathmlBytes": 427,
+      "svgBytes": 17085
+    },
+    "page-calculus-7": {
+      "mathmlBytes": 683,
+      "svgBytes": 29791
+    },
+    "page-calculus-8": {
+      "mathmlBytes": 396,
+      "svgBytes": 15836
+    },
+    "page-physics-0": {
+      "mathmlBytes": 215,
+      "svgBytes": 9290
+    },
+    "page-physics-1": {
+      "mathmlBytes": 332,
+      "svgBytes": 7635
+    },
+    "page-physics-2": {
+      "mathmlBytes": 212,
+      "svgBytes": 13022
+    },
+    "page-physics-3": {
+      "mathmlBytes": 331,
+      "svgBytes": 18612
+    },
+    "page-physics-4": {
+      "mathmlBytes": 351,
+      "svgBytes": 12629
+    },
+    "page-physics-5": {
+      "mathmlBytes": 685,
+      "svgBytes": 27524
+    },
+    "page-physics-6": {
+      "mathmlBytes": 448,
+      "svgBytes": 17367
+    },
+    "page-physics-7": {
+      "mathmlBytes": 664,
+      "svgBytes": 31550
+    }
+  }
+}

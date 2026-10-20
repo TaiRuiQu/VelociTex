@@ -1,0 +1,26 @@
+[
+  {
+    "id": "algebra",
+    "title": "代数与嵌套分式",
+    "latex": "x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}",
+    "displayMode": true
+  },
+  {
+    "id": "calculus",
+    "title": "微积分与极限",
+    "latex": "\\int_{-\\infty}^{\\infty} e^{-x^2}\\,dx=\\sqrt{\\pi},\\qquad \\lim_{n\\to\\infty}\\left(1+\\frac{1}{n}\\right)^n=e",
+    "displayMode": true
+  },
+  {
+    "id": "structures",
+    "title": "分段函数与矩阵",
+    "latex": "f(x)=\\begin{cases}\\dfrac{x^2+1}{x-1} & x>1,\\\\ \\sqrt[3]{x+2} & x\\le 1,\\end{cases}\\qquad A=\\begin{pmatrix}1&2&3\\\\4&5&6\\\\7&8&9\\end{pmatrix}",
+    "displayMode": true
+  },
+  {
+    "id": "color",
+    "title": "颜色、重音与数学字体",
+    "latex": "\\color{#2563eb}{\\hat{\\theta}}=\\overline{z}+\\vec{v}\\cdot\\vec{w},\\qquad \\color{#c026d3}{\\sum_{k=1}^{n}\\frac{1}{k^2}}=\\frac{\\pi^2}{6},\\qquad \\mathbb{R}\\ \\mathcal{L}\\ \\mathfrak{g}\\ \\mathbf{v}",
+    "displayMode": true
+  }
+]

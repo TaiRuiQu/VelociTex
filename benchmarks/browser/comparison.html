@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>VelociTex rendering comparison</title>
+    <link rel="stylesheet" href="/katex/katex.min.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+      }
+      body {
+        font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      }
+      #grid {
+        padding: 0;
+      }
+      .row {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        padding: 8px 0;
+        width: max-content;
+      }
+      .cell {
+        background: #ffffff;
+        padding: 18px 24px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: max-content;
+        min-width: 520px;
+        font-size: 32px;
+      }
+      .cell .katex-display {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="grid"></div>
+    <script src="/katex/katex.min.js"></script>
+    <script type="module" src="/comparison.js"></script>
+  </body>
+</html>

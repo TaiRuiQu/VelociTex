@@ -1,6 +1,6 @@
 {
   "name": "velocitex",
-  "version": "1.0.0-preview4",
+  "version": "1.0.0-preview5",
   "description": "KaTeX 0.19.0 math rules with a C++ MathML fast path and C# WebAssembly fallback",
   "type": "module",
   "license": "MIT AND OFL-1.1",
