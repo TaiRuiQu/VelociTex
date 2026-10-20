@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "recordedAt": "2026-10-20T08:40:00+08:00",
-  "sourceRevision": "3c2cbad",
+  "sourceRevision": "58b55b2",
   "workingTreeModified": true,
   "supersedes": "performance.evidence.json",
   "targets": {
@@ -77,7 +77,7 @@
     "wasmParity": { "valid": 3630, "diagnostics": 79, "passed": true },
     "fastPathAssertions": { "nativeMfrac": true, "defaultFastMath": true, "unsupportedFallbackSvg": true },
     "isolatedNpm": {
-      "sha256": "01b1e2f2a49d1cf1b36bcf263d1fa38634355005bfde13ca2252249158e6ea42",
+      "sha256": "fba357a317a5e8128d5a253679a11b40e1aedf1b636068fcfa3a4e0b0cbcd7c6",
       "browserParityPassed": true,
       "typescriptPassed": true
     }

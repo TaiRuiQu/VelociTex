@@ -561,7 +561,7 @@ struct Parser
         else if (env == "Bmatrix") out += "<mo>{</mo>";
         else if (env == "vmatrix") out += "<mo>|</mo>";
         else if (env == "Vmatrix") out += "<mo>‖</mo>";
-        out += aligned ? "<mtable columnalign=\"left\">" : "<mtable>";
+        out += aligned ? "<mtable columnalign=\"left\" columnspacing=\"0em\">" : "<mtable>";
         Space();
         while (p < end && ok)
         {

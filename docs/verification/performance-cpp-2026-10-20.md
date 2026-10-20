@@ -97,7 +97,7 @@ was not used for the WASM claim because the C++ pre-render path emits MathML.
 - Native AOT fallback probe: native `x^2` and managed `\color{red}{x}` both
   compile.
 - Isolated npm package check: `velocitex-0.1.0-preview.2.tgz` SHA-256
-  `01b1e2f2a49d1cf1b36bcf263d1fa38634355005bfde13ca2252249158e6ea42`; fresh
+  `fba357a317a5e8128d5a253679a11b40e1aedf1b636068fcfa3a4e0b0cbcd7c6`; fresh
   install, copied runtime, strict TypeScript, 3,630 parity and the fast-path
   assertions all pass. This is a local package, not a publication.
 - Visual inspection: `docs/verification/performance-fast-mathml.png` shows the
