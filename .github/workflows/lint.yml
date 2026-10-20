@@ -57,6 +57,8 @@ jobs:
           python -m pip install -r tools/requirements-format.txt
           if ($LASTEXITCODE -ne 0) { throw 'clang-format install failed.' }
           ./tools/Test-Format.ps1
+      - name: Build native Core ABI
+        run: ./native/build-core.ps1
       - name: Run core regression tests (JIT)
         run: |
           dotnet run --project tests/VelociTex.Core.Tests/VelociTex.Core.Tests.csproj -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -- artifacts/tests/jit
