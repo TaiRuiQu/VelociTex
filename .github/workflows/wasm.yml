@@ -79,6 +79,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Reference tool install failed.' }
           ./tools/reference/node_modules/.bin/playwright install chromium
           if ($LASTEXITCODE -ne 0) { throw 'Browser install failed.' }
+      - name: Build native Core ABI
+        run: ./native/build-core.ps1
       - name: Verify contours, portable assertions and AOT output
         env:
           RELEASE_VERSION: ${{ steps.version.outputs.version }}
