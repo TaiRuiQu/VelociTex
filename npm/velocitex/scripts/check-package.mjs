@@ -10,7 +10,12 @@ for (const file of [
   'dist/runtime/LICENSE.dotnet.txt',
   'dist/runtime/THIRD-PARTY-NOTICES.dotnet.txt',
   'dist/build-info.json',
-  'images/comparison-overview.png',
+  'images/benchmark-comparison.png',
+  'images/benchmark-render-work.png',
+  'images/benchmark-summary.json',
+  ...['algebra', 'calculus', 'structures', 'color'].flatMap((id) =>
+    ['native', 'wasm', 'katex'].map((engine) => `images/rendering/${id}-${engine}.png`)
+  ),
   'LICENSE',
   'licenses/KaTeX-FONTS-OFL.txt',
   'THIRD-PARTY-NOTICES.md',

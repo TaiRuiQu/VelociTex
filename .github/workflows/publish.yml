@@ -234,7 +234,8 @@ jobs:
           PACKAGE_FILE: ${{ needs.npm-verify.outputs.filename }}
           DIST_TAG: ${{ needs.npm-verify.outputs.dist-tag }}
         run: |
-          npm publish "npm-release/$env:PACKAGE_FILE" --access public --tag $env:DIST_TAG --provenance --ignore-scripts --registry https://registry.npmjs.org/
+          $tarball = (Resolve-Path -LiteralPath "npm-release/$env:PACKAGE_FILE").Path
+          npm publish $tarball --access public --tag $env:DIST_TAG --provenance --ignore-scripts --registry https://registry.npmjs.org/
           if ($LASTEXITCODE -ne 0) { throw 'npm trusted publishing failed.' }
 
   release:
@@ -248,6 +249,10 @@ jobs:
       run:
         shell: pwsh
     steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
       - name: Create release with generated notes
         env:
           GH_TOKEN: ${{ github.token }}
@@ -278,7 +283,10 @@ jobs:
             if ($release.draft -or $release.prerelease -ne [bool]::Parse($env:RELEASE_PRERELEASE)) { throw 'Existing release does not match the expected publication state.' }
             Write-Host "Release already exists: $($release.html_url)"
           } elseif ($response.StatusCode -eq 404) {
-            $arguments = @('release', 'create', $env:RELEASE_TAG, '--repo', $env:GH_REPO, '--verify-tag', '--generate-notes', '--title', $env:RELEASE_TAG)
+            $arguments = @('release', 'create', $env:RELEASE_TAG, '--repo', $env:GH_REPO, '--verify-tag', '--title', $env:RELEASE_TAG)
+            $notesPath = "docs/releases/$($env:RELEASE_TAG.Substring(1)).md"
+            if (Test-Path -LiteralPath $notesPath) { $arguments += @('--notes-file', $notesPath) }
+            else { $arguments += '--generate-notes' }
             if ([bool]::Parse($env:RELEASE_PRERELEASE)) { $arguments += '--prerelease' }
             & gh @arguments
             if ($LASTEXITCODE -ne 0) { throw 'GitHub Release creation failed.' }

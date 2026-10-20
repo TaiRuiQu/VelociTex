@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 using Microsoft.UI;
@@ -51,13 +51,15 @@ internal sealed class BenchWindow : Window
         {
             Directory.CreateDirectory(_output);
             string workloadPath = Path.Combine(AppContext.BaseDirectory, "workloads.json");
-            if (!File.Exists(workloadPath)) throw new FileNotFoundException("The benchmark workload file is missing.", workloadPath);
+            if (!File.Exists(workloadPath))
+                throw new FileNotFoundException("The benchmark workload file is missing.", workloadPath);
             using JsonDocument corpus = JsonDocument.Parse(File.ReadAllBytes(workloadPath));
             var single = new List<Formula>();
             var longFormulas = new List<Formula>();
             foreach (JsonProperty workload in corpus.RootElement.GetProperty("workloads").EnumerateObject())
             {
-                if (workload.Name == "page") continue;
+                if (workload.Name == "page")
+                    continue;
                 foreach (JsonElement item in workload.Value.GetProperty("cases").EnumerateArray())
                 {
                     var formula = new Formula(item.GetProperty("id").GetString()!, item.GetProperty("latex").GetString()!, item.GetProperty("displayMode").GetBoolean());
@@ -80,7 +82,8 @@ internal sealed class BenchWindow : Window
                             formulas.Add(formula);
                             segments.Add(new Segment(null, formula));
                         }
-                        else segments.Add(new Segment(segment.GetProperty("text").GetString()!, null));
+                        else
+                            segments.Add(new Segment(segment.GetProperty("text").GetString()!, null));
                     }
                     paragraphs.Add(segments);
                 }
@@ -88,6 +91,12 @@ internal sealed class BenchWindow : Window
             }
 
             await Task.Delay(600);
+
+            if (!_args.Contains("--legacy"))
+            {
+                await RunCpu(single, longFormulas, workloadPath);
+                return;
+            }
 
             // Warm DirectWrite, Direct2D, composition, fonts and JIT.
             foreach (Formula formula in single.Concat(longFormulas))
@@ -105,7 +114,8 @@ internal sealed class BenchWindow : Window
                 for (int i = 0; i < 30; i++)
                 {
                     double next = await WaitFrameAsync(watch);
-                    if (double.IsFinite(next) && double.IsFinite(previous)) frameIntervals.Add(next - previous);
+                    if (double.IsFinite(next) && double.IsFinite(previous))
+                        frameIntervals.Add(next - previous);
                     previous = next;
                 }
             }
@@ -136,7 +146,8 @@ internal sealed class BenchWindow : Window
                 for (int round = 0; round < 6; round++)
                 {
                     _singleView.Visibility = Visibility.Collapsed;
-                    if (_pageText is not null) _root.Children.Remove(_pageText);
+                    if (_pageText is not null)
+                        _root.Children.Remove(_pageText);
                     var (text, views) = BuildPage(page);
                     _root.Children.Add(text);
                     _root.UpdateLayout();
@@ -162,7 +173,8 @@ internal sealed class BenchWindow : Window
             _singleView.Visibility = Visibility.Collapsed;
             nint windowHandle = WinRT.Interop.WindowNative.GetWindowHandle(this);
             await Task.Delay(500);
-            try { GdiWindowCapture.Capture(windowHandle, Path.Combine(_output, "winui-page.bmp")); }
+            try
+            { GdiWindowCapture.Capture(windowHandle, Path.Combine(_output, "winui-page.bmp")); }
             catch (Exception error) { File.WriteAllText(Path.Combine(_output, "capture-error.txt"), error.ToString()); }
 
             var report = new
@@ -250,6 +262,68 @@ internal sealed class BenchWindow : Window
         return (panel, views);
     }
 
+    private async Task RunCpu(List<Formula> single, List<Formula> longFormulas, string workloadPath)
+    {
+        string Option(string name, string fallback) => Array.IndexOf(_args, name) is var i && i >= 0 ? _args[i + 1] : fallback;
+        var config = new BatchTiming.Config(int.Parse(Option("--samples", "15")), double.Parse(Option("--batch-ms", "25"), CultureInfo.InvariantCulture));
+        var workloads = new Dictionary<string, List<object>>();
+        foreach ((string name, List<Formula> formulas) in new[] { ("single", single), ("long", longFormulas) })
+        {
+            var records = new List<object>();
+            foreach (Formula formula in formulas)
+            {
+                void Draw()
+                {
+                    _singleView.Result = Compile(formula);
+                    _root.UpdateLayout();
+                }
+                var warm = Stopwatch.StartNew();
+                do
+                { Draw(); } while (warm.Elapsed.TotalMilliseconds < config.WarmupMs);
+                await Task.Delay(1);
+                records.Add(new { id = formula.Id, formulaCount = 1, dom = BatchTiming.Measure(Draw, config) });
+            }
+            workloads.Add(name, records);
+        }
+        _singleView.Visibility = Visibility.Collapsed;
+        var pages = new List<object>();
+        foreach (PageCase page in _pages)
+        {
+            if (_pageText is not null)
+                _root.Children.Remove(_pageText);
+            var (text, views) = BuildPage(page);
+            _root.Children.Add(text);
+            _root.UpdateLayout();
+            await Task.Delay(100);
+            void Draw()
+            {
+                for (int i = 0; i < page.Formulas.Count; i++)
+                {
+                    views[i].Result = Compile(page.Formulas[i]);
+                    _root.UpdateLayout();
+                }
+            }
+            var warm = Stopwatch.StartNew();
+            do
+            { Draw(); } while (warm.Elapsed.TotalMilliseconds < config.WarmupMs);
+            pages.Add(new { id = page.Id, formulaCount = page.Formulas.Count, dom = BatchTiming.Measure(Draw, config) });
+            foreach (MathView view in views)
+                view.Dispose();
+        }
+        workloads.Add("page", pages);
+        var report = new
+        {
+            schemaVersion = 2,
+            engine = "winui",
+            utc = DateTimeOffset.UtcNow,
+            workloadSha256 = Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(workloadPath))),
+            nativeAot = !System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported,
+            timedRegion = "Batch of fresh C++ Core compilation + MathView.Result assignment (synchronous Direct2D surface drawing) + UpdateLayout after every formula. No composition/frame wait. Surface submission is not a GPU completion fence or screen-presentation measurement.",
+            result = new { config, workloads },
+        };
+        File.WriteAllText(Path.Combine(_output, "winui-report.json"), JsonSerializer.Serialize(report, new JsonSerializerOptions { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+    }
+
     private MathDocument Compile(Formula formula)
     {
         MathOptions options = new() { DisplayMode = formula.DisplayMode, FontSize = 24 };
@@ -282,7 +356,8 @@ internal sealed class BenchWindow : Window
     private static object Describe(IEnumerable<double> values)
     {
         double[] sorted = values.Where(double.IsFinite).Order().ToArray();
-        if (sorted.Length == 0) return new { samples = 0 };
+        if (sorted.Length == 0)
+            return new { samples = 0 };
         return new { samples = sorted.Length, p50Ms = Percentile(sorted, .5), p95Ms = Percentile(sorted, .95), p99Ms = Percentile(sorted, .99), maximumMs = sorted[^1], meanMs = sorted.Average() };
     }
     private static double Percentile(IEnumerable<double> values, double p)

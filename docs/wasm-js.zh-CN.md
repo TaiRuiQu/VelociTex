@@ -4,8 +4,8 @@
 .NET WASM AOT 数学核心。无需 Blazor，也不要求访客安装 .NET。
 数学规则仍固定在 KaTeX 0.19.0。
 
-`1.0.0-preview5` 已发布到 npm 的 `next` 通道，包内 README 和 `images/`
-包含一张原生 / WASM / KaTeX 0.19.0 渲染对比图（四组代表性公式）。
+`1.0.0-preview6` 已发布到 npm 的 `next` 通道，包内 README 和 `images/`
+包含三轮独立进程的性能数据、无刷新等待的图表，以及原生 / WASM / KaTeX 0.19.0 的渲染对比表格（四组代表性公式）。
 
 ## 安装和调用
 

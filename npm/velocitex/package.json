@@ -1,7 +1,7 @@
 {
   "name": "velocitex",
-  "version": "1.0.0-preview5",
-  "description": "KaTeX 0.19.0 math rules with a C++ MathML fast path and C# WebAssembly fallback",
+  "version": "1.0.0-preview6",
+  "description": "C++-accelerated TeX rendering: a compact MathML WASM fast path with full native-Core fallback and measured performance comparisons",
   "type": "module",
   "license": "MIT AND OFL-1.1",
   "publishConfig": {

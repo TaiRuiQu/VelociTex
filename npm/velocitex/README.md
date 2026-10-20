@@ -1,9 +1,50 @@
 # VelociTex for the web
 
-Render math with WebAssembly: a C++ MathML path and the VelociTex C# engine.
+Render math with WebAssembly: a compact C++ MathML path and the full native C++ Core through .NET WASM bindings.
 The compatibility baseline is **KaTeX 0.19.0 core math**. The API is inspired by
 KaTeX, with asynchronous initialization. It is not a drop-in replacement for
 all KaTeX options or extensions. This is an early browser preview.
+
+<!-- benchmark:start -->
+
+## Performance
+
+C++ WASM + fallback delivers **1.6–3.1× KaTeX browser render-work throughput** across these three workloads. The native C++ Core generates common-formula MathML in **24.6 µs/formula (~40,667 formulas/s)** on this machine, without a window or refresh-rate limit.
+
+2026-10-20 · Windows x64 · Release · KaTeX 0.19.0 · µs/formula (lower is better).
+
+| MathML generation | Native C++ ABI | C++ WASM + fallback | KaTeX | WASM relative throughput |
+| ----------------- | -------------: | ------------------: | ----: | -----------------------: |
+| Common formulas   |           24.6 |                 7.7 |  14.0 |                    1.81× |
+| Complex formulas  |          208.6 |               137.4 | 117.6 |                    0.86× |
+| Mixed pages       |           20.2 |                 3.7 |  11.7 |                    3.18× |
+
+| Render work      | Native WinUI / Direct2D | WASM DOM + layout | KaTeX DOM + layout |
+| ---------------- | ----------------------: | ----------------: | -----------------: |
+| Common formulas  |                  1174.7 |             248.8 |              644.4 |
+| Complex formulas |                 16228.2 |            2684.3 |             4196.5 |
+| Mixed pages      |                   368.8 |             179.5 |              561.6 |
+
+The complex-formula MathML workload takes 1.17× KaTeX time in WASM because fallback remains included. Native WinUI is slower than KaTeX on single/complex render work; its window/surface diagnostics can include graphics-queue backpressure and are separate from pure C++ engine performance. There is no claim of a universal speedup.
+
+![Render-work throughput benchmark](https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/benchmark-render-work.png)
+
+All 36 formula occurrences are included, including automatic fallback. Three fresh processes × 15 calibrated batches per case; medians of batch averages, with actual page formula counts. No explicit frame waits or document cache. Startup/download excluded. Render work measures native surface submission or browser DOM + forced layout, with different output backends; it excludes a GPU completion fence, browser rasterization, and screen presentation. Results are specific to this hardware and corpus.
+
+[Methodology, all cases, raw batches and reproduction commands](https://github.com/TaiRuiQu/VelociTex/blob/v1.0.0-preview6/benchmarks/README.md).
+
+## Rendering comparison
+
+Actual output at 32 px math em, captured at 2× resolution. Each row uses equal-scale canvases; table display scales them together. WASM uses the default C++ MathML route with automatic full-Core fallback. Native and KaTeX use their own font rendering; identical pixels are not claimed.
+
+| Formula                | Windows native / Direct2D                                                                                                                               | VelociTex WASM                                                                                                                                      | KaTeX 0.19.0                                                                                                                                          |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Algebra                | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/algebra-native.png" width="280" alt="Algebra: native">                 | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/algebra-wasm.png" width="280" alt="Algebra: wasm">                 | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/algebra-katex.png" width="280" alt="Algebra: katex">                 |
+| Calculus               | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/calculus-native.png" width="280" alt="Calculus: native">               | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/calculus-wasm.png" width="280" alt="Calculus: wasm">               | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/calculus-katex.png" width="280" alt="Calculus: katex">               |
+| Piecewise & matrices   | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/structures-native.png" width="280" alt="Piecewise & matrices: native"> | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/structures-wasm.png" width="280" alt="Piecewise & matrices: wasm"> | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/structures-katex.png" width="280" alt="Piecewise & matrices: katex"> |
+| Color, accents & fonts | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/color-native.png" width="280" alt="Color, accents & fonts: native">    | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/color-wasm.png" width="280" alt="Color, accents & fonts: wasm">    | <img src="https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview6/images/rendering/color-katex.png" width="280" alt="Color, accents & fonts: katex">    |
+
+<!-- benchmark:end -->
 
 ## Install and use
 
@@ -60,26 +101,8 @@ standalone WASM module and lets the browser lay out native MathML; for supported
 formulas the .NET runtime is never started. This is much faster and produces
 valid MathML, but glyph shapes and spacing follow the browser's math font rather
 than KaTeX's SVG. Set `fastMathml: false` or `output: 'svg'` for the exact
-C#/KaTeX-compatible SVG output. Unsupported commands automatically use that full
-C# path, so correctness is preserved.
-
-## Rendering comparison
-
-The same representative formula groups are shown at the same 32-pixel math em
-size and foreground color, on a pure white background. Each row compares actual
-**Windows native DirectWrite/Direct2D output**, the **VelociTex WASM binding**,
-and **KaTeX 0.19.0**. The groups cover algebra, calculus, matrices and piecewise
-functions, colors, accents and mathematical fonts.
-
-![Rendering comparison: Windows native, VelociTex WASM and KaTeX 0.19.0](https://cdn.jsdelivr.net/npm/velocitex@1.0.0-preview5/images/comparison-overview.png)
-
-The four groups show closely matching mathematical layout, with visible
-antialiasing and minor subpixel differences. They do not establish pixel identity
-or compatibility for every possible input. The original comparison PNG is
-included in the package's `images/` directory; known font limitations are below.
-
-Performance methodology, raw JSON and matplotlib charts are documented in the
-repository's [benchmark guide](https://github.com/TaiRuiQu/VelociTex/blob/main/benchmarks/README.md).
+full-Core SVG output. Unsupported commands automatically use that full
+Core path, so correctness is preserved.
 
 ## APIs
 
@@ -100,7 +123,7 @@ console.log(report.rendered, report.errors);
 - `renderToString(source, options?)`: returns HTML by default (SVG plus visually
   hidden semantic MathML, unless the native fast path handles it). `output: 'svg' |
 'mathml'` selects one standalone format. `fastMathml: false` forces the exact
-  C# SVG/MathML contract.
+  full-Core SVG/MathML contract.
 - `renderAll(root = document.body, options?)`: scans `[data-math]` elements and
   text containing `$$…$$`, `\[…\]`, or `\(…\)`. Repeated calls skip rendered
   output. `data-math` supplies TeX; a custom `selector` can use element text.

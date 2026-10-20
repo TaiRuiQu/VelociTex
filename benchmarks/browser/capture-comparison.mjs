@@ -16,7 +16,7 @@ const option = (name, fallback) => {
   return i >= 0 && i + 1 < args.length ? args[i + 1] : fallback;
 };
 const outDir = path.resolve(option('--out', path.join(root, 'artifacts/comparison')));
-const katexDir = path.resolve(option('--katex-dir', path.join(root, 'artifacts/tooling/katex/package')));
+const katexDir = path.resolve(option('--katex-dir', path.join(root, 'artifacts/upstream/npm/package')));
 const vtDist = path.resolve(option('--vt-dist', path.join(root, 'npm/velocitex/dist')));
 const chromePath = option('--chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
 const headless = !args.includes('--headful');

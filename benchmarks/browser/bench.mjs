@@ -12,6 +12,8 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
 import process from 'node:process';
+import os from 'node:os';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(fileURLToPath(new URL('../..', import.meta.url)));
@@ -23,10 +25,14 @@ const option = (name, fallback) => {
 const engine = option('--engine', 'velocitex');
 if (!['velocitex', 'katex'].includes(engine)) throw new Error(`Unknown engine: ${engine}`);
 const outDir = path.resolve(option('--out', path.join(root, `artifacts/benchmarks/${engine}`)));
-const iterations = Number(option('--iterations', '60'));
-const e2eIterations = Number(option('--e2e-iterations', '10'));
-const pageRounds = Number(option('--page-rounds', '6'));
-const katexDir = path.resolve(option('--katex-dir', path.join(root, 'artifacts/tooling/katex/package')));
+const config = {
+  samples: Number(option('--samples', '15')),
+  batchMs: Number(option('--batch-ms', '25')),
+  warmupMs: 200,
+};
+if (!Number.isInteger(config.samples) || config.samples < 3 || config.batchMs < 1)
+  throw new Error('Invalid batch configuration.');
+const katexDir = path.resolve(option('--katex-dir', path.join(root, 'artifacts/upstream/npm/package')));
 const vtDist = path.resolve(option('--vt-dist', path.join(root, 'npm/velocitex/dist')));
 const chromePath = option('--chrome', 'C:/Program Files/Google/Chrome/Application/chrome.exe');
 const headless = !args.includes('--headful');
@@ -69,7 +75,7 @@ const server = createServer(async (req, res) => {
     }
     if (url.pathname === '/runner.js') {
       res.writeHead(200, { 'content-type': contentTypes['.js'], ...isolationHeaders });
-      res.end(await readFile(path.join(pageDir, 'runner.js')));
+      res.end(await readFile(path.join(pageDir, 'cpu-runner.js')));
       return;
     }
     if (url.pathname === '/workloads.json') {
@@ -125,7 +131,7 @@ const chromeArgs = [
   ...(headless ? ['--headless=new'] : []),
   pageUrl,
 ];
-const chrome = spawn(chromePath, chromeArgs, { stdio: 'ignore' });
+const chrome = spawn(chromePath, chromeArgs, { stdio: 'ignore', windowsHide: true });
 let exited = false;
 chrome.on('exit', () => {
   exited = true;
@@ -192,12 +198,12 @@ try {
     timerResolution: (() => { const a = performance.now(); let b = a; for (let i = 0; i < 10000; i++) b = performance.now(); return b - a; })(),
   })`);
   const started = performance.now();
-  const result = await evaluate(`window.runBenchmark(${JSON.stringify({ iterations, e2eIterations, pageRounds })})`);
+  const result = await evaluate(`window.runBenchmark(${JSON.stringify(config)})`);
   const wallMs = performance.now() - started;
   const screenshot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
   await writeFile(path.join(outDir, `${engine}-page.png`), Buffer.from(screenshot.data, 'base64'));
   const report = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     kind: `${engine === 'velocitex' ? 'VelociTex WASM binding' : 'KaTeX 0.19.0'} browser benchmark`,
     utc: new Date().toISOString(),
     engine,
@@ -205,19 +211,18 @@ try {
     workloadSha256,
     headless,
     chrome: hardware,
-    iterations,
-    e2eIterations,
-    pageRounds,
-    frameWaitNote:
-      'sync is measured after a forced layout. painted waits for the second requestAnimationFrame callback after the DOM change, so the frame containing the change has been presented; it includes compositor frame pacing.',
+    sourceRevision: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
+    cpu: os.cpus()[0].model,
+    memoryBytes: os.totalmem(),
+    os: `${os.type()} ${os.release()} ${os.arch()}`,
+    timedRegion:
+      'Adaptive batches of full public API calls. MathML excludes DOM. DOM includes forced layout after every formula, excludes raster/GPU/compositor waits. Default options on both engines, all fallback cases retained. Batch medians are not individual-call latency percentiles.',
     result,
     wallMs,
   };
   await writeFile(path.join(outDir, `${engine}-report.json`), JSON.stringify(report, null, 2));
-  const mathml = result.parse.single.mathml.summary;
-  const page = result.endToEnd.page.summary;
   console.log(
-    `${engine}: init=${result.initMs.toFixed(1)}ms parse(mathml single) p50=${mathml.p50Ms.toFixed(4)}ms e2e(page) p50=${page.p50Ms.toFixed(2)}ms output=${outDir}`
+    `${engine}: ${wallMs.toFixed(0)}ms; ${Object.values(result.workloads).flat().length} cases; output=${outDir}`
   );
 } finally {
   try {

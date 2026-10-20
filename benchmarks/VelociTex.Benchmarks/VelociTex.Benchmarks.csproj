@@ -15,6 +15,7 @@
     <NoWarn>$(NoWarn);IL2026;IL3050</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../BatchTiming.cs" Link="BatchTiming.cs" />
     <ProjectReference Include="../../src/VelociTex.Core/VelociTex.Core.csproj" />
     <ProjectReference Include="../../src/VelociTex.Rendering.Direct2D/VelociTex.Rendering.Direct2D.csproj" />
     <None Include="../workloads.json" Link="workloads.json" CopyToOutputDirectory="PreserveNewest" />

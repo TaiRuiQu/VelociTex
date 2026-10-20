@@ -1,39 +1,1228 @@
 {
-  "generatedAt": "2026-10-20",
-  "pageFormulas": [10, 9, 8],
-  "pageAverageFormulas": 9.0,
-  "parseMathmlPerFormulaMs": {
-    "native": [0.0962, 0.6458, 0.06653333333333333],
-    "wasm": [0.19500000029802322, 0.42499999701976776, 0.09555555548932818],
-    "katex": [0.08500000089406967, 0.5199999958276749, 0.042777777545981936]
+  "schemaVersion": 2,
+  "manifest": {
+    "schemaVersion": 2,
+    "utc": "2026-10-20T08:17:22.7795013+00:00",
+    "sourceRevision": "516db860ac02d90eab396357bb7968c9197706fe",
+    "sourceHasChanges": true,
+    "runs": 3,
+    "samples": 15,
+    "targetBatchMs": 25,
+    "cpu": "12th Gen Intel(R) Core(TM) i5-12400F",
+    "memoryBytes": 34160545792,
+    "fileSha256": {
+      "benchmarks/workloads.json": "1ac93184bea6c5b88b57afef2275ba1c47be47a63eb7089e9f6e0f515b83d89f",
+      "benchmarks/BatchTiming.cs": "e674f7d5f92120e516e4ab493fd64ab246cb7a404135975d43c03d6fdefdbb0c",
+      "benchmarks/browser/cpu-runner.js": "ad9b90660357a4687cb7c4ea380d67ddd5e29d14b11d9cd399352775efd3eb27",
+      "benchmarks/browser/page.html": "c9364d7439a8bda896a9454556b99708ad60265c9948ca5d159ff3d7d1280a4d",
+      "benchmarks/browser/bench.mjs": "0dde43e8ed5904a970b51ff92a07ee092a8cf54569de098b9d5a6fbce93cb94b",
+      "benchmarks/run-benchmarks.ps1": "3b7ab3897e81bd6cf01d684eca7302f97486f848c9068f55aa7603276b6aa9ff",
+      "benchmarks/VelociTex.Benchmarks/CpuBenchmark.cs": "7c4bafd95517effa9151ed37d3017e0fcd16cb8ccb339e1d6876e40c5a8f8d54",
+      "benchmarks/VelociTex.WinUI.Bench/BenchWindow.cs": "9793f7ec88964c75c56e6dcb361b6aeb5cf45099bd4e9a8e591403f6d71286d7",
+      "artifacts/core-native/VelociTex.Core.Native.dll": "ab9300bb9b215135c69e4a914188635ab268505475074d00da0a279bc37b9747",
+      "benchmarks/VelociTex.Benchmarks/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.Benchmarks.exe": "50230360adaef1cac4f2964a0483d31be86acd7276b6e6c57b33de53570f798a",
+      "benchmarks/VelociTex.WinUI.Bench/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.WinUI.Bench.exe": "9130cdae1085c1d50c09ee259f0cc346c690866a0353480b8188caa063b3fe0d",
+      "npm/velocitex/dist/build-info.json": "9e6809d523557b686de314fc2a186828c599e5525d0c17aacf1d5fc286bb2011",
+      "npm/velocitex/dist/fastmath.mjs": "bf5791be12c9b13d3fbdf891723c23ff81b1efa418b123aa8a43eaa9f30fe651",
+      "npm/velocitex/dist/index.d.ts": "559417b73996754926fe03df4cabcb5dd061605400611f84007afaab94fa1f2a",
+      "npm/velocitex/dist/index.mjs": "88ec2ce7f87ab1942acb8a5ab236d9537025d4da5ef7fb1b8baaa6bbb231729d",
+      "npm/velocitex/dist/runtime/dotnet.js": "1647ce65e14f13c22626b0a854ca0ba0884cf4b2bdfdd36a32e0b4f9f842de08",
+      "npm/velocitex/dist/runtime/dotnet.js.br": "3647f7b74df48d1ab4f2e8a973ffadffd28c9c0c175090c65997c541e4a824da",
+      "npm/velocitex/dist/runtime/dotnet.js.gz": "6c3ba1e7232b7e30284c42e746fa28b8db5cb4d5119e5eac0306e5581c2d894e",
+      "npm/velocitex/dist/runtime/dotnet.native.9pdpnlniwp.wasm": "9dec5dac5d9ac8ec48b2fe2e4eee6c15557a0e270701a711cb88ccb9ba089390",
+      "npm/velocitex/dist/runtime/dotnet.native.9pdpnlniwp.wasm.br": "a3d4b17ea634c5b17089189a9a85b10400ab993f1b20ec90d6634e6f8ee6c751",
+      "npm/velocitex/dist/runtime/dotnet.native.9pdpnlniwp.wasm.gz": "d4bb226a118307a4fa768b62adae3cd8bc2285b6a8e9edea3ee6b69e7851a614",
+      "npm/velocitex/dist/runtime/dotnet.native.vgar7h21jv.js": "41e7b88406439e3cea86cdb3d671c3e28335ccd6ee49deffef6fcea059e150b2",
+      "npm/velocitex/dist/runtime/dotnet.native.vgar7h21jv.js.br": "2973ae8260faf1589a6450c2b8d004fc22bf1de013e6a15446d5d455e62d56c4",
+      "npm/velocitex/dist/runtime/dotnet.native.vgar7h21jv.js.gz": "3d565920a59c2d5c4e749d2d937fb0b4b3638aca1ced11091e0824f24d2c67e1",
+      "npm/velocitex/dist/runtime/dotnet.runtime.azrfhwb804.js": "9ae374efa1e0c8e0a801a89def30fb6b6fc637b690eed98afc1cdd9ca830efc8",
+      "npm/velocitex/dist/runtime/dotnet.runtime.azrfhwb804.js.br": "e0b8b6ff5a851975e978be2f8c682b6d3acdb1164db0ab02b7453d84135ff3d9",
+      "npm/velocitex/dist/runtime/dotnet.runtime.azrfhwb804.js.gz": "0e7dbde7267c9dc9fc7cfdee779df969ba4e2ec09e0c50d45de4ece462eed226",
+      "npm/velocitex/dist/runtime/fastmath.js": "5528c4721b87fc8600196c17ebaf9a96863f201eb4591c13fe4f7d23753026cc",
+      "npm/velocitex/dist/runtime/fastmath.wasm": "794f3d9dff723cdad1c5308380a59b67fa1d8b062f611a2b739a7b95ffe5c762",
+      "npm/velocitex/dist/runtime/LICENSE.dotnet.txt": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310",
+      "npm/velocitex/dist/runtime/System.Collections.1aa5z793gh.wasm": "b76ddac523331451c92ca80fabde4689fa5839386a40156f96db42e85ee7e0c2",
+      "npm/velocitex/dist/runtime/System.Collections.1aa5z793gh.wasm.br": "6ed5853c5f5e791b68942e28f9adfdde29412802635c5f480fe06ac16db4f1fd",
+      "npm/velocitex/dist/runtime/System.Collections.1aa5z793gh.wasm.gz": "eeec01d8e98f0c2c4702f6d3d0bf05fb2d208f62c0296ca9489d7465179d4d9d",
+      "npm/velocitex/dist/runtime/System.IO.Pipelines.tm1x86lyud.wasm": "7bc97802526b32a1adf3b428c80ae5eb55ee63fa557e96d8ca1524010bae8efa",
+      "npm/velocitex/dist/runtime/System.IO.Pipelines.tm1x86lyud.wasm.br": "c6104a49b59290840077b720c5f60c429eedd08bbd00aa8fe262f269d4b68d90",
+      "npm/velocitex/dist/runtime/System.IO.Pipelines.tm1x86lyud.wasm.gz": "e2bfb60785a595cfbd3b83e38ca26a861cfbf8360e0993f49c11475928e62e5b",
+      "npm/velocitex/dist/runtime/System.Linq.2ch4npdspl.wasm": "3e84e529e4cd263bb2f6f9df16ce6601af89a617216be8dc210ee0f95a19870e",
+      "npm/velocitex/dist/runtime/System.Linq.2ch4npdspl.wasm.br": "32b66d9ca1048ec9cb1f00945ae58598c281b194d3bbbaaa219ca5b4c8ef36f7",
+      "npm/velocitex/dist/runtime/System.Linq.2ch4npdspl.wasm.gz": "6a226e29aba56845f0388543fd1bbe5bc5fbe62bddf2fc4ce29eef039d33a2c4",
+      "npm/velocitex/dist/runtime/System.Memory.bldklnf93s.wasm": "cfa262584e64c7f90026d9125b0e52028450f4b6dea3957f4c93a55e9e35414a",
+      "npm/velocitex/dist/runtime/System.Memory.bldklnf93s.wasm.br": "4966850caaad2d244a5223b2229fee5eb9023e2ec8a7a002df9ae6d214a855ac",
+      "npm/velocitex/dist/runtime/System.Memory.bldklnf93s.wasm.gz": "0c52a6b345ad4f0a55b072f2d3bd434309c9227e6ce7a52c3fb04af7063663f2",
+      "npm/velocitex/dist/runtime/System.Private.CoreLib.nfdcht8wty.wasm": "fd6ba9b6d372c571f0f0a4678e0bc9ff9276880b2cba64163490070e95c85e97",
+      "npm/velocitex/dist/runtime/System.Private.CoreLib.nfdcht8wty.wasm.br": "3a10c7dce82d1f98b9f7f33e2a4cef678c9ed36619d6e0230dc80a3afdcd1da4",
+      "npm/velocitex/dist/runtime/System.Private.CoreLib.nfdcht8wty.wasm.gz": "7f954e3f513c62e85f7066659ea416d1670cee8fcfbc13a3ca4fb73f85ff845d",
+      "npm/velocitex/dist/runtime/System.Runtime.InteropServices.JavaScript.8ej9uggwpq.wasm": "70e85bb108cddeb909e96c5d3494aad1d6cf08d9d9fab5281c35ce7ca9316147",
+      "npm/velocitex/dist/runtime/System.Runtime.InteropServices.JavaScript.8ej9uggwpq.wasm.br": "cdd9e80fde6462d25e81850a1c11a040be0e7f36a7959eb99639a0b8b0c77274",
+      "npm/velocitex/dist/runtime/System.Runtime.InteropServices.JavaScript.8ej9uggwpq.wasm.gz": "f77ada1de02df16878b572d18d47457b93dcde2a0a364f62d15b3869f773c0f7",
+      "npm/velocitex/dist/runtime/System.Security.Cryptography.3gpdfn9shx.wasm": "137d1a91aeaaed9e59a194e3e63ddcab20d680553b55f479f3096b9498d14090",
+      "npm/velocitex/dist/runtime/System.Security.Cryptography.3gpdfn9shx.wasm.br": "cbb08167c0d414b1b804753e7da8543af16c8354036f93ddc050e8d2bd19b884",
+      "npm/velocitex/dist/runtime/System.Security.Cryptography.3gpdfn9shx.wasm.gz": "69494f2228b7a30c2573772cb9a75f6c7c9171cfe4dd4387763b5a3c17f4c6de",
+      "npm/velocitex/dist/runtime/System.Text.Encodings.Web.g7isou7qfm.wasm": "d47412c24fff10dc8d5f05eadf4d1b91d8e268d6858da08be1406d1924a171d1",
+      "npm/velocitex/dist/runtime/System.Text.Encodings.Web.g7isou7qfm.wasm.br": "88698dd88c9a653c5373e48f4bde0e169b2ac46796486a7ce477e57eac236031",
+      "npm/velocitex/dist/runtime/System.Text.Encodings.Web.g7isou7qfm.wasm.gz": "3a959d65d0816ea5dfc816cf388d8a611ad2036693c6bacd4e7d6fdb60f2c93a",
+      "npm/velocitex/dist/runtime/System.Text.Json.nyclvw6ova.wasm": "216caa540d89129cccf59441e2fa426f69322c317179872486db53e36034e8d7",
+      "npm/velocitex/dist/runtime/System.Text.Json.nyclvw6ova.wasm.br": "9b68243072d592e6e5d3b63d58b766613ec191bd193dc227f84e8beb2e6178eb",
+      "npm/velocitex/dist/runtime/System.Text.Json.nyclvw6ova.wasm.gz": "d17b306bc0b8dbbc5135617cf5dc23b87fab8cb792243fb955c4a70d4eb935ef",
+      "npm/velocitex/dist/runtime/THIRD-PARTY-NOTICES.dotnet.txt": "66f1d4e44973185519bb4aa8a9718eb22fc7af2cc532e3ae9cfc4c127ee7fc54",
+      "npm/velocitex/dist/runtime/VelociTex.Core.c8pp2w5823.wasm": "fc5d855c50c2f4a366089d64f22593177a3502397f849ee48695c03c94c605ff",
+      "npm/velocitex/dist/runtime/VelociTex.Core.c8pp2w5823.wasm.br": "1e9f6a6b90969b1db7be047e2f36ced39daf2b246262610955e689884182c6e1",
+      "npm/velocitex/dist/runtime/VelociTex.Core.c8pp2w5823.wasm.gz": "1447c530699832c09694b4976d27e95ebee96b89677ef627ef4261de4ade4611",
+      "npm/velocitex/dist/runtime/VelociTex.Rendering.Svg.sof8bqojmb.wasm": "942b016b3060a5a1e6727c0e6764ca267cc0426238627bfa85586e2841e9da2e",
+      "npm/velocitex/dist/runtime/VelociTex.Rendering.Svg.sof8bqojmb.wasm.br": "e3db542d0bef3c1dae551ba1431386db2aa12af28f637c4e7db49a40df740868",
+      "npm/velocitex/dist/runtime/VelociTex.Rendering.Svg.sof8bqojmb.wasm.gz": "6ccac443d13e61a77a2e4fb318d328851b81b4836fd2e71a805da571b53f0bed",
+      "npm/velocitex/dist/runtime/VelociTex.Wasm.bb8ianxa5m.wasm": "97909e18b6653485539be193d3d9d634023e1b3dc4720eedc5d975ed56a95f97",
+      "npm/velocitex/dist/runtime/VelociTex.Wasm.bb8ianxa5m.wasm.br": "617994be70c4eca420b1007d5336655d4c0cc0c3ebfbdc1c3bf908044b6e39f4",
+      "npm/velocitex/dist/runtime/VelociTex.Wasm.bb8ianxa5m.wasm.gz": "508002d0980ae07374e1018fb15a94984b649124063d45034fc3e5ea06557104"
+    },
+    "order": [
+      "run-1/native",
+      "run-1/velocitex",
+      "run-1/katex",
+      "run-1/winui",
+      "run-2/velocitex",
+      "run-2/katex",
+      "run-2/winui",
+      "run-2/native",
+      "run-3/katex",
+      "run-3/winui",
+      "run-3/native",
+      "run-3/velocitex"
+    ]
   },
-  "parseSvgPerFormulaMs": {
-    "native": [0.4645, 2.0456, 0.36365555555555557],
-    "wasm": [0.369999997317791, 0.9000000059604645, 0.17111111101177004]
+  "workloadSha256": "1ac93184bea6c5b88b57afef2275ba1c47be47a63eb7089e9f6e0f515b83d89f",
+  "engines": {
+    "cpp": {
+      "single": {
+        "formulaCount": 6,
+        "caseCount": 6,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.024589768473307294,
+            "runMsPerFormula": [
+              0.02473723958333333, 0.024589768473307294, 0.024258268229166668
+            ],
+            "minimumRunMs": 0.024258268229166668,
+            "maximumRunMs": 0.02473723958333333,
+            "formulasPerSecond": 40667.320681995065,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.00609593505859375,
+                "runMsPerUnit": [
+                  0.006108642578125, 0.00609593505859375, 0.005773046875
+                ]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.02236953125,
+                "runMsPerUnit": [0.02100166015625, 0.02329765625, 0.02236953125]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.0312802734375,
+                "runMsPerUnit": [
+                  0.0326291015625, 0.03038662109375, 0.0312802734375
+                ]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.03111708984375,
+                "runMsPerUnit": [
+                  0.03111708984375, 0.0317234375, 0.03089228515625
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.026730322265625,
+                "runMsPerUnit": [
+                  0.026730322265625, 0.02675859375, 0.0249185546875
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.03031591796875,
+                "runMsPerUnit": [
+                  0.03083662109375, 0.0292763671875, 0.03031591796875
+                ]
+              }
+            }
+          }
+        }
+      },
+      "long": {
+        "formulaCount": 3,
+        "caseCount": 3,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.20863476562499997,
+            "runMsPerFormula": [
+              0.21559921875000002, 0.20863476562499997, 0.19830325520833333
+            ],
+            "minimumRunMs": 0.19830325520833333,
+            "maximumRunMs": 0.21559921875000002,
+            "formulasPerSecond": 4793.06503402889,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.28591015625,
+                "runMsPerUnit": [0.29431875, 0.28591015625, 0.25835390625]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.128484375,
+                "runMsPerUnit": [0.128484375, 0.130669921875, 0.128262109375]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.20932421875,
+                "runMsPerUnit": [0.22399453125, 0.20932421875, 0.20829375]
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "formulaCount": 27,
+        "caseCount": 3,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.020172526041666666,
+            "runMsPerFormula": [
+              0.020989134837962962, 0.020172526041666666, 0.01896467013888889
+            ],
+            "minimumRunMs": 0.01896467013888889,
+            "maximumRunMs": 0.020989134837962962,
+            "formulasPerSecond": 49572.37372922382,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 0.17098359375,
+                "runMsPerUnit": [0.181268359375, 0.17098359375, 0.162965625]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 0.18930703125,
+                "runMsPerUnit": [0.199405078125, 0.18930703125, 0.174546875]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 0.184367578125,
+                "runMsPerUnit": [0.186033203125, 0.184367578125, 0.17453359375]
+              }
+            }
+          }
+        }
+      }
+    },
+    "native": {
+      "single": {
+        "formulaCount": 6,
+        "caseCount": 6,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.024933304850260418,
+            "runMsPerFormula": [
+              0.024933304850260418, 0.024729223632812502, 0.02645360107421875
+            ],
+            "minimumRunMs": 0.024729223632812502,
+            "maximumRunMs": 0.02645360107421875,
+            "formulasPerSecond": 40106.997688658004,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.0074988525390625,
+                "runMsPerUnit": [
+                  0.0072880126953125, 0.007760302734375, 0.0074988525390625
+                ]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.023012890625,
+                "runMsPerUnit": [
+                  0.0227876953125, 0.023012890625, 0.0252369140625
+                ]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.03088369140625,
+                "runMsPerUnit": [
+                  0.030076953125, 0.03088369140625, 0.03171298828125
+                ]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.0318443359375,
+                "runMsPerUnit": [
+                  0.0318443359375, 0.03060595703125, 0.0332580078125
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.02765546875,
+                "runMsPerUnit": [
+                  0.02765546875, 0.0259630859375, 0.0276931640625
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.0301494140625,
+                "runMsPerUnit": [
+                  0.02994736328125, 0.0301494140625, 0.0333216796875
+                ]
+              }
+            }
+          },
+          "compile": {
+            "msPerFormula": 0.026678808593750002,
+            "runMsPerFormula": [
+              0.026678808593750002, 0.027152539062499998, 0.02657142333984375
+            ],
+            "minimumRunMs": 0.02657142333984375,
+            "maximumRunMs": 0.027152539062499998,
+            "formulasPerSecond": 37482.9331859395,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.00690380859375,
+                "runMsPerUnit": [
+                  0.00694306640625, 0.00690380859375, 0.0066846923828125
+                ]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.02556201171875,
+                "runMsPerUnit": [
+                  0.02556201171875, 0.0275197265625, 0.0238705078125
+                ]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.0332326171875,
+                "runMsPerUnit": [
+                  0.0332326171875, 0.03387060546875, 0.0324833984375
+                ]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.03462177734375,
+                "runMsPerUnit": [
+                  0.03462177734375, 0.0340966796875, 0.03614482421875
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.02634541015625,
+                "runMsPerUnit": [
+                  0.0259916015625, 0.0270443359375, 0.02634541015625
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.03372177734375,
+                "runMsPerUnit": [
+                  0.03372177734375, 0.033480078125, 0.03389970703125
+                ]
+              }
+            }
+          },
+          "svg": {
+            "msPerFormula": 0.059564436848958346,
+            "runMsPerFormula": [
+              0.07034187825520832, 0.05754485677083334, 0.059564436848958346
+            ],
+            "minimumRunMs": 0.05754485677083334,
+            "maximumRunMs": 0.07034187825520832,
+            "formulasPerSecond": 16788.541164852595,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.047876953125,
+                "runMsPerUnit": [0.046111328125, 0.049641015625, 0.047876953125]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.079292578125,
+                "runMsPerUnit": [0.14113046875, 0.0648298828125, 0.079292578125]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.069624609375,
+                "runMsPerUnit": [0.069430859375, 0.069624609375, 0.070215234375]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.0596818359375,
+                "runMsPerUnit": [
+                  0.0596818359375, 0.0577853515625, 0.0614974609375
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.045924609375,
+                "runMsPerUnit": [
+                  0.04724833984375, 0.045924609375, 0.04326611328125
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.057463671875,
+                "runMsPerUnit": [0.0584484375, 0.057463671875, 0.05523828125]
+              }
+            }
+          }
+        }
+      },
+      "long": {
+        "formulaCount": 3,
+        "caseCount": 3,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.20808411458333334,
+            "runMsPerFormula": [
+              0.2095388020833333, 0.20752460937500003, 0.20808411458333334
+            ],
+            "minimumRunMs": 0.20752460937500003,
+            "maximumRunMs": 0.2095388020833333,
+            "formulasPerSecond": 4805.748877094224,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.27271875,
+                "runMsPerUnit": [0.27271875, 0.2852640625, 0.2625125]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.1339890625,
+                "runMsPerUnit": [0.1339890625, 0.127963671875, 0.142290625]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.21944921875,
+                "runMsPerUnit": [0.22190859375, 0.20934609375, 0.21944921875]
+              }
+            }
+          },
+          "compile": {
+            "msPerFormula": 0.215644140625,
+            "runMsPerFormula": [
+              0.21243710937500002, 0.215644140625, 0.22590338541666669
+            ],
+            "minimumRunMs": 0.21243710937500002,
+            "maximumRunMs": 0.22590338541666669,
+            "formulasPerSecond": 4637.269517742085,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.2918890625,
+                "runMsPerUnit": [0.287328125, 0.2918890625, 0.29771328125]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.139178515625,
+                "runMsPerUnit": [0.139178515625, 0.136106640625, 0.148528125]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.21893671875,
+                "runMsPerUnit": [0.2108046875, 0.21893671875, 0.23146875]
+              }
+            }
+          },
+          "svg": {
+            "msPerFormula": 0.39538645833333336,
+            "runMsPerFormula": [
+              0.3812065104166667, 0.3991328125, 0.39538645833333336
+            ],
+            "minimumRunMs": 0.3812065104166667,
+            "maximumRunMs": 0.3991328125,
+            "formulasPerSecond": 2529.1710905206137,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.5202984375,
+                "runMsPerUnit": [0.50410625, 0.529353125, 0.5202984375]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.2722875,
+                "runMsPerUnit": [0.2682359375, 0.2738359375, 0.2722875]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.3935734375,
+                "runMsPerUnit": [0.37127734375, 0.394209375, 0.3935734375]
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "formulaCount": 27,
+        "caseCount": 3,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.021093590856481482,
+            "runMsPerFormula": [
+              0.021093590856481482, 0.0207505787037037, 0.021419169560185185
+            ],
+            "minimumRunMs": 0.0207505787037037,
+            "maximumRunMs": 0.021419169560185185,
+            "formulasPerSecond": 47407.7650791604,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 0.185278125,
+                "runMsPerUnit": [0.185687109375, 0.17624765625, 0.185278125]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 0.1918109375,
+                "runMsPerUnit": [0.1918109375, 0.190240625, 0.205951953125]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 0.19202890625,
+                "runMsPerUnit": [0.19202890625, 0.19377734375, 0.1870875]
+              }
+            }
+          },
+          "compile": {
+            "msPerFormula": 0.02062199074074074,
+            "runMsPerFormula": [
+              0.02076607349537037, 0.02062199074074074, 0.020065711805555556
+            ],
+            "minimumRunMs": 0.020065711805555556,
+            "maximumRunMs": 0.02076607349537037,
+            "formulasPerSecond": 48491.92362522029,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 0.171340234375,
+                "runMsPerUnit": [0.184155859375, 0.171340234375, 0.165955078125]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 0.19458359375,
+                "runMsPerUnit": [0.19389765625, 0.19458359375, 0.197572265625]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 0.18263046875,
+                "runMsPerUnit": [0.18263046875, 0.190869921875, 0.178246875]
+              }
+            }
+          },
+          "svg": {
+            "msPerFormula": 0.04561834490740741,
+            "runMsPerFormula": [
+              0.04777274305555555, 0.04561834490740741, 0.044731655092592595
+            ],
+            "minimumRunMs": 0.044731655092592595,
+            "maximumRunMs": 0.04777274305555555,
+            "formulasPerSecond": 21921.00572762389,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 0.4091390625,
+                "runMsPerUnit": [0.4216234375, 0.398646875, 0.4091390625]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 0.42508125,
+                "runMsPerUnit": [0.4378390625, 0.42508125, 0.41535625]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 0.4079671875,
+                "runMsPerUnit": [0.4304015625, 0.4079671875, 0.383259375]
+              }
+            }
+          }
+        }
+      }
+    },
+    "winui": {
+      "single": {
+        "formulaCount": 6,
+        "caseCount": 6,
+        "metrics": {
+          "dom": {
+            "msPerFormula": 1.1747260416666667,
+            "runMsPerFormula": [
+              1.01957109375, 1.1959665364583334, 1.1747260416666667
+            ],
+            "minimumRunMs": 1.01957109375,
+            "maximumRunMs": 1.1959665364583334,
+            "formulasPerSecond": 851.2623067257703,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.21800546875,
+                "runMsPerUnit": [0.22041171875, 0.20653984375, 0.21800546875]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 4.631325,
+                "runMsPerUnit": [3.1506875, 5.1894, 4.631325]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.44115625,
+                "runMsPerUnit": [0.4027125, 0.5238, 0.44115625]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.5305375,
+                "runMsPerUnit": [0.5305375, 0.417625, 0.61303046875]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.42787734375,
+                "runMsPerUnit": [0.42787734375, 0.239359375, 0.4569890625]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.68785,
+                "runMsPerUnit": [1.3852, 0.599075, 0.68785]
+              }
+            }
+          }
+        }
+      },
+      "long": {
+        "formulaCount": 3,
+        "caseCount": 3,
+        "metrics": {
+          "dom": {
+            "msPerFormula": 16.228166666666667,
+            "runMsPerFormula": [
+              13.173793750000002, 16.228166666666667, 41.21823333333333
+            ],
+            "minimumRunMs": 13.173793750000002,
+            "maximumRunMs": 41.21823333333333,
+            "formulasPerSecond": 61.621255224968934,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 30.8483,
+                "runMsPerUnit": [15.349, 42.07515, 30.8483]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 21.97295,
+                "runMsPerUnit": [21.97295, 4.39525, 36.0334]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 2.2141,
+                "runMsPerUnit": [2.19943125, 2.2141, 56.773]
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "formulaCount": 27,
+        "caseCount": 3,
+        "metrics": {
+          "dom": {
+            "msPerFormula": 0.3687708333333334,
+            "runMsPerFormula": [
+              0.3523893518518519, 0.3687708333333334, 0.39262546296296297
+            ],
+            "minimumRunMs": 0.3523893518518519,
+            "maximumRunMs": 0.39262546296296297,
+            "formulasPerSecond": 2711.711202756906,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 3.798075,
+                "runMsPerUnit": [4.5564, 3.3666375, 3.798075]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 3.57575,
+                "runMsPerUnit": [1.8504125, 3.57575, 3.7198]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 3.0830125,
+                "runMsPerUnit": [3.1077, 3.014425, 3.0830125]
+              }
+            }
+          }
+        }
+      }
+    },
+    "velocitex": {
+      "single": {
+        "formulaCount": 6,
+        "caseCount": 6,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.007738164265977805,
+            "runMsPerFormula": [
+              0.007738164265977805, 0.008143335978350782, 0.007495422363073582
+            ],
+            "minimumRunMs": 0.007495422363073582,
+            "maximumRunMs": 0.008143335978350782,
+            "formulasPerSecond": 129229.616434569,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.0014668273925053654,
+                "runMsPerUnit": [
+                  0.001499176025390625, 0.0014668273925053654,
+                  0.0013696289063318545
+                ]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.003297119140825089,
+                "runMsPerUnit": [
+                  0.0032025146488194878, 0.0033642578127910383,
+                  0.003297119140825089
+                ]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.004962768554833019,
+                "runMsPerUnit": [
+                  0.004962768554833019, 0.005397949219059228,
+                  0.004903564453343279
+                ]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.029160156249417923,
+                "runMsPerUnit": [
+                  0.029160156249417923, 0.030864257812936557,
+                  0.02761230468604481
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.003448486328125,
+                "runMsPerUnit": [
+                  0.0032592773436590505, 0.003448486328125,
+                  0.0035253906248726707
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.0043182373046875,
+                "runMsPerUnit": [
+                  0.004345092773746728, 0.0043182373046875, 0.004264526367023791
+                ]
+              }
+            }
+          },
+          "dom": {
+            "msPerFormula": 0.24883789062611564,
+            "runMsPerFormula": [
+              0.25792154948430834, 0.24883789062611564, 0.24736816404886972
+            ],
+            "minimumRunMs": 0.24736816404886972,
+            "maximumRunMs": 0.25792154948430834,
+            "formulasPerSecond": 4018.6805855163025,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.07108398437412689,
+                "runMsPerUnit": [
+                  0.07852539062150754, 0.07041015625145519, 0.07108398437412689
+                ]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.20498046875582077,
+                "runMsPerUnit": [
+                  0.20558593749592546, 0.20498046875582077, 0.16519531251105946
+                ]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.1665625000023283,
+                "runMsPerUnit": [
+                  0.18259765623952262, 0.1572265625, 0.1665625000023283
+                ]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.6948437500395812,
+                "runMsPerUnit": [
+                  0.6948437500395812, 0.6908593749976717, 0.7090624999254942
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.16630859374708962,
+                "runMsPerUnit": [
+                  0.1788281250046566, 0.16630859374708962, 0.16445312497671694
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.2071484375046566,
+                "runMsPerUnit": [
+                  0.2071484375046566, 0.2032421875046566, 0.20785156250349246
+                ]
+              }
+            }
+          }
+        }
+      },
+      "long": {
+        "formulaCount": 3,
+        "caseCount": 3,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.13744466145241555,
+            "runMsPerFormula": [
+              0.13830729166511446, 0.13744466145241555, 0.13720052082984088
+            ],
+            "minimumRunMs": 0.13720052082984088,
+            "maximumRunMs": 0.13830729166511446,
+            "formulasPerSecond": 7275.655448765525,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.18246093750349246,
+                "runMsPerUnit": [
+                  0.18246093750349246, 0.18742187498719431, 0.17707031249301508
+                ]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.09011718750116415,
+                "runMsPerUnit": [
+                  0.09011718750116415, 0.0946386718787835, 0.07556640624534339
+                ]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.14234374999068677,
+                "runMsPerUnit": [
+                  0.14234374999068677, 0.13027343749126885, 0.15896484375116415
+                ]
+              }
+            }
+          },
+          "dom": {
+            "msPerFormula": 2.684270833230888,
+            "runMsPerFormula": [
+              2.684270833230888, 2.5319791665921607, 2.8479166666511446
+            ],
+            "minimumRunMs": 2.5319791665921607,
+            "maximumRunMs": 2.8479166666511446,
+            "formulasPerSecond": 372.5406496319758,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 3.0518749998882413,
+                "runMsPerUnit": [
+                  3.3196874998975545, 2.979374999878928, 3.0518749998882413
+                ]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 2.3559375000186265,
+                "runMsPerUnit": [
+                  2.4621874999720603, 2.3559375000186265, 1.9118749999906868
+                ]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 2.2709374998230487,
+                "runMsPerUnit": [
+                  2.2709374998230487, 2.260624999878928, 3.580000000074506
+                ]
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "formulaCount": 27,
+        "caseCount": 3,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.003663013599617881,
+            "runMsPerFormula": [
+              0.003911132812491915, 0.003663013599617881, 0.0036572265624407146
+            ],
+            "minimumRunMs": 0.0036572265624407146,
+            "maximumRunMs": 0.003911132812491915,
+            "formulasPerSecond": 272999.25943608786,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 0.026132812497962732,
+                "runMsPerUnit": [
+                  0.02662109374978172, 0.0255126953125, 0.026132812497962732
+                ]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 0.03187011718910071,
+                "runMsPerUnit": [
+                  0.03329589843633585, 0.03187011718910071, 0.031035156251164153
+                ]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 0.041577148436772404,
+                "runMsPerUnit": [
+                  0.04568359375116415, 0.04151855468808208, 0.041577148436772404
+                ]
+              }
+            }
+          },
+          "dom": {
+            "msPerFormula": 0.17951388888630188,
+            "runMsPerFormula": [
+              0.19520833333781748, 0.1774537037083603, 0.17951388888630188
+            ],
+            "minimumRunMs": 0.1774537037083603,
+            "maximumRunMs": 0.19520833333781748,
+            "formulasPerSecond": 5570.599613233084,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 1.6359374998137355,
+                "runMsPerUnit": [1.6796875, 1.5390625, 1.6359374998137355]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 1.5306250000139698,
+                "runMsPerUnit": [
+                  1.7365625000093132, 1.5306250000139698, 1.4112500000046566
+                ]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 1.7996875001117587,
+                "runMsPerUnit": [
+                  1.8543750001117587, 1.7215625001117587, 1.7996875001117587
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "katex": {
+      "single": {
+        "formulaCount": 6,
+        "caseCount": 6,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.01397216796885914,
+            "runMsPerFormula": [
+              0.01397216796885914, 0.013603515625391083, 0.013995564778497283
+            ],
+            "minimumRunMs": 0.013603515625391083,
+            "maximumRunMs": 0.013995564778497283,
+            "formulasPerSecond": 71570.85444640931,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.004689941406468279,
+                "runMsPerUnit": [
+                  0.004689941406468279, 0.00451904296869543, 0.00484985351567957
+                ]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.010895996092585847,
+                "runMsPerUnit": [
+                  0.01096923828117724, 0.010651855469404836,
+                  0.010895996092585847
+                ]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.016647949218167923,
+                "runMsPerUnit": [
+                  0.016647949218167923, 0.016552734376091394,
+                  0.017426757813154836
+                ]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.01647216796845896,
+                "runMsPerUnit": [
+                  0.01647216796845896, 0.016074218750873115, 0.01663574218764552
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.018278808594914153,
+                "runMsPerUnit": [
+                  0.018278808594914153, 0.01831787109404104,
+                  0.017939453124199645
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.01622558593771828,
+                "runMsPerUnit": [
+                  0.01677490234396828, 0.015505371093240683, 0.01622558593771828
+                ]
+              }
+            }
+          },
+          "dom": {
+            "msPerFormula": 0.6444335937461195,
+            "runMsPerFormula": [
+              0.6535872396004075, 0.6444335937461195, 0.6306119791503685
+            ],
+            "minimumRunMs": 0.6306119791503685,
+            "maximumRunMs": 0.6535872396004075,
+            "formulasPerSecond": 1551.7502652010396,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.22199218749301508,
+                "runMsPerUnit": [
+                  0.24730468750931323, 0.22199218749301508, 0.21492187498370185
+                ]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.6928906249813735,
+                "runMsPerUnit": [
+                  0.8173437500372529, 0.6796093750162981, 0.6928906249813735
+                ]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.6770312499720603,
+                "runMsPerUnit": [
+                  0.6706250000279397, 0.6770312499720603, 0.6942187499953434
+                ]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.8468750000465661,
+                "runMsPerUnit": [
+                  0.8468750000465661, 0.90234375, 0.8254687499720603
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.6066406249883585,
+                "runMsPerUnit": [
+                  0.5947656249627471, 0.6419531249557622, 0.6066406249883585
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.7446093750186265,
+                "runMsPerUnit": [
+                  0.7446093750186265, 0.7436718750395812, 0.7495312499813735
+                ]
+              }
+            }
+          }
+        }
+      },
+      "long": {
+        "formulaCount": 3,
+        "caseCount": 3,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.11759114583401242,
+            "runMsPerFormula": [
+              0.11815755208711683, 0.11759114583401242, 0.1119401041699651
+            ],
+            "minimumRunMs": 0.1119401041699651,
+            "maximumRunMs": 0.11815755208711683,
+            "formulasPerSecond": 8504.041634321391,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.14273437499650754,
+                "runMsPerUnit": [
+                  0.15451171874883585, 0.14273437499650754, 0.13935546875291038
+                ]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.07513671875494765,
+                "runMsPerUnit": [
+                  0.07599609375029104, 0.07513671875494765, 0.07443359374883585
+                ]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.12396484376222361,
+                "runMsPerUnit": [
+                  0.12396484376222361, 0.13490234375058208, 0.12203125000814907
+                ]
+              }
+            }
+          },
+          "dom": {
+            "msPerFormula": 4.196458333327125,
+            "runMsPerFormula": [
+              4.221875000124176, 4.196458333327125, 4.096874999891345
+            ],
+            "minimumRunMs": 4.096874999891345,
+            "maximumRunMs": 4.221875000124176,
+            "formulasPerSecond": 238.29618229693202,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 5.481874999590218,
+                "runMsPerUnit": [
+                  5.5981250000186265, 5.314375000074506, 5.481874999590218
+                ]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 3.6600000001490116,
+                "runMsPerUnit": [
+                  3.6600000001490116, 3.709999999962747, 3.5971874999813735
+                ]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 3.407500000204891,
+                "runMsPerUnit": [
+                  3.407500000204891, 3.5649999999441206, 3.2115625001024455
+                ]
+              }
+            }
+          }
+        }
+      },
+      "page": {
+        "formulaCount": 27,
+        "caseCount": 3,
+        "metrics": {
+          "mathml": {
+            "msPerFormula": 0.011664858217517138,
+            "runMsPerFormula": [
+              0.011298828124752079, 0.011664858217517138, 0.012122757523482304
+            ],
+            "minimumRunMs": 0.011298828124752079,
+            "maximumRunMs": 0.012122757523482304,
+            "formulasPerSecond": 85727.57433933472,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 0.11699218749708962,
+                "runMsPerUnit": [
+                  0.10562499999650754, 0.11699218749708962, 0.12085937500523869
+                ]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 0.11314453124941792,
+                "runMsPerUnit": [
+                  0.11023437499534339, 0.11392578124650754, 0.11314453124941792
+                ]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 0.08920898437645519,
+                "runMsPerUnit": [
+                  0.08920898437645519, 0.08403320312936557, 0.09331054687936557
+                ]
+              }
+            }
+          },
+          "dom": {
+            "msPerFormula": 0.5615509259342043,
+            "runMsPerFormula": [
+              0.5615509259342043, 0.5828472222201526, 0.5534722222256716
+            ],
+            "minimumRunMs": 0.5534722222256716,
+            "maximumRunMs": 0.5828472222201526,
+            "formulasPerSecond": 1780.7823900145572,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 5.230000000447035,
+                "runMsPerUnit": [
+                  5.174374999944121, 5.611250000074506, 5.230000000447035
+                ]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 5.249374999664724,
+                "runMsPerUnit": [
+                  5.284375000279397, 5.249374999664724, 5.201249999925494
+                ]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 4.703125,
+                "runMsPerUnit": [4.703125, 4.876250000204891, 4.512499999720603]
+              }
+            }
+          }
+        }
+      }
+    }
   },
-  "endToEndPerFormulaMs": {
-    "native": [64.6438, 64.4769, 7.218055555555556],
-    "wasm": [32.32999999493359, 32.21499999701973, 3.573888888590874],
-    "katex": [32.00499999791373, 32.29499999851032, 3.566111110548162]
+  "cppManifest": {
+    "schemaVersion": 2,
+    "startedUtc": "2026-10-20T08:25:46.2563829+00:00",
+    "endedUtc": "2026-10-20T08:26:15.9327951+00:00",
+    "note": "Supplemental pure C++ public-ABI campaign, run sequentially after the four-host rotated campaign; same frozen corpus and native DLL.",
+    "compiler": "MSVC /O2 /DNDEBUG /MT /std:c++20",
+    "nativeDllSha256": "ab9300bb9b215135c69e4a914188635ab268505475074d00da0a279bc37b9747",
+    "fileSha256": {
+      "benchmarks/native-core.cpp": "d2a3f38b5f2e73740b3e3e5e9c72b71b9c25e712f535c0c9a13187c3939a4ff6",
+      "benchmarks/build-native-benchmark.ps1": "9d04340aade50a1f0b970596ad842f741f9b1446ee01962fa02dffde441f2aba",
+      "benchmarks/run-cpp-benchmark.ps1": "704fc92e875664fa8fd3723adbfd898a1bdba937b6ff043d509ad676936d4538",
+      "artifacts/benchmarks-cpp/native-core.exe": "e8ace3e9984f5883cf716e2beae3bbfbb4558a0733db260e2fd0a3909acca7d8",
+      "artifacts/benchmarks-cpp/native-workloads.inc": "5921337c80d5db3462e02cdd685980882ca5f7acb537e4c924d70d9d4e9b1b01"
+    }
   },
-  "syncPerFormulaMs": {
-    "native": [0.5219, 1.0008, 0.45876666666666666],
-    "wasm": [2.0449999943375587, 5.7349999994039536, 1.04611111101177],
-    "katex": [2.060000002384186, 10.179999999701977, 0.8877777771817313]
-  },
-  "pageTotalMs": {
-    "native": 64.9625,
-    "wasm": 32.164999997317864,
-    "katex": 32.09499999493346
-  },
-  "pageThroughputFormulasPerSecond": {
-    "native": 138.54146623051759,
-    "wasm": 279.8072439219798,
-    "katex": 280.4175105599235
-  },
-  "frameIntervalMs": {
-    "native": 31.466300000000047,
-    "wasm": 16.664999999999964,
-    "katex": 16.664999999999964
+  "routes": {
+    "single-energy-0": "cpp-fast",
+    "single-quadratic-0": "cpp-fast",
+    "single-gaussian-0": "cpp-fast",
+    "single-binomial-0": "full-core-fallback",
+    "single-determinant-0": "cpp-fast",
+    "single-derivative-0": "cpp-fast",
+    "long-aligned-0": "full-core-fallback",
+    "long-cases-0": "full-core-fallback",
+    "long-maxwell-0": "full-core-fallback",
+    "page-algebra-0": "cpp-fast",
+    "page-algebra-1": "cpp-fast",
+    "page-algebra-2": "cpp-fast",
+    "page-algebra-3": "cpp-fast",
+    "page-algebra-4": "cpp-fast",
+    "page-algebra-5": "cpp-fast",
+    "page-algebra-6": "cpp-fast",
+    "page-algebra-7": "cpp-fast",
+    "page-algebra-8": "cpp-fast",
+    "page-algebra-9": "cpp-fast",
+    "page-calculus-0": "cpp-fast",
+    "page-calculus-1": "cpp-fast",
+    "page-calculus-2": "cpp-fast",
+    "page-calculus-3": "cpp-fast",
+    "page-calculus-4": "cpp-fast",
+    "page-calculus-5": "cpp-fast",
+    "page-calculus-6": "cpp-fast",
+    "page-calculus-7": "cpp-fast",
+    "page-calculus-8": "cpp-fast",
+    "page-physics-0": "cpp-fast",
+    "page-physics-1": "cpp-fast",
+    "page-physics-2": "cpp-fast",
+    "page-physics-3": "cpp-fast",
+    "page-physics-4": "full-core-fallback",
+    "page-physics-5": "cpp-fast",
+    "page-physics-6": "cpp-fast",
+    "page-physics-7": "cpp-fast"
   }
 }

@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
@@ -20,6 +20,9 @@ internal static class Program
     {
         if (Option(args, "--render-comparison") is { } comparisonOutput)
             return RenderComparison(Path.GetFullPath(comparisonOutput));
+
+        if (!args.Contains("--legacy"))
+            return CpuBenchmark.Run(args);
 
         string output = Path.GetFullPath(Option(args, "--out") ?? "artifacts/benchmarks/native");
         int iterations = int.Parse(Option(args, "--iterations") ?? "300", CultureInfo.InvariantCulture);
@@ -67,7 +70,8 @@ internal static class Program
             {
                 foreach (IReadOnlyList<Formula> sample in workload.Samples)
                 {
-                    foreach (Formula item in sample) Warm(engine, workspace, renderer, item);
+                    foreach (Formula item in sample)
+                        Warm(engine, workspace, renderer, item);
                 }
             }
         }
@@ -87,13 +91,16 @@ internal static class Program
                 IReadOnlyList<Formula> sample = workload.Samples[iteration % workload.Samples.Count];
                 var order = Enumerable.Range(0, sample.Count).OrderBy(_ => random.Next()).ToArray();
                 long start = Stopwatch.GetTimestamp();
-                foreach (int index in order) Compile(engine, workspace, sample[index]);
+                foreach (int index in order)
+                    Compile(engine, workspace, sample[index]);
                 compile.Add(Ms(start));
                 start = Stopwatch.GetTimestamp();
-                foreach (int index in order) MathMl(engine, workspace, sample[index]);
+                foreach (int index in order)
+                    MathMl(engine, workspace, sample[index]);
                 mathml.Add(Ms(start));
                 start = Stopwatch.GetTimestamp();
-                foreach (int index in order) Svg(engine, workspace, renderer, sample[index]);
+                foreach (int index in order)
+                    Svg(engine, workspace, renderer, sample[index]);
                 svg.Add(Ms(start));
                 if (iteration % 64 == 63)
                 {
@@ -139,7 +146,8 @@ internal static class Program
     {
         Directory.CreateDirectory(output);
         string path = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "../../../../comparison.json"));
-        if (!File.Exists(path)) path = Path.GetFullPath("benchmarks/comparison.json");
+        if (!File.Exists(path))
+            path = Path.GetFullPath("benchmarks/comparison.json");
         using JsonDocument document = JsonDocument.Parse(File.ReadAllBytes(path));
         using var renderer = new WindowsMathRenderer();
         var engine = new MathEngine();
@@ -188,7 +196,8 @@ internal static class Program
         MathOptions options = Options(item);
         if (!engine.TryCompileToMathMl(item.Latex, in options, workspace, default, out string? mathml, out _, out MathDiagnostic diagnostic))
             throw new InvalidOperationException($"{item.Id}: {diagnostic.Code}");
-        if (mathml!.Length < 20) throw new InvalidOperationException($"{item.Id}: empty MathML");
+        if (mathml!.Length < 20)
+            throw new InvalidOperationException($"{item.Id}: empty MathML");
     }
 
     private static void Svg(MathEngine engine, MathWorkspace workspace, WindowsMathRenderer renderer, Formula item)
@@ -198,7 +207,8 @@ internal static class Program
             throw new InvalidOperationException($"{item.Id}: {diagnostic.Code}");
         using var stream = new MemoryStream(4096);
         renderer.WriteSvg(document!, stream);
-        if (stream.Length < 20) throw new InvalidOperationException($"{item.Id}: empty SVG");
+        if (stream.Length < 20)
+            throw new InvalidOperationException($"{item.Id}: empty SVG");
     }
 
     private static MathOptions Options(Formula item) => new() { DisplayMode = item.DisplayMode, FontSize = 24 };
@@ -234,7 +244,8 @@ internal static class Program
                     {
                         foreach (JsonElement segment in paragraph.EnumerateArray())
                         {
-                            if (!segment.TryGetProperty("latex", out JsonElement latex)) continue;
+                            if (!segment.TryGetProperty("latex", out JsonElement latex))
+                                continue;
                             formulas.Add(new Formula($"{item.GetProperty("id").GetString()}-{index++}", latex.GetString()!, segment.GetProperty("displayMode").GetBoolean()));
                         }
                     }
@@ -246,7 +257,8 @@ internal static class Program
                     samples.Add([new Formula(item.GetProperty("id").GetString()!, item.GetProperty("latex").GetString()!, item.GetProperty("displayMode").GetBoolean())]);
                 }
             }
-            if (workload.Name == "page" && pageIndex == 0) throw new InvalidOperationException("The page workload is empty.");
+            if (workload.Name == "page" && pageIndex == 0)
+                throw new InvalidOperationException("The page workload is empty.");
             result[workload.Name] = new Workload(workload.Name, samples);
         }
         return result;
