@@ -5,16 +5,26 @@
 **/__pycache__/
 *.pyc
 artifacts/
+build/
 .vs/
 *.user
 *.suo
 *.binlog
 *.pdb
+*.log
 npm/velocitex/dist/
 npm/velocitex/LICENSE
 npm/velocitex/licenses/
 npm/velocitex/THIRD-PARTY-NOTICES.md
 *.tgz
+
+# Native build temporary files
+native/**/*.tmp
+native/**/migrate/
+native/**/*-errors.txt
+native/**/assemble_parser.py
+native/**/port_parser.py
+
 # Keep generated source data and dependency locks.
 !**/packages.lock.json
 !**/package-lock.json
