@@ -550,35 +550,11 @@ struct Parser {
             return Scripts(start, false);
         }
         if (is("sqrt")) {
-            Space();
-            bool root = false;
-            std::string index;
-            if (p < end && *p == '[') {
-                ++p;
-                if (!Row(']'))
-                    return false;
-                if (!Take(']')) {
-                    ok = false;
-                    return false;
-                }
-                index.assign(out, start, out.size() - start);
-                out.resize(start);
-                root = true;
-            }
-            std::string body;
-            if (!Arg(body))
-                return false;
-            if (root) {
-                out += "<mroot>";
-                out += body;
-                out += index;
-                out += "</mroot>";
-            } else {
-                out += "<msqrt>";
-                out += body;
-                out += "</msqrt>";
-            }
-            return Scripts(start, false);
+            // Browser MathML radicals depend on the platform math font: the surd
+            // detaches from the vinculum and the bar collides with the radicand.
+            // Defer to the full Core, which draws the radical from KaTeX outlines.
+            ok = false;
+            return false;
         }
         if (is("text") || is("textrm") || is("mbox")) {
             std::string text;
@@ -615,24 +591,9 @@ struct Parser {
             return Scripts(start, false);
         }
         if (is("left")) {
-            const char* token;
-            size_t len;
-            if (!DelimiterToken(token, len))
-                return false;
-            out += "<mrow>";
-            Delimiter(token, len);
-            if (!Row('\0'))
-                return false;
-            Space();
-            if (!Take("\\right")) {
-                ok = false;
-                return false;
-            }
-            if (!DelimiterToken(token, len))
-                return false;
-            Delimiter(token, len);
-            out += "</mrow>";
-            return Scripts(start, false);
+            // Stretchy delimiters are sized by the browser's math font, not KaTeX.
+            ok = false;
+            return false;
         }
         if (is("right") || is("end") || is("middle")) {
             ok = false;
@@ -695,14 +656,8 @@ struct Parser {
             return true;
         if (is("big") || is("Big") || is("bigg") || is("Bigg") || is("bigl") || is("Bigl") || is("biggl") ||
             is("Biggl") || is("bigr") || is("Bigr") || is("biggr") || is("Biggr")) {
-            Space();
-            if (p < end) {
-                const char* s = p;
-                size_t n = 1;
-                ++p;
-                Delimiter(s, n);
-            }
-            return Scripts(start, false);
+            ok = false;
+            return false;
         }
 
         struct Symbol {
@@ -828,6 +783,16 @@ struct Parser {
             size_t n = std::strlen(symbol.name);
             if (static_cast<size_t>(p - nameStart) != n || std::memcmp(nameStart, symbol.name, n) != 0)
                 continue;
+            // Large operators and limit-style operators depend on the browser math
+            // font for glyph size, limit placement and spacing; use the full Core.
+            static const char* const kFullCoreOnly[] = {"int", "iint", "iiint", "oint", "sum", "prod", "coprod", "lim",
+                                                        "limsup", "liminf", "sup", "inf", "argmax", "argmin"};
+            for (const char* name : kFullCoreOnly) {
+                if (std::strcmp(symbol.name, name) == 0) {
+                    ok = false;
+                    return false;
+                }
+            }
             bool large = symbol.large;
             if (symbol.operatorLike) {
                 out += "<mo>";
@@ -863,8 +828,10 @@ struct Parser {
         // it as a plain aligned table produced silently wrong output, so leave
         // it to the exact C# path until the fence is implemented here.
         bool aligned = env == "aligned" || env == "align" || env == "alignedat" || env == "gathered";
-        if ((!matrix && !aligned) || env == "array" || env == "alignedat" || env == "cases" || env == "dcases" ||
-            env == "rcases" || env == "drcases") {
+        bool delimited =
+            env == "pmatrix" || env == "bmatrix" || env == "Bmatrix" || env == "vmatrix" || env == "Vmatrix";
+        if (delimited || (!matrix && !aligned) || env == "array" || env == "alignedat" || env == "cases" ||
+            env == "dcases" || env == "rcases" || env == "drcases") {
             ok = false;
             return false;
         }
