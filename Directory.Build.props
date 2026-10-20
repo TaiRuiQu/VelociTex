@@ -12,5 +12,7 @@
     <AnalysisLevel>latest</AnalysisLevel>
     <NuGetAudit>true</NuGetAudit>
     <WarningsAsErrors>$(WarningsAsErrors);IL2026;IL2057;IL2060;IL2070;IL2072;IL2075;IL2091;IL2104;IL3050;IL3053</WarningsAsErrors>
+    <!-- Use the local ILLink shim for AOT builds when the SDK task host is unavailable. -->
+    <ILLinkTargetsPath Condition="'$(PublishAot)' == 'true' and '$(VelociTexDisableIlcTaskHostWorkaround)' != 'true'">$(MSBuildThisFileDirectory)build/VelociTex.ILLink.targets</ILLinkTargetsPath>
   </PropertyGroup>
 </Project>

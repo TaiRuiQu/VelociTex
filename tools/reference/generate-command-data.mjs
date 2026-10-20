@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import {root,sourceRoot,sha256} from './acquire.mjs';
 import {loadSource} from './load-source.mjs';
-const manifest=JSON.parse(await fs.readFile(path.join(root,'docs/reference/katex-0.19.0.files.json'),'utf8'));
+const manifest=JSON.parse(await fs.readFile(path.join(root,'tools/reference/data/katex-0.19.0.files.json'),'utf8'));
 const upstream=loadSource();
 for(const module of upstream.moduleSources){const entry=manifest.sourceFiles.find(x=>x.path===module);if(!entry||sha256(await fs.readFile(path.join(sourceRoot,module)))!==entry.sha256)throw new Error('Locked command source drift: '+module);}
 const functions=upstream.functions._functions;

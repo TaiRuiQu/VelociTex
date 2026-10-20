@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <IsAotCompatible>true</IsAotCompatible>
     <PackageId>VelociTex.NativeMath</PackageId>
-    <Version>0.4.0-preview.1</Version>
+    <Version>1.0.0-preview4</Version>
     <Description>Optional native fast path for LaTeX to presentation MathML.</Description>
   </PropertyGroup>
   <ItemGroup>

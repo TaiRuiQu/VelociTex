@@ -1,19 +1,11 @@
 # Package and lifecycle contract
 
-The subsequently requested browser/npm adapter is separate from these native
+The browser/npm adapter is separate from these native
 NuGet contracts. Its asynchronous JS API, static-asset setup and known font
 limitations are specified in [the npm guide](../npm/velocitex/README.md). It
 uses a standalone C++ MathML fast path for supported formulas and only loads
 Core through .NET WASM AOT for fallback or explicit `fastMathml:false`; native
 packages do not depend on it.
-
-The historical local `0.2.0-preview.1` packages are the P2 integration surface.
-`0.4.0-preview.1` is the next local compatibility preview. A version override can
-produce a local release candidate after its source and verification gates are
-complete. Neither a version string nor packing marks full compatibility,
-old-hardware acceptance or a production release complete. The repository
-identity in metadata is the user-confirmed GitHub repository; no packing command
-pushes source or publishes packages.
 
 `VelociTex.Core` is .NET 10 and embeds the 20 unchanged, private KaTeX fonts.
 `VelociTex.Rendering.Direct2D` adds Windows-only native preparation, drawing, PNG
@@ -46,7 +38,7 @@ drawing-result allocation. Its output is byte-identical to
 independently owned warnings. Use `TryCompile` when a drawable document is also
 needed.
 
-The optional `VelociTex.NativeMath` package adds a C++ fast path:
+The optional `VelociTex.NativeMath` adapter adds a C++ fast path:
 `NativeMathMl.TryRender` returns presentation MathML for the bounded supported
 subset and `false` otherwise; `FastMathEngine.TryCompileToMathMl` retries with
 `MathEngine.TryCompileToMathMl` when native parsing is unsupported or options
@@ -58,7 +50,7 @@ the managed writer; callers that need the exact managed bytes must use
 
 The npm `RenderOptions.fastMathml` defaults to true. Fast `html`/`mathml` output is
 browser-native MathML, not the C# SVG DOM; `fastMathml:false` forces the exact
-C# contract and is used by the 3,630-case parity suite.
+C# contract.
 
 `MathView` reuses its renderer, WARP device and graphics device across result and
 DPI changes. Views on the same UI thread share those device resources, and the
@@ -109,16 +101,4 @@ reference data generators are excluded from the nupkg.
 `CompileForPresentation` separately returns literal original-source drawing data
 for ordinary syntax errors when enabled, in the chosen explicit error color.
 Cancellation, busy workspaces and resource exhaustion do not trigger a second
-unbounded attempt. Browser HTML/CSS output modes map to the confirmed native
-display and homologous export APIs; there is no runtime DOM renderer.
-
-`pack-local.ps1 -Locked` builds the three packages and portable symbol packages,
-checks their payloads and records exact hashes. A clean consumer must separately
-restore from the local feed, publish JIT and Native AOT, and run native font,
-display and export checks. Versioned consumer lock templates preserve the
-historical P2 locks and allow each new candidate to be restored independently.
-The pinned SDK supplies SourceLink and GitHub source-control tasks. Verification
-must inspect the actual PDB source map and record its commit. A syntactically
-valid source URL to an unpublished local revision is not remotely accessible
-source evidence. Package structure alone does not prove SourceLink availability,
-reproducible binaries or functional clean consumption.
+unbounded attempt. Native drawing and exports use the same retained formula data.

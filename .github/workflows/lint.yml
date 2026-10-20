@@ -47,14 +47,14 @@ jobs:
           node-version: '22.23.2'
       - name: Parse sources and build with compiler/analyzer warnings as errors
         run: ./tools/Test-CILint.ps1
-      - name: Run P4 executable assertions (JIT)
+      - name: Run core regression tests (JIT)
         run: |
-          dotnet run --project tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -- artifacts/p4/jit --phase=p4
-          if ($LASTEXITCODE -ne 0) { throw 'P4 JIT assertions failed.' }
+          dotnet run --project tests/VelociTex.Core.Tests/VelociTex.Core.Tests.csproj -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -- artifacts/tests/jit
+          if ($LASTEXITCODE -ne 0) { throw 'Core JIT assertions failed.' }
       - name: Retain assertion report
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: lint-jit-report
-          path: artifacts/p4/jit/report.json
+          path: artifacts/tests/jit/report.json
           if-no-files-found: ignore

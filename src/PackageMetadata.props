@@ -1,7 +1,7 @@
 <Project>
   <PropertyGroup>
     <IsPackable>true</IsPackable>
-    <Version Condition="'$(Version)' == ''">0.4.0-preview.1</Version>
+    <Version Condition="'$(Version)' == ''">1.0.0-preview4</Version>
     <PackageVersion>$(Version)</PackageVersion>
     <Authors>VelociTex contributors</Authors>
     <RepositoryUrl>https://github.com/TaiRuiQu/VelociTex</RepositoryUrl>
@@ -18,20 +18,14 @@
     <DebugType>portable</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <EmbedAllSources>true</EmbedAllSources>
-    <Description>Single-formula native TeX typesetting using locked KaTeX 0.19.0 rules. Local validation artifacts define compatibility; old-hardware acceptance remains unverified. Code is MIT; unchanged bundled fonts are OFL-1.1 with Reserved Font Names.</Description>
+    <Description>TeX formula typesetting with KaTeX 0.19.0 rules, native Windows rendering, and PNG, SVG and MathML export. Code is MIT; bundled fonts are OFL-1.1.</Description>
   </PropertyGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)../LICENSE" Pack="true" PackagePath="/" />
     <None Include="$(MSBuildThisFileDirectory)../PACKAGE-README.md" Pack="true" PackagePath="/" />
     <None Include="$(MSBuildThisFileDirectory)../THIRD-PARTY-NOTICES.md" Pack="true" PackagePath="/" />
     <None Include="$(MSBuildThisFileDirectory)../licenses/*" Pack="true" PackagePath="licenses/" />
-    <None Include="$(MSBuildThisFileDirectory)../docs/reference/katex-0.19.0.lock.json" Pack="true" PackagePath="reference/" />
-    <None Include="$(MSBuildThisFileDirectory)../docs/reference/katex-0.19.0.files.json" Pack="true" PackagePath="reference/" />
-    <None Include="$(MSBuildThisFileDirectory)../docs/reference/font-generation-0.19.0.json" Pack="true" PackagePath="reference/" />
-    <None Include="$(MSBuildThisFileDirectory)../Directory.Packages.props" Pack="true" PackagePath="reference/" />
-    <None Include="$(MSBuildThisFileDirectory)../global.json" Pack="true" PackagePath="reference/" />
     <None Include="$(MSBuildThisFileDirectory)../docs/package-contract.md" Pack="true" PackagePath="docs/" />
     <None Include="$(MSBuildThisFileDirectory)../SECURITY.md" Pack="true" PackagePath="/" />
-    <None Include="$(MSBuildThisFileDirectory)../CHANGELOG.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

@@ -9,13 +9,9 @@
     <Project Path="src/VelociTex.WinUI/VelociTex.WinUI.csproj" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj" />
+    <Project Path="tests/VelociTex.Core.Tests/VelociTex.Core.Tests.csproj" />
   </Folder>
   <Folder Name="/samples/">
     <Project Path="samples/VelociTex.Export.Sample/VelociTex.Export.Sample.csproj" />
-    <Project Path="samples/VelociTex.WinUI.Sample/VelociTex.WinUI.Sample.csproj" />
-  </Folder>
-  <Folder Name="/tools/">
-    <Project Path="tools/VelociTex.Native.Probe/VelociTex.Native.Probe.csproj" />
   </Folder>
 </Solution>

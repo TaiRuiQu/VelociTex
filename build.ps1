@@ -1,5 +1,7 @@
+[CmdletBinding()]
 param(
-    [ValidateSet('Build', 'Native', 'WinUI', 'P1', 'P2', 'P4', 'All')][string]$Target = 'Build',
+    [ValidateSet('Build', 'Test', 'Aot', 'All')][string]$Target = 'Build',
+    [ValidateSet('Debug', 'Release')][string]$Configuration = 'Release',
     [switch]$Locked
 )
 $ErrorActionPreference = 'Stop'
@@ -7,59 +9,29 @@ $env:DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE = 'true'
 $env:MSBuildEnableWorkloadResolver = 'false'
 Push-Location $PSScriptRoot
 try {
+    # Build the C++ ABI first so every managed output and package contains the
+    # exact native implementation used by the interop layer.
+    & ./native/build-core.ps1 -Configuration $Configuration
+    if ($LASTEXITCODE -ne 0) { throw 'Native Core build failed.' }
     $restore = @()
     if ($Locked) { $restore += '-p:RestoreLockedMode=true' }
     function Invoke-Dotnet([string[]]$Arguments) {
         & dotnet @Arguments
         if ($LASTEXITCODE -ne 0) { throw "dotnet failed: $($Arguments -join ' ')" }
     }
-    Invoke-Dotnet (@('build', 'VelociTex.slnx', '-c', 'Debug', '-p:Platform=x64', '--nologo') + $restore)
-    if ($Target -in @('Native', 'All')) {
-        Invoke-Dotnet (@('build', 'tools/VelociTex.Native.Probe/VelociTex.Native.Probe.csproj', '-c', 'Release', '-p:PublishAot=false', '-p:Platform=x64', '-t:Rebuild', '--nologo') + $restore)
-        Invoke-Dotnet @('tools/VelociTex.Native.Probe/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.Native.Probe.dll', 'artifacts/native/jit')
-        Invoke-Dotnet (@('publish', 'tools/VelociTex.Native.Probe/VelociTex.Native.Probe.csproj', '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=true', '-p:Platform=x64', '-o', 'artifacts/native/publish', '--nologo') + $restore)
-        & ./artifacts/native/publish/VelociTex.Native.Probe.exe artifacts/native/aot
-        if ($LASTEXITCODE -ne 0) { throw 'Native AOT probe failed.' }
+    Invoke-Dotnet (@('build', 'VelociTex.slnx', '-c', $Configuration, '-p:Platform=x64', '-p:PublishAot=false', '-m:1', '--nologo') + $restore)
+    if ($Target -in @('Test', 'All')) {
+        Invoke-Dotnet (@('build', 'tests/VelociTex.Core.Tests', '-c', $Configuration, '-p:Platform=x64', '-p:PublishAot=false', '-m:1', '--nologo') + $restore)
+        Invoke-Dotnet @('run', '--project', 'tests/VelociTex.Core.Tests', '-c', $Configuration, '-p:Platform=x64', '-p:PublishAot=false', '--no-build', '--', 'artifacts/tests/jit')
     }
-    if ($Target -in @('P1', 'All')) {
-        Invoke-Dotnet (@('build', 'tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj', '-c', 'Release', '-p:PublishAot=false', '-p:Platform=x64', '-t:Rebuild', '--nologo') + $restore)
-        Invoke-Dotnet @('tests/VelociTex.P1.Tests/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.P1.Tests.dll', 'artifacts/p1/jit')
-        Invoke-Dotnet (@('publish', 'tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj', '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=true', '-p:Platform=x64', '-o', 'artifacts/p1/publish', '--nologo') + $restore)
-        & ./artifacts/p1/publish/VelociTex.P1.Tests.exe artifacts/p1/aot
-        if ($LASTEXITCODE -ne 0) { throw 'P1 AOT engine assertions failed.' }
+    if ($Target -in @('Aot', 'All')) {
+        Invoke-Dotnet (@('publish', 'tests/VelociTex.Core.Tests', '-c', $Configuration, '-r', 'win-x64', '-p:PublishAot=true', '-p:Platform=x64', '-o', 'artifacts/tests/publish', '-m:1', '--nologo') + $restore)
+        & ./artifacts/tests/publish/VelociTex.Core.Tests.exe artifacts/tests/aot
+        if ($LASTEXITCODE -ne 0) { throw 'Native AOT regression tests failed.' }
     }
-    if ($Target -eq 'P2') {
-        Invoke-Dotnet (@('build', 'tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj', '-c', 'Release', '-p:PublishAot=false', '-p:Platform=x64', '-t:Rebuild', '--nologo') + $restore)
-        Invoke-Dotnet @('tests/VelociTex.P1.Tests/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.P1.Tests.dll', 'artifacts/p2/jit', '--phase=p2')
-        Invoke-Dotnet (@('publish', 'tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj', '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=true', '-p:Platform=x64', '-o', 'artifacts/p2/publish', '--nologo') + $restore)
-        & ./artifacts/p2/publish/VelociTex.P1.Tests.exe artifacts/p2/aot --phase=p2
-        if ($LASTEXITCODE -ne 0) { throw 'P2 AOT engine assertions failed.' }
-    }
-    if ($Target -eq 'P4') {
-        Invoke-Dotnet (@('build', 'tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj', '-c', 'Release', '-p:PublishAot=false', '-p:Platform=x64', '-t:Rebuild', '--nologo') + $restore)
-        Invoke-Dotnet @('tests/VelociTex.P1.Tests/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.P1.Tests.dll', 'artifacts/p4/jit', '--phase=p4')
-        Invoke-Dotnet (@('publish', 'tests/VelociTex.P1.Tests/VelociTex.P1.Tests.csproj', '-c', 'Release', '-r', 'win-x64', '-p:PublishAot=true', '-p:Platform=x64', '-o', 'artifacts/p4/publish', '--nologo') + $restore)
-        & ./artifacts/p4/publish/VelociTex.P1.Tests.exe artifacts/p4/aot --phase=p4
-        if ($LASTEXITCODE -ne 0) { throw 'P4 AOT engine assertions failed.' }
-    }
-    if ($Target -in @('WinUI', 'P1', 'All')) {
-        Invoke-Dotnet (@('publish', 'samples/VelociTex.WinUI.Sample/VelociTex.WinUI.Sample.csproj', '-c', 'Release', '-p:Platform=x64', '-o', 'artifacts/winui/publish', '--nologo') + $restore)
-        $smokeOutput = if ($Target -eq 'WinUI') { 'artifacts/winui/aot' } else { 'artifacts/p1/winui/aot' }
-        [string[]]$smokeArguments = if ($Target -eq 'WinUI') { @('--p0', '--smoke') } else { @('--p1-smoke') }
-        $smokeArguments += ('"{0}/{1}"' -f $PSScriptRoot,$smokeOutput)
-        $reportPath = Join-Path $smokeOutput 'winui-report.json'
-        if (Test-Path -LiteralPath $reportPath) { Remove-Item -LiteralPath $reportPath }
-        $application = Start-Process -FilePath ./artifacts/winui/publish/VelociTex.WinUI.Sample.exe -ArgumentList $smokeArguments -WindowStyle Hidden -PassThru
-        if (!$application.WaitForExit(60000)) {
-            $application.Kill()
-            throw 'The owned WinUI smoke process did not finish within 60 seconds.'
-        }
-        if ($application.ExitCode -ne 0) { throw "WinUI exited with $($application.ExitCode)." }
-        $errorPath = Join-Path $smokeOutput 'smoke-error.txt'
-        if (Test-Path -LiteralPath $errorPath) { throw (Get-Content -LiteralPath $errorPath -Raw) }
-        $report = Get-Content -LiteralPath $reportPath -Raw | ConvertFrom-Json
-        if (!$report.nativeAot -or $report.processId -ne $application.Id) { throw 'WinUI smoke did not complete in the expected Native AOT process.' }
-        Write-Host "WinUI AOT completed. Inspect $smokeOutput screenshots for visual acceptance."
+    if ($Target -eq 'All') {
+        & node tools/runtime-parity.mjs
+        if ($LASTEXITCODE -ne 0) { throw 'JIT/AOT output parity failed.' }
     }
 }
 finally { Pop-Location }

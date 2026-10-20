@@ -1,6 +1,6 @@
 param(
-    [string]$OutputDirectory = 'artifacts/packages/p4',
-    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '0.4.0-preview.1',
+    [string]$OutputDirectory = 'artifacts/packages/release',
+    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '1.0.0-preview4',
     [switch]$Locked,
     [switch]$VerifyDeterminism
 )
@@ -9,6 +9,8 @@ $env:DOTNET_CLI_WORKLOAD_UPDATE_NOTIFY_DISABLE = 'true'
 $env:MSBuildEnableWorkloadResolver = 'false'
 Push-Location $PSScriptRoot
 try {
+    & ./native/build-core.ps1 -Configuration Release
+    if ($LASTEXITCODE -ne 0) { throw 'Native Core build failed; packages would be unusable without the ABI DLL.' }
     Add-Type -AssemblyName System.IO.Compression
     function Read-PackagePayload([string]$Path) {
         $archive = [IO.Compression.ZipFile]::OpenRead($Path)
@@ -26,7 +28,7 @@ try {
     $output = if ([IO.Path]::IsPathRooted($OutputDirectory)) { [IO.Path]::GetFullPath($OutputDirectory) } else { [IO.Path]::GetFullPath((Join-Path $PSScriptRoot $OutputDirectory)) }
     $projects = @('VelociTex.Core', 'VelociTex.Rendering.Direct2D', 'VelociTex.WinUI')
     foreach ($project in $projects) {
-        $arguments = @('pack', "src/$project/$project.csproj", '-c', 'Release', '-p:Platform=x64', '-p:PublishAot=false', "-p:Version=$Version", '-o', $output, '--nologo')
+        $arguments = @('pack', "src/$project/$project.csproj", '-c', 'Release', '-p:Platform=x64', '-p:PublishAot=false', "-p:Version=$Version", '-o', $output, '-m:1', '--nologo')
         if ($Locked) { $arguments += '-p:RestoreLockedMode=true' }
         & dotnet @arguments
         if ($LASTEXITCODE -ne 0) { throw "Local packing failed for $project." }
@@ -35,7 +37,7 @@ try {
     if ($VerifyDeterminism) {
         $repeatOutput = Join-Path $output 'repeat'
         foreach ($project in $projects) {
-            $arguments = @('pack', "src/$project/$project.csproj", '-c', 'Release', '-p:Platform=x64', '-p:PublishAot=false', "-p:Version=$Version", '-p:NoIncremental=true', '-t:Rebuild,Pack', '-o', $repeatOutput, '--nologo')
+            $arguments = @('pack', "src/$project/$project.csproj", '-c', 'Release', '-p:Platform=x64', '-p:PublishAot=false', "-p:Version=$Version", '-p:NoIncremental=true', '-t:Rebuild,Pack', '-o', $repeatOutput, '-m:1', '--nologo')
             if ($Locked) { $arguments += '-p:RestoreLockedMode=true' }
             & dotnet @arguments
             if ($LASTEXITCODE -ne 0) { throw "Repeated local packing failed for $project." }
@@ -56,7 +58,7 @@ try {
         $archive = [IO.Compression.ZipFile]::OpenRead($path)
         try {
             $entries = @($archive.Entries | ForEach-Object { $_.FullName })
-            foreach ($required in @('LICENSE', 'PACKAGE-README.md', 'THIRD-PARTY-NOTICES.md', 'SECURITY.md', 'CHANGELOG.md', 'licenses/KaTeX-LICENSE.txt', 'licenses/KaTeX-FONTS-OFL.txt', 'docs/package-contract.md', 'reference/katex-0.19.0.lock.json', 'reference/katex-0.19.0.files.json', 'reference/font-generation-0.19.0.json', 'reference/Directory.Packages.props', 'reference/global.json')) {
+            foreach ($required in @('LICENSE', 'PACKAGE-README.md', 'THIRD-PARTY-NOTICES.md', 'SECURITY.md', 'licenses/KaTeX-LICENSE.txt', 'licenses/KaTeX-FONTS-OFL.txt', 'docs/package-contract.md')) {
                 if ($required -notin $entries) { throw "$path is missing $required." }
             }
             if (!($entries | Where-Object { $_ -like "lib/*/$project.dll" }) -or !($entries | Where-Object { $_ -like "lib/*/$project.xml" })) {

@@ -1,4 +1,4 @@
-# Build products and reproducible verification outputs.
+# Build products and test outputs.
 **/bin/
 **/obj/
 **/node_modules/
@@ -15,6 +15,9 @@ npm/velocitex/LICENSE
 npm/velocitex/licenses/
 npm/velocitex/THIRD-PARTY-NOTICES.md
 *.tgz
-# Keep small generated source data, reference manifests, and dependency locks.
+# Keep generated source data and dependency locks.
 !**/packages.lock.json
 !**/package-lock.json
+
+# Default export-example destination.
+/output/

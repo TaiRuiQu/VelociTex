@@ -38,9 +38,3 @@ ordinary syntax failures as literal colored source; it does not retry cancelled,
 busy or resource-exhausted requests as another unbounded formula. Caller-supplied
 strict handlers and text-shaping providers are ordinary .NET code: only install
 trusted implementations and follow their threading contracts.
-
-No local package command publishes to a remote feed. A remote release, signing
-identity and public vulnerability-reporting contact require a separate release
-decision. This document does not assert a security audit or a warranty. A source
-URL or SourceLink map does not prove that an unpublished local commit is
-available on the remote repository.

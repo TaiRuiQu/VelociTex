@@ -281,12 +281,12 @@ def main() -> None:
     parser.add_argument("--upstream", type=Path, required=True, help="Verified npm package directory containing dist/fonts and src/fontMetricsData.js")
     parser.add_argument("--check", action="store_true", help="Fail if committed generated files differ; do not update them")
     args = parser.parse_args()
-    lock_path = ROOT / "docs/reference/katex-0.19.0.lock.json"
+    lock_path = ROOT / "tools/reference/data/katex-0.19.0.lock.json"
     lock_bytes = lock_path.read_bytes()
     lock = json.loads(lock_bytes)
     metrics_path = args.upstream / "src/fontMetricsData.js"
     metrics_bytes = metrics_path.read_bytes()
-    files_manifest = json.loads((ROOT / "docs/reference/katex-0.19.0.files.json").read_bytes())
+    files_manifest = json.loads((ROOT / "tools/reference/data/katex-0.19.0.files.json").read_bytes())
     expected_metrics = next(item for item in files_manifest["sourceFiles"] if item["path"] == "src/fontMetricsData.js")
     if files_manifest["sourceCommit"] != lock["source"]["commit"] or sha256(metrics_bytes) != expected_metrics["sha256"]:
         raise ValueError("Locked source/fontMetricsData.js checksum mismatch")
@@ -349,7 +349,7 @@ def main() -> None:
     missing = [row for row in comparisons if row["glyphId"] is None]
     differences = [row for row in comparisons if row["deltaEm"] is not None and abs(row["deltaEm"]) > 0.00001]
     summary = {"schemaVersion": 1, "generatorVersion": GENERATOR_VERSION, "upstreamVersion": "0.19.0", "source": source, "ttfCount": len(fonts), "ttfBytes": sum(font["bytes"] for font in fonts), "cmapEntryCount": sum(len(font["cmap"]) for font in fonts), "glyphCount": sum(font["glyphCount"] for font in fonts), "texMetricCount": len(comparisons), "fontsWithoutTexMetrics": [font["name"] for font in fonts if not font["texMetrics"]], "metricsWithoutDirectCmap": missing, "advancesDifferingOver1eMinus5Em": len(differences), "maxAdvanceDifferenceEm": max(abs(row["deltaEm"]) for row in comparisons if row["deltaEm"] is not None), "reservedFontNames": sorted(reserved_names), "files": [{"path": path.relative_to(ROOT).as_posix(), "bytes": len(data), "sha256": sha256(data)} for path, data in sorted(targets.items())]}
-    targets[ROOT / "docs/reference/font-generation-0.19.0.json"] = (json.dumps(summary, ensure_ascii=False, indent=2) + "\n").encode()
+    targets[ROOT / "tools/reference/data/font-generation-0.19.0.json"] = (json.dumps(summary, ensure_ascii=False, indent=2) + "\n").encode()
     for path, data in targets.items():
         if args.check:
             if not path.exists() or path.read_bytes() != data:

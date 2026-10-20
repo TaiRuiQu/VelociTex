@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Versioning;
@@ -38,10 +37,8 @@ public static partial class BrowserBindings
             {
                 var viewport = MathSvgWriter.GetViewport(document!);
                 writer.WriteBoolean("success", true);
-                var start = Stopwatch.GetTimestamp();
                 if (wantSvg) writer.WriteString("svg", MathSvgWriter.Write(document!, idPrefix));
                 if (wantMathMl) writer.WriteString("mathml", MathMlWriter.Write(document!));
-                writer.WriteNumber("exportMs", Stopwatch.GetElapsedTime(start).TotalMilliseconds);
                 writer.WriteNumber("width", viewport.Width); writer.WriteNumber("height", viewport.Height);
                 writer.WriteNumber("baseline", document!.Baseline - viewport.Y);
                 writer.WriteNumber("logicalWidth", document.LogicalSize.Width); writer.WriteNumber("logicalHeight", document.LogicalSize.Height);
@@ -77,47 +74,6 @@ public static partial class BrowserBindings
         if (!Engine.TryCompileToMathMl(source, in options, Workspace, default, out string? mathml, out _, out MathDiagnostic diagnostic))
             return "E" + DiagnosticJson(diagnostic);
         return "M" + mathml!;
-    }
-
-    /// <summary>Compiles without serializing output; used to separate core work from export and interop.</summary>
-    [JSExport]
-    public static string CompileMetrics(string source, string optionsJson)
-    {
-        var (options, _) = ParseOptions(optionsJson);
-        long start = Stopwatch.GetTimestamp();
-        bool success = Engine.TryCompile(source, in options, Workspace, default, out _, out _);
-        double milliseconds = Stopwatch.GetElapsedTime(start).TotalMilliseconds;
-        return milliseconds.ToString("R", CultureInfo.InvariantCulture) + "|" + (success ? "1" : "0");
-    }
-
-    /// <summary>Compiles with a minimal options path, isolating option parsing and JSON from core work.</summary>
-    [JSExport]
-    public static string CompileMetricsSimple(string source, bool displayMode)
-    {
-        MathOptions options = new() { DisplayMode = displayMode };
-        long start = Stopwatch.GetTimestamp();
-        bool success = Engine.TryCompile(source, in options, Workspace, default, out _, out _);
-        double milliseconds = Stopwatch.GetElapsedTime(start).TotalMilliseconds;
-        return milliseconds.ToString("R", CultureInfo.InvariantCulture) + "|" + (success ? "1" : "0");
-    }
-
-    /// <summary>Measures the JS/WASM interop call floor for diagnostics.</summary>
-    [JSExport]
-    public static string Ping(string value) => value;
-
-    /// <summary>Measures compile and SVG serialization separately.</summary>
-    [JSExport]
-    public static string CompileMetricsSvg(string source, string optionsJson, string idPrefix)
-    {
-        var (options, _) = ParseOptions(optionsJson);
-        long compileStart = Stopwatch.GetTimestamp();
-        if (!Engine.TryCompile(source, in options, Workspace, default, out var document, out var diagnostic))
-            return "E" + DiagnosticJson(diagnostic);
-        double compile = Stopwatch.GetElapsedTime(compileStart).TotalMilliseconds;
-        long exportStart = Stopwatch.GetTimestamp();
-        string svg = MathSvgWriter.Write(document!, idPrefix);
-        double export = Stopwatch.GetElapsedTime(exportStart).TotalMilliseconds;
-        return compile.ToString("R", CultureInfo.InvariantCulture) + "|" + export.ToString("R", CultureInfo.InvariantCulture) + "|" + svg.Length;
     }
 
     /// <summary>Fast SVG path for default limits; avoids options JSON parsing and macro dictionaries.</summary>

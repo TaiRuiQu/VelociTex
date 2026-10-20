@@ -11,6 +11,5 @@
   <ItemGroup>
     <ProjectReference Include="../../src/VelociTex.Core/VelociTex.Core.csproj" />
     <ProjectReference Include="../../src/VelociTex.Rendering.Direct2D/VelociTex.Rendering.Direct2D.csproj" />
-    <None Include="../../docs/reference/katex-0.19.0.lock.json" Link="font-lock.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

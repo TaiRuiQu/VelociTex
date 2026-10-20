@@ -47,9 +47,7 @@ try {
     globalThis.vt = vt;
     const article = document.querySelector('#article');
     article.innerHTML = String.raw`<p>Inline \(E=mc^2\), fraction \(\frac{a+b}{c}\), and square root \(\sqrt{x^2+y^2}\).</p><div data-math="\int_0^1 x^2\,dx" data-display-mode="true"></div><p>Currency $20 stays literal. Escaped \\(x\\) stays literal.</p><pre>\(do not render\)</pre><p class="velocitex-ignore">\(ignored\)</p><div contenteditable="true">\(editable\)</div><p>Bad: \(\invalidcommand\).</p>`;
-    const started = performance.now();
     const [report, concurrent] = await Promise.all([vt.renderAll(article, { fastMathml: false }), vt.renderToString('x^2', { fastMathml: false })]);
-    const firstMs = performance.now() - started;
     const repeated = await vt.renderAll(article, { fastMathml: false });
     const ids = [...document.querySelectorAll('svg [id]')].map(n => n.id);
     const referencesResolve = [...document.querySelectorAll('svg use')].every(n => document.getElementById(n.getAttribute('href').slice(1)));
@@ -78,14 +76,11 @@ try {
     const limit = document.createElement('div'); limit.textContent = String.raw`\(x\) \(y\)`;
     let bounded = false;
     try { await vt.renderAll(limit, { maxFormulas: 1 }); } catch (error) { bounded = error instanceof RangeError; }
-    const warmStart = performance.now();
-    for (let i = 0; i < 100; i++) await vt.renderToString(String.raw`\frac{x^2+1}{\sqrt{y}}`);
     return { rendered: report.rendered, errors: report.errors.map(e => e.error.code), repeated: repeated.rendered,
       uniqueIds: ids.length === new Set(ids).size, referencesResolve, concurrent: concurrent.includes('<svg'), diagnostic,
       errorEscaped: !errorHtml.includes('<img') && errorHtml.includes('&lt;img'), invalidArgument, macro: macro.includes('double-struck'), macroIsolated, fallback,
       fastMathml: fastMathml.includes('<mfrac>'), fastHtml: fastHtml.includes('<math'), fastFallback: fastFallback.includes('<svg'),
       dollars: dollars.rendered, fragment: fragmentReport.rendered, rootMatch: rootReport.rendered, nested: nestedReport.rendered, bounded,
-      firstMs, warm100Ms: performance.now() - warmStart,
       skipped: article.querySelector('pre').textContent === String.raw`\(do not render\)` && !article.querySelector('[contenteditable] svg'),
     };
   });

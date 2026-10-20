@@ -5,7 +5,7 @@ using static VelociTex.Rendering.Direct2D.NativeMethods;
 
 namespace VelociTex.Rendering.Direct2D;
 
-/// <summary>A finite sRGB foreground color. Explicit formula colors are a later compatibility increment.</summary>
+/// <summary>A finite sRGB foreground color used when a formula has no explicit color.</summary>
 /// <param name="R">Red component between zero and one.</param>
 /// <param name="G">Green component between zero and one.</param>
 /// <param name="B">Blue component between zero and one.</param>
@@ -56,7 +56,18 @@ public sealed unsafe partial class WindowsMathRenderer : IDisposable
 
     /// <summary>Creates an owned WARP-backed ID2D1Device reference for a Composition host.</summary>
     /// <returns>A native COM reference. The caller must release it with Marshal.Release.</returns>
-    public static nint CreateWarpD2DDevice()=>NativeProbeRenderer.CreateWarpD2DDevice();
+    public static nint CreateWarpD2DDevice()
+    {
+        nint d3d = 0, context = 0, dxgi = 0, device = 0;
+        try
+        {
+            Check(D3D11CreateDevice(0, 5, 0, 0x20, 0, 0, 7, &d3d, null, &context));
+            dxgi = Query(d3d, new("54ec77fa-1377-44e6-8c32-88fd5f44c84c"));
+            Check(D2D1CreateDevice(dxgi, 0, &device));
+            return device;
+        }
+        finally { Release(ref dxgi); Release(ref context); Release(ref d3d); }
+    }
 
     /// <summary>Uses a caller-owned private font directory, or a shared extracted copy of the unchanged embedded fonts.</summary>
     /// <param name="fontDirectory">Caller-owned private font directory, or null to extract the embedded fonts once per process.</param>

@@ -7,5 +7,15 @@
   </PropertyGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources/Fonts/*.ttf" />
+
+    <!-- The Core implementation is native. Keep the Windows x64 ABI beside the
+         managed assembly for local runs and publish it as a runtime asset for
+         NuGet consumers. native/build-core.ps1 produces this file before pack. -->
+    <None Include="$(MSBuildThisFileDirectory)..\..\artifacts\core-native\VelociTex.Core.Native.dll"
+          Condition="Exists('$(MSBuildThisFileDirectory)..\..\artifacts\core-native\VelociTex.Core.Native.dll')"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest"
+          Pack="true"
+          PackagePath="runtimes/win-x64/native/" />
   </ItemGroup>
 </Project>

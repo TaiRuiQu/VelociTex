@@ -1,37 +1,18 @@
-# Public API export sample
+# Formula export example / 公式导出示例
 
-This Windows x64 console sample compiles nine complete formulas and exports PNG,
-self-contained SVG and MathML. It includes integrals, matrices, a named operator,
-an accent, explicit colors, transforms, invisible content and contextual text
-using actual system-font outlines. It also exports literal-source error
-presentation. It uses public APIs
-only. The development project references the repository projects; the clean
-package verification below copies the exact same `Program.cs` into a fresh
-consumer with only centrally versioned `PackageReference` entries.
-
-From the repository root, with the pinned .NET SDK:
+Requires Windows x64 and the repository's .NET SDK. Run from the repository root:
 
 ```powershell
-dotnet run --project samples/VelociTex.Export.Sample -c Release -p:PublishAot=false -p:Platform=x64 -- artifacts/export-sample --expect-jit
+dotnet run --project samples/VelociTex.Export.Sample -p:Platform=x64 -- '\frac{a}{b}+\sqrt{x}' output
 ```
 
-After building the local preview feed, verify actual package consumption:
+The first argument is a complete TeX formula without outer delimiters. The
+second is the output directory (default `output`). The program writes
+`formula.png`, `formula.svg` and `formula.mathml`. Invalid input prints a
+diagnostic and exits with code 1.
 
-```powershell
-pwsh ./tools/Verify-PackageConsumer.ps1
-```
+需要 Windows x64 和仓库指定的 .NET SDK。在仓库根目录执行上述命令；第一个参数为
+不含外层定界符的完整公式，第二个参数为输出目录，默认 `output`。成功时生成
+PNG、SVG 和 MathML；非法输入显示诊断并返回退出码 1。
 
-The verifier creates a unique consumer and isolated package directory under
-`artifacts/p4/package-consumer`, restores both JIT and Native AOT using the
-reviewed versioned locks in `package-locks/<version>`, then compiles and runs both. It verifies the
-restored and JIT-loaded DLL bytes against the actual nupkg entries, all 20
-original font hashes, source-retaining MathML, identical JIT/AOT exports,
-bounded caching, cancellation, error recovery, macro rollback and ownership.
-The generated project has no project references. `-UpdateLocks` is reserved for
-intentional dependency changes; inspect and commit both resulting lock files.
-
-Reports and all exported artifacts are retained per runtime. Actual contextual
-run text and installed fallback font provenance remain available in documents.
-These consumer formulas do not replace the full compatibility corpus or
-old-hardware acceptance. The historical P2 source template and original locks
-remain available for explicitly verifying `0.2.0-preview.1`.
+[Native usage](../../docs/native-usage.md) · [原生组件使用](../../docs/native-usage.zh-CN.md)

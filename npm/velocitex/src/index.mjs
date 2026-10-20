@@ -6,10 +6,7 @@ let compilerSvg;
 let compilerMathml;
 let compilerSvgSimple;
 let compilerMathmlSimple;
-let compilerSvgSharedSimple;let compilerMetrics;
-let compilerMetricsSimple;
-let compilerMetricsSvg;
-let ping;
+let compilerSvgSharedSimple;
 let serial = 0;
 let fastInitialization;
 let fastReady = false;
@@ -72,10 +69,6 @@ export function init(options = {}) {
       compilerSvgSimple = exports.VelociTex.Wasm.BrowserBindings.CompileSvgSimple;
       compilerMathmlSimple = exports.VelociTex.Wasm.BrowserBindings.CompileMathMlSimple;
       compilerSvgSharedSimple = exports.VelociTex.Wasm.BrowserBindings.CompileSharedSimple;
-      compilerMetrics = exports.VelociTex.Wasm.BrowserBindings.CompileMetrics;
-      compilerMetricsSimple = exports.VelociTex.Wasm.BrowserBindings.CompileMetricsSimple;
-      compilerMetricsSvg = exports.VelociTex.Wasm.BrowserBindings.CompileMetricsSvg;
-      ping = exports.VelociTex.Wasm.BrowserBindings.Ping;
     })().catch(error => {
       initialization = undefined;
       throw new Error(`Unable to initialize VelociTex WASM at ${runtimeUrl.href}. Serve the complete runtime directory over HTTP(S). ${error.message}`, { cause: error });
@@ -198,35 +191,6 @@ function errorMarkup(error, options) {
   if (!/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(color)) throw new TypeError('errorColor must be a hexadecimal color.');
   return `<span class="velocitex velocitex-error" style="color:${color}" title="${escapeHtml(error.message)}">${escapeHtml(error.source)}</span>`;
 }
-
-/** Diagnostic timing of the parse/layout pipeline only, without SVG/MathML export. */
-export async function compileMetrics(source, options = {}) {
-  if (typeof source !== "string") throw new TypeError("Formula source must be a string.");
-  await init();
-  const [time, success] = compilerMetrics(source, compileOptions(options), instanceId + (++serial)).split("|");
-  return { compileMs: Number(time), success: success === "1" };
-}
-
-/** Diagnostic timing with no options JSON parsing. */
-export async function compileMetricsSimple(source, displayMode = false) {
-  if (typeof source !== "string") throw new TypeError("Formula source must be a string.");
-  await init();
-  const [time, success] = compilerMetricsSimple(source, displayMode).split("|");
-  return { compileMs: Number(time), success: success === "1" };
-}
-
-/** Diagnostic split of compile versus SVG serialization time. */
-export async function compileMetricsSvg(source, options = {}) {
-  if (typeof source !== "string") throw new TypeError("Formula source must be a string.");
-  await init();
-  const raw = compilerMetricsSvg(source, compileOptions(options), instanceId + (++serial));
-  if (raw[0] === "E") throw new ParseError(source, JSON.parse(raw.slice(1)));
-  const [compileMs, exportMs, length] = raw.split("|");
-  return { compileMs: Number(compileMs), exportMs: Number(exportMs), length: Number(length) };
-}
-
-/** Diagnostic interop round trip. */
-export async function diagnosticPing(value = "") { await init(); return ping(value); }
 
 /** Return self-contained HTML, SVG or MathML. No CSS or web-font installation is required. */
 export async function renderToString(source, options = {}) {

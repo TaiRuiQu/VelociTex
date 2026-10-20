@@ -20,7 +20,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
-    lock = json.loads((ROOT / "docs/reference/katex-0.19.0.lock.json").read_bytes())
+    lock = json.loads((ROOT / "tools/reference/data/katex-0.19.0.lock.json").read_bytes())
     metrics = json.loads((ROOT / "src/VelociTex.Core/Generated/font-data.json").read_bytes())
     expected = {f["file"]: f for f in lock["ttfFonts"]}
     fonts = []

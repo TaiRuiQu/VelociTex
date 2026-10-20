@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 export const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-export const lock = JSON.parse(await fs.readFile(path.join(root, 'docs/reference/katex-0.19.0.lock.json'), 'utf8'));
+export const lock = JSON.parse(await fs.readFile(path.join(root, 'tools/reference/data/katex-0.19.0.lock.json'), 'utf8'));
 export const upstream = path.join(root, 'artifacts/upstream');
 export const packageRoot = path.join(upstream, 'npm/package');
 export const sourceRoot = path.join(upstream, 'source');
@@ -70,7 +70,7 @@ export async function acquire() {
   }
   await fs.copyFile(path.join(sourceRoot,'LICENSE'),path.join(root,'licenses/KaTeX-LICENSE.txt'));
   const manifest={schemaVersion:1,sourceCommit:lock.source.commit,npmVersion:lock.npm.version,npmIntegrity:lock.npm.integrity,npmSha256:sha256(tarball),sourceArchive:{url:sourceUrl,sha256:sha256(archive),gitBlobVerification:true},sourceFiles:sourceEntries,packageFiles:packageEntries};
-  await writeJson(path.join(root,'docs/reference/katex-0.19.0.files.json'),manifest);
+  await writeJson(path.join(root,'tools/reference/data/katex-0.19.0.files.json'),manifest);
   console.log(JSON.stringify({npmFiles:packageEntries.length,sourceFiles:sourceEntries.length,packageRoot,sourceRoot,sourceArchiveSha256:sha256(archive)}));
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)) await acquire();

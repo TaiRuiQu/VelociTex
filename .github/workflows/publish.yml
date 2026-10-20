@@ -72,12 +72,8 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22.23.2'
-      - name: Run P4 in JIT and Native AOT
-        run: ./build.ps1 -Target P4 -Locked
-      - name: Compare JIT/AOT results and exports
-        run: |
-          node tools/reference/p1-runtime-parity.mjs --phase=p4
-          if ($LASTEXITCODE -ne 0) { throw 'JIT/AOT parity failed.' }
+      - name: Run regression tests in JIT and Native AOT
+        run: ./build.ps1 -Target All -Locked
       - name: Pack and inspect deterministic payloads
         env:
           PACKAGE_VERSION: ${{ steps.release.outputs.version }}
@@ -103,9 +99,9 @@ jobs:
           name: release-verification-${{ github.run_id }}-${{ github.run_attempt }}
           if-no-files-found: ignore
           path: |
-            artifacts/p4/jit/report.json
-            artifacts/p4/aot/report.json
-            artifacts/p4/runtime-parity.json
+            artifacts/tests/jit/report.json
+            artifacts/tests/aot/report.json
+            artifacts/tests/runtime-parity.json
             artifacts/release-consumer/**/verification.json
             artifacts/release-consumer/**/consumer-report.json
             artifacts/release-consumer/locks/*.json

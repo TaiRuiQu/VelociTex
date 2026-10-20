@@ -4,7 +4,7 @@ import vm from 'node:vm';
 import {createRequire} from 'node:module';
 import {root,sha256} from './acquire.mjs';
 const source=path.join(root,'artifacts/upstream/source/src');
-const locked=JSON.parse(await fs.readFile(path.join(root,'docs/reference/katex-0.19.0.files.json'),'utf8'));
+const locked=JSON.parse(await fs.readFile(path.join(root,'tools/reference/data/katex-0.19.0.files.json'),'utf8'));
 const files=['unicodeAccents.js','unicodeSymbols.js','unicodeSupOrSub.ts'];
 for(const file of files){
  const target='src/'+file;

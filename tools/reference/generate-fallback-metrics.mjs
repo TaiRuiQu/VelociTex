@@ -6,7 +6,7 @@ import {loadSource} from './load-source.mjs';
 const source=loadSource(),require=createRequire(import.meta.url);
 const {getCharacterMetrics}=require(path.join(sourceRoot,'src/fontMetrics.ts'));
 const fontMap=require(path.join(sourceRoot,'src/fontMetricsData.js')).default;
-const files=JSON.parse(await fs.readFile(path.join(root,'docs/reference/katex-0.19.0.files.json'),'utf8'));
+const files=JSON.parse(await fs.readFile(path.join(root,'tools/reference/data/katex-0.19.0.files.json'),'utf8'));
 for(const name of ['src/fontMetrics.ts','src/fontMetricsData.js','src/unicodeScripts.ts']){
  const f=files.sourceFiles.find(f=>f.path===name);if(!f||sha256(await fs.readFile(path.join(sourceRoot,name)))!==f.sha256)throw new Error('Source hash mismatch '+name);
 }

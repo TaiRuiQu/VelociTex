@@ -1,9 +1,9 @@
 param(
-    [string]$Feed = 'artifacts/packages/p4',
-    [string]$Output = 'artifacts/p4/package-consumer',
-    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '0.4.0-preview.1',
+    [string]$Feed = 'artifacts/packages/release',
+    [string]$Output = 'artifacts/tests/package-consumer',
+    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '1.0.0-preview4',
     [switch]$UpdateLocks,
-    # CI stores locks for its exact newly built package bytes outside frozen source templates.
+    # Store locks for the exact package version being tested.
     [string]$LockDirectory
 )
 $ErrorActionPreference = 'Stop'
@@ -14,8 +14,8 @@ function Resolve-RepoPath([string]$Path) {
 }
 $feedPath = Resolve-RepoPath $Feed
 $outputPath = Resolve-RepoPath $Output
-$templatePath = Join-Path $repo 'samples/VelociTex.Export.Sample'
-$lockTemplatePath = if ($LockDirectory) { Resolve-RepoPath $LockDirectory } elseif ($Version -eq '0.2.0-preview.1') { Join-Path $templatePath 'package-locks' } else { Join-Path (Join-Path $templatePath 'package-locks') $Version }
+$templatePath = Join-Path $repo 'tests/package-consumer'
+$lockTemplatePath = if ($LockDirectory) { Resolve-RepoPath $LockDirectory } else { Join-Path $outputPath 'locks' }
 $packages = @('VelociTex.Core', 'VelociTex.Rendering.Direct2D')
 foreach ($id in $packages) {
     if (!(Test-Path -LiteralPath (Join-Path $feedPath "$id.$Version.nupkg"))) { throw "Missing local package: $id.$Version.nupkg in $feedPath" }
@@ -28,9 +28,8 @@ if ($UpdateLocks) { New-Item -ItemType Directory -Path $lockTemplatePath -Force 
 $utf8 = [Text.UTF8Encoding]::new($false)
 function Write-Text([string]$Path, [string]$Text) { [IO.File]::WriteAllText($Path, $Text, $utf8) }
 $programTemplate = Join-Path $templatePath 'Program.cs'
-if ($Version -eq '0.2.0-preview.1') { $programTemplate = Join-Path $templatePath 'P2.Program.cs.template' }
 Copy-Item -LiteralPath $programTemplate -Destination (Join-Path $appPath 'Program.cs')
-Copy-Item -LiteralPath (Join-Path $repo 'docs/reference/katex-0.19.0.lock.json') -Destination (Join-Path $appPath 'font-lock.json')
+Copy-Item -LiteralPath (Join-Path $repo 'tools/reference/data/katex-0.19.0.lock.json') -Destination (Join-Path $appPath 'font-lock.json')
 Copy-Item -LiteralPath (Join-Path $repo 'global.json') -Destination (Join-Path $appPath 'global.json')
 Write-Text (Join-Path $appPath 'Directory.Build.props') @'
 <Project>
@@ -176,7 +175,7 @@ foreach ($id in $packages) {
 }
 $fontLock = Get-Content -LiteralPath (Join-Path $appPath 'font-lock.json') -Raw | ConvertFrom-Json
 foreach ($runtimeReport in @($jitReport, $aotReport)) {
-    $minimumFormulas = if ($Version -eq '0.2.0-preview.1') { 5 } else { 9 }
+    $minimumFormulas = 9
     if ($runtimeReport.Fonts.Count -ne 20 -or $runtimeReport.Formulas.Count -lt $minimumFormulas -or $runtimeReport.Checks.Count -lt 90) { throw 'Consumer did not execute the full public API assertions.' }
     foreach ($font in $fontLock.ttfFonts) {
         $actual = @($runtimeReport.Fonts | Where-Object File -eq $font.file)
@@ -196,14 +195,12 @@ foreach ($formula in $jitReport.Formulas) {
         $parity += [ordered]@{ file = $export.File; sha256 = $export.Sha256; jitPath = $jitExportPath; aotPath = $aotExportPath; equal = $true }
     }
 }
-if ($Version -ne '0.2.0-preview.1') {
-    foreach ($name in @('error-fallback.png', 'error-fallback.svg', 'error-fallback.mathml')) {
+foreach ($name in @('error-fallback.png', 'error-fallback.svg', 'error-fallback.mathml')) {
         $jitPath = Join-Path (Join-Path $runPath 'jit') $name
         $aotPath = Join-Path (Join-Path $runPath 'aot') $name
         $digest = Hash-File $jitPath
         if ($digest -ne (Hash-File $aotPath)) { throw "JIT and AOT literal-source presentation bytes differ: $name" }
         $parity += [ordered]@{ file = $name; sha256 = $digest; jitPath = $jitPath; aotPath = $aotPath; equal = $true }
-    }
 }
 $sourceProgram = $programTemplate
 if ((Hash-File $sourceProgram) -ne (Hash-File (Join-Path $appPath 'Program.cs'))) { throw 'The source template changed while its clean consumer was running.' }
@@ -215,8 +212,7 @@ $evidencePaths = @($PSCommandPath, $sourceProgram, $project, (Join-Path $appPath
     (Join-Path $runPath 'jit-project.assets.json'), (Join-Path $runPath 'aot-project.assets.json'), (Join-Path $runPath 'jit/consumer-report.json'), (Join-Path $runPath 'aot/consumer-report.json'), $aotExecutable) + $logs.ToArray()
 $evidence = @($evidencePaths | ForEach-Object { [ordered]@{ path = $_; bytes = (Get-Item -LiteralPath $_).Length; sha256 = Hash-File $_ } })
 $verification = [ordered]@{
-    schemaVersion = 1; phase = $(if ($Version -eq '0.2.0-preview.1') { 'P2' } else { 'P4/P5' }); version = $Version; recordedUtc = [DateTime]::UtcNow.ToString('O'); runPath = $runPath; localFeed = $feedPath
-    isolatedPackages = $isolatedPackages; publicApiOnly = $true; projectReferences = 0; packageReferences = $packages; lockedRestoreJit = $true; lockedRestoreAot = $true
+    schemaVersion = 1; version = $Version; feed = $feedPath; isolatedPackages = $isolatedPackages; publicApiOnly = $true; projectReferences = 0; packageReferences = $packages; lockedRestoreJit = $true; lockedRestoreAot = $true
     lockDirectory = $lockTemplatePath; locksGeneratedThisRun = [bool]$UpdateLocks
     jit = [ordered]@{ processId = $jitReport.ProcessId; nativeAot = $jitReport.NativeAot; checks = $jitReport.Checks.Count; fonts = $jitReport.Fonts.Count; formulas = $jitReport.Formulas.Count }
     aot = [ordered]@{ processId = $aotReport.ProcessId; nativeAot = $aotReport.NativeAot; checks = $aotReport.Checks.Count; fonts = $aotReport.Fonts.Count; formulas = $aotReport.Formulas.Count; executableSha256 = Hash-File $aotExecutable }

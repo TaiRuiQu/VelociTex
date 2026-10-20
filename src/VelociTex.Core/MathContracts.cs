@@ -1,8 +1,6 @@
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("VelociTex.P1.Tests")]
-[assembly: InternalsVisibleTo("VelociTex.Native.Probe")]
-[assembly: InternalsVisibleTo("VelociTex.Benchmarks")]
+[assembly: InternalsVisibleTo("VelociTex.Core.Tests")]
 
 namespace VelociTex;
 
@@ -230,15 +228,27 @@ public readonly record struct MathDiagnostic(MathDiagnosticCode Code, SourceRang
 /// <summary>Immutable, independently owned output. Glyph origins and paths use logical-box coordinates.</summary>
 public sealed class MathDocument
 {
-    internal MathDocument(string source, in MathOptions options, SemanticNode[] nodes, int root, LayoutOutput layout, MathWarning[]? warnings = null)
+    private readonly NativeResultHandle _native;
+    private readonly NativeInterop.View _view;
+    private SemanticNode[]? _nodes;
+    private MathWarning[]? _warnings;
+    private LayoutStorage? _layout;
+    private sealed class LayoutStorage(LayoutOutput value) { internal readonly LayoutOutput Value=value; }
+    internal MathDocument(string source,in MathOptions options,NativeResultHandle native)
     {
-        Source = source; Options = options with { Macros = null, Session = null, TextShaper = null, StrictHandler = null }; Nodes = nodes; Root = root;
-        LogicalSize = layout.LogicalSize; Baseline = layout.Baseline; InkBounds = layout.InkBounds;
-        Glyphs = layout.Glyphs; Rules = layout.Rules; Paths = layout.Paths;
-        TextGlyphs = layout.TextGlyphs;
-        PaintCommands = layout.PaintCommands; PaintStates = layout.PaintStates;
-        TextRuns = layout.TextRuns;
-        Warnings = warnings ?? [];
+        _native=native;NativeInterop.Check(NativeInterop.ResultView(native.DangerousGetHandle(),out _view));
+        Source=source;Options=options with {Macros=null,Session=null,TextShaper=null,StrictHandler=null};
+        LogicalSize=new(_view.Width,_view.Height);Baseline=_view.Baseline;InkBounds=_view.InkBounds;
+    }
+    internal NativeResultHandle NativeHandle=>_native;
+    private LayoutOutput Layout
+    {
+        get
+        {
+            var storage=Volatile.Read(ref _layout);
+            if(storage is not null)return storage.Value;
+            lock(_native){storage=_layout;if(storage is null){storage=new(NativeInterop.Layout(_native,in _view));Volatile.Write(ref _layout,storage);}return storage.Value;}
+        }
     }
     /// <summary>Complete original source without host math delimiters; suitable for whole-formula copying.</summary>
     public string Source { get; }
@@ -253,23 +263,29 @@ public sealed class MathDocument
     /// <summary>Painted bounds in DIP; may overhang the logical box.</summary>
     public MathBounds InkBounds { get; }
     /// <summary>Independently owned mapped font glyph instructions.</summary>
-    public ReadOnlyMemory<MathGlyph> Glyphs { get; }
+    public ReadOnlyMemory<MathGlyph> Glyphs => Layout.Glyphs;
     /// <summary>Independently owned painted rectangular rules.</summary>
-    public ReadOnlyMemory<MathRule> Rules { get; }
+    public ReadOnlyMemory<MathRule> Rules => Layout.Rules;
     /// <summary>Independently owned filled and clipped paths.</summary>
-    public ReadOnlyMemory<MathPath> Paths { get; }
+    public ReadOnlyMemory<MathPath> Paths => Layout.Paths;
     /// <summary>Fallback text provenance; its outlines are already included in Paths.</summary>
-    public ReadOnlyMemory<MathTextGlyph> TextGlyphs { get; }
+    public ReadOnlyMemory<MathTextGlyph> TextGlyphs => Layout.TextGlyphs;
     /// <summary>Actual shaped text-run provenance; its immutable outlines are already retained in Paths.</summary>
-    public ReadOnlyMemory<MathTextRun> TextRuns { get; }
+    public ReadOnlyMemory<MathTextRun> TextRuns => Layout.TextRuns;
     /// <summary>Ordered drawing instructions referencing the immutable geometry arrays.</summary>
-    public ReadOnlyMemory<MathPaintCommand> PaintCommands { get; }
+    public ReadOnlyMemory<MathPaintCommand> PaintCommands => Layout.PaintCommands;
     /// <summary>Deduplicated colors and affine transforms used by drawing instructions.</summary>
-    public ReadOnlyMemory<MathPaintState> PaintStates { get; }
+    public ReadOnlyMemory<MathPaintState> PaintStates => Layout.PaintStates;
     /// <summary>Bounded independently owned compatibility warnings from successful compilation.</summary>
-    public ReadOnlyMemory<MathWarning> Warnings { get; }
-    internal SemanticNode[] Nodes { get; }
-    internal int Root { get; }
+    public ReadOnlyMemory<MathWarning> Warnings
+    {
+        get {var value=Volatile.Read(ref _warnings);if(value is not null)return value;lock(_native)return _warnings??=NativeInterop.Warnings(_native,in _view);}
+    }
+    internal SemanticNode[] Nodes
+    {
+        get {var value=Volatile.Read(ref _nodes);if(value is not null)return value;lock(_native)return _nodes??=NativeInterop.Nodes(_native,in _view);}
+    }
+    internal int Root => _view.Root;
 }
 
 /// <summary>A non-fatal locked-core compatibility condition retained by a successful result.</summary>

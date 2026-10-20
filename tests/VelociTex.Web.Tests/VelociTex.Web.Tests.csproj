@@ -7,6 +7,6 @@
   <ItemGroup>
     <ProjectReference Include="../../src/VelociTex.Core/VelociTex.Core.csproj" />
     <ProjectReference Include="../../src/VelociTex.Rendering.Svg/VelociTex.Rendering.Svg.csproj" />
-    <Content Include="../fixtures/p4.json" Link="p4.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="../fixtures/core.json" Link="core.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

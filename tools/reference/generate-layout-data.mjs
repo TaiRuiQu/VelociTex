@@ -5,7 +5,7 @@ import vm from 'node:vm';
 import ts from 'typescript';
 import {root, sourceRoot, sha256} from './acquire.mjs';
 
-const manifest=JSON.parse(fs.readFileSync(path.join(root,'docs/reference/katex-0.19.0.files.json'),'utf8'));
+const manifest=JSON.parse(fs.readFileSync(path.join(root,'tools/reference/data/katex-0.19.0.files.json'),'utf8'));
 function source(relative) {
   const bytes=fs.readFileSync(path.join(sourceRoot,relative));
   if(sha256(bytes)!==manifest.sourceFiles.find(x=>x.path===relative)?.sha256)throw new Error(`Source hash mismatch: ${relative}`);
@@ -106,7 +106,7 @@ output('src/VelociTex.Core/Generated/RadicalPathData.g.cs',[
   ...paths.map((segments,i)=>`            ${i} => [\n${segments.map((s,k)=>`                new(MathPathOperation.${s[0]}, ${s.slice(1).map((v,j)=>{let expression=format(v);const extra=extraDelta[i][k][j+1];const tall=i===5?tallDelta[k][j+1]:0;if(Math.abs(extra)>1e-10 && Math.abs(v)<400000)expression+=` + ${format(extra)} * e`;if(Math.abs(tall)>1e-10)expression+=` + ${format(tall)} * d`;return expression;}).join(', ')}),`).join('\n')}\n            ],`),
   '            _ => throw new InvalidOperationException("Unknown locked radical size."),','        };','    }','}',
 ].join('\n'));
-// P2 fixed stretchy accents and arrows, plus affine-height tall delimiters.
+// Fixed stretchy accents and arrows, plus affine-height tall delimiters.
 // Source functions run only here; product code receives absolute cubic paths.
 const stretchyPaths=Object.entries(context.exports.path).map(([name,d])=>[name,normalize(d)]);
 const tallLabels=['lbrack','rbrack','vert','doublevert','lfloor','rfloor','lceil','rceil','lparen','rparen'];

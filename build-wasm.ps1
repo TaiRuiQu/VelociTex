@@ -19,8 +19,8 @@ try {
     $arguments = @('publish', 'src/VelociTex.Wasm/VelociTex.Wasm.csproj', '-c', 'Release', '-o', $publishPath, '--nologo', "-p:RunAOTCompilation=$((!$NoAot).ToString().ToLowerInvariant())")
     # SDK WebAssembly/ILLink packs are signed per platform and their NuGet content
     # hashes differ between the Windows and Linux SDK distributions. RestoreLockedMode
-    # therefore reports NU1403 on CI for the same 10.0.13 version; the WASM project
-    # lock file remains as local documentation but is not enforced here.
+    # therefore reports NU1403 on CI for the same 10.0.13 version. SDK pack lock
+    # validation is not enforced for this cross-platform publish.
     if ($Locked) { Write-Host 'WASM SDK packs are platform-specific; lock validation is skipped for this publish.' }
     & dotnet @arguments
     if ($LASTEXITCODE -ne 0) { throw 'WASM publish failed.' }

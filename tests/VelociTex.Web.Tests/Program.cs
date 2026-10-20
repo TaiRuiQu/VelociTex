@@ -7,7 +7,7 @@ using VelociTex.Rendering.Svg;
 // missing glyphs must remain explicit diagnostics in both runtimes.
 string target = Path.GetFullPath(args.FirstOrDefault() ?? "artifacts/wasm/parity.json");
 Directory.CreateDirectory(Path.GetDirectoryName(target)!);
-using var corpus = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "p4.json")));
+using var corpus = JsonDocument.Parse(File.ReadAllBytes(Path.Combine(AppContext.BaseDirectory, "core.json")));
 using var output = File.Create(target);
 using var writer = new Utf8JsonWriter(output);
 var engine = new MathEngine();

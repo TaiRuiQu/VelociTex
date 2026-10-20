@@ -1,6 +1,6 @@
 # VelociTex for the web
 
-Render math with the existing VelociTex C# engine, compiled to WebAssembly.
+Render math with WebAssembly: a C++ MathML path and the VelociTex C# engine.
 The compatibility baseline is **KaTeX 0.19.0 core math**. The API is inspired by
 KaTeX, with asynchronous initialization. It is not a drop-in replacement for
 all KaTeX options or extensions. This is an early browser preview.
@@ -148,7 +148,7 @@ formula exceeds this bound.
 Macros are isolated per formula: no implicit cross-formula definition mutation
 or JS callback macros. There is no `trust`, HTML injection, external images,
 links, mhchem, body-text layout, automatic formula line breaking, Node.js SSR,
-or screen-reader audio acceptance claim. Source is retained as
+or structural spoken-math navigation. Source is retained as
 `data-velocitex-source`; partial visual text selection is not implemented.
 
 **Font fallback limitation:** mathematical glyphs in the 20 locked KaTeX fonts
@@ -157,9 +157,9 @@ other missing glyphs and contextual scripts requiring a platform shaper return
 `UnknownSymbol`, or readable original source when `throwOnError: false`. Full
 Windows fallback compatibility is not claimed by this preview.
 
-The package uses a Release WASM AOT build. End users need neither the SDK nor
-Node.js in the browser. It carries the .NET runtime; download size, first-use
-latency and warm rendering are separate costs. No speedup over KaTeX is asserted.
+Supported formulas use the standalone C++ WebAssembly MathML path. Other inputs
+load the bundled .NET WASM AOT runtime. End users need neither the SDK nor Node.js
+in the browser. Deploy all runtime assets together when upgrading the package.
 
 Code is MIT. Bundled unchanged KaTeX fonts and their extracted contours retain
 OFL-1.1 and Reserved Font Name terms; see `licenses/KaTeX-FONTS-OFL.txt`. .NET

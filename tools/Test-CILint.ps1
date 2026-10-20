@@ -1,4 +1,4 @@
-# Source syntax and SDK compiler/analyzer checks. Does not reformat historical sources.
+# Source syntax and SDK compiler/analyzer checks.
 [CmdletBinding()]
 param([switch]$SkipBuild)
 $ErrorActionPreference = 'Stop'
@@ -31,9 +31,9 @@ try {
     }
     if (!$SkipBuild) {
         $env:MSBuildEnableWorkloadResolver = 'false'
-        & dotnet build VelociTex.slnx -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -warnaserror --nologo
+        & dotnet build VelociTex.slnx -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -warnaserror -m:1 --nologo
         if ($LASTEXITCODE -ne 0) { throw 'Compiler/analyzer lint failed.' }
-        & dotnet build tools/VelociTex.PackageInspection/VelociTex.PackageInspection.csproj -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -warnaserror --nologo
+        & dotnet build tools/VelociTex.PackageInspection/VelociTex.PackageInspection.csproj -c Release -p:Platform=x64 -p:PublishAot=false -p:RestoreLockedMode=true -warnaserror -m:1 --nologo
         if ($LASTEXITCODE -ne 0) { throw 'Package inspection compiler/analyzer lint failed.' }
     }
     Write-Host 'Repository source lint passed.'

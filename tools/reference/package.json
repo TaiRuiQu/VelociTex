@@ -2,24 +2,14 @@
   "name": "velocitex-reference-tools",
   "private": true,
   "version": "0.0.0",
-  "description": "Development-only fixed KaTeX reference acquisition, enumeration and browser evidence.",
+  "description": "Locked KaTeX data generation and browser test dependencies.",
   "type": "module",
   "engines": {
     "node": "22.23.2",
     "npm": "10.9.8"
   },
   "scripts": {
-    "acquire": "node acquire.mjs",
-    "inventory": "node inventory.mjs",
-    "reference": "node reference.mjs",
-    "font-calibration": "node font-calibration.mjs",
-    "inspect-fonts": "node inspect-fonts.mjs",
-    "check-evidence": "node check-evidence.mjs",
-    "check-source-dist": "node check-source-dist.mjs",
-    "check-baseline": "node check-baseline.mjs",
-    "verify-svg": "node verify-svg.mjs",
-    "check-normal-corpus": "node check-normal-corpus.mjs",
-    "verify": "node acquire.mjs && node inventory.mjs && node check-source-dist.mjs && node check-normal-corpus.mjs && node reference.mjs --full-matrix && node inspect-fonts.mjs && node check-baseline.mjs && node check-evidence.mjs"
+    "acquire": "node acquire.mjs"
   },
   "devDependencies": {
     "playwright": "1.56.1",
