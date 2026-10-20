@@ -5,8 +5,9 @@ These harnesses compare the same frozen workload across three presentation paths
 | Harness | Path | Timed region |
 | --- | --- | --- |
 | `VelociTex.Benchmarks` | Native AOT Core + portable SVG / MathML | LaTeX through validation, macros, parse, layout, shaping and requested export |
+| `VelociTex.NativeMath.Bench` | Native C++ parser through P/Invoke | UTF-8 encode, native lex/parse/MathML serialize, managed string allocation |
 | `katex-browser/bench.mjs` | KaTeX 0.19.0 in Chrome | `renderToString`, DOM render, and 100-formula page |
-| `wasm-browser/bench.mjs` | VelociTex WASM in Chrome | WASM compile, SVG/MathML export, DOM render, and 100-formula page |
+| `wasm-browser/bench.mjs` | VelociTex WASM in Chrome | C++ MathML fast path, C# SVG fallback, DOM render, and 100-formula page |
 | `samples/VelociTex.WinUI.Sample --perf` | Native WinUI `MathView` | `Result` assignment through Direct2D draw and Composition frames; includes a 100-formula page |
 
 The shared corpus is [corpus.normal.json](corpus.normal.json): 60 formulas in six
@@ -14,6 +15,35 @@ categories (short, fractions/radicals, calculus, aligned, matrices, text). The
 harnesses add a complex subset and a deterministic 100-formula page (60 corpus
 entries plus 40 generated fractions/matrices/integrals). No formula-result cache
 is enabled, and the same formula set is used for both implementations.
+
+## Native C++ MathML
+
+```powershell
+./native/build-native.ps1
+dotnet publish benchmarks/VelociTex.NativeMath.Bench/VelociTex.NativeMath.Bench.csproj `
+  -c Release -r win-x64 -p:PublishAot=true -o artifacts/native-bench-aot
+$env:VELOCITEX_NATIVE_DIR = "$PWD/artifacts/native"
+./artifacts/native-bench-aot/VelociTex.NativeMath.Bench.exe benchmarks/corpus.normal.json 3000
+```
+
+The native adapter resolves `VelociTex.NativeMath.dll` from
+`VELOCITEX_NATIVE_DIR`, the app directory, or an ancestor `artifacts/native`
+directory. The benchmark validates native support for all 60 formulas and exercises
+the managed fallback before timing UTF-8 + P/Invoke + serialization.
+
+## WASM C++ MathML
+
+```powershell
+./native/build-wasm.ps1
+# copy fastmath.js/fastmath.wasm into npm/velocitex/dist/runtime, then:
+node benchmarks/wasm-browser/bench.mjs --out artifacts/performance/wasm-cpp `
+  --iterations 300 --page-rounds 5
+```
+
+`page.js` requests `output:"mathml", fastMathml:true` for the C++ path and
+`output:"svg"` for the C# SVG baseline. The browser harness also exercises a
+default fast render, an unsupported-command fallback, and the 3,630-case exact
+C# parity suite with `fastMathml:false`.
 
 ## Native Core
 

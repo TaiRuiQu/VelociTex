@@ -12,6 +12,10 @@ export interface RenderOptions {
   errorColor?: string;
   /** html includes SVG plus visually hidden semantic MathML. Default html. */
   output?: 'html' | 'svg' | 'mathml';
+  /** Use the standalone C++ MathML fast path for supported formulas. Default true.
+   *  Fast html/mathml output is native browser MathML, not SVG; set false to force
+   *  the exact C#/KaTeX-compatible SVG contract. Unsupported formulas fall back. */
+  fastMathml?: boolean;
   strict?: 'ignore' | 'warn' | 'error' | boolean;
   maxExpand?: number;
   maxInputLength?: number;

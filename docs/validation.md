@@ -164,8 +164,11 @@ are documented in `benchmarks/README.md`.
 On 2026-10-20 the user added three explicit performance goals for this scope:
 pure parsing to SVG/MathML at least 3× faster than KaTeX, WinUI end-to-end at
 least 2× faster than browser KaTeX, and the WASM binding at least 50% faster than
-browser KaTeX. The measured status and unmet targets are recorded in
-`docs/verification/performance-2026-10-20.md`.
+browser KaTeX. The C#-only baseline is in
+`docs/verification/performance-2026-10-20.md`; after the authorized C++ rewrite,
+`docs/verification/performance-cpp-2026-10-20.md` records all four targets
+passing, including the changed native-MathML contract and the exact
+`fastMathml:false` fallback used by parity tests.
 
 ## 8. AOT, Stability, and Package Consumption
 

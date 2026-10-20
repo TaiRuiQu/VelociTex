@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-20T08:40:00+08:00",
+  "sourceRevision": "3c2cbad",
+  "workingTreeModified": true,
+  "supersedes": "performance.evidence.json",
+  "targets": {
+    "pureParseSvg3x": "pass",
+    "pureParseMathml3x": "pass",
+    "winuiEndToEnd2x": "pass",
+    "wasm50Percent": "pass",
+    "singleComplexPageWorkloads": "pass"
+  },
+  "nativeCpp": {
+    "implementation": "native/VelociTex.NativeMath.cpp",
+    "binding": "src/VelociTex.NativeMath (P/Invoke, Native AOT)",
+    "samples": 180000,
+    "runs": 5,
+    "meanRangeUs": [3.0991, 3.7812],
+    "p50RangeUs": [2.5, 3.0],
+    "p95RangeUs": [6.3, 6.5],
+    "managedBytesPerCall": 916,
+    "katexMathmlMeanUs": 53.527,
+    "worstSpeedup": 14.16,
+    "bestSpeedup": 17.27,
+    "idleRunMeanRangeUs": [2.397, 2.611],
+    "idleRunSpeedupRange": [20.5, 22.3],
+    "supportedCorpusFormulas": 60,
+    "wellFormedXml": 60
+  },
+  "wasmCpp": {
+    "moduleBytes": 25051,
+    "jsBytes": 10974,
+    "iterations": 300,
+    "pageRounds": 5,
+    "parseMathmlP50Ms": 0.01,
+    "parseMathmlMeanMs": 0.0119,
+    "katexMathmlP50Ms": 0.04,
+    "katexMathmlMeanMs": 0.0464,
+    "parseSpeedupP50": 4.0,
+    "parseSpeedupMean": 3.9,
+    "complexP50Ms": 0.01,
+    "katexComplexP50Ms": 0.14,
+    "complexSpeedup": 14.0,
+    "singleDomSyncP50Ms": 0.665,
+    "katexDomSyncP50Ms": 2.31,
+    "singleDomSpeedup": 3.47,
+    "page100SyncMs": 37.795,
+    "katexPage100SyncMs": 179.99,
+    "page100SyncSpeedup": 4.76,
+    "page100PaintMs": 50.335,
+    "katexPage100PaintMs": 232.755,
+    "page100PaintSpeedup": 4.63,
+    "fastPathDefault": true,
+    "exactContractOption": "fastMathml:false"
+  },
+  "nativeCsharp": {
+    "portableSvgMeanMs": 0.064844,
+    "katexHtmlMeanMs": 0.229411,
+    "speedup": 3.54
+  },
+  "winui": {
+    "singleSyncMeanMs": 0.424986,
+    "katexDomSyncMeanMs": 2.457,
+    "singleSpeedup": 5.78,
+    "page100SyncMs": 85.397,
+    "katexPage100SyncMs": 212.25,
+    "page100SyncSpeedup": 2.49,
+    "page100SecondFrameMs": 115.5592,
+    "katexPage100PaintMs": 251.775,
+    "page100FrameSpeedup": 2.18
+  },
+  "correctness": {
+    "p1": { "valid": 64, "invalid": 12, "jit": "pass", "aot": "pass" },
+    "p2": { "valid": 307, "invalid": 31, "jit": "pass", "aot": "pass" },
+    "p4": { "valid": 3659, "invalid": 50, "exports": 3843, "jit": "pass", "aot": "pass" },
+    "wasmParity": { "valid": 3630, "diagnostics": 79, "passed": true },
+    "fastPathAssertions": { "nativeMfrac": true, "defaultFastMath": true, "unsupportedFallbackSvg": true },
+    "isolatedNpm": {
+      "sha256": "01b1e2f2a49d1cf1b36bcf263d1fa38634355005bfde13ca2252249158e6ea42",
+      "browserParityPassed": true,
+      "typescriptPassed": true
+    }
+  },
+  "contract": {
+    "fastHtml": "browser-native MathML, not C# SVG DOM",
+    "annotation": false,
+    "fallback": "full C# engine for unsupported syntax/options",
+    "cppLayoutForSvgWinUI": false
+  },
+  "artifacts": {
+    "native": "artifacts/performance/native-cpp",
+    "wasm": "artifacts/performance/wasm-cpp-final3",
+    "screenshot": "docs/verification/performance-fast-mathml.png",
+    "npmPackage": "artifacts/wasm/velocitex-0.1.0-preview.2.tgz"
+  }
+}

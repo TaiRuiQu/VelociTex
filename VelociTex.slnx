@@ -4,6 +4,7 @@
   </Configurations>
   <Folder Name="/src/">
     <Project Path="src/VelociTex.Core/VelociTex.Core.csproj" />
+    <Project Path="src/VelociTex.NativeMath/VelociTex.NativeMath.csproj" />
     <Project Path="src/VelociTex.Rendering.Direct2D/VelociTex.Rendering.Direct2D.csproj" />
     <Project Path="src/VelociTex.WinUI/VelociTex.WinUI.csproj" />
   </Folder>

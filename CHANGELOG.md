@@ -1,5 +1,19 @@
 # Changelog
 
+## C++ fast pre-render — 2026-10-20
+
+- Add `native/VelociTex.NativeMath.cpp`: an allocation-light C++ parser and
+  presentation-MathML writer with no AST and bounded input/depth/node counts.
+- Add `VelociTex.NativeMath` P/Invoke adapter and `FastMathEngine`, which tries
+  the native path and falls back to the full managed engine for unsupported
+  syntax or non-default options.
+- Add an Emscripten `-O3` build of the same parser to a 24 KB WASM module; the
+  npm binding now uses it by default for supported formulas, before starting the
+  .NET runtime. `fastMathml:false` preserves the exact C# SVG/MathML contract.
+- Achieved: native MathML **14.2x–17.3x** vs KaTeX MathML, WASM MathML parse
+  **3.9x**, single DOM **3.47x**, 100-formula page **4.76x sync / 4.63x paint**.
+  See `docs/verification/performance-cpp-2026-10-20.md`.
+
 ## Performance work — 2026-10-20
 
 - Add cached built-in macro lookup, fast ordinary-symbol parser/macro paths,
@@ -13,10 +27,9 @@
 - Add WASM output selection, direct SVG/MathML string exports, default-limit fast
   exports and AOT diagnostics; publish the AOT runtime into the npm dist.
 - Add reproducible native/KaTeX/WASM/WinUI benchmarks for single formulas,
-  complex typesetting and a 100-formula page. Measured native SVG parsing is
-  3.54x faster and the WinUI page is 2.49x faster than browser KaTeX; the MathML
-  3x and WASM 50% targets are explicitly not met. See
-  `docs/verification/performance-2026-10-20.md`.
+  complex typesetting and a 100-formula page. This C#-only baseline measured
+  native SVG 3.54x and WinUI page 2.49x; its MathML/WASM rows are superseded by
+  the C++ record above. See `docs/verification/performance-2026-10-20.md`.
 
 ## Optional web preview — 2026-10-19
 

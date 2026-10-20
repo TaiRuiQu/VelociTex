@@ -3,6 +3,8 @@
   "recordedAt": "2026-10-20T00:55:00+08:00",
   "sourceRevision": "7dca991",
   "workingTreeModified": true,
+  "supersededBy": "performance-cpp.evidence.json",
+  "note": "C#-only baseline. Its MathML/WASM failures are superseded by the C++ fast-path record; native SVG and WinUI values remain current.",
   "environment": {
     "cpu": "Intel Xeon Platinum, 2 cores / 4 logical processors, 2500 MHz",
     "os": "Microsoft Windows Server 2022 Datacenter 10.0.20348",

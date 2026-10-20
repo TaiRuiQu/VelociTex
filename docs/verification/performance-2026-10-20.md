@@ -5,6 +5,12 @@ pulled from `7dca991` plus the local performance work on top of it. It is a
 development-machine record, not old-hardware acceptance and not a complete
 release gate.
 
+> **C++ addendum:** the MathML and WASM rows below are the C#-only baseline and
+> are superseded by [the C++ fast pre-render record](performance-cpp-2026-10-20.md).
+> Native SVG and WinUI rows remain current. The C++ path meets the MathML and
+> WASM targets and changes the fast MathML output contract; see that record for
+> the measured values and fallback behavior.
+
 ## Targets and outcome
 
 | Target | Result | Status |

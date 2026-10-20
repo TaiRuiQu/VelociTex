@@ -3,8 +3,9 @@
 The subsequently requested browser/npm adapter is separate from these native
 NuGet contracts. Its asynchronous JS API, static-asset setup and known font
 limitations are specified in [the npm guide](../npm/velocitex/README.md). It
-reuses Core through .NET WASM AOT and the portable SVG renderer; native packages
-do not depend on it.
+uses a standalone C++ MathML fast path for supported formulas and only loads
+Core through .NET WASM AOT for fallback or explicit `fastMathml:false`; native
+packages do not depend on it.
 
 The historical local `0.2.0-preview.1` packages are the P2 integration surface.
 `0.4.0-preview.1` is the next local compatibility preview. A version override can
@@ -44,6 +45,20 @@ drawing-result allocation. Its output is byte-identical to
 `MathMlWriter.Write(document)` for the same source and options, and it returns
 independently owned warnings. Use `TryCompile` when a drawable document is also
 needed.
+
+The optional `VelociTex.NativeMath` package adds a C++ fast path:
+`NativeMathMl.TryRender` returns presentation MathML for the bounded supported
+subset and `false` otherwise; `FastMathEngine.TryCompileToMathMl` retries with
+`MathEngine.TryCompileToMathMl` when native parsing is unsupported or options
+contain macros, a session, a text shaper or a non-default font size. Native
+output has no source annotation and can differ in structure and whitespace from
+the managed writer; callers that need the exact managed bytes must use
+`MathEngine.TryCompileToMathMl` directly. The native adapter finds
+`VelociTex.NativeMath.dll` beside the app or via `VELOCITEX_NATIVE_DIR`.
+
+The npm `RenderOptions.fastMathml` defaults to true. Fast `html`/`mathml` output is
+browser-native MathML, not the C# SVG DOM; `fastMathml:false` forces the exact
+C# contract and is used by the 3,630-case parity suite.
 
 `MathView` reuses its renderer, WARP device and graphics device across result and
 DPI changes. Views on the same UI thread share those device resources, and the

@@ -48,9 +48,9 @@ try {
     const article = document.querySelector('#article');
     article.innerHTML = String.raw`<p>Inline \(E=mc^2\), fraction \(\frac{a+b}{c}\), and square root \(\sqrt{x^2+y^2}\).</p><div data-math="\int_0^1 x^2\,dx" data-display-mode="true"></div><p>Currency $20 stays literal. Escaped \\(x\\) stays literal.</p><pre>\(do not render\)</pre><p class="velocitex-ignore">\(ignored\)</p><div contenteditable="true">\(editable\)</div><p>Bad: \(\invalidcommand\).</p>`;
     const started = performance.now();
-    const [report, concurrent] = await Promise.all([vt.renderAll(article), vt.renderToString('x^2')]);
+    const [report, concurrent] = await Promise.all([vt.renderAll(article, { fastMathml: false }), vt.renderToString('x^2', { fastMathml: false })]);
     const firstMs = performance.now() - started;
-    const repeated = await vt.renderAll(article);
+    const repeated = await vt.renderAll(article, { fastMathml: false });
     const ids = [...document.querySelectorAll('svg [id]')].map(n => n.id);
     const referencesResolve = [...document.querySelectorAll('svg use')].every(n => document.getElementById(n.getAttribute('href').slice(1)));
     let diagnostic;
@@ -62,16 +62,19 @@ try {
     let macroIsolated = false;
     try { await vt.renderToString(String.raw`\RR`); } catch (error) { macroIsolated = error instanceof vt.ParseError; }
     let fallback;
-    try { await vt.renderToString(String.raw`\text{中文}`); } catch (error) { fallback = error.code; }
+    try { await vt.renderToString(String.raw`\text{中文}`, { fastMathml: false }); } catch (error) { fallback = error.code; }
+    const fastMathml = await vt.renderToString(String.raw`\frac{a}{b}`, { output: 'mathml', fastMathml: true });
+    const fastHtml = await vt.renderToString('x^2', { fastMathml: true });
+    const fastFallback = await vt.renderToString(String.raw`\color{red}{x}`, { fastMathml: true });
     const single = document.createElement('div'); single.textContent = '$x$ and $$y$$'; article.append(single);
-    const dollars = await vt.renderAll(single, { delimiters: [{ left: '$', right: '$', display: false }, { left: '$$', right: '$$', display: true }] });
+    const dollars = await vt.renderAll(single, { fastMathml: false, delimiters: [{ left: '$', right: '$', display: false }, { left: '$$', right: '$$', display: true }] });
     const fragment = document.createDocumentFragment();
     const fragmentText = document.createElement('div'); fragmentText.textContent = String.raw`\(z\)`; fragment.append(fragmentText);
-    const fragmentReport = await vt.renderAll(fragment);
+    const fragmentReport = await vt.renderAll(fragment, { fastMathml: false });
     const rootMatch = document.createElement('div'); rootMatch.dataset.math = 'a+b';
-    const rootReport = await vt.renderAll(rootMatch);
+    const rootReport = await vt.renderAll(rootMatch, { fastMathml: false });
     const nested = document.createElement('div'); nested.innerHTML = '<div data-math="x"><span data-math="y"></span></div>';
-    const nestedReport = await vt.renderAll(nested);
+    const nestedReport = await vt.renderAll(nested, { fastMathml: false });
     const limit = document.createElement('div'); limit.textContent = String.raw`\(x\) \(y\)`;
     let bounded = false;
     try { await vt.renderAll(limit, { maxFormulas: 1 }); } catch (error) { bounded = error instanceof RangeError; }
@@ -80,6 +83,7 @@ try {
     return { rendered: report.rendered, errors: report.errors.map(e => e.error.code), repeated: repeated.rendered,
       uniqueIds: ids.length === new Set(ids).size, referencesResolve, concurrent: concurrent.includes('<svg'), diagnostic,
       errorEscaped: !errorHtml.includes('<img') && errorHtml.includes('&lt;img'), invalidArgument, macro: macro.includes('double-struck'), macroIsolated, fallback,
+      fastMathml: fastMathml.includes('<mfrac>'), fastHtml: fastHtml.includes('<math'), fastFallback: fastFallback.includes('<svg'),
       dollars: dollars.rendered, fragment: fragmentReport.rendered, rootMatch: rootReport.rendered, nested: nestedReport.rendered, bounded,
       firstMs, warm100Ms: performance.now() - warmStart,
       skipped: article.querySelector('pre').textContent === String.raw`\(do not render\)` && !article.querySelector('[contenteditable] svg'),
@@ -87,7 +91,7 @@ try {
   });
   console.log(JSON.stringify(api));
   assert.equal(api.rendered, 4); assert.equal(api.errors.length, 1); assert.equal(api.repeated, 0);
-  for (const key of ['uniqueIds', 'referencesResolve', 'concurrent', 'errorEscaped', 'invalidArgument', 'macro', 'macroIsolated', 'bounded', 'skipped']) assert.equal(api[key], true, key);
+  for (const key of ['uniqueIds', 'referencesResolve', 'concurrent', 'errorEscaped', 'invalidArgument', 'macro', 'macroIsolated', 'bounded', 'skipped', 'fastMathml', 'fastHtml', 'fastFallback']) assert.equal(api[key], true, key);
   assert.equal(api.diagnostic.isParseError, true); assert.equal(api.fallback, 'UnknownSymbol');
   assert.equal(api.dollars, 2); assert.equal(api.fragment, 1); assert.equal(api.rootMatch, 1); assert.equal(api.nested, 1);
   const corpusPath = path.join(root, 'artifacts/wasm/parity.json');
@@ -100,8 +104,8 @@ try {
       let valid = 0, invalid = 0;
       for (const fixture of fixtures) {
         try {
-          const svg = await vt.renderToString(fixture.source, { ...fixture.options, output: 'svg' });
-          const mathml = await vt.renderToString(fixture.source, { ...fixture.options, output: 'mathml' });
+          const svg = await vt.renderToString(fixture.source, { ...fixture.options, output: 'svg', fastMathml: false });
+          const mathml = await vt.renderToString(fixture.source, { ...fixture.options, output: 'mathml', fastMathml: false });
           if (!fixture.success || svg.replace(/vt[a-z0-9]+_\d+/g, 'parity') !== fixture.svg || mathml !== fixture.mathml) errors.push(fixture.id + ': output differs');
           valid++;
         } catch (error) {
@@ -117,8 +121,8 @@ try {
     const gallery = document.createElement('section'); gallery.id = 'gallery';
     const formulas = [String.raw`\int_0^\infty e^{-x^2}\,dx=\frac{\sqrt{\pi}}{2}`, String.raw`\begin{pmatrix}a&b\\c&d\end{pmatrix}`, String.raw`\left\{\frac{x}{y}\right\}`, String.raw`\widehat{ABC}+\overrightarrow{xyz}`, String.raw`\color{red}{x}+\color{blue}{y}`, String.raw`\phantom{x}+\cancel{y}`, String.raw`\sqrt{\frac{a+b}{c+d}}`];
     document.querySelector('#article').append(gallery);
-    for (const formula of formulas) { const host = document.createElement('div'); host.style.padding = '10px'; gallery.append(host); await vt.render(formula, host); }
-    await vt.render(String.raw`\frac{a}{b}+\sqrt{x}`, document.querySelector('#dark'));
+    for (const formula of formulas) { const host = document.createElement('div'); host.style.padding = '10px'; gallery.append(host); await vt.render(formula, host, { fastMathml: false }); }
+    await vt.render(String.raw`\frac{a}{b}+\sqrt{x}`, document.querySelector('#dark'), { fastMathml: false });
   });
   await page.screenshot({ path: path.join(output, 'browser.png'), fullPage: true });
   await page.emulateMedia({ colorScheme: 'dark' });
@@ -129,7 +133,7 @@ try {
   const relocated = await custom.evaluate(async () => {
     const { init, renderToString } = await import('/package/dist/index.mjs');
     await init({ assetBaseUrl: '/static/' });
-    return (await renderToString('a+b')).includes('<svg');
+    return (await renderToString('a+b', { fastMathml: false })).includes('<svg');
   });
   assert.equal(relocated, true);
   assert.deepEqual(failures, []);

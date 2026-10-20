@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsAotCompatible>true</IsAotCompatible>
+    <PackageId>VelociTex.NativeMath</PackageId>
+    <Version>0.4.0-preview.1</Version>
+    <Description>Optional native fast path for LaTeX to presentation MathML.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../VelociTex.Core/VelociTex.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\..\artifacts\native\VelociTex.NativeMath.dll')">
+    <None Include="$(MSBuildThisFileDirectory)..\..\artifacts\native\VelociTex.NativeMath.dll"
+          Link="VelociTex.NativeMath.dll" CopyToOutputDirectory="PreserveNewest"
+          Pack="true" PackagePath="runtimes/win-x64/native/VelociTex.NativeMath.dll" />
+  </ItemGroup>
+</Project>

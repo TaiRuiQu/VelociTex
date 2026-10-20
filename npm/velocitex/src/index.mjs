@@ -11,6 +11,23 @@ let compilerMetricsSimple;
 let compilerMetricsSvg;
 let ping;
 let serial = 0;
+let fastInitialization;
+let fastReady = false;
+let fastRender;
+
+async function ensureFast() {
+  if (!fastInitialization) {
+    fastInitialization = (async () => {
+      try {
+        const mod = await import('./fastmath.mjs');
+        fastReady = await mod.initFastMath(new URL('./runtime/fastmath.js', import.meta.url).href);
+        if (fastReady) fastRender = mod.renderFastMath;
+      } catch { fastReady = false; }
+    })();
+  }
+  await fastInitialization;
+  return fastReady;
+}
 const instanceId = `vt${Math.random().toString(36).slice(2)}_`;
 const hidden = 'position:absolute;width:1px;height:1px;padding:0;border:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap';
 const svgNamespace = 'http://www.w3.org/2000/svg';
@@ -118,7 +135,14 @@ function compileOptions(options) {
 
 function canUseSimpleOptions(options) {
   for (const key of Object.keys(options)) {
-    if (!['displayMode', 'output', 'throwOnError', 'trust', '__shared'].includes(key)) return false;
+    if (!['displayMode', 'output', 'throwOnError', 'trust', '__shared', 'fastMathml'].includes(key)) return false;
+  }
+  return true;
+}
+
+function canUseFastOptions(options) {
+  for (const key of Object.keys(options)) {
+    if (!['displayMode', 'output', 'throwOnError', 'fastMathml', '__shared'].includes(key)) return false;
   }
   return true;
 }
@@ -130,6 +154,10 @@ async function compile(source, options) {
   const limit = options.maxInputLength ?? 32768;
   if (limit > 0 && limit <= 1048576 && source.length > limit) {
     throw new ParseError(source, { code: 'InputLimit', message: 'Input length budget exceeded.', start: limit, length: source.length - limit });
+  }
+  if (options.output !== 'svg' && options.fastMathml !== false && canUseFastOptions(options) && await ensureFast()) {
+    const mathml = fastRender(source, !!options.displayMode);
+    if (mathml) return { success: true, mathml, __fast: true };
   }
   await init();
   const prefix = instanceId + (++serial);
@@ -156,6 +184,10 @@ function markup(result, options) {
   if (options.output === 'mathml') return result.mathml;
   if (options.output === 'svg') return result.svg;
   if (options.output != null && options.output !== 'html') throw new TypeError('output must be html, svg or mathml.');
+  if (result.__fast) {
+    const formula = `<span class="velocitex velocitex-fast" style="display:inline-block;line-height:normal">${result.mathml}</span>`;
+    return options.displayMode ? `<span class="velocitex-display" style="display:block;text-align:center;margin:1em 0">${formula}</span>` : formula;
+  }
   const svg = result.svg.replace('<svg ', '<svg aria-hidden="true" style="display:block" ');
   const formula = `<span class="velocitex" style="position:relative;display:inline-block;line-height:0;vertical-align:${result.baseline - result.height}px"><span style="${hidden}">${result.mathml}</span>${svg}</span>`;
   return options.displayMode ? `<span class="velocitex-display" style="display:block;text-align:center;margin:1em 0">${formula}</span>` : formula;

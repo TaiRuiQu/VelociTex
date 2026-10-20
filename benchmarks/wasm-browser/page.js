@@ -109,7 +109,7 @@ window.bench = async function () {
     })(),
     parse: {
       vtSvg: await measureParse("vtSvg", f => vt.renderToString(f.latex, { displayMode: f.displayMode, output: "svg" })),
-      vtMathml: await measureParse("vtMathml", f => vt.renderToString(f.latex, { displayMode: f.displayMode, output: "mathml" })),
+      vtMathml: await measureParse("vtMathml", f => vt.renderToString(f.latex, { displayMode: f.displayMode, output: "mathml", fastMathml: true })),
       katexHtml: await measureParse("katexHtml", f => katex.renderToString(f.latex, { displayMode: f.displayMode, output: "html" })),
       katexMathml: await measureParse("katexMathml", f => katex.renderToString(f.latex, { displayMode: f.displayMode, output: "mathml" })),
     },
@@ -118,6 +118,7 @@ window.bench = async function () {
 
   for (const [name, run] of [
     ["vtSvg", f => vt.renderToString(f.latex, { displayMode: f.displayMode, output: "svg" })],
+    ["vtMathml", f => vt.renderToString(f.latex, { displayMode: f.displayMode, output: "mathml", fastMathml: true })],
     ["katexHtml", f => katex.renderToString(f.latex, { displayMode: f.displayMode, output: "html" })],
   ]) {
     const samples = [];
@@ -141,7 +142,7 @@ window.bench = async function () {
       host.textContent = "";
       await nextFrame();
       const started = performance.now();
-      if (implementation === "vt") await vt.render(fixture.latex, host, { displayMode: fixture.displayMode, throwOnError: true });
+      if (implementation === "vt") await vt.render(fixture.latex, host, { displayMode: fixture.displayMode, throwOnError: true, output: "mathml", fastMathml: true });
       else katex.render(fixture.latex, host, { displayMode: fixture.displayMode, throwOnError: true });
       syncLayout();
       const sync = performance.now() - started;
@@ -167,7 +168,7 @@ window.bench = async function () {
         const cell = document.createElement("div");
         cell.className = "row";
         pageHost.append(cell);
-        if (implementation === "vt") await vt.render(fixture.latex, cell, { displayMode: fixture.displayMode, throwOnError: true });
+        if (implementation === "vt") await vt.render(fixture.latex, cell, { displayMode: fixture.displayMode, throwOnError: true, output: "mathml", fastMathml: true });
         else katex.render(fixture.latex, cell, { displayMode: fixture.displayMode, throwOnError: true });
       }
       syncLayout();

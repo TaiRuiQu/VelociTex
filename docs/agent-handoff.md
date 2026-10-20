@@ -33,14 +33,22 @@ parse/export/software-target timings are not input-to-present measurements.
 
 On 2026-10-20 the user pulled the WASM binding into scope and set new measurable
 targets (3x pure parse, 2x WinUI end-to-end, 50% WASM versus browser KaTeX) with
-single, complex and multi-formula page workloads. The local performance work and
-all actual numbers are in
-[performance verification](verification/performance-2026-10-20.md). Native
-portable-SVG parsing and both WinUI single/page targets currently pass; the
-MathML 3x and WASM 50% targets do not. WASM AOT diagnostics show the compile
-floor alone exceeds the 2x parse budget, so further gains need an algorithmic
-reduction or a different browser runtime, not another export tweak. Benchmarks
-live in `benchmarks/`; large raw evidence remains under ignored `artifacts/`.
+single, complex and multi-formula page workloads. The C#-only baseline is in
+[performance verification](verification/performance-2026-10-20.md); it passed
+native SVG and both WinUI targets but could not meet MathML/WASM.
+
+The user then authorized a C++ rewrite of the pre-render pipeline and a WASM
+binding that bypasses the C# AOT runtime. `native/VelociTex.NativeMath.cpp` is an
+allocation-light parser + presentation-MathML writer; it is exposed through
+`VelociTex.NativeMath` P/Invoke and compiled directly to a 24 KB Emscripten WASM
+module. The npm binding uses it by default for supported formulas and falls back
+to C# for unsupported syntax. Results and the changed MathML contract are in
+[the C++ record](verification/performance-cpp-2026-10-20.md): all four measured
+targets now pass (native MathML 14.2x–17.3x, WASM page 4.76x sync / 4.63x paint).
+`fastMathml:false` retains the exact C# contract for parity. C++ layout for the
+SVG/WinUI drawing pipeline is still not implemented; those existing C# paths
+meet their targets. Benchmarks live in `benchmarks/` and `native/`; large raw
+evidence remains under ignored `artifacts/`.
 
 P0–P4 are implemented and committed. P2 is `867283c`, P3 is `cd05074`, and P4 is
 `1b0c777`. The local `1.0.0-rc.1` candidates use clean P4 source revision

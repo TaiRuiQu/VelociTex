@@ -26,10 +26,12 @@ On 2026-10-20 the user set three measurable performance goals for the new WASM
 binding and the existing native paths: pure parsing to SVG/MathML at least **3×**
 faster than KaTeX, WinUI end-to-end display at least **2×** faster than browser
 KaTeX, and the WASM binding at least **50%** faster than browser KaTeX. Tests must
-cover single formulas, complex typesetting and multi-formula pages. The current
-measured status (including which goals are met) is recorded in
-[Performance verification](verification/performance-2026-10-20.md); setting a
-target does not itself establish it.
+cover single formulas, complex typesetting and multi-formula pages. The C#-only
+baseline is in [Performance verification](verification/performance-2026-10-20.md).
+After the user authorized a C++ pre-render rewrite and a non-C# WASM binding,
+[the C++ record](verification/performance-cpp-2026-10-20.md) reports all four
+targets passing, with native MathML 20.5×–22.3× and WASM page 4.76×. That record
+also defines the changed fast MathML contract and the C# fallback.
 
 ## 2. Platform and Runtime (User Confirmed)
 

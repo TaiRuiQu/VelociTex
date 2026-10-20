@@ -48,7 +48,20 @@ adjacent `runtime/` automatically:
 ```
 
 SVG contours are self-contained: no stylesheet, external font download or
-installed .NET is needed. The browser downloads the bundled .NET WASM runtime.
+installed .NET is needed. The C++ MathML fast path is a 24 KB WebAssembly module
+and does not download the .NET runtime for supported formulas; unsupported
+formulas or `fastMathml: false` fall back to the bundled .NET WASM runtime.
+
+## Fast MathML path
+
+`render` and `renderToString` use a C++ parser/compiler by default when `output`
+is `html` or `mathml`. It performs the complete pre-render pipeline in a small
+standalone WASM module and lets the browser lay out native MathML; for supported
+formulas the .NET runtime is never started. This is much faster and produces
+valid MathML, but glyph shapes and spacing follow the browser's math font rather
+than KaTeX's SVG. Set `fastMathml: false` or `output: 'svg'` for the exact
+C#/KaTeX-compatible SVG output. Unsupported commands automatically use that full
+C# path, so correctness is preserved.
 
 ## Rendering examples
 
@@ -95,7 +108,9 @@ console.log(report.rendered, report.errors);
   shared by concurrent calls. Call before rendering to override the asset URL.
 - `render(source, element, options?)`: replaces the element's contents.
 - `renderToString(source, options?)`: returns HTML by default (SVG plus visually
-  hidden semantic MathML). `output: 'svg' | 'mathml'` selects one standalone format.
+  hidden semantic MathML, unless the native fast path handles it). `output: 'svg' |
+  'mathml'` selects one standalone format. `fastMathml: false` forces the exact
+  C# SVG/MathML contract.
 - `renderAll(root = document.body, options?)`: scans `[data-math]` elements and
   text containing `$$…$$`, `\[…\]`, or `\(…\)`. Repeated calls skip rendered
   output. `data-math` supplies TeX; a custom `selector` can use element text.

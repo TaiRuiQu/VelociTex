@@ -30,6 +30,10 @@ try {
     $frameworkPath = Join-Path $publishPath 'wwwroot/_framework'
     if (!(Test-Path -LiteralPath (Join-Path $frameworkPath 'dotnet.js'))) { throw 'WASM SDK publish output is missing dotnet.js.' }
     Copy-Item -LiteralPath $frameworkPath -Destination (Join-Path $distPath 'runtime') -Recurse
+    & (Join-Path $PSScriptRoot 'native/build-wasm.ps1') -Out 'artifacts/wasm/fastmath'
+    if ($LASTEXITCODE -ne 0) { throw 'C++ MathML WASM build failed.' }
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'artifacts/wasm/fastmath/fastmath.js') -Destination (Join-Path $distPath 'runtime')
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'artifacts/wasm/fastmath/fastmath.wasm') -Destination (Join-Path $distPath 'runtime')
     Copy-Item -Path (Join-Path $packagePath 'src/*') -Destination $distPath
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'LICENSE') -Destination $packagePath
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'THIRD-PARTY-NOTICES.md') -Destination $packagePath
