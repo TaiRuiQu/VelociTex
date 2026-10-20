@@ -7,11 +7,13 @@ param(
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
 
-# Determine platform and build approach
-$isWindows = $PSVersionTable.PSVersion.Major -lt 6 -or $PSVersionTable.Platform -eq 'Win32NT' -or $IsWindows
-$isLinux = $PSVersionTable.Platform -eq 'Unix' -and !$IsMacOS
+# Build Windows-native, not ASI-independent. `$IsWindows` is a read-only
+# automatic variable in PowerShell 6+, and Windows PowerShell 5.1 defaults to
+# treating any Unix-looking Platform value as Windows; both cases are handled.
+$onWindows = $PSVersionTable.PSVersion.Major -lt 6 -or $PSVersionTable.Platform -eq 'Win32NT' -or $IsWindows
+$onLinux = !$onWindows -and $PSVersionTable.Platform -eq 'Unix' -and !$IsMacOS
 
-if ($isWindows) {
+if ($onWindows) {
     # Windows MSVC build
     if (!$VcVars) {
         $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
@@ -36,7 +38,7 @@ if ($isWindows) {
     & cmd.exe /d /s /c $command
     if ($LASTEXITCODE -ne 0) { throw "Native Core build failed with exit code $LASTEXITCODE." }
     Write-Host "Native Core built at $dll"
-} elseif ($isLinux) {
+} elseif ($onLinux) {
     # Linux CMake build
     $outputPath = if ([IO.Path]::IsPathRooted($Out)) { $Out } else { Join-Path $repoRoot $Out }
     New-Item -ItemType Directory -Force $outputPath | Out-Null
