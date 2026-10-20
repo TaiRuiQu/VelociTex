@@ -8,6 +8,10 @@
     <WasmEnableHotReload>false</WasmEnableHotReload>
     <WasmEnableThreads>false</WasmEnableThreads>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <!-- SDK WebAssembly/ILLink packages are signed per platform; their NuGet
+         content hashes differ between the Windows and Linux SDK distributions.
+         A cross-platform lock file would reject one of them with NU1403. -->
+    <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
     <RunAOTCompilation Condition="'$(RunAOTCompilation)' == ''">true</RunAOTCompilation>
     <WasmStripILAfterAOT>true</WasmStripILAfterAOT>
   </PropertyGroup>
