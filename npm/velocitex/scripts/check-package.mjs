@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 
-for (const file of ['dist/index.mjs', 'dist/index.d.ts', 'dist/runtime/dotnet.js', 'dist/runtime/LICENSE.dotnet.txt', 'dist/runtime/THIRD-PARTY-NOTICES.dotnet.txt', 'dist/build-info.json', 'images/comparison-algebra.png', 'images/comparison-calculus.png', 'images/comparison-structures.png', 'images/comparison-dark.png', 'LICENSE', 'licenses/KaTeX-FONTS-OFL.txt', 'THIRD-PARTY-NOTICES.md']) {
+for (const file of ['dist/index.mjs', 'dist/index.d.ts', 'dist/fastmath.mjs', 'dist/runtime/dotnet.js', 'dist/runtime/fastmath.js', 'dist/runtime/fastmath.wasm', 'dist/runtime/LICENSE.dotnet.txt', 'dist/runtime/THIRD-PARTY-NOTICES.dotnet.txt', 'dist/build-info.json', 'images/comparison-algebra.png', 'images/comparison-calculus.png', 'images/comparison-structures.png', 'images/comparison-dark.png', 'LICENSE', 'licenses/KaTeX-FONTS-OFL.txt', 'THIRD-PARTY-NOTICES.md']) {
   await fs.access(new URL(`../${file}`, import.meta.url));
 }
 const info = JSON.parse(await fs.readFile(new URL('../dist/build-info.json', import.meta.url), 'utf8'));
