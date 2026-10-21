@@ -1,6 +1,6 @@
-"""Aggregate schema-v2 raw batches and plot refresh-independent work.
+"""Aggregate native schema-2 and browser schema-2/3 raw batches.
 
-python benchmarks/plot_benchmarks.py --data benchmarks/results/2026-10-20-preview6
+python benchmarks/plot_benchmarks.py --data benchmarks/results/2026-10-21-html-css
 """
 
 import argparse
@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 COLORS = {"cpp": "#183d59", "native": "#183d59", "winui": "#183d59", "velocitex": "#007d6b", "katex": "#b25b33"}
-LABELS = {"cpp": "VelociTex native C++ ABI", "native": "VelociTex native C++ / .NET", "winui": "VelociTex WinUI / Direct2D", "velocitex": "VelociTex C++ WASM + fallback", "katex": "KaTeX 0.19.0 / JavaScript"}
+LABELS = {"cpp": "VelociTex native C++ ABI", "native": "VelociTex native C++ / .NET", "winui": "VelociTex WinUI / Direct2D", "velocitex": "VelociTex HTML/CSS WASM", "katex": "KaTeX 0.19.0 / JavaScript"}
 WORKLOADS = ["single", "long", "page"]
 TITLES = ["Common formulas", "Complex formulas", "Mixed pages (8–10 formulas)"]
 
@@ -27,17 +27,27 @@ def load(path):
 
 def aggregate(data):
     manifest = load(data / "manifest.json")
+    if manifest["schemaVersion"] not in (2, 3):
+        raise ValueError("Unknown campaign schema")
     corpus_bytes = Path("benchmarks/workloads.json").read_bytes()
     digest = hashlib.sha256(corpus_bytes).hexdigest()
     corpus = json.loads(corpus_bytes)
-    summary = {"schemaVersion": 2, "manifest": manifest, "workloadSha256": digest, "engines": {}}
+    current = manifest["schemaVersion"] == 3
+    if current and manifest.get("browserOutput") != "htmlAndMathml":
+        raise ValueError("Unexpected browser output contract")
+    summary = {"schemaVersion": manifest["schemaVersion"], "manifest": manifest, "workloadSha256": digest, "engines": {}}
     summary["cppManifest"] = load(data / "cpp-manifest.json")
     for engine in ["cpp", "native", "winui", "velocitex", "katex"]:
         reports = [load(data / f"run-{i}" / engine / f"{engine}-report.json") for i in range(1, manifest["runs"] + 1)]
-        if any(r["schemaVersion"] != 2 or r["workloadSha256"] != digest for r in reports):
+        browser = engine in ("velocitex", "katex")
+        if any(r["schemaVersion"] != (3 if current and browser else 2) or r["workloadSha256"] != digest for r in reports):
             raise ValueError("Mixed schemas or workloads")
+        if current and browser and any(r["result"].get("outputContract") != "htmlAndMathml" for r in reports):
+            raise ValueError("Mixed browser output contracts")
         engine_data = {}
         metrics = ["mathml"] if engine == "cpp" else ["dom"] if engine == "winui" else ["mathml", "dom"] if engine in ("velocitex", "katex") else ["mathml", "compile", "svg"]
+        if current and browser:
+            metrics = ["html", *metrics]
         for name in WORKLOADS:
             expected = corpus["workloads"][name]["cases"]
             expected_counts = {c["id"]: sum("latex" in s for p in c["paragraphs"] for s in p) if name == "page" else 1 for c in expected}
@@ -71,6 +81,15 @@ def aggregate(data):
     routes = [load(data / f"run-{i}" / "velocitex" / "velocitex-report.json")["result"]["routes"] for i in range(1, manifest["runs"] + 1)]
     if any(r != routes[0] for r in routes):
         raise ValueError("Fast-path routing changed across replicates")
+    if current:
+        expected_routes = {
+            f"{case['id']}-{i}": "katex-html-wasm"
+            for name in WORKLOADS
+            for case in corpus["workloads"][name]["cases"]
+            for i in range(sum("latex" in s for p in case["paragraphs"] for s in p) if name == "page" else 1)
+        }
+        if routes[0] != expected_routes:
+            raise ValueError("Missing or unexpected HTML/CSS WASM routes")
     summary["routes"] = routes[0]
     return summary
 
@@ -86,7 +105,7 @@ def chart(summary, out, metric, filename, title, subtitle, engines):
             lo, hi = value["minimumRunMs"] * 1000, value["maximumRunMs"] * 1000
             ax.errorbar(number, i, xerr=[[number - lo], [hi - number]], color="#263642", capsize=3, linewidth=1)
             ax.text(hi + max(numbers) * .035, i, f"{number:,.1f}", va="center", fontsize=10, fontweight="bold", color="#172d3b")
-        ax.set_yticks(np.arange(len(engines)), ["Native C++" if e in ("cpp", "native", "winui") else "C++ WASM" if e == "velocitex" else "KaTeX" for e in engines])
+        ax.set_yticks(np.arange(len(engines)), ["Native C++" if e in ("cpp", "native", "winui") else "WASM" if e == "velocitex" else "KaTeX" for e in engines])
         ax.invert_yaxis()
         ax.set_xlim(0, max(v["maximumRunMs"] for v in values) * 1000 * 1.28)
         ax.set_title(name, loc="left", fontsize=11, pad=18, fontweight="bold")
@@ -99,7 +118,8 @@ def chart(summary, out, metric, filename, title, subtitle, engines):
     fig.suptitle(title, x=.055, y=.97, ha="left", fontsize=21, fontweight="bold", color="#163245")
     fig.text(.055, .865, subtitle, fontsize=10, color="#586776")
     fig.text(.055, .06, "  •  ".join(LABELS[e] for e in engines), fontsize=9, color="#354c5d")
-    fig.text(.055, .015, "Full frozen corpus, including fallback • 3 fresh processes × 15 calibrated batches • whiskers: run min–max • Windows x64, 2026-10-20", fontsize=8, color="#586776")
+    manifest = summary["manifest"]
+    fig.text(.055, .015, f"Full frozen corpus • {manifest['runs']} fresh processes × {manifest['samples']} calibrated batches • whiskers: run min–max • Windows x64, {manifest['utc'][:10]}", fontsize=8, color="#586776")
     fig.subplots_adjust(left=.075, right=.97, top=.72, bottom=.24, wspace=.38)
     fig.savefig(out / filename, dpi=180)
     plt.close(fig)
@@ -107,7 +127,7 @@ def chart(summary, out, metric, filename, title, subtitle, engines):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data", default="benchmarks/results/2026-10-20-preview6")
+    parser.add_argument("--data", default="benchmarks/results/2026-10-21-html-css")
     parser.add_argument("--out", default="docs/benchmarks")
     args = parser.parse_args()
     data, out = Path(args.data), Path(args.out)
@@ -116,7 +136,12 @@ def main():
     encoded = json.dumps(summary, indent=2) + "\n"
     (out / "benchmark-summary.json").write_text(encoded, encoding="utf-8")
     (data / "benchmark-summary.json").write_text(encoded, encoding="utf-8")
-    chart(summary, out, "mathml", "benchmark-comparison.png", "MathML generation · independent of display refresh", "LaTeX → complete owned presentation MathML. Public API overhead included; startup excluded.", ["cpp", "velocitex", "katex"])
+    current = summary["schemaVersion"] == 3
+    if not current:
+        LABELS["velocitex"] = "VelociTex C++ WASM + fallback"
+    chart(summary, out, "html" if current else "mathml", "benchmark-comparison.png", "HTML/CSS generation · independent of display refresh" if current else "MathML generation · independent of display refresh", "Default HTML + accessibility MathML, same CSS/fonts. Full public API calls; startup excluded." if current else "LaTeX → complete owned presentation MathML. Public API overhead included; startup excluded.", ["velocitex", "katex"] if current else ["cpp", "velocitex", "katex"])
+    if current:
+        chart(summary, out, "mathml", "benchmark-mathml.png", "MathML serialization · supplemental diagnostic", "Native C++ ABI and browser bindings; this is separate from default HTML/CSS generation.", ["cpp", "velocitex", "katex"])
     chart(summary, out, "dom", "benchmark-render-work.png", "Browser render work · no frame waits", "Fresh public render call + DOM replacement + forced layout after every formula. Excludes browser rasterization and screen presentation.", ["velocitex", "katex"])
     fig, ax = plt.subplots(figsize=(10, 4.6))
     engines = ["velocitex", "katex"]
@@ -134,7 +159,7 @@ def main():
     ax.tick_params(length=0)
     fig.suptitle("Mixed-page render-work throughput", x=.05, ha="left", fontsize=20, fontweight="bold", color="#163245")
     fig.text(.05, .86, "27 formulas across 3 pages · fresh compile + submit/layout on every operation", fontsize=10, color="#586776")
-    fig.text(.05, .035, "Derived from batch work time; excludes vsync, GPU completion and screen presentation. Includes all fallback cases.", fontsize=8, color="#586776")
+    fig.text(.05, .035, "Derived from batch work time; excludes vsync, GPU completion and screen presentation. Full frozen corpus.", fontsize=8, color="#586776")
     fig.subplots_adjust(left=.33, right=.95, top=.75, bottom=.2)
     fig.savefig(out / "benchmark-page-throughput.png", dpi=180)
     plt.close(fig)

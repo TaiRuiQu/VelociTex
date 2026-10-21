@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$Output = 'benchmarks/results/2026-10-20-preview6',
+    [string]$Output = 'benchmarks/results/2026-10-21-html-css',
     [int]$Runs = 3,
     [int]$Samples = 15,
     [int]$BatchMs = 25,
@@ -35,7 +35,7 @@ try {
         $hashes[$key.Replace('\', '/')] = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash.ToLowerInvariant()
     }
     $manifest = [ordered]@{
-        schemaVersion = 2; utc = [DateTimeOffset]::UtcNow.ToString('O'); sourceRevision = (& git rev-parse HEAD).Trim()
+        schemaVersion = 3; browserOutput = 'htmlAndMathml'; utc = [DateTimeOffset]::UtcNow.ToString('O'); sourceRevision = (& git rev-parse HEAD).Trim()
         sourceHasChanges = [bool](& git status --porcelain); runs = $Runs; samples = $Samples; targetBatchMs = $BatchMs
         cpu = (Get-CimInstance Win32_Processor | Select-Object -First 1 -ExpandProperty Name)
         memoryBytes = (Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory

@@ -1,0 +1,1115 @@
+{
+  "schemaVersion": 2,
+  "engine": "winui",
+  "utc": "2026-10-21T08:04:15.9974351+00:00",
+  "workloadSha256": "1ac93184bea6c5b88b57afef2275ba1c47be47a63eb7089e9f6e0f515b83d89f",
+  "nativeAot": false,
+  "timedRegion": "Batch of fresh C\u002B\u002B Core compilation \u002B MathView.Result assignment (synchronous Direct2D surface drawing) \u002B UpdateLayout after every formula. No composition/frame wait. Surface submission is not a GPU completion fence or screen-presentation measurement.",
+  "result": {
+    "config": {
+      "samples": 15,
+      "batchMs": 25,
+      "warmupMs": 200
+    },
+    "workloads": {
+      "single": [
+        {
+          "id": "single-energy",
+          "formulaCount": 1,
+          "dom": {
+            "operationsPerBatch": 256,
+            "batches": [
+              {
+                "operations": 256,
+                "totalMs": 58.8497,
+                "msPerOperation": 0.229881640625
+              },
+              {
+                "operations": 256,
+                "totalMs": 60.4318,
+                "msPerOperation": 0.23606171875
+              },
+              {
+                "operations": 256,
+                "totalMs": 58.2493,
+                "msPerOperation": 0.227536328125
+              },
+              {
+                "operations": 256,
+                "totalMs": 61.8522,
+                "msPerOperation": 0.24161015625
+              },
+              {
+                "operations": 256,
+                "totalMs": 76.4611,
+                "msPerOperation": 0.298676171875
+              },
+              {
+                "operations": 256,
+                "totalMs": 64.0246,
+                "msPerOperation": 0.25009609375
+              },
+              {
+                "operations": 256,
+                "totalMs": 67.3652,
+                "msPerOperation": 0.2631453125
+              },
+              {
+                "operations": 256,
+                "totalMs": 59.7675,
+                "msPerOperation": 0.233466796875
+              },
+              {
+                "operations": 256,
+                "totalMs": 58.1116,
+                "msPerOperation": 0.2269984375
+              },
+              {
+                "operations": 256,
+                "totalMs": 61.3844,
+                "msPerOperation": 0.2397828125
+              },
+              {
+                "operations": 256,
+                "totalMs": 56.5284,
+                "msPerOperation": 0.2208140625
+              },
+              {
+                "operations": 256,
+                "totalMs": 57.6486,
+                "msPerOperation": 0.22518984375
+              },
+              {
+                "operations": 256,
+                "totalMs": 64.8345,
+                "msPerOperation": 0.253259765625
+              },
+              {
+                "operations": 256,
+                "totalMs": 58.2442,
+                "msPerOperation": 0.22751640625
+              },
+              {
+                "operations": 256,
+                "totalMs": 60.0764,
+                "msPerOperation": 0.2346734375
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 0.2346734375,
+              "meanMs": 0.2405805989583333,
+              "minimumMs": 0.2208140625,
+              "maximumMs": 0.298676171875
+            }
+          }
+        },
+        {
+          "id": "single-quadratic",
+          "formulaCount": 1,
+          "dom": {
+            "operationsPerBatch": 8,
+            "batches": [
+              {
+                "operations": 8,
+                "totalMs": 61.966,
+                "msPerOperation": 7.74575
+              },
+              {
+                "operations": 8,
+                "totalMs": 83.9286,
+                "msPerOperation": 10.491075
+              },
+              {
+                "operations": 8,
+                "totalMs": 29.3112,
+                "msPerOperation": 3.6639
+              },
+              {
+                "operations": 8,
+                "totalMs": 32.5324,
+                "msPerOperation": 4.06655
+              },
+              {
+                "operations": 8,
+                "totalMs": 26.9795,
+                "msPerOperation": 3.3724375
+              },
+              {
+                "operations": 8,
+                "totalMs": 21.2025,
+                "msPerOperation": 2.6503125
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.5367,
+                "msPerOperation": 3.4420875
+              },
+              {
+                "operations": 8,
+                "totalMs": 29.8031,
+                "msPerOperation": 3.7253875
+              },
+              {
+                "operations": 8,
+                "totalMs": 20.4994,
+                "msPerOperation": 2.562425
+              },
+              {
+                "operations": 8,
+                "totalMs": 29.4398,
+                "msPerOperation": 3.679975
+              },
+              {
+                "operations": 8,
+                "totalMs": 8.3315,
+                "msPerOperation": 1.0414375
+              },
+              {
+                "operations": 8,
+                "totalMs": 34.2389,
+                "msPerOperation": 4.2798625
+              },
+              {
+                "operations": 8,
+                "totalMs": 5.3609,
+                "msPerOperation": 0.6701125
+              },
+              {
+                "operations": 8,
+                "totalMs": 23.2181,
+                "msPerOperation": 2.9022625
+              },
+              {
+                "operations": 8,
+                "totalMs": 15.0164,
+                "msPerOperation": 1.87705
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 3.4420875,
+              "meanMs": 3.744708333333334,
+              "minimumMs": 0.6701125,
+              "maximumMs": 10.491075
+            }
+          }
+        },
+        {
+          "id": "single-gaussian",
+          "formulaCount": 1,
+          "dom": {
+            "operationsPerBatch": 32,
+            "batches": [
+              {
+                "operations": 32,
+                "totalMs": 13.14,
+                "msPerOperation": 0.410625
+              },
+              {
+                "operations": 32,
+                "totalMs": 12.5309,
+                "msPerOperation": 0.391590625
+              },
+              {
+                "operations": 32,
+                "totalMs": 40.5147,
+                "msPerOperation": 1.266084375
+              },
+              {
+                "operations": 32,
+                "totalMs": 13.4568,
+                "msPerOperation": 0.420525
+              },
+              {
+                "operations": 32,
+                "totalMs": 17.4295,
+                "msPerOperation": 0.544671875
+              },
+              {
+                "operations": 32,
+                "totalMs": 30.0849,
+                "msPerOperation": 0.940153125
+              },
+              {
+                "operations": 32,
+                "totalMs": 15.8323,
+                "msPerOperation": 0.494759375
+              },
+              {
+                "operations": 32,
+                "totalMs": 19.1223,
+                "msPerOperation": 0.597571875
+              },
+              {
+                "operations": 32,
+                "totalMs": 10.6571,
+                "msPerOperation": 0.333034375
+              },
+              {
+                "operations": 32,
+                "totalMs": 13.1514,
+                "msPerOperation": 0.41098125
+              },
+              {
+                "operations": 32,
+                "totalMs": 13.3149,
+                "msPerOperation": 0.416090625
+              },
+              {
+                "operations": 32,
+                "totalMs": 15.1817,
+                "msPerOperation": 0.474428125
+              },
+              {
+                "operations": 32,
+                "totalMs": 8.2845,
+                "msPerOperation": 0.258890625
+              },
+              {
+                "operations": 32,
+                "totalMs": 8.281,
+                "msPerOperation": 0.25878125
+              },
+              {
+                "operations": 32,
+                "totalMs": 9.9424,
+                "msPerOperation": 0.3107
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 0.416090625,
+              "meanMs": 0.5019258333333333,
+              "minimumMs": 0.25878125,
+              "maximumMs": 1.266084375
+            }
+          }
+        },
+        {
+          "id": "single-binomial",
+          "formulaCount": 1,
+          "dom": {
+            "operationsPerBatch": 16,
+            "batches": [
+              {
+                "operations": 16,
+                "totalMs": 37.0594,
+                "msPerOperation": 2.3162125
+              },
+              {
+                "operations": 16,
+                "totalMs": 20.9624,
+                "msPerOperation": 1.31015
+              },
+              {
+                "operations": 16,
+                "totalMs": 9.6648,
+                "msPerOperation": 0.60405
+              },
+              {
+                "operations": 16,
+                "totalMs": 8.6381,
+                "msPerOperation": 0.53988125
+              },
+              {
+                "operations": 16,
+                "totalMs": 13.7872,
+                "msPerOperation": 0.8617
+              },
+              {
+                "operations": 16,
+                "totalMs": 19.0004,
+                "msPerOperation": 1.187525
+              },
+              {
+                "operations": 16,
+                "totalMs": 7.3214,
+                "msPerOperation": 0.4575875
+              },
+              {
+                "operations": 16,
+                "totalMs": 31.2792,
+                "msPerOperation": 1.95495
+              },
+              {
+                "operations": 16,
+                "totalMs": 8.61,
+                "msPerOperation": 0.538125
+              },
+              {
+                "operations": 16,
+                "totalMs": 7.6658,
+                "msPerOperation": 0.4791125
+              },
+              {
+                "operations": 16,
+                "totalMs": 19.091,
+                "msPerOperation": 1.1931875
+              },
+              {
+                "operations": 16,
+                "totalMs": 5.4518,
+                "msPerOperation": 0.3407375
+              },
+              {
+                "operations": 16,
+                "totalMs": 5.1382,
+                "msPerOperation": 0.3211375
+              },
+              {
+                "operations": 16,
+                "totalMs": 6.2138,
+                "msPerOperation": 0.3883625
+              },
+              {
+                "operations": 16,
+                "totalMs": 11.8693,
+                "msPerOperation": 0.74183125
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 0.60405,
+              "meanMs": 0.8823033333333332,
+              "minimumMs": 0.3211375,
+              "maximumMs": 2.3162125
+            }
+          }
+        },
+        {
+          "id": "single-determinant",
+          "formulaCount": 1,
+          "dom": {
+            "operationsPerBatch": 64,
+            "batches": [
+              {
+                "operations": 64,
+                "totalMs": 114.9623,
+                "msPerOperation": 1.7962859375
+              },
+              {
+                "operations": 64,
+                "totalMs": 32.3966,
+                "msPerOperation": 0.506196875
+              },
+              {
+                "operations": 64,
+                "totalMs": 14.4418,
+                "msPerOperation": 0.225653125
+              },
+              {
+                "operations": 64,
+                "totalMs": 13.7869,
+                "msPerOperation": 0.2154203125
+              },
+              {
+                "operations": 64,
+                "totalMs": 14.1572,
+                "msPerOperation": 0.22120625
+              },
+              {
+                "operations": 64,
+                "totalMs": 13.9747,
+                "msPerOperation": 0.2183546875
+              },
+              {
+                "operations": 64,
+                "totalMs": 13.9456,
+                "msPerOperation": 0.2179
+              },
+              {
+                "operations": 64,
+                "totalMs": 15.8654,
+                "msPerOperation": 0.247896875
+              },
+              {
+                "operations": 64,
+                "totalMs": 15.8836,
+                "msPerOperation": 0.24818125
+              },
+              {
+                "operations": 64,
+                "totalMs": 23.9291,
+                "msPerOperation": 0.3738921875
+              },
+              {
+                "operations": 64,
+                "totalMs": 24.0605,
+                "msPerOperation": 0.3759453125
+              },
+              {
+                "operations": 64,
+                "totalMs": 26.5605,
+                "msPerOperation": 0.4150078125
+              },
+              {
+                "operations": 64,
+                "totalMs": 25.9469,
+                "msPerOperation": 0.4054203125
+              },
+              {
+                "operations": 64,
+                "totalMs": 25.9622,
+                "msPerOperation": 0.405659375
+              },
+              {
+                "operations": 64,
+                "totalMs": 26.4387,
+                "msPerOperation": 0.4131046875
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 0.3738921875,
+              "meanMs": 0.41907500000000003,
+              "minimumMs": 0.2154203125,
+              "maximumMs": 1.7962859375
+            }
+          }
+        },
+        {
+          "id": "single-derivative",
+          "formulaCount": 1,
+          "dom": {
+            "operationsPerBatch": 32,
+            "batches": [
+              {
+                "operations": 32,
+                "totalMs": 11.2424,
+                "msPerOperation": 0.351325
+              },
+              {
+                "operations": 32,
+                "totalMs": 22.4424,
+                "msPerOperation": 0.701325
+              },
+              {
+                "operations": 32,
+                "totalMs": 11.9742,
+                "msPerOperation": 0.37419375
+              },
+              {
+                "operations": 32,
+                "totalMs": 48.6048,
+                "msPerOperation": 1.5189
+              },
+              {
+                "operations": 32,
+                "totalMs": 14.8509,
+                "msPerOperation": 0.464090625
+              },
+              {
+                "operations": 32,
+                "totalMs": 17.2423,
+                "msPerOperation": 0.538821875
+              },
+              {
+                "operations": 32,
+                "totalMs": 19.2647,
+                "msPerOperation": 0.602021875
+              },
+              {
+                "operations": 32,
+                "totalMs": 68.1686,
+                "msPerOperation": 2.13026875
+              },
+              {
+                "operations": 32,
+                "totalMs": 38.2557,
+                "msPerOperation": 1.195490625
+              },
+              {
+                "operations": 32,
+                "totalMs": 53.4208,
+                "msPerOperation": 1.6694
+              },
+              {
+                "operations": 32,
+                "totalMs": 17.8669,
+                "msPerOperation": 0.558340625
+              },
+              {
+                "operations": 32,
+                "totalMs": 21.1239,
+                "msPerOperation": 0.660121875
+              },
+              {
+                "operations": 32,
+                "totalMs": 11.2812,
+                "msPerOperation": 0.3525375
+              },
+              {
+                "operations": 32,
+                "totalMs": 9.4495,
+                "msPerOperation": 0.295296875
+              },
+              {
+                "operations": 32,
+                "totalMs": 9.467,
+                "msPerOperation": 0.29584375
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 0.558340625,
+              "meanMs": 0.780531875,
+              "minimumMs": 0.295296875,
+              "maximumMs": 2.13026875
+            }
+          }
+        }
+      ],
+      "long": [
+        {
+          "id": "long-aligned",
+          "formulaCount": 1,
+          "dom": {
+            "operationsPerBatch": 2,
+            "batches": [
+              {
+                "operations": 2,
+                "totalMs": 5.9555,
+                "msPerOperation": 2.97775
+              },
+              {
+                "operations": 2,
+                "totalMs": 10.0951,
+                "msPerOperation": 5.04755
+              },
+              {
+                "operations": 2,
+                "totalMs": 16.8305,
+                "msPerOperation": 8.41525
+              },
+              {
+                "operations": 2,
+                "totalMs": 19.9439,
+                "msPerOperation": 9.97195
+              },
+              {
+                "operations": 2,
+                "totalMs": 20.8554,
+                "msPerOperation": 10.4277
+              },
+              {
+                "operations": 2,
+                "totalMs": 16.6908,
+                "msPerOperation": 8.3454
+              },
+              {
+                "operations": 2,
+                "totalMs": 110.0107,
+                "msPerOperation": 55.00535
+              },
+              {
+                "operations": 2,
+                "totalMs": 48.3754,
+                "msPerOperation": 24.1877
+              },
+              {
+                "operations": 2,
+                "totalMs": 67.7748,
+                "msPerOperation": 33.8874
+              },
+              {
+                "operations": 2,
+                "totalMs": 118.5644,
+                "msPerOperation": 59.2822
+              },
+              {
+                "operations": 2,
+                "totalMs": 13.8717,
+                "msPerOperation": 6.93585
+              },
+              {
+                "operations": 2,
+                "totalMs": 3.5342,
+                "msPerOperation": 1.7671
+              },
+              {
+                "operations": 2,
+                "totalMs": 20.6368,
+                "msPerOperation": 10.3184
+              },
+              {
+                "operations": 2,
+                "totalMs": 9.5892,
+                "msPerOperation": 4.7946
+              },
+              {
+                "operations": 2,
+                "totalMs": 43.0358,
+                "msPerOperation": 21.5179
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 9.97195,
+              "meanMs": 17.52547333333333,
+              "minimumMs": 1.7671,
+              "maximumMs": 59.2822
+            }
+          }
+        },
+        {
+          "id": "long-cases",
+          "formulaCount": 1,
+          "dom": {
+            "operationsPerBatch": 4,
+            "batches": [
+              {
+                "operations": 4,
+                "totalMs": 106.4053,
+                "msPerOperation": 26.601325
+              },
+              {
+                "operations": 4,
+                "totalMs": 124.7286,
+                "msPerOperation": 31.18215
+              },
+              {
+                "operations": 4,
+                "totalMs": 54.6169,
+                "msPerOperation": 13.654225
+              },
+              {
+                "operations": 4,
+                "totalMs": 18.9046,
+                "msPerOperation": 4.72615
+              },
+              {
+                "operations": 4,
+                "totalMs": 4.3574,
+                "msPerOperation": 1.08935
+              },
+              {
+                "operations": 4,
+                "totalMs": 4.3993,
+                "msPerOperation": 1.099825
+              },
+              {
+                "operations": 4,
+                "totalMs": 4.1063,
+                "msPerOperation": 1.026575
+              },
+              {
+                "operations": 4,
+                "totalMs": 4.0269,
+                "msPerOperation": 1.006725
+              },
+              {
+                "operations": 4,
+                "totalMs": 4.1335,
+                "msPerOperation": 1.033375
+              },
+              {
+                "operations": 4,
+                "totalMs": 3.9873,
+                "msPerOperation": 0.996825
+              },
+              {
+                "operations": 4,
+                "totalMs": 3.9666,
+                "msPerOperation": 0.99165
+              },
+              {
+                "operations": 4,
+                "totalMs": 4.2242,
+                "msPerOperation": 1.05605
+              },
+              {
+                "operations": 4,
+                "totalMs": 4.6304,
+                "msPerOperation": 1.1576
+              },
+              {
+                "operations": 4,
+                "totalMs": 5.0699,
+                "msPerOperation": 1.267475
+              },
+              {
+                "operations": 4,
+                "totalMs": 4.3775,
+                "msPerOperation": 1.094375
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 1.094375,
+              "meanMs": 5.865578333333334,
+              "minimumMs": 0.99165,
+              "maximumMs": 31.18215
+            }
+          }
+        },
+        {
+          "id": "long-maxwell",
+          "formulaCount": 1,
+          "dom": {
+            "operationsPerBatch": 2,
+            "batches": [
+              {
+                "operations": 2,
+                "totalMs": 37.7801,
+                "msPerOperation": 18.89005
+              },
+              {
+                "operations": 2,
+                "totalMs": 4.047,
+                "msPerOperation": 2.0235
+              },
+              {
+                "operations": 2,
+                "totalMs": 4.7663,
+                "msPerOperation": 2.38315
+              },
+              {
+                "operations": 2,
+                "totalMs": 4.2895,
+                "msPerOperation": 2.14475
+              },
+              {
+                "operations": 2,
+                "totalMs": 3.7541,
+                "msPerOperation": 1.87705
+              },
+              {
+                "operations": 2,
+                "totalMs": 4.105,
+                "msPerOperation": 2.0525
+              },
+              {
+                "operations": 2,
+                "totalMs": 4.2444,
+                "msPerOperation": 2.1222
+              },
+              {
+                "operations": 2,
+                "totalMs": 3.9938,
+                "msPerOperation": 1.9969
+              },
+              {
+                "operations": 2,
+                "totalMs": 11.3226,
+                "msPerOperation": 5.6613
+              },
+              {
+                "operations": 2,
+                "totalMs": 28.6392,
+                "msPerOperation": 14.3196
+              },
+              {
+                "operations": 2,
+                "totalMs": 8.3539,
+                "msPerOperation": 4.17695
+              },
+              {
+                "operations": 2,
+                "totalMs": 10.858,
+                "msPerOperation": 5.429
+              },
+              {
+                "operations": 2,
+                "totalMs": 6.8936,
+                "msPerOperation": 3.4468
+              },
+              {
+                "operations": 2,
+                "totalMs": 8.434,
+                "msPerOperation": 4.217
+              },
+              {
+                "operations": 2,
+                "totalMs": 7.4796,
+                "msPerOperation": 3.7398
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 3.4468,
+              "meanMs": 4.965369999999999,
+              "minimumMs": 1.87705,
+              "maximumMs": 18.89005
+            }
+          }
+        }
+      ],
+      "page": [
+        {
+          "id": "page-algebra",
+          "formulaCount": 10,
+          "dom": {
+            "operationsPerBatch": 8,
+            "batches": [
+              {
+                "operations": 8,
+                "totalMs": 27.2844,
+                "msPerOperation": 3.41055
+              },
+              {
+                "operations": 8,
+                "totalMs": 26.2909,
+                "msPerOperation": 3.2863625
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.3422,
+                "msPerOperation": 3.417775
+              },
+              {
+                "operations": 8,
+                "totalMs": 26.2063,
+                "msPerOperation": 3.2757875
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.6548,
+                "msPerOperation": 3.45685
+              },
+              {
+                "operations": 8,
+                "totalMs": 33.1745,
+                "msPerOperation": 4.1468125
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.3801,
+                "msPerOperation": 3.4225125
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.8221,
+                "msPerOperation": 3.4777625
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.8127,
+                "msPerOperation": 3.4765875
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.9198,
+                "msPerOperation": 3.489975
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.4186,
+                "msPerOperation": 3.427325
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.8966,
+                "msPerOperation": 3.487075
+              },
+              {
+                "operations": 8,
+                "totalMs": 32.8884,
+                "msPerOperation": 4.11105
+              },
+              {
+                "operations": 8,
+                "totalMs": 29.1699,
+                "msPerOperation": 3.6462375
+              },
+              {
+                "operations": 8,
+                "totalMs": 29.2666,
+                "msPerOperation": 3.658325
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 3.4765875,
+              "meanMs": 3.546065833333333,
+              "minimumMs": 3.2757875,
+              "maximumMs": 4.1468125
+            }
+          }
+        },
+        {
+          "id": "page-calculus",
+          "formulaCount": 9,
+          "dom": {
+            "operationsPerBatch": 8,
+            "batches": [
+              {
+                "operations": 8,
+                "totalMs": 27.5082,
+                "msPerOperation": 3.438525
+              },
+              {
+                "operations": 8,
+                "totalMs": 26.7901,
+                "msPerOperation": 3.3487625
+              },
+              {
+                "operations": 8,
+                "totalMs": 26.5259,
+                "msPerOperation": 3.3157375
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.1701,
+                "msPerOperation": 3.3962625
+              },
+              {
+                "operations": 8,
+                "totalMs": 30.4464,
+                "msPerOperation": 3.8058
+              },
+              {
+                "operations": 8,
+                "totalMs": 28.6972,
+                "msPerOperation": 3.58715
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.7261,
+                "msPerOperation": 3.4657625
+              },
+              {
+                "operations": 8,
+                "totalMs": 26.9541,
+                "msPerOperation": 3.3692625
+              },
+              {
+                "operations": 8,
+                "totalMs": 25.4071,
+                "msPerOperation": 3.1758875
+              },
+              {
+                "operations": 8,
+                "totalMs": 26.6794,
+                "msPerOperation": 3.334925
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.4157,
+                "msPerOperation": 3.4269625
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.5011,
+                "msPerOperation": 3.4376375
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.2147,
+                "msPerOperation": 3.4018375
+              },
+              {
+                "operations": 8,
+                "totalMs": 25.6007,
+                "msPerOperation": 3.2000875
+              },
+              {
+                "operations": 8,
+                "totalMs": 27.9548,
+                "msPerOperation": 3.49435
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 3.4018375,
+              "meanMs": 3.413263333333333,
+              "minimumMs": 3.1758875,
+              "maximumMs": 3.8058
+            }
+          }
+        },
+        {
+          "id": "page-physics",
+          "formulaCount": 8,
+          "dom": {
+            "operationsPerBatch": 16,
+            "batches": [
+              {
+                "operations": 16,
+                "totalMs": 48.9152,
+                "msPerOperation": 3.0572
+              },
+              {
+                "operations": 16,
+                "totalMs": 47.5013,
+                "msPerOperation": 2.96883125
+              },
+              {
+                "operations": 16,
+                "totalMs": 48.6096,
+                "msPerOperation": 3.0381
+              },
+              {
+                "operations": 16,
+                "totalMs": 47.349,
+                "msPerOperation": 2.9593125
+              },
+              {
+                "operations": 16,
+                "totalMs": 49.5769,
+                "msPerOperation": 3.09855625
+              },
+              {
+                "operations": 16,
+                "totalMs": 49.7184,
+                "msPerOperation": 3.1074
+              },
+              {
+                "operations": 16,
+                "totalMs": 49.1121,
+                "msPerOperation": 3.06950625
+              },
+              {
+                "operations": 16,
+                "totalMs": 47.3603,
+                "msPerOperation": 2.96001875
+              },
+              {
+                "operations": 16,
+                "totalMs": 45.8237,
+                "msPerOperation": 2.86398125
+              },
+              {
+                "operations": 16,
+                "totalMs": 46.0451,
+                "msPerOperation": 2.87781875
+              },
+              {
+                "operations": 16,
+                "totalMs": 46.8128,
+                "msPerOperation": 2.9258
+              },
+              {
+                "operations": 16,
+                "totalMs": 46.551,
+                "msPerOperation": 2.9094375
+              },
+              {
+                "operations": 16,
+                "totalMs": 47.7268,
+                "msPerOperation": 2.982925
+              },
+              {
+                "operations": 16,
+                "totalMs": 48.0137,
+                "msPerOperation": 3.00085625
+              },
+              {
+                "operations": 16,
+                "totalMs": 57.418,
+                "msPerOperation": 3.588625
+              }
+            ],
+            "summary": {
+              "samples": 15,
+              "medianMs": 2.982925,
+              "meanMs": 3.0272245833333336,
+              "minimumMs": 2.86398125,
+              "maximumMs": 3.588625
+            }
+          }
+        }
+      ]
+    }
+  }
+}

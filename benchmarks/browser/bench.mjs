@@ -1,6 +1,6 @@
 // Dependency-free browser benchmark for the VelociTex WASM binding and KaTeX
 // 0.19.0. It serves the frozen workloads.json, drives local Chrome through the
-// DevTools protocol, and records parse and call-to-painted timings.
+// DevTools protocol, and records serialization and synchronous DOM/layout work.
 //
 // Usage:
 //   node benchmarks/browser/bench.mjs --engine velocitex --out artifacts/benchmarks/wasm
@@ -203,7 +203,7 @@ try {
   const screenshot = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
   await writeFile(path.join(outDir, `${engine}-page.png`), Buffer.from(screenshot.data, 'base64'));
   const report = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     kind: `${engine === 'velocitex' ? 'VelociTex WASM binding' : 'KaTeX 0.19.0'} browser benchmark`,
     utc: new Date().toISOString(),
     engine,
@@ -216,7 +216,7 @@ try {
     memoryBytes: os.totalmem(),
     os: `${os.type()} ${os.release()} ${os.arch()}`,
     timedRegion:
-      'Adaptive batches of full public API calls. MathML excludes DOM. DOM includes forced layout after every formula, excludes raster/GPU/compositor waits. Default options on both engines, all fallback cases retained. Batch medians are not individual-call latency percentiles.',
+      'Adaptive batches of full public API calls. HTML uses the default HTML+accessibility MathML contract on both engines; HTML and MathML generation exclude DOM. DOM includes forced layout after every formula, excludes raster/GPU/compositor waits. Batch medians are not individual-call latency percentiles.',
     result,
     wallMs,
   };

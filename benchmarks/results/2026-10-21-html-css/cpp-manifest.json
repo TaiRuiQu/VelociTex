@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "startedUtc": "2026-10-21T08:05:15.7645287+00:00",
+  "endedUtc": "2026-10-21T08:05:45.1751235+00:00",
+  "note": "Supplemental pure C++ public-ABI campaign, run sequentially after the four-host rotated campaign; same frozen corpus and native DLL.",
+  "compiler": "MSVC /O2 /DNDEBUG /MT /std:c++20",
+  "nativeDllSha256": "00213b73f7abde3e04a575932fe857e435e04076a90847e32eacf1c2e361b116",
+  "fileSha256": {
+    "benchmarks/native-core.cpp": "d2a3f38b5f2e73740b3e3e5e9c72b71b9c25e712f535c0c9a13187c3939a4ff6",
+    "benchmarks/build-native-benchmark.ps1": "9d04340aade50a1f0b970596ad842f741f9b1446ee01962fa02dffde441f2aba",
+    "benchmarks/run-cpp-benchmark.ps1": "704fc92e875664fa8fd3723adbfd898a1bdba937b6ff043d509ad676936d4538",
+    "artifacts/benchmarks-cpp/native-core.exe": "a128c40fdba28ddf6be9880c1a5da77a5ae00a5a9baef351eb62f9afbe72c3f9",
+    "artifacts/benchmarks-cpp/native-workloads.inc": "5921337c80d5db3462e02cdd685980882ca5f7acb537e4c924d70d9d4e9b1b01"
+  }
+}

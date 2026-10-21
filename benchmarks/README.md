@@ -1,143 +1,141 @@
-# Refresh-independent benchmarks
+# HTML/CSS and native benchmarks
 
-> **Historical note:** these preview6 numbers describe the old MathML fast path.
-> The current default browser path emits byte-identical KaTeX 0.19.0 HTML/CSS and
-> is verified by `tests/wasm/katex-parity.mjs`; use that parity gate for current
-> HTML correctness claims. Native C++/Direct2D measurements remain relevant.
-
-The preview6 benchmark measures the work the library performs. No headline
-metric waits for `requestAnimationFrame`, `CompositionTarget.Rendering`, vsync,
-or a monitor refresh. Native WinUI surface diagnostics can still include graphics
-queue backpressure; they are not used as evidence of pure C++ engine throughput.
-The previous frame-paced results remain in
-[results/2026-10-20](results/2026-10-20) as historical data; they must not be mixed
-with schema-v2 results.
+The current campaign is [results/2026-10-21-html-css](results/2026-10-21-html-css).
+It measures the updated default HTML/CSS WebAssembly binding at source revision
+`475c5d7`, alongside KaTeX 0.19.0 and freshly built native Core hosts.
+[Tables, charts and rendering previews](../docs/benchmarks.md) are regenerated
+from the validated raw batches. Preview6's MathML browser path remains in
+[results/2026-10-20-preview6](results/2026-10-20-preview6) as historical data.
 
 ## What is measured
 
-| Metric             | Native C++ / .NET                                                                                                                                    | Browser C++ WASM + fallback                                                                     | KaTeX 0.19.0                                                                           |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| MathML generation  | `MathEngine.TryCompileToMathMl`: parse, macro expansion, complete MathML serialization                                                               | Public async `renderToString({ output: 'mathml' })`, default fast route with full-Core fallback | Public `renderToString({ output: 'mathml' })`                                          |
-| Render work        | Fresh compile, `MathView.Result` assignment (including synchronous Direct2D drawing/surface submission), then `UpdateLayout` after **every** formula | Public async `render`, DOM replacement, then `getBoundingClientRect` after **every** formula    | Public `render`, DOM replacement, then `getBoundingClientRect` after **every** formula |
-| Native diagnostics | Compile + mathematical layout; compile + standalone SVG export                                                                                       | —                                                                                               | —                                                                                      |
+| Metric                    | Browser WASM and KaTeX                                                                            | Native C++ / .NET                                                                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| HTML generation           | Public `renderToString` with default HTML + accessibility MathML; the same locked KaTeX CSS/fonts | No equivalent HTML API; excluded from this comparison                                                                     |
+| MathML diagnostic         | Public `renderToString({ output: 'mathml' })`                                                     | C++ public C ABI and `.NET TryCompileToMathMl`                                                                            |
+| Render work               | Fresh public `render`, DOM replacement and forced `getBoundingClientRect` after every formula     | Fresh compile, `MathView.Result` assignment with synchronous Direct2D submission, then `UpdateLayout` after every formula |
+| Export/layout diagnostics | Separate from the browser comparison                                                              | Compile + mathematical layout; compile + standalone SVG export                                                            |
 
-The primary native engine row/chart calls the **C++ public C ABI directly**, in a
-standalone `/O2` executable with no CLR, graphics API or window. It includes parse,
-MathML serialization, copying into an owned UTF-8 `std::string`, and destroying
-the result. The .NET binding's MathML/compile/SVG figures remain in the raw data
-and per-case appendix. This separates engine throughput from binding/UI overhead.
+The current default browser generator is the standalone Rust-derived
+KaTeX-compatible WASM engine, not the previous C++ MathML fast path. All 36
+formula occurrences must produce byte-identical default markup to KaTeX before
+timing. Route maps record `katex-html-wasm`; the harness fails if the new module
+is unavailable or the output differs. MathML is retained as a supplemental
+serialization metric, not used as a substitute for HTML generation.
 
-MathML is the common output contract. DOM rendering uses each library's default
-presentation: browser MathML on the C++ fast path, exact SVG on fallback, and
-KaTeX HTML/CSS/SVG. Native uses DirectWrite/Direct2D.
-All paths use a 24 px mathematical em; the fixture overrides KaTeX's default
-1.21em enlargement so it does not measure larger glyphs than the other engines.
-Render-work figures compare these real backends' work, **not equivalent pixels or screen-presentation latency**.
-Browser raster/paint and GPU completion are outside these measurements. Native
-surface submission does not fence GPU completion. Native .NET hosts are Release
-x64 JIT; the full fallback browser runtime is Release WASM AOT.
+Both browser engines use only `displayMode` and `throwOnError`, plus `output`
+for the MathML diagnostic. Default HTML includes the accessibility MathML tree
+on both engines; HTML-only output is a different workload. The bundled
+`runtime/katex.min.css` and fonts are loaded before timing. A 24 px mathematical
+em is used throughout, overriding KaTeX's default 1.21em enlargement.
 
-Page scaffolding (title, body text and formula hosts) is created before timing;
-all page formulas are compiled and rendered inside each operation. Native uses
-horizontal text/formula rows; browser paragraphs can wrap. These are formula
-render-work figures within a mixed page, not full-document construction or a
-body-text layout comparison.
+The pure native C++ row calls the public C ABI directly in an `/O2` executable,
+without CLR, graphics API or window. It includes parsing, MathML serialization,
+copying to an owned UTF-8 string and destroying the result. The native Core does
+not implement the browser HTML generator. Native UI figures remain separate
+backend diagnostics and can include graphics queue backpressure.
 
-The old harness passed explicit `strict`, `trust` and `maxExpand` defaults that
-disabled the documented C++ fast-option path. Schema v2 uses only `displayMode`
-and `throwOnError` on **both** libraries, plus `output` for MathML. Advanced options
-are a different workload; these results do not claim their performance.
+DOM timing includes synchronous layout, excluding browser rasterization,
+compositing, GPU completion and screen presentation. No benchmark waits for
+`requestAnimationFrame`, vsync, or a display refresh. Native surface submission
+does not fence GPU completion. Native .NET hosts are Release x64 JIT; the legacy
+SVG/Core browser fallback is built Release WASM AOT, but is not exercised by
+these default HTML cases.
+
+Page scaffolding and body text are created outside timing. Each page operation
+recompiles and renders every formula. Native uses horizontal text/formula rows;
+browser paragraphs can wrap. Page figures describe formula work within a mixed
+page, not full-document construction or body-text layout.
 
 ## Corpus and statistics
 
-The unchanged [workloads.json](workloads.json) contains 6 common formulas, 3
-complex formulas, and 3 mixed pages with 10, 9 and 8 formulas: **36 formula
-occurrences**. No unsupported or slow formula may be skipped. Every case must
-produce nonempty MathML and a nonzero rendered box. The browser report records
-the C++ fast/fallback route for every occurrence. All fallback time is included.
+The unchanged [workloads.json](workloads.json) contains 6 common formulas,
+3 complex formulas and 3 mixed pages with 10, 9 and 8 formulas: **36 formula
+occurrences**. Cases cannot be skipped. Every rendered box must be nonzero.
 
-1. Initialize modules, fonts and surfaces outside timing. Warm **each case** for
-   at least 200 ms. Cold download, startup and first-render latency are not measured.
-2. Calibrate a batch by doubling its operation count until a complete batch takes
-   at least 25 ms. One operation is one complete formula or one complete page.
-3. Collect 15 batches per metric and case. Use monotonic `Stopwatch` or isolated
-   browser `performance.now()`. Browser Promise overhead remains inside timing;
-   scheduling yields remain outside. No frame waits occur. Calibration selects
-   a fixed batch size; subsequent batches can finish in less than 25 ms.
-4. Each operation recompiles the source and replaces/draws the result. No
-   `MathDocumentCache` or precompiled result is used. Warm font, geometry and
-   runtime caches remain enabled; normal GC/finalization is included. Fixed-case
-   batches measure repeated warm inputs, not cold or adversarial input streams.
-5. Repeat in **3 fresh processes** per engine. Rotate engine order between
-   repetitions and run timing processes sequentially. Do not build or run other
-   benchmarks concurrently.
-6. Within each process, take each case's median of batch-average milliseconds.
-   Sum those case medians and divide by the **actual total formula count** (6,
-   3 or 27). Headline values are the median of the 3 process aggregates. Chart
-   whiskers show their min–max; throughput is `1000 / msPerFormula`.
+1. Initialize modules, fonts and surfaces outside timing. Warm each case for at
+   least 200 ms. Startup, download and first-render latency are excluded.
+2. Double an operation batch until it takes at least 25 ms. One operation is one
+   complete formula or complete page. Use that fixed batch size for measurement.
+3. Collect 15 batches per metric and case using monotonic clocks. Public WASM
+   Promise overhead stays inside timing; scheduling yields stay outside.
+   Subsequent batches can take less than the calibration target.
+4. Recompile and replace/draw each result on every operation. No document cache
+   or precompiled result is used. Warm fonts/runtime caches and normal GC remain
+   enabled; repeated warm inputs are not cold or adversarial input streams.
+5. Repeat in three fresh processes per engine, rotating native/WASM/KaTeX/WinUI
+   order between repetitions. Timing processes run sequentially without builds
+   or other benchmarks running concurrently.
+6. Take each case's median batch-average milliseconds within a process. Sum case
+   medians and divide by the actual formula count (6, 3 or 27). The headline is
+   the median of three process aggregates; whiskers show their min/max.
+   Throughput is `1000 / msPerFormula`.
 
 The pure C++ ABI campaign runs three additional fresh processes sequentially
-after the four-host rotated campaign, using the same native DLL (hash checked),
+following the four-host rotation, using the same native DLL (hash checked),
 corpus and batch settings. Its separate `cpp-manifest.json` records compiler,
-source/executable hashes and start/end time. It is not described as part of the
-four-host order rotation.
+source/executable hashes and timing boundaries. Batch distributions are not
+individual-call latency percentiles.
 
-Batch-average distributions are **not individual-call latency percentiles**.
-The reports deliberately do not label them P95/P99. Every raw
-batch's count/time, route maps, configurations and hardware accompany the results.
-The manifest hashes the harness, corpus, native DLL and browser distribution.
-Source revision plus `sourceHasChanges` honestly identifies a measurement made
-while preparing a release; exact measured file hashes are retained.
+Schema 3 identifies default HTML/CSS browser reports and the campaign manifest;
+unchanged native reports retain schema 2. The aggregator checks both versions,
+output contracts, corpus hashes, exact case counts, routes and raw batches.
+It rejects old browser MathML-path reports in a current campaign. The manifest
+hashes the corpus, harnesses, native DLL, executables and complete browser dist.
+Source revision plus `sourceHasChanges` and exact hashes identify the measured
+working tree. Results describe one machine and corpus.
 
 ## Reproduce
 
-Prerequisites: Windows x64, .NET SDK pinned by `global.json`, the `wasm-tools`
-workload, Visual Studio C++ x64 tools, Node.js 22+, and Chrome. The frozen KaTeX
-0.19.0 distribution is acquired and verified by `tools/reference/acquire.mjs`
-under `artifacts/upstream/npm/package`; browser scripts also accept `--katex-dir`
-and `--chrome` overrides. Python dependencies are in `requirements.txt`.
+Prerequisites: Windows x64, .NET SDK from `global.json`, `wasm-tools`, Visual
+Studio C++ x64 tools, Node.js 22+, Chrome and Python. Rust builds the HTML WASM
+from source when available; otherwise the build uses the committed prebuilt
+module. Build logs identify which was used. `tools/reference/acquire.mjs`
+acquires and verifies the locked KaTeX 0.19.0 baseline.
 
 ```powershell
-# Build native Core, both native hosts, and the Release WASM AOT package;
-# then run three sequential process repetitions with rotated engine order.
-./benchmarks/run-benchmarks.ps1 -Output artifacts/benchmarks/preview6
+npm ci
+npm ci --prefix tools/reference
+node tools/reference/acquire.mjs
+python -m venv artifacts/benchmarks/venv
+artifacts/benchmarks/venv/Scripts/python.exe -m pip install -r benchmarks/requirements.txt
 
-# Or reuse the exact freshly built distribution:
-./benchmarks/run-benchmarks.ps1 -SkipBuild -Output artifacts/benchmarks/preview6
-
-# Supplemental direct C++ ABI measurements (no CLR/window/GPU):
+# Builds Core, both native hosts and Release WASM AOT, then runs the campaign.
+./benchmarks/run-benchmarks.ps1 -Output benchmarks/results/2026-10-21-html-css
+# For an already freshly built distribution, add -SkipBuild.
+# Choose a fresh output directory; existing manifests cannot be overwritten.
 ./benchmarks/build-native-benchmark.ps1
-./benchmarks/run-cpp-benchmark.ps1 -Output artifacts/benchmarks/preview6
-
-python -m pip install -r benchmarks/requirements.txt
-python benchmarks/plot_benchmarks.py --data artifacts/benchmarks/preview6
+./benchmarks/run-cpp-benchmark.ps1 -Output benchmarks/results/2026-10-21-html-css
+artifacts/benchmarks/venv/Scripts/python.exe benchmarks/plot_benchmarks.py --data benchmarks/results/2026-10-21-html-css
 ```
 
 Standalone hosts accept `--samples 15 --batch-ms 25 --out <directory>`.
-`browser/bench.mjs` additionally takes `--engine velocitex|katex`.
-The legacy hosts are available through `--legacy` for historical reproduction;
-their frame-paced reports are not accepted by the new aggregator.
+`browser/bench.mjs` also accepts `--engine velocitex|katex`, `--vt-dist`,
+`--katex-dir` and `--chrome`.
 
-The official preview6 data are in
-[results/2026-10-20-preview6](results/2026-10-20-preview6). See
-[the result tables and charts](../docs/benchmarks.md) for measured values. This
-is one machine and one corpus; results are not a promise for every device/input.
-
-## Rendering comparison tables
-
-Capture actual outputs with the same 32 px math em, foreground and 2× pixel scale:
+## Rendering preview and parity
 
 ```powershell
+node tests/wasm/katex-parity.mjs
+$env:VELOCITEX_BROWSER = 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+node tests/wasm/katex-browser-parity.mjs
 $env:VELOCITEX_NATIVE_DIR = "$PWD/artifacts/core-native"
-./benchmarks/VelociTex.Benchmarks/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.Benchmarks.exe --render-comparison artifacts/comparison-preview6
-node benchmarks/browser/capture-comparison.mjs --out artifacts/comparison-preview6
-python benchmarks/prepare_comparison.py --data artifacts/comparison-preview6
-python benchmarks/update_docs.py
+./benchmarks/VelociTex.Benchmarks/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.Benchmarks.exe --render-comparison artifacts/comparison-html-css
+node benchmarks/browser/capture-comparison.mjs --out artifacts/comparison-html-css
+Copy-Item artifacts/comparison-html-css/browser-validation.json benchmarks/results/2026-10-21-html-css/rendering-validation.json
+artifacts/benchmarks/venv/Scripts/python.exe benchmarks/prepare_comparison.py --data artifacts/comparison-html-css
+artifacts/benchmarks/venv/Scripts/python.exe benchmarks/update_html_docs.py
 ```
 
-`prepare_comparison.py` removes only surrounding blank space and gives all three
-cells in each row the same canvas dimensions. It never independently rescales
-formula glyphs. The READMEs use actual Markdown tables with accessible image
-labels. npm bundles every cell and chart; NuGet's README uses immutable tagged
-GitHub image URLs. `update_docs.py` regenerates every performance claim from the
-validated summary, so package/repository numbers stay consistent.
+Actual native/WASM/KaTeX outputs use a 32 px math em, shared foreground and 2×
+pixel scale. The browser capture records markup agreement and requires matching
+computed styles and dimensions in the visible HTML trees before saving its
+validation report and screenshots. Three previews have byte-identical markup;
+the combined color example differs in CSS declaration order and a redundant
+inherited color declaration. These images are not asserted pixel-identical.
+`prepare_comparison.py` crops only
+surrounding blank space and assigns all cells in each row the same canvas size;
+it never stretches glyphs independently. Repository and package READMEs include
+the new tables and charts. `update_html_docs.py` refreshes current claims without
+rewriting preview6 release notes. The old `update_docs.py` is for historical
+preview6 reproduction only.

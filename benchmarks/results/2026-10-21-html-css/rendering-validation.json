@@ -1,0 +1,46 @@
+[
+  {
+    "id": "algebra",
+    "htmlIdentical": true,
+    "actualLength": 3830,
+    "expectedLength": 3830,
+    "firstDifference": null,
+    "actualSnippet": null,
+    "expectedSnippet": null,
+    "computedStyleDifferences": [],
+    "layoutDifferences": []
+  },
+  {
+    "id": "calculus",
+    "htmlIdentical": true,
+    "actualLength": 7380,
+    "expectedLength": 7380,
+    "firstDifference": null,
+    "actualSnippet": null,
+    "expectedSnippet": null,
+    "computedStyleDifferences": [],
+    "layoutDifferences": []
+  },
+  {
+    "id": "structures",
+    "htmlIdentical": true,
+    "actualLength": 14223,
+    "expectedLength": 14223,
+    "firstDifference": null,
+    "actualSnippet": null,
+    "expectedSnippet": null,
+    "computedStyleDifferences": [],
+    "layoutDifferences": []
+  },
+  {
+    "id": "color",
+    "htmlIdentical": false,
+    "actualLength": 11042,
+    "expectedLength": 11019,
+    "firstDifference": 5789,
+    "actualSnippet": "b;\">,</span><span class=\"mspace\" style=\"margin-right:2em;color:#2563eb;\"></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord\" st",
+    "expectedSnippet": "b;\">,</span><span class=\"mspace\" style=\"color:#2563eb;margin-right:2em;\"></span><span class=\"mspace\" style=\"margin-right:0.1667em;\"></span><span class=\"mord\" st",
+    "computedStyleDifferences": [],
+    "layoutDifferences": []
+  }
+]

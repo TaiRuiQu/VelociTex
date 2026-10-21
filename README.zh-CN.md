@@ -8,17 +8,40 @@ VelociTex 是独立的 TeX 数学排版与渲染组件，数学规则固定为 *
 
 <!-- benchmark:start -->
 
-## 与 KaTeX 完全一致的浏览器 HTML
+## Performance
 
-npm 包的默认浏览器路径是一个独立的 WebAssembly 引擎，对受支持的核心公式输出与
-**KaTeX 0.19.0 逐字节相同**的 HTML 和 MathML，不再以 MathML 代替排版。它使用锁定的
-KaTeX 0.19.0 样式表和未修改的 KaTeX 字体。校验门覆盖全部 **3,659 个有效核心
-样例**（HTML 与 MathML 逐字节一致）以及浏览器集成测试。
+2026-10-21 · Windows x64 · Release · KaTeX 0.19.0 · µs/formula (lower is better).
 
-该引擎仍是原生 WebAssembly 快速路径：在本机 Chromium 中，六条代表性公式的生成
-吞吐约为 KaTeX API 的 **0.8–2.2 倍**，具体取决于公式形状和硬件。它取代了旧的
-MathML 快速路径；原生 Direct2D/WinUI 性能未变，单独记录在
-`benchmarks/README.md`。
+Both browser engines generate default HTML with accessibility MathML, using the same locked KaTeX CSS and fonts. Every benchmark formula is checked for byte-identical markup before timing.
+
+Correctness validation passed for 3,659 valid core HTML/MathML fixtures and 46 browser integration formulas, including bundled stylesheet and font loading.
+
+| Workload         | WASM HTML generation | KaTeX HTML generation | WASM DOM + layout | KaTeX DOM + layout |
+| ---------------- | -------------------: | --------------------: | ----------------: | -----------------: |
+| Common formulas  |                 43.4 |                  44.5 |             615.4 |              593.4 |
+| Complex formulas |                426.2 |                 431.8 |            3649.2 |             3538.9 |
+| Mixed pages      |                 44.9 |                  40.7 |             556.1 |              514.4 |
+
+WASM/KaTeX relative throughput is **0.91–1.03×** for HTML generation and **0.93–0.97×** for DOM render work on this machine. Ratios below 1 mean WASM is slower.
+
+![HTML generation](docs/benchmarks/benchmark-comparison.png)
+
+![Browser render work](docs/benchmarks/benchmark-render-work.png)
+
+All 36 formula occurrences are retained: 6 common, 3 complex, and 27 across three mixed pages. Three fresh processes × 15 calibrated batches per case; each case warms for at least 200 ms. Public async WASM API overhead is included. DOM timing forces layout after every formula. Startup, download, browser rasterization, GPU completion and screen presentation are excluded. Native C++/.NET/WinUI results and MathML serialization are separate diagnostics; the C++ Core does not expose this HTML generator.
+
+[Methodology and reproduction](benchmarks/README.md).
+
+## Rendering comparison
+
+Actual output at 32 px math em and 2× capture resolution. The WASM column uses the current default HTML/CSS renderer and bundled fonts. All four previews have matching computed styles and dimensions in their visible HTML trees. Three have byte-identical markup; the combined color example differs in CSS declaration order and a redundant inherited color declaration. Captures are not asserted pixel-identical. Cells in each row share a canvas and scale. Native uses DirectWrite/Direct2D.
+
+| Formula                | Windows native / Direct2D                                                                                  | VelociTex HTML/CSS WASM                                                                                | KaTeX 0.19.0                                                                                             |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| Algebra                | <img src="docs/benchmarks/rendering/algebra-native.png" width="280" alt="Algebra: native">                 | <img src="docs/benchmarks/rendering/algebra-wasm.png" width="280" alt="Algebra: wasm">                 | <img src="docs/benchmarks/rendering/algebra-katex.png" width="280" alt="Algebra: katex">                 |
+| Calculus               | <img src="docs/benchmarks/rendering/calculus-native.png" width="280" alt="Calculus: native">               | <img src="docs/benchmarks/rendering/calculus-wasm.png" width="280" alt="Calculus: wasm">               | <img src="docs/benchmarks/rendering/calculus-katex.png" width="280" alt="Calculus: katex">               |
+| Piecewise & matrices   | <img src="docs/benchmarks/rendering/structures-native.png" width="280" alt="Piecewise & matrices: native"> | <img src="docs/benchmarks/rendering/structures-wasm.png" width="280" alt="Piecewise & matrices: wasm"> | <img src="docs/benchmarks/rendering/structures-katex.png" width="280" alt="Piecewise & matrices: katex"> |
+| Color, accents & fonts | <img src="docs/benchmarks/rendering/color-native.png" width="280" alt="Color, accents & fonts: native">    | <img src="docs/benchmarks/rendering/color-wasm.png" width="280" alt="Color, accents & fonts: wasm">    | <img src="docs/benchmarks/rendering/color-katex.png" width="280" alt="Color, accents & fonts: katex">    |
 
 <!-- benchmark:end -->
 

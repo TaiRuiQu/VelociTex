@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <title>VelociTex rendering comparison</title>
-    <link rel="stylesheet" href="/katex/katex.min.css" />
+    <link rel="stylesheet" href="/vt/runtime/katex.min.css" />
     <style>
       html,
       body {
@@ -45,6 +45,14 @@
   </head>
   <body>
     <div id="grid"></div>
+    <script>
+      window.addEventListener('error', (event) => {
+        window.__comparisonError = event.message;
+      });
+      window.addEventListener('unhandledrejection', (event) => {
+        window.__comparisonError = String(event.reason);
+      });
+    </script>
     <script src="/katex/katex.min.js"></script>
     <script type="module" src="/comparison.js"></script>
   </body>

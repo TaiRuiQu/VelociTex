@@ -1,5 +1,5 @@
 import * as vt from '/vt/index.mjs';
-import { initFastMath, renderFastMath } from '/vt/fastmath.mjs';
+import { katexMathAvailable } from '/vt/katexmath.mjs';
 
 const ENGINE = new URLSearchParams(location.search).get('engine') ?? 'velocitex';
 const stage = document.getElementById('stage');
@@ -89,26 +89,36 @@ window.runBenchmark = async function (config) {
   if (ENGINE === 'velocitex') {
     build = await (await fetch('/vt/build-info.json')).json();
     if (build.configuration !== 'Release' || !build.aot) throw new Error('Use the Release AOT distribution.');
-    if (!(await initFastMath(new URL('/vt/runtime/fastmath.js', location.href).href)))
-      throw new Error('C++ fast module unavailable.');
+    await vt.init();
+    if (!katexMathAvailable()) throw new Error('HTML/CSS WASM module unavailable.');
   }
-  const result = { engine: ENGINE, build, config, workloads: {}, routes };
+  const result = { engine: ENGINE, build, config, outputContract: 'htmlAndMathml', workloads: {}, routes };
   const start = performance.now();
-  // Use defaults on BOTH libraries. Redundant strict/trust/maxExpand defaults
-  // disable VelociTex's documented C++ fast-option path.
+  // Use the public default HTML+accessibility MathML output on BOTH libraries.
   for (const name of ['single', 'long', 'page']) {
     const records = [];
     for (const unit of units(corpus, name)) {
       const targets = hosts(unit);
       const options = unit.formulas.map((f) => ({ displayMode: f.displayMode, throwOnError: true }));
       for (const [i, f] of unit.formulas.entries()) {
-        routes[`${unit.id}-${i}`] =
-          ENGINE === 'katex'
-            ? 'javascript'
-            : renderFastMath(f.latex, f.displayMode)
-              ? 'cpp-fast'
-              : 'full-core-fallback';
+        const actual =
+          ENGINE === 'katex' ? katex.renderToString(f.latex, options[i]) : await vt.renderToString(f.latex, options[i]);
+        if (actual !== katex.renderToString(f.latex, options[i]))
+          throw new Error(`${unit.id}-${i}: default HTML differs from KaTeX`);
+        routes[`${unit.id}-${i}`] = ENGINE === 'katex' ? 'javascript' : 'katex-html-wasm';
       }
+      const html = async () => {
+        let size = 0;
+        for (const [i, f] of unit.formulas.entries()) {
+          const markup =
+            ENGINE === 'katex'
+              ? katex.renderToString(f.latex, options[i])
+              : await vt.renderToString(f.latex, options[i]);
+          if (!markup.includes('katex-html')) throw new Error(`${unit.id}: invalid HTML`);
+          size += markup.length;
+        }
+        return size;
+      };
       const mathml = async () => {
         let size = 0;
         for (const [i, f] of unit.formulas.entries()) {
@@ -130,17 +140,20 @@ window.runBenchmark = async function (config) {
         }
         return targets.length;
       };
+      await html();
       await mathml();
       await dom();
       await document.fonts.ready;
       const warm = performance.now();
       do {
+        await html();
         await mathml();
         await dom();
       } while (performance.now() - warm < config.warmupMs);
       records.push({
         id: unit.id,
         formulaCount: unit.formulas.length,
+        html: await measure(html, config),
         mathml: await measure(mathml, config),
         dom: await measure(dom, config),
       });

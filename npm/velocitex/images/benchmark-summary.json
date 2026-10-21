@@ -1,9 +1,10 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "manifest": {
-    "schemaVersion": 2,
-    "utc": "2026-10-20T08:17:22.7795013+00:00",
-    "sourceRevision": "516db860ac02d90eab396357bb7968c9197706fe",
+    "schemaVersion": 3,
+    "browserOutput": "htmlAndMathml",
+    "utc": "2026-10-21T08:00:24.4135334+00:00",
+    "sourceRevision": "475c5d75fb699ec26419838ba5a9876076d3dc6e",
     "sourceHasChanges": true,
     "runs": 3,
     "samples": 15,
@@ -13,25 +14,87 @@
     "fileSha256": {
       "benchmarks/workloads.json": "1ac93184bea6c5b88b57afef2275ba1c47be47a63eb7089e9f6e0f515b83d89f",
       "benchmarks/BatchTiming.cs": "e674f7d5f92120e516e4ab493fd64ab246cb7a404135975d43c03d6fdefdbb0c",
-      "benchmarks/browser/cpu-runner.js": "ad9b90660357a4687cb7c4ea380d67ddd5e29d14b11d9cd399352775efd3eb27",
-      "benchmarks/browser/page.html": "c9364d7439a8bda896a9454556b99708ad60265c9948ca5d159ff3d7d1280a4d",
-      "benchmarks/browser/bench.mjs": "0dde43e8ed5904a970b51ff92a07ee092a8cf54569de098b9d5a6fbce93cb94b",
-      "benchmarks/run-benchmarks.ps1": "3b7ab3897e81bd6cf01d684eca7302f97486f848c9068f55aa7603276b6aa9ff",
+      "benchmarks/browser/cpu-runner.js": "8653f122096b88fb666e8f8e7fae5f3e94e03e06b6677f29021734b170144c3b",
+      "benchmarks/browser/page.html": "04e3326b381f233dab582fac7e8202d73559ea2348e3f0f6b1610ef5022e8a46",
+      "benchmarks/browser/bench.mjs": "d5ae578059a504ebb2d942bf94b2e66e9ddbe03e1bd762c0253f516762316a53",
+      "benchmarks/run-benchmarks.ps1": "74e73379aa5d84df2cf6f67a7efe288a6ef148b0da6e889c3748f26340926c73",
       "benchmarks/VelociTex.Benchmarks/CpuBenchmark.cs": "7c4bafd95517effa9151ed37d3017e0fcd16cb8ccb339e1d6876e40c5a8f8d54",
       "benchmarks/VelociTex.WinUI.Bench/BenchWindow.cs": "9793f7ec88964c75c56e6dcb361b6aeb5cf45099bd4e9a8e591403f6d71286d7",
-      "artifacts/core-native/VelociTex.Core.Native.dll": "ab9300bb9b215135c69e4a914188635ab268505475074d00da0a279bc37b9747",
-      "benchmarks/VelociTex.Benchmarks/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.Benchmarks.exe": "50230360adaef1cac4f2964a0483d31be86acd7276b6e6c57b33de53570f798a",
-      "benchmarks/VelociTex.WinUI.Bench/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.WinUI.Bench.exe": "9130cdae1085c1d50c09ee259f0cc346c690866a0353480b8188caa063b3fe0d",
-      "npm/velocitex/dist/build-info.json": "9e6809d523557b686de314fc2a186828c599e5525d0c17aacf1d5fc286bb2011",
+      "artifacts/core-native/VelociTex.Core.Native.dll": "00213b73f7abde3e04a575932fe857e435e04076a90847e32eacf1c2e361b116",
+      "benchmarks/VelociTex.Benchmarks/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.Benchmarks.exe": "f8691b4254e4f3c202a183739d2ee5bcd962dd5cb24f7f92e94b0338ba8044ea",
+      "benchmarks/VelociTex.WinUI.Bench/bin/x64/Release/net10.0-windows10.0.26100.0/win-x64/VelociTex.WinUI.Bench.exe": "27209b778c91cf3f801cafe98a8702872e59f52ceb9e82eda69d31c3d86baccc",
+      "npm/velocitex/dist/build-info.json": "2b5f00de094403d7cd8a5acbd6a662f54ee179740560e41128271d3a3496d2f2",
       "npm/velocitex/dist/fastmath.mjs": "bf5791be12c9b13d3fbdf891723c23ff81b1efa418b123aa8a43eaa9f30fe651",
-      "npm/velocitex/dist/index.d.ts": "559417b73996754926fe03df4cabcb5dd061605400611f84007afaab94fa1f2a",
-      "npm/velocitex/dist/index.mjs": "88ec2ce7f87ab1942acb8a5ab236d9537025d4da5ef7fb1b8baaa6bbb231729d",
-      "npm/velocitex/dist/runtime/dotnet.js": "1647ce65e14f13c22626b0a854ca0ba0884cf4b2bdfdd36a32e0b4f9f842de08",
-      "npm/velocitex/dist/runtime/dotnet.js.br": "3647f7b74df48d1ab4f2e8a973ffadffd28c9c0c175090c65997c541e4a824da",
-      "npm/velocitex/dist/runtime/dotnet.js.gz": "6c3ba1e7232b7e30284c42e746fa28b8db5cb4d5119e5eac0306e5581c2d894e",
-      "npm/velocitex/dist/runtime/dotnet.native.9pdpnlniwp.wasm": "9dec5dac5d9ac8ec48b2fe2e4eee6c15557a0e270701a711cb88ccb9ba089390",
-      "npm/velocitex/dist/runtime/dotnet.native.9pdpnlniwp.wasm.br": "a3d4b17ea634c5b17089189a9a85b10400ab993f1b20ec90d6634e6f8ee6c751",
-      "npm/velocitex/dist/runtime/dotnet.native.9pdpnlniwp.wasm.gz": "d4bb226a118307a4fa768b62adae3cd8bc2285b6a8e9edea3ee6b69e7851a614",
+      "npm/velocitex/dist/index.d.ts": "6a342e2a22543ca3043d9429c0987faad95032ed25e4e682888e9ff7c2707140",
+      "npm/velocitex/dist/index.mjs": "ef904535db6a3008d107690a060b1c184f5fdbc2770b1feac2dc804b9acd89cf",
+      "npm/velocitex/dist/katex.min.css": "d4ab5b8ee16989b070cdb0ea24bd6ad48fc8df1b787f280f29d3ae4f959f2c00",
+      "npm/velocitex/dist/katexmath.mjs": "fa87ad03128fb5e177bc6f835f251de12746ac0b5a99adba4763a7ae274836bb",
+      "npm/velocitex/dist/fonts/KaTeX_AMS-Regular.ttf": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "npm/velocitex/dist/fonts/KaTeX_AMS-Regular.woff": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "npm/velocitex/dist/fonts/KaTeX_AMS-Regular.woff2": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "npm/velocitex/dist/fonts/KaTeX_Caligraphic-Bold.ttf": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "npm/velocitex/dist/fonts/KaTeX_Caligraphic-Bold.woff": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "npm/velocitex/dist/fonts/KaTeX_Caligraphic-Bold.woff2": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "npm/velocitex/dist/fonts/KaTeX_Caligraphic-Regular.ttf": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "npm/velocitex/dist/fonts/KaTeX_Caligraphic-Regular.woff": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "npm/velocitex/dist/fonts/KaTeX_Caligraphic-Regular.woff2": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "npm/velocitex/dist/fonts/KaTeX_Fraktur-Bold.ttf": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "npm/velocitex/dist/fonts/KaTeX_Fraktur-Bold.woff": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "npm/velocitex/dist/fonts/KaTeX_Fraktur-Bold.woff2": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "npm/velocitex/dist/fonts/KaTeX_Fraktur-Regular.ttf": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "npm/velocitex/dist/fonts/KaTeX_Fraktur-Regular.woff": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "npm/velocitex/dist/fonts/KaTeX_Fraktur-Regular.woff2": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "npm/velocitex/dist/fonts/KaTeX_Main-Bold.ttf": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "npm/velocitex/dist/fonts/KaTeX_Main-Bold.woff": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "npm/velocitex/dist/fonts/KaTeX_Main-Bold.woff2": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "npm/velocitex/dist/fonts/KaTeX_Main-BoldItalic.ttf": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "npm/velocitex/dist/fonts/KaTeX_Main-BoldItalic.woff": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "npm/velocitex/dist/fonts/KaTeX_Main-BoldItalic.woff2": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "npm/velocitex/dist/fonts/KaTeX_Main-Italic.ttf": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "npm/velocitex/dist/fonts/KaTeX_Main-Italic.woff": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "npm/velocitex/dist/fonts/KaTeX_Main-Italic.woff2": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "npm/velocitex/dist/fonts/KaTeX_Main-Regular.ttf": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "npm/velocitex/dist/fonts/KaTeX_Main-Regular.woff": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "npm/velocitex/dist/fonts/KaTeX_Main-Regular.woff2": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "npm/velocitex/dist/fonts/KaTeX_Math-BoldItalic.ttf": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "npm/velocitex/dist/fonts/KaTeX_Math-BoldItalic.woff": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "npm/velocitex/dist/fonts/KaTeX_Math-BoldItalic.woff2": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "npm/velocitex/dist/fonts/KaTeX_Math-Italic.ttf": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "npm/velocitex/dist/fonts/KaTeX_Math-Italic.woff": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "npm/velocitex/dist/fonts/KaTeX_Math-Italic.woff2": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "npm/velocitex/dist/fonts/KaTeX_SansSerif-Bold.ttf": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "npm/velocitex/dist/fonts/KaTeX_SansSerif-Bold.woff": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "npm/velocitex/dist/fonts/KaTeX_SansSerif-Bold.woff2": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "npm/velocitex/dist/fonts/KaTeX_SansSerif-Italic.ttf": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "npm/velocitex/dist/fonts/KaTeX_SansSerif-Italic.woff": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "npm/velocitex/dist/fonts/KaTeX_SansSerif-Italic.woff2": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "npm/velocitex/dist/fonts/KaTeX_SansSerif-Regular.ttf": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "npm/velocitex/dist/fonts/KaTeX_SansSerif-Regular.woff": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "npm/velocitex/dist/fonts/KaTeX_SansSerif-Regular.woff2": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "npm/velocitex/dist/fonts/KaTeX_Script-Regular.ttf": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "npm/velocitex/dist/fonts/KaTeX_Script-Regular.woff": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "npm/velocitex/dist/fonts/KaTeX_Script-Regular.woff2": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "npm/velocitex/dist/fonts/KaTeX_Size1-Regular.ttf": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "npm/velocitex/dist/fonts/KaTeX_Size1-Regular.woff": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "npm/velocitex/dist/fonts/KaTeX_Size1-Regular.woff2": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "npm/velocitex/dist/fonts/KaTeX_Size2-Regular.ttf": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "npm/velocitex/dist/fonts/KaTeX_Size2-Regular.woff": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "npm/velocitex/dist/fonts/KaTeX_Size2-Regular.woff2": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "npm/velocitex/dist/fonts/KaTeX_Size3-Regular.ttf": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "npm/velocitex/dist/fonts/KaTeX_Size3-Regular.woff": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "npm/velocitex/dist/fonts/KaTeX_Size3-Regular.woff2": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+      "npm/velocitex/dist/fonts/KaTeX_Size4-Regular.ttf": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "npm/velocitex/dist/fonts/KaTeX_Size4-Regular.woff": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "npm/velocitex/dist/fonts/KaTeX_Size4-Regular.woff2": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "npm/velocitex/dist/fonts/KaTeX_Typewriter-Regular.ttf": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "npm/velocitex/dist/fonts/KaTeX_Typewriter-Regular.woff": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "npm/velocitex/dist/fonts/KaTeX_Typewriter-Regular.woff2": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b",
+      "npm/velocitex/dist/runtime/dotnet.js": "0ad81ed7f61da4e435435fab76571c11cb507dab2b9503c2afa636bb03c2f5a0",
+      "npm/velocitex/dist/runtime/dotnet.js.br": "4477408e5abb11b0fb0030284d7724d3c8b80df1ab2af85d598a029e8fd80371",
+      "npm/velocitex/dist/runtime/dotnet.js.gz": "918fc68ecf98ce8039f75847cdc6d3ff385ade9c9849b0b6587f7129fc2344ab",
+      "npm/velocitex/dist/runtime/dotnet.native.u4gutu4oav.wasm": "d29d8bec12b77d6ca6b69c625807661841a10d8dedc001466e83aa919cc0b942",
+      "npm/velocitex/dist/runtime/dotnet.native.u4gutu4oav.wasm.br": "8ba433b18c4b44fbb5fbae88d7abdfebd04b19db899c4932f807cb2beff9fccf",
+      "npm/velocitex/dist/runtime/dotnet.native.u4gutu4oav.wasm.gz": "d1ee8c63cf450779930ca2f2830f8b2b9e436205540ca83fc8e7cb29757e4a30",
       "npm/velocitex/dist/runtime/dotnet.native.vgar7h21jv.js": "41e7b88406439e3cea86cdb3d671c3e28335ccd6ee49deffef6fcea059e150b2",
       "npm/velocitex/dist/runtime/dotnet.native.vgar7h21jv.js.br": "2973ae8260faf1589a6450c2b8d004fc22bf1de013e6a15446d5d455e62d56c4",
       "npm/velocitex/dist/runtime/dotnet.native.vgar7h21jv.js.gz": "3d565920a59c2d5c4e749d2d937fb0b4b3638aca1ced11091e0824f24d2c67e1",
@@ -39,7 +102,8 @@
       "npm/velocitex/dist/runtime/dotnet.runtime.azrfhwb804.js.br": "e0b8b6ff5a851975e978be2f8c682b6d3acdb1164db0ab02b7453d84135ff3d9",
       "npm/velocitex/dist/runtime/dotnet.runtime.azrfhwb804.js.gz": "0e7dbde7267c9dc9fc7cfdee779df969ba4e2ec09e0c50d45de4ece462eed226",
       "npm/velocitex/dist/runtime/fastmath.js": "5528c4721b87fc8600196c17ebaf9a96863f201eb4591c13fe4f7d23753026cc",
-      "npm/velocitex/dist/runtime/fastmath.wasm": "794f3d9dff723cdad1c5308380a59b67fa1d8b062f611a2b739a7b95ffe5c762",
+      "npm/velocitex/dist/runtime/fastmath.wasm": "3792f6c53e91e5930d3442dd4d6b4883f17dfe1f0a811045c8a1be69131db0d3",
+      "npm/velocitex/dist/runtime/katex.min.css": "d4ab5b8ee16989b070cdb0ea24bd6ad48fc8df1b787f280f29d3ae4f959f2c00",
       "npm/velocitex/dist/runtime/LICENSE.dotnet.txt": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310",
       "npm/velocitex/dist/runtime/System.Collections.1aa5z793gh.wasm": "b76ddac523331451c92ca80fabde4689fa5839386a40156f96db42e85ee7e0c2",
       "npm/velocitex/dist/runtime/System.Collections.1aa5z793gh.wasm.br": "6ed5853c5f5e791b68942e28f9adfdde29412802635c5f480fe06ac16db4f1fd",
@@ -69,15 +133,76 @@
       "npm/velocitex/dist/runtime/System.Text.Json.nyclvw6ova.wasm.br": "9b68243072d592e6e5d3b63d58b766613ec191bd193dc227f84e8beb2e6178eb",
       "npm/velocitex/dist/runtime/System.Text.Json.nyclvw6ova.wasm.gz": "d17b306bc0b8dbbc5135617cf5dc23b87fab8cb792243fb955c4a70d4eb935ef",
       "npm/velocitex/dist/runtime/THIRD-PARTY-NOTICES.dotnet.txt": "66f1d4e44973185519bb4aa8a9718eb22fc7af2cc532e3ae9cfc4c127ee7fc54",
-      "npm/velocitex/dist/runtime/VelociTex.Core.c8pp2w5823.wasm": "fc5d855c50c2f4a366089d64f22593177a3502397f849ee48695c03c94c605ff",
-      "npm/velocitex/dist/runtime/VelociTex.Core.c8pp2w5823.wasm.br": "1e9f6a6b90969b1db7be047e2f36ced39daf2b246262610955e689884182c6e1",
-      "npm/velocitex/dist/runtime/VelociTex.Core.c8pp2w5823.wasm.gz": "1447c530699832c09694b4976d27e95ebee96b89677ef627ef4261de4ade4611",
-      "npm/velocitex/dist/runtime/VelociTex.Rendering.Svg.sof8bqojmb.wasm": "942b016b3060a5a1e6727c0e6764ca267cc0426238627bfa85586e2841e9da2e",
-      "npm/velocitex/dist/runtime/VelociTex.Rendering.Svg.sof8bqojmb.wasm.br": "e3db542d0bef3c1dae551ba1431386db2aa12af28f637c4e7db49a40df740868",
-      "npm/velocitex/dist/runtime/VelociTex.Rendering.Svg.sof8bqojmb.wasm.gz": "6ccac443d13e61a77a2e4fb318d328851b81b4836fd2e71a805da571b53f0bed",
-      "npm/velocitex/dist/runtime/VelociTex.Wasm.bb8ianxa5m.wasm": "97909e18b6653485539be193d3d9d634023e1b3dc4720eedc5d975ed56a95f97",
-      "npm/velocitex/dist/runtime/VelociTex.Wasm.bb8ianxa5m.wasm.br": "617994be70c4eca420b1007d5336655d4c0cc0c3ebfbdc1c3bf908044b6e39f4",
-      "npm/velocitex/dist/runtime/VelociTex.Wasm.bb8ianxa5m.wasm.gz": "508002d0980ae07374e1018fb15a94984b649124063d45034fc3e5ea06557104"
+      "npm/velocitex/dist/runtime/VelociTex.Core.e0a8hbxhlt.wasm": "aef19ac7e036fe6f3ab6d6cb376d612e7b547444a628fc8ecb4d54c42c76054c",
+      "npm/velocitex/dist/runtime/VelociTex.Core.e0a8hbxhlt.wasm.br": "766f3a361a9f16dcef4efaf9543facea81580d77c6e692e94946dfcfc57d1dff",
+      "npm/velocitex/dist/runtime/VelociTex.Core.e0a8hbxhlt.wasm.gz": "8b6333402a0edb4a703253496c9f3a7d386c985e5e9a0a447dccb76490a62870",
+      "npm/velocitex/dist/runtime/VelociTex.Rendering.Svg.jw48rrgw2i.wasm": "d3116cd0e036c36a2ab9939b69f2312d133a4eec04499ab45de418e7d27c5232",
+      "npm/velocitex/dist/runtime/VelociTex.Rendering.Svg.jw48rrgw2i.wasm.br": "d52a3b2109aaafc108aa2f551ba8ede758b3b41b3dad954a643b15c8871ef64a",
+      "npm/velocitex/dist/runtime/VelociTex.Rendering.Svg.jw48rrgw2i.wasm.gz": "bf4365738fabec3854a0eb7f1e73343c4371858dd3973bb1914cbe7f970fc969",
+      "npm/velocitex/dist/runtime/VelociTex.Wasm.dekzkhw5yh.wasm": "fbf591f54eb74de0d931888b1d1db282f1ff6f565af8d68f47952460ea1cd40d",
+      "npm/velocitex/dist/runtime/VelociTex.Wasm.dekzkhw5yh.wasm.br": "42c57f8242df7f7254fd741312ecfcbc783c25f2cd29fc9b308ac28e17aaad66",
+      "npm/velocitex/dist/runtime/VelociTex.Wasm.dekzkhw5yh.wasm.gz": "b0124824fba63ebc3cac8e8b9ebcab1dd1ff125d7e5dc2674f58aeefc2a4fd29",
+      "npm/velocitex/dist/runtime/vt-katex-html.wasm": "6b2c6fb18e55cb68405bf68d40a5743e0e20e99df8876486bab26260c591e1dc",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_AMS-Regular.ttf": "68534840bcfdd2bffb6f0e8deb48684dd01e7f04ea2813267577afb906de1d13",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_AMS-Regular.woff": "30da91e84c893f875e252689faebdc590b2871145e8adc7f9a9d4dbd8ce0b251",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_AMS-Regular.woff2": "0cdd387c9590a1a9f9794560022dbb59654a7d86f187aa0c81495ad42d3a7308",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Caligraphic-Bold.ttf": "07d8e303ce4fc12b4bb54f1004170dd190a1f3db45d400fe68060df3e0897268",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Caligraphic-Bold.woff": "1ae6bd7475590e97e7f145a89e09ccde322f7a6bc0b91607b1c8b8ee28290fed",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Caligraphic-Bold.woff2": "de7701e42cf1f4cf0b766c03fb27977207eee2f4fd5d76fa82188406da43ea4c",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Caligraphic-Regular.ttf": "ed0b74372feefcbb9c0666b2e210da37b7e49fa7fbbf3eeb11db5f693dacfbb7",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Caligraphic-Regular.woff": "3398dd02302557a793f2863f88e02d96ce10df2abffa07c8e9fa90775116e65c",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Caligraphic-Regular.woff2": "5d53e70ad607c2352162dec9e0923fb54ecdafaccbf604cd8dcf7d00facb989b",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Fraktur-Bold.ttf": "9163df9c7122432e6495b4229fa9071cf9ae86a758ae5efc4924ec2e1a6dbce1",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Fraktur-Bold.woff": "9be7ceb88004ab8ad124082246fbfcca4091e36385d4ec6ed1df67375dad50fb",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Fraktur-Bold.woff2": "74444efd593c005e3f4573b44524704c0af0a937fe911cca9e94068d0d140d3f",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Fraktur-Regular.ttf": "1e6f9579e90e2cac37f8f60a597c436e075c114385652b7cbeb0dec0421291b3",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Fraktur-Regular.woff": "5e28753be717dac97f559f49bc10be9cf3c124ddcabda6659d11cb68febc6463",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Fraktur-Regular.woff2": "51814d270d06ff0255dba0799994fa4d8c84d11f09951d47595f4abb1f3602dc",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-Bold.ttf": "138ac28d1663b3037e9c5f52371fa5c63d8324f4a38d22cd573e6ea3a3fd0cf8",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-Bold.woff": "c76c5d696297d51b9cb1639c7da4334f0e7dec81b42b11213b5e25ef671bb822",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-Bold.woff2": "0f60d1b897938ec918c8ce073092411baf9438f6739465693ff18b0f9d20b021",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-BoldItalic.ttf": "70ee1f64a20f2048c21940ef46d0144fd215baa953ca69afd1e31e98544f708f",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-BoldItalic.woff": "a6f7ec0d846ac7ad975adb8959c37ed49b94acbc4ae436db9ce9e20287e4a64c",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-BoldItalic.woff2": "99cd42a3c072d918f2f44984a807cf7aa16e13545fd0875fc07c6c65f99e715b",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-Italic.ttf": "0d85ae7cc30f23790a7f1a58c4a112fdca8aae769b6ba11429af1d98b1b6cb3a",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-Italic.woff": "f1d6ef86f3b11a528bd5185199bd2443ecb2b0dead96d88674b5a2c12be24bdf",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-Italic.woff2": "97479ca6cce906abc961ecac96faa5f9ca2e61b8e7670d475826bcdee9a7c267",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-Regular.ttf": "d0332f52868370fd83ae7fa46470f90c8f2eab2fcf12bc4f88080b340c95a830",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-Regular.woff": "c6368d87e8a1a3a5d337623d83d8dc4b868f242a9ad476237d6f8d1e0f168cdc",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Main-Regular.woff2": "c2342cd8b869e01752a9321dc17213fc40d4d04c79688c1d43f2cf316abd7866",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Math-BoldItalic.ttf": "f9377ab0271cda59af24bcffbd46a4d0c8a3572ffafdbb38de2ad5ea7b0d5ee5",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Math-BoldItalic.woff": "850c0af5c2238497febaf5e461d880bf458c341f42f4f330f1b1ab5698b1998e",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Math-BoldItalic.woff2": "dc47344dbb6cb5b655c8460d561f4df5f501b90c804ad3c6cec65fe322351ab1",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Math-Italic.ttf": "08ce98e51b04d58945a301e639e02b6998af29fdfd61a7b8afdd07bbfc479d4a",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Math-Italic.woff": "8a8d244581371912b8f3f5a23e2437cb2a59cd9bcaebb0346e722c05737a2571",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Math-Italic.woff2": "7af58c5ec8f132a2ddde9027c6d7814decce4d3b822a11192a42a20e2e973264",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_SansSerif-Bold.ttf": "1ece03f79f95277d57dc7f6b435a74e1379b0d46104a8530286b60ff49369ea0",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_SansSerif-Bold.woff": "ece03cfd83e22c212cdef66feb8442d25a083beb988db3f1883f3f9738d750ba",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_SansSerif-Bold.woff2": "e99ae51144bf1232efcc1bfe5add36262c6866b0faab24fa75740e1b98577a62",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_SansSerif-Italic.ttf": "3931dd81faed86ba021bb2bbdc36f5bed9a38d6b4f4077aca59b265aa1b02083",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_SansSerif-Italic.woff": "91ee67500cc0129aa0ace3ac5c61ff1692102f0f31d02b69347fba35dcb75bf2",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_SansSerif-Italic.woff2": "00b26ac825e2095056396e0553b8ac26d3f8ad158c3826e28b4c45b385c4714a",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_SansSerif-Regular.ttf": "f36ea897e19f4a2e571d1e900e4e3710e438deb05a842486045ba0a3e616a4ad",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_SansSerif-Regular.woff": "11e4dc8a6471ff6d6ee561d53d10fde8f7489e798257ff449c5d37c197435605",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_SansSerif-Regular.woff2": "68e8c73ef42afd3ccec58bf0fba302cce448938e7fc020a5e31f8a952eee1342",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Script-Regular.ttf": "1c67f068fea8bb09bf099c088b1cf64bd27516a6e07f4684344873564bb66a67",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Script-Regular.woff": "d96cdf2b3bdd4d64a8fd5f74a4c467f123a8a73931cd435889f08ffaf9bf947a",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Script-Regular.woff2": "036d4e95149b69ff9bcc0cd55771efeb25ffa3947293e69acd78d5ac328c684b",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size1-Regular.ttf": "95b6d2f1a50173bfedb8c63e1d1c99b10427d0a4df4201cb44513b226951a22b",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size1-Regular.woff": "c943cc986384f59e86bea5fd7dc50a9c4dfe567a7c05eb40d6790720dead97c9",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size1-Regular.woff2": "6b47c40166b6dbe21a5dfca7718413f2147fd2399be1ba605d8ad39cedf25dfe",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size2-Regular.ttf": "a6b2099fb555c60e3a0db3a08842ebf1d732c6eb4e4bf44913613bed4fc4e39b",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size2-Regular.woff": "2014c523c3210bcc166648c4d4cc57f05b747df07a24277bf71c51e67dc79e3d",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size2-Regular.woff2": "d04c54219f9eaec6d4d4fd42dfb28785975a4794d6b2fc71e566b9cd6db842dd",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size3-Regular.ttf": "500e04d54f0d51666332c9d2089aa803be22aa878eca539e59fa53c6e522b082",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size3-Regular.woff": "6ab6b62e9b62dae2c00dd90f791bd10950be0ecc3490d7d6045f51c2e8fe0949",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size3-Regular.woff2": "73d591271b1604960cb10bb90fee021670af7297017e0e98480b332d11f51995",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size4-Regular.ttf": "c647367d1dd4e162468717d020e1fc0f1dc5c26ebfdffbe55261713bf88c5877",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size4-Regular.woff": "99f9c6750b489c9462bf04900bd3f939df9b829339daaaaa99ef5495cdddea58",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Size4-Regular.woff2": "a4af7d414440a1c1790825cfb700cf9cf43b0f2c4b04f0ebc523011ad9853ec0",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Typewriter-Regular.ttf": "f01f3e87d9c6a61c0c081ceb577abd864eb00a612f7ac1620dd6915fad2ef5aa",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Typewriter-Regular.woff": "e14fed02b1aba7ce9f5afd5844b5d0321b22351febc720e0de8b8723527609f7",
+      "npm/velocitex/dist/runtime/fonts/KaTeX_Typewriter-Regular.woff2": "71d517d67827787cfabdf186914cc3358eda539e37931941f2b2fd4a21f68c0b"
     },
     "order": [
       "run-1/native",
@@ -102,52 +227,52 @@
         "caseCount": 6,
         "metrics": {
           "mathml": {
-            "msPerFormula": 0.024589768473307294,
+            "msPerFormula": 0.022394340006510416,
             "runMsPerFormula": [
-              0.02473723958333333, 0.024589768473307294, 0.024258268229166668
+              0.022126273600260416, 0.022394340006510416, 0.022578442382812498
             ],
-            "minimumRunMs": 0.024258268229166668,
-            "maximumRunMs": 0.02473723958333333,
-            "formulasPerSecond": 40667.320681995065,
+            "minimumRunMs": 0.022126273600260416,
+            "maximumRunMs": 0.022578442382812498,
+            "formulasPerSecond": 44654.14027425157,
             "cases": {
               "single-energy": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.00609593505859375,
+                "medianMsPerUnit": 0.00531923828125,
                 "runMsPerUnit": [
-                  0.006108642578125, 0.00609593505859375, 0.005773046875
+                  0.0055758056640625, 0.0053004638671875, 0.00531923828125
                 ]
               },
               "single-quadratic": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.02236953125,
-                "runMsPerUnit": [0.02100166015625, 0.02329765625, 0.02236953125]
+                "medianMsPerUnit": 0.020603369140625,
+                "runMsPerUnit": [
+                  0.02047900390625, 0.020603369140625, 0.020761083984375
+                ]
               },
               "single-gaussian": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.0312802734375,
-                "runMsPerUnit": [
-                  0.0326291015625, 0.03038662109375, 0.0312802734375
-                ]
+                "medianMsPerUnit": 0.02784072265625,
+                "runMsPerUnit": [0.02802890625, 0.0278015625, 0.02784072265625]
               },
               "single-binomial": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.03111708984375,
+                "medianMsPerUnit": 0.02885595703125,
                 "runMsPerUnit": [
-                  0.03111708984375, 0.0317234375, 0.03089228515625
+                  0.02804951171875, 0.02885595703125, 0.02894775390625
                 ]
               },
               "single-determinant": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.026730322265625,
+                "medianMsPerUnit": 0.0240513671875,
                 "runMsPerUnit": [
-                  0.026730322265625, 0.02675859375, 0.0249185546875
+                  0.02349443359375, 0.0240513671875, 0.02521162109375
                 ]
               },
               "single-derivative": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.03031591796875,
+                "medianMsPerUnit": 0.027390234375,
                 "runMsPerUnit": [
-                  0.03083662109375, 0.0292763671875, 0.03031591796875
+                  0.02712998046875, 0.0277533203125, 0.027390234375
                 ]
               }
             }
@@ -159,28 +284,28 @@
         "caseCount": 3,
         "metrics": {
           "mathml": {
-            "msPerFormula": 0.20863476562499997,
+            "msPerFormula": 0.18832877604166667,
             "runMsPerFormula": [
-              0.21559921875000002, 0.20863476562499997, 0.19830325520833333
+              0.18796041666666666, 0.18832877604166667, 0.190231640625
             ],
-            "minimumRunMs": 0.19830325520833333,
-            "maximumRunMs": 0.21559921875000002,
-            "formulasPerSecond": 4793.06503402889,
+            "minimumRunMs": 0.18796041666666666,
+            "maximumRunMs": 0.190231640625,
+            "formulasPerSecond": 5309.863001386234,
             "cases": {
               "long-aligned": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.28591015625,
-                "runMsPerUnit": [0.29431875, 0.28591015625, 0.25835390625]
+                "medianMsPerUnit": 0.2512078125,
+                "runMsPerUnit": [0.25008828125, 0.2512078125, 0.25253671875]
               },
               "long-cases": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.128484375,
-                "runMsPerUnit": [0.128484375, 0.130669921875, 0.128262109375]
+                "medianMsPerUnit": 0.117337109375,
+                "runMsPerUnit": [0.11763203125, 0.115724609375, 0.117337109375]
               },
               "long-maxwell": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.20932421875,
-                "runMsPerUnit": [0.22399453125, 0.20932421875, 0.20829375]
+                "medianMsPerUnit": 0.19805390625,
+                "runMsPerUnit": [0.1961609375, 0.19805390625, 0.20082109375]
               }
             }
           }
@@ -191,28 +316,28 @@
         "caseCount": 3,
         "metrics": {
           "mathml": {
-            "msPerFormula": 0.020172526041666666,
+            "msPerFormula": 0.017983405671296297,
             "runMsPerFormula": [
-              0.020989134837962962, 0.020172526041666666, 0.01896467013888889
+              0.017983405671296297, 0.017925839120370372, 0.01837249710648148
             ],
-            "minimumRunMs": 0.01896467013888889,
-            "maximumRunMs": 0.020989134837962962,
-            "formulasPerSecond": 49572.37372922382,
+            "minimumRunMs": 0.017925839120370372,
+            "maximumRunMs": 0.01837249710648148,
+            "formulasPerSecond": 55606.8198804035,
             "cases": {
               "page-algebra": {
                 "formulaCount": 10,
-                "medianMsPerUnit": 0.17098359375,
-                "runMsPerUnit": [0.181268359375, 0.17098359375, 0.162965625]
+                "medianMsPerUnit": 0.15429609375,
+                "runMsPerUnit": [0.15429609375, 0.1538921875, 0.15871640625]
               },
               "page-calculus": {
                 "formulaCount": 9,
-                "medianMsPerUnit": 0.18930703125,
-                "runMsPerUnit": [0.199405078125, 0.18930703125, 0.174546875]
+                "medianMsPerUnit": 0.169440234375,
+                "runMsPerUnit": [0.169440234375, 0.16878125, 0.17071484375]
               },
               "page-physics": {
                 "formulaCount": 8,
-                "medianMsPerUnit": 0.184367578125,
-                "runMsPerUnit": [0.186033203125, 0.184367578125, 0.17453359375]
+                "medianMsPerUnit": 0.161815625,
+                "runMsPerUnit": [0.161815625, 0.16132421875, 0.166626171875]
               }
             }
           }
@@ -225,153 +350,151 @@
         "caseCount": 6,
         "metrics": {
           "mathml": {
-            "msPerFormula": 0.024933304850260418,
+            "msPerFormula": 0.02350233968098958,
             "runMsPerFormula": [
-              0.024933304850260418, 0.024729223632812502, 0.02645360107421875
+              0.02350233968098958, 0.02346881103515625, 0.023860176595052084
             ],
-            "minimumRunMs": 0.024729223632812502,
-            "maximumRunMs": 0.02645360107421875,
-            "formulasPerSecond": 40106.997688658004,
+            "minimumRunMs": 0.02346881103515625,
+            "maximumRunMs": 0.023860176595052084,
+            "formulasPerSecond": 42548.95527737068,
             "cases": {
               "single-energy": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.0074988525390625,
+                "medianMsPerUnit": 0.0068263916015625,
                 "runMsPerUnit": [
-                  0.0072880126953125, 0.007760302734375, 0.0074988525390625
+                  0.0068900634765625, 0.0068263916015625, 0.0068014892578125
                 ]
               },
               "single-quadratic": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.023012890625,
+                "medianMsPerUnit": 0.021810498046875,
                 "runMsPerUnit": [
-                  0.0227876953125, 0.023012890625, 0.0252369140625
+                  0.021810498046875, 0.021360595703125, 0.02191884765625
                 ]
               },
               "single-gaussian": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.03088369140625,
+                "medianMsPerUnit": 0.0292638671875,
                 "runMsPerUnit": [
-                  0.030076953125, 0.03088369140625, 0.03171298828125
+                  0.0294953125, 0.0292638671875, 0.02890810546875
                 ]
               },
               "single-binomial": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.0318443359375,
+                "medianMsPerUnit": 0.03005087890625,
                 "runMsPerUnit": [
-                  0.0318443359375, 0.03060595703125, 0.0332580078125
+                  0.0296271484375, 0.03005087890625, 0.0321306640625
                 ]
               },
               "single-determinant": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.02765546875,
+                "medianMsPerUnit": 0.02505693359375,
                 "runMsPerUnit": [
-                  0.02765546875, 0.0259630859375, 0.0276931640625
+                  0.02464658203125, 0.0251109375, 0.02505693359375
                 ]
               },
               "single-derivative": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.0301494140625,
+                "medianMsPerUnit": 0.02834501953125,
                 "runMsPerUnit": [
-                  0.02994736328125, 0.0301494140625, 0.0333216796875
+                  0.02854443359375, 0.0282001953125, 0.02834501953125
                 ]
               }
             }
           },
           "compile": {
-            "msPerFormula": 0.026678808593750002,
+            "msPerFormula": 0.024521122233072914,
             "runMsPerFormula": [
-              0.026678808593750002, 0.027152539062499998, 0.02657142333984375
+              0.024632255045572916, 0.024511360677083333, 0.024521122233072914
             ],
-            "minimumRunMs": 0.02657142333984375,
-            "maximumRunMs": 0.027152539062499998,
-            "formulasPerSecond": 37482.9331859395,
+            "minimumRunMs": 0.024511360677083333,
+            "maximumRunMs": 0.024632255045572916,
+            "formulasPerSecond": 40781.16778241283,
             "cases": {
               "single-energy": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.00690380859375,
+                "medianMsPerUnit": 0.006205859375,
                 "runMsPerUnit": [
-                  0.00694306640625, 0.00690380859375, 0.0066846923828125
+                  0.0060001220703125, 0.006205859375, 0.0063161865234375
                 ]
               },
               "single-quadratic": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.02556201171875,
+                "medianMsPerUnit": 0.023734033203125,
                 "runMsPerUnit": [
-                  0.02556201171875, 0.0275197265625, 0.0238705078125
+                  0.023734033203125, 0.02288271484375, 0.023749072265625
                 ]
               },
               "single-gaussian": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.0332326171875,
+                "medianMsPerUnit": 0.03128388671875,
                 "runMsPerUnit": [
-                  0.0332326171875, 0.03387060546875, 0.0324833984375
+                  0.0314158203125, 0.03128388671875, 0.0311783203125
                 ]
               },
               "single-binomial": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.03462177734375,
-                "runMsPerUnit": [
-                  0.03462177734375, 0.0340966796875, 0.03614482421875
-                ]
+                "medianMsPerUnit": 0.031819921875,
+                "runMsPerUnit": [0.03141318359375, 0.033028125, 0.031819921875]
               },
               "single-determinant": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.02634541015625,
+                "medianMsPerUnit": 0.024747998046875,
                 "runMsPerUnit": [
-                  0.0259916015625, 0.0270443359375, 0.02634541015625
+                  0.02546171875, 0.024101953125, 0.024747998046875
                 ]
               },
               "single-derivative": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.03372177734375,
-                "runMsPerUnit": [
-                  0.03372177734375, 0.033480078125, 0.03389970703125
-                ]
+                "medianMsPerUnit": 0.029565625,
+                "runMsPerUnit": [0.02976865234375, 0.029565625, 0.029315234375]
               }
             }
           },
           "svg": {
-            "msPerFormula": 0.059564436848958346,
+            "msPerFormula": 0.05129187825520833,
             "runMsPerFormula": [
-              0.07034187825520832, 0.05754485677083334, 0.059564436848958346
+              0.04866720377604167, 0.0515919921875, 0.05129187825520833
             ],
-            "minimumRunMs": 0.05754485677083334,
-            "maximumRunMs": 0.07034187825520832,
-            "formulasPerSecond": 16788.541164852595,
+            "minimumRunMs": 0.04866720377604167,
+            "maximumRunMs": 0.0515919921875,
+            "formulasPerSecond": 19496.264009369883,
             "cases": {
               "single-energy": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.047876953125,
-                "runMsPerUnit": [0.046111328125, 0.049641015625, 0.047876953125]
+                "medianMsPerUnit": 0.043525390625,
+                "runMsPerUnit": [0.0215630859375, 0.043525390625, 0.04371484375]
               },
               "single-quadratic": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.079292578125,
-                "runMsPerUnit": [0.14113046875, 0.0648298828125, 0.079292578125]
+                "medianMsPerUnit": 0.0549875,
+                "runMsPerUnit": [0.0556755859375, 0.0549875, 0.0542212890625]
               },
               "single-gaussian": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.069624609375,
-                "runMsPerUnit": [0.069430859375, 0.069624609375, 0.070215234375]
+                "medianMsPerUnit": 0.0635671875,
+                "runMsPerUnit": [0.063786328125, 0.0635671875, 0.0624083984375]
               },
               "single-binomial": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.0596818359375,
+                "medianMsPerUnit": 0.0550380859375,
                 "runMsPerUnit": [
-                  0.0596818359375, 0.0577853515625, 0.0614974609375
+                  0.0552103515625, 0.0550380859375, 0.054144140625
                 ]
               },
               "single-determinant": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.045924609375,
+                "medianMsPerUnit": 0.04034501953125,
                 "runMsPerUnit": [
-                  0.04724833984375, 0.045924609375, 0.04326611328125
+                  0.04138720703125, 0.04008515625, 0.04034501953125
                 ]
               },
               "single-derivative": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.057463671875,
-                "runMsPerUnit": [0.0584484375, 0.057463671875, 0.05523828125]
+                "medianMsPerUnit": 0.052917578125,
+                "runMsPerUnit": [
+                  0.0543806640625, 0.0523486328125, 0.052917578125
+                ]
               }
             }
           }
@@ -382,80 +505,80 @@
         "caseCount": 3,
         "metrics": {
           "mathml": {
-            "msPerFormula": 0.20808411458333334,
+            "msPerFormula": 0.18921458333333332,
             "runMsPerFormula": [
-              0.2095388020833333, 0.20752460937500003, 0.20808411458333334
+              0.1900868489583333, 0.18921458333333332, 0.18872395833333333
             ],
-            "minimumRunMs": 0.20752460937500003,
-            "maximumRunMs": 0.2095388020833333,
-            "formulasPerSecond": 4805.748877094224,
+            "minimumRunMs": 0.18872395833333333,
+            "maximumRunMs": 0.1900868489583333,
+            "formulasPerSecond": 5285.004899639959,
             "cases": {
               "long-aligned": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.27271875,
-                "runMsPerUnit": [0.27271875, 0.2852640625, 0.2625125]
+                "medianMsPerUnit": 0.24920625,
+                "runMsPerUnit": [0.25294296875, 0.24920625, 0.24655078125]
               },
               "long-cases": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.1339890625,
-                "runMsPerUnit": [0.1339890625, 0.127963671875, 0.142290625]
+                "medianMsPerUnit": 0.11979453125,
+                "runMsPerUnit": [0.119508203125, 0.11979453125, 0.12097421875]
               },
               "long-maxwell": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.21944921875,
-                "runMsPerUnit": [0.22190859375, 0.20934609375, 0.21944921875]
+                "medianMsPerUnit": 0.19864296875,
+                "runMsPerUnit": [0.197809375, 0.19864296875, 0.198646875]
               }
             }
           },
           "compile": {
-            "msPerFormula": 0.215644140625,
+            "msPerFormula": 0.19657187499999998,
             "runMsPerFormula": [
-              0.21243710937500002, 0.215644140625, 0.22590338541666669
+              0.19982317708333333, 0.19605208333333332, 0.19657187499999998
             ],
-            "minimumRunMs": 0.21243710937500002,
-            "maximumRunMs": 0.22590338541666669,
-            "formulasPerSecond": 4637.269517742085,
+            "minimumRunMs": 0.19605208333333332,
+            "maximumRunMs": 0.19982317708333333,
+            "formulasPerSecond": 5087.197748914997,
             "cases": {
               "long-aligned": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.2918890625,
-                "runMsPerUnit": [0.287328125, 0.2918890625, 0.29771328125]
+                "medianMsPerUnit": 0.25996484375,
+                "runMsPerUnit": [0.2717125, 0.25996484375, 0.25754921875]
               },
               "long-cases": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.139178515625,
-                "runMsPerUnit": [0.139178515625, 0.136106640625, 0.148528125]
+                "medianMsPerUnit": 0.1279328125,
+                "runMsPerUnit": [0.12726875, 0.12793359375, 0.1279328125]
               },
               "long-maxwell": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.21893671875,
-                "runMsPerUnit": [0.2108046875, 0.21893671875, 0.23146875]
+                "medianMsPerUnit": 0.20048828125,
+                "runMsPerUnit": [0.20048828125, 0.2002578125, 0.20423359375]
               }
             }
           },
           "svg": {
-            "msPerFormula": 0.39538645833333336,
+            "msPerFormula": 0.3507427083333334,
             "runMsPerFormula": [
-              0.3812065104166667, 0.3991328125, 0.39538645833333336
+              0.3507427083333334, 0.35912890625000005, 0.3444520833333333
             ],
-            "minimumRunMs": 0.3812065104166667,
-            "maximumRunMs": 0.3991328125,
-            "formulasPerSecond": 2529.1710905206137,
+            "minimumRunMs": 0.3444520833333333,
+            "maximumRunMs": 0.35912890625000005,
+            "formulasPerSecond": 2851.092770400905,
             "cases": {
               "long-aligned": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.5202984375,
-                "runMsPerUnit": [0.50410625, 0.529353125, 0.5202984375]
+                "medianMsPerUnit": 0.4597640625,
+                "runMsPerUnit": [0.4597640625, 0.475834375, 0.457315625]
               },
               "long-cases": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.2722875,
-                "runMsPerUnit": [0.2682359375, 0.2738359375, 0.2722875]
+                "medianMsPerUnit": 0.2543109375,
+                "runMsPerUnit": [0.2543109375, 0.26351171875, 0.242815625]
               },
               "long-maxwell": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.3935734375,
-                "runMsPerUnit": [0.37127734375, 0.394209375, 0.3935734375]
+                "medianMsPerUnit": 0.338040625,
+                "runMsPerUnit": [0.338153125, 0.338040625, 0.333225]
               }
             }
           }
@@ -466,80 +589,80 @@
         "caseCount": 3,
         "metrics": {
           "mathml": {
-            "msPerFormula": 0.021093590856481482,
+            "msPerFormula": 0.019251924189814813,
             "runMsPerFormula": [
-              0.021093590856481482, 0.0207505787037037, 0.021419169560185185
+              0.019224971064814814, 0.019251924189814813, 0.01958836805555555
             ],
-            "minimumRunMs": 0.0207505787037037,
-            "maximumRunMs": 0.021419169560185185,
-            "formulasPerSecond": 47407.7650791604,
+            "minimumRunMs": 0.019224971064814814,
+            "maximumRunMs": 0.01958836805555555,
+            "formulasPerSecond": 51942.85984821443,
             "cases": {
               "page-algebra": {
                 "formulaCount": 10,
-                "medianMsPerUnit": 0.185278125,
-                "runMsPerUnit": [0.185687109375, 0.17624765625, 0.185278125]
+                "medianMsPerUnit": 0.162995703125,
+                "runMsPerUnit": [0.16549765625, 0.162995703125, 0.162357421875]
               },
               "page-calculus": {
                 "formulaCount": 9,
-                "medianMsPerUnit": 0.1918109375,
-                "runMsPerUnit": [0.1918109375, 0.190240625, 0.205951953125]
+                "medianMsPerUnit": 0.180930859375,
+                "runMsPerUnit": [0.180930859375, 0.18088046875, 0.181819140625]
               },
               "page-physics": {
                 "formulaCount": 8,
-                "medianMsPerUnit": 0.19202890625,
-                "runMsPerUnit": [0.19202890625, 0.19377734375, 0.1870875]
+                "medianMsPerUnit": 0.17592578125,
+                "runMsPerUnit": [0.172645703125, 0.17592578125, 0.184709375]
               }
             }
           },
           "compile": {
-            "msPerFormula": 0.02062199074074074,
+            "msPerFormula": 0.01871273148148148,
             "runMsPerFormula": [
-              0.02076607349537037, 0.02062199074074074, 0.020065711805555556
+              0.019968865740740742, 0.018431669560185184, 0.01871273148148148
             ],
-            "minimumRunMs": 0.020065711805555556,
-            "maximumRunMs": 0.02076607349537037,
-            "formulasPerSecond": 48491.92362522029,
+            "minimumRunMs": 0.018431669560185184,
+            "maximumRunMs": 0.019968865740740742,
+            "formulasPerSecond": 53439.552691151555,
             "cases": {
               "page-algebra": {
                 "formulaCount": 10,
-                "medianMsPerUnit": 0.171340234375,
-                "runMsPerUnit": [0.184155859375, 0.171340234375, 0.165955078125]
+                "medianMsPerUnit": 0.154044140625,
+                "runMsPerUnit": [0.154044140625, 0.158131640625, 0.152153515625]
               },
               "page-calculus": {
                 "formulaCount": 9,
-                "medianMsPerUnit": 0.19458359375,
-                "runMsPerUnit": [0.19389765625, 0.19458359375, 0.197572265625]
+                "medianMsPerUnit": 0.18379765625,
+                "runMsPerUnit": [0.188592578125, 0.16978125, 0.18379765625]
               },
               "page-physics": {
                 "formulaCount": 8,
-                "medianMsPerUnit": 0.18263046875,
-                "runMsPerUnit": [0.18263046875, 0.190869921875, 0.178246875]
+                "medianMsPerUnit": 0.1697421875,
+                "runMsPerUnit": [0.19652265625, 0.1697421875, 0.169292578125]
               }
             }
           },
           "svg": {
-            "msPerFormula": 0.04561834490740741,
+            "msPerFormula": 0.04007297453703704,
             "runMsPerFormula": [
-              0.04777274305555555, 0.04561834490740741, 0.044731655092592595
+              0.040275202546296296, 0.04007297453703704, 0.03995853587962963
             ],
-            "minimumRunMs": 0.044731655092592595,
-            "maximumRunMs": 0.04777274305555555,
-            "formulasPerSecond": 21921.00572762389,
+            "minimumRunMs": 0.03995853587962963,
+            "maximumRunMs": 0.040275202546296296,
+            "formulasPerSecond": 24954.473970375228,
             "cases": {
               "page-algebra": {
                 "formulaCount": 10,
-                "medianMsPerUnit": 0.4091390625,
-                "runMsPerUnit": [0.4216234375, 0.398646875, 0.4091390625]
+                "medianMsPerUnit": 0.35380234375,
+                "runMsPerUnit": [0.35374140625, 0.35380234375, 0.35389765625]
               },
               "page-calculus": {
                 "formulaCount": 9,
-                "medianMsPerUnit": 0.42508125,
-                "runMsPerUnit": [0.4378390625, 0.42508125, 0.41535625]
+                "medianMsPerUnit": 0.366796875,
+                "runMsPerUnit": [0.366796875, 0.372565625, 0.36396875]
               },
               "page-physics": {
                 "formulaCount": 8,
-                "medianMsPerUnit": 0.4079671875,
-                "runMsPerUnit": [0.4304015625, 0.4079671875, 0.383259375]
+                "medianMsPerUnit": 0.3610140625,
+                "runMsPerUnit": [0.3668921875, 0.35560234375, 0.3610140625]
               }
             }
           }
@@ -552,43 +675,43 @@
         "caseCount": 6,
         "metrics": {
           "dom": {
-            "msPerFormula": 1.1747260416666667,
+            "msPerFormula": 1.2282822916666667,
             "runMsPerFormula": [
-              1.01957109375, 1.1959665364583334, 1.1747260416666667
+              1.2282822916666667, 2.0082780598958334, 0.9381890624999999
             ],
-            "minimumRunMs": 1.01957109375,
-            "maximumRunMs": 1.1959665364583334,
-            "formulasPerSecond": 851.2623067257703,
+            "minimumRunMs": 0.9381890624999999,
+            "maximumRunMs": 2.0082780598958334,
+            "formulasPerSecond": 814.1450925284378,
             "cases": {
               "single-energy": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.21800546875,
-                "runMsPerUnit": [0.22041171875, 0.20653984375, 0.21800546875]
+                "medianMsPerUnit": 0.245423046875,
+                "runMsPerUnit": [0.2489703125, 0.245423046875, 0.2346734375]
               },
               "single-quadratic": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 4.631325,
-                "runMsPerUnit": [3.1506875, 5.1894, 4.631325]
+                "medianMsPerUnit": 5.086525,
+                "runMsPerUnit": [5.44525, 5.086525, 3.4420875]
               },
               "single-gaussian": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.44115625,
-                "runMsPerUnit": [0.4027125, 0.5238, 0.44115625]
+                "medianMsPerUnit": 0.416090625,
+                "runMsPerUnit": [0.4851875, 0.32661875, 0.416090625]
               },
               "single-binomial": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.5305375,
-                "runMsPerUnit": [0.5305375, 0.417625, 0.61303046875]
+                "medianMsPerUnit": 0.60405,
+                "runMsPerUnit": [0.326040625, 5.46235, 0.60405]
               },
               "single-determinant": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.42787734375,
-                "runMsPerUnit": [0.42787734375, 0.239359375, 0.4569890625]
+                "medianMsPerUnit": 0.321790625,
+                "runMsPerUnit": [0.254571875, 0.321790625, 0.3738921875]
               },
               "single-derivative": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.68785,
-                "runMsPerUnit": [1.3852, 0.599075, 0.68785]
+                "medianMsPerUnit": 0.6069609375,
+                "runMsPerUnit": [0.6096734375, 0.6069609375, 0.558340625]
               }
             }
           }
@@ -599,28 +722,26 @@
         "caseCount": 3,
         "metrics": {
           "dom": {
-            "msPerFormula": 16.228166666666667,
-            "runMsPerFormula": [
-              13.173793750000002, 16.228166666666667, 41.21823333333333
-            ],
-            "minimumRunMs": 13.173793750000002,
-            "maximumRunMs": 41.21823333333333,
-            "formulasPerSecond": 61.621255224968934,
+            "msPerFormula": 10.62485,
+            "runMsPerFormula": [10.62485, 13.779925, 4.837708333333333],
+            "minimumRunMs": 4.837708333333333,
+            "maximumRunMs": 13.779925,
+            "formulasPerSecond": 94.11897579730537,
             "cases": {
               "long-aligned": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 30.8483,
-                "runMsPerUnit": [15.349, 42.07515, 30.8483]
+                "medianMsPerUnit": 15.75545,
+                "runMsPerUnit": [15.75545, 32.16135, 9.97195]
               },
               "long-cases": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 21.97295,
-                "runMsPerUnit": [21.97295, 4.39525, 36.0334]
+                "medianMsPerUnit": 8.0211,
+                "runMsPerUnit": [14.9086, 8.0211, 1.094375]
               },
               "long-maxwell": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 2.2141,
-                "runMsPerUnit": [2.19943125, 2.2141, 56.773]
+                "medianMsPerUnit": 1.2105,
+                "runMsPerUnit": [1.2105, 1.157325, 3.4468]
               }
             }
           }
@@ -631,28 +752,28 @@
         "caseCount": 3,
         "metrics": {
           "dom": {
-            "msPerFormula": 0.3687708333333334,
+            "msPerFormula": 0.36523518518518516,
             "runMsPerFormula": [
-              0.3523893518518519, 0.3687708333333334, 0.39262546296296297
+              0.39357569444444446, 0.35591828703703704, 0.36523518518518516
             ],
-            "minimumRunMs": 0.3523893518518519,
-            "maximumRunMs": 0.39262546296296297,
-            "formulasPerSecond": 2711.711202756906,
+            "minimumRunMs": 0.35591828703703704,
+            "maximumRunMs": 0.39357569444444446,
+            "formulasPerSecond": 2737.961840924417,
             "cases": {
               "page-algebra": {
                 "formulaCount": 10,
-                "medianMsPerUnit": 3.798075,
-                "runMsPerUnit": [4.5564, 3.3666375, 3.798075]
+                "medianMsPerUnit": 3.4765875,
+                "runMsPerUnit": [3.51696875, 3.1954, 3.4765875]
               },
               "page-calculus": {
                 "formulaCount": 9,
-                "medianMsPerUnit": 3.57575,
-                "runMsPerUnit": [1.8504125, 3.57575, 3.7198]
+                "medianMsPerUnit": 3.4018375,
+                "runMsPerUnit": [3.6296625, 3.3902125, 3.4018375]
               },
               "page-physics": {
                 "formulaCount": 8,
-                "medianMsPerUnit": 3.0830125,
-                "runMsPerUnit": [3.1077, 3.014425, 3.0830125]
+                "medianMsPerUnit": 3.02418125,
+                "runMsPerUnit": [3.4799125, 3.02418125, 2.982925]
               }
             }
           }
@@ -664,113 +785,167 @@
         "formulaCount": 6,
         "caseCount": 6,
         "metrics": {
-          "mathml": {
-            "msPerFormula": 0.007738164265977805,
+          "html": {
+            "msPerFormula": 0.04337361653597327,
             "runMsPerFormula": [
-              0.007738164265977805, 0.008143335978350782, 0.007495422363073582
+              0.043532714843119415, 0.04337361653597327, 0.043350830078755585
             ],
-            "minimumRunMs": 0.007495422363073582,
-            "maximumRunMs": 0.008143335978350782,
-            "formulasPerSecond": 129229.616434569,
+            "minimumRunMs": 0.043350830078755585,
+            "maximumRunMs": 0.043532714843119415,
+            "formulasPerSecond": 23055.490407875455,
             "cases": {
               "single-energy": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.0014668273925053654,
+                "medianMsPerUnit": 0.01446533203125,
                 "runMsPerUnit": [
-                  0.001499176025390625, 0.0014668273925053654,
-                  0.0013696289063318545
+                  0.01517089843764552, 0.01446533203125, 0.014445800781686557
                 ]
               },
               "single-quadratic": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.003297119140825089,
+                "medianMsPerUnit": 0.04132812500029104,
                 "runMsPerUnit": [
-                  0.0032025146488194878, 0.0033642578127910383,
-                  0.003297119140825089
+                  0.04248046875, 0.04132812500029104, 0.040366210938373115
                 ]
               },
               "single-gaussian": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.004962768554833019,
+                "medianMsPerUnit": 0.05118164062150754,
                 "runMsPerUnit": [
-                  0.004962768554833019, 0.005397949219059228,
-                  0.004903564453343279
+                  0.05118164062150754, 0.05112304687645519, 0.05226562500320142
                 ]
               },
               "single-binomial": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.029160156249417923,
+                "medianMsPerUnit": 0.05542968749796273,
                 "runMsPerUnit": [
-                  0.029160156249417923, 0.030864257812936557,
-                  0.02761230468604481
+                  0.056357421875873115, 0.053828124997380655,
+                  0.05542968749796273
                 ]
               },
               "single-determinant": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.003448486328125,
+                "medianMsPerUnit": 0.04654296875014552,
                 "runMsPerUnit": [
-                  0.0032592773436590505, 0.003448486328125,
-                  0.0035253906248726707
+                  0.04685546875043656, 0.04606933593458962, 0.04654296875014552
                 ]
               },
               "single-derivative": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.0043182373046875,
+                "medianMsPerUnit": 0.05105468750116415,
                 "runMsPerUnit": [
-                  0.004345092773746728, 0.0043182373046875, 0.004264526367023791
+                  0.04915039062325377, 0.053427734375873115, 0.05105468750116415
+                ]
+              }
+            }
+          },
+          "mathml": {
+            "msPerFormula": 0.01724629720077549,
+            "runMsPerFormula": [
+              0.017224934895693877, 0.01724629720077549, 0.01737325032566635
+            ],
+            "minimumRunMs": 0.017224934895693877,
+            "maximumRunMs": 0.01737325032566635,
+            "formulasPerSecond": 57983.46093415544,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.006439208984375,
+                "runMsPerUnit": [
+                  0.006528320312099822, 0.006368408203343279, 0.006439208984375
+                ]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.01641113281220896,
+                "runMsPerUnit": [
+                  0.015129394530958962, 0.016850585936481366,
+                  0.01641113281220896
+                ]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.019353027344550355,
+                "runMsPerUnit": [
+                  0.019211425780667923, 0.019353027344550355,
+                  0.019621582030595164
+                ]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.018698730469623115,
+                "runMsPerUnit": [
+                  0.01848632812652795, 0.018698730469623115,
+                  0.018994140626091394
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.021574707032414153,
+                "runMsPerUnit": [
+                  0.021582031249636202, 0.02077880859360448,
+                  0.021574707032414153
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.021428222657050355,
+                "runMsPerUnit": [
+                  0.022412109374272404, 0.021428222657050355,
+                  0.021198730468313443
                 ]
               }
             }
           },
           "dom": {
-            "msPerFormula": 0.24883789062611564,
+            "msPerFormula": 0.615371093765134,
             "runMsPerFormula": [
-              0.25792154948430834, 0.24883789062611564, 0.24736816404886972
+              0.6362500000104774, 0.615371093765134, 0.6145247395616025
             ],
-            "minimumRunMs": 0.24736816404886972,
-            "maximumRunMs": 0.25792154948430834,
-            "formulasPerSecond": 4018.6805855163025,
+            "minimumRunMs": 0.6145247395616025,
+            "maximumRunMs": 0.6362500000104774,
+            "formulasPerSecond": 1625.0357063110046,
             "cases": {
               "single-energy": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.07108398437412689,
+                "medianMsPerUnit": 0.22136718750698492,
                 "runMsPerUnit": [
-                  0.07852539062150754, 0.07041015625145519, 0.07108398437412689
+                  0.22234375000698492, 0.22136718750698492, 0.21910156251396984
                 ]
               },
               "single-quadratic": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.20498046875582077,
+                "medianMsPerUnit": 0.6412500000442378,
                 "runMsPerUnit": [
-                  0.20558593749592546, 0.20498046875582077, 0.16519531251105946
+                  0.6745312500279397, 0.6412500000442378, 0.6275000000023283
                 ]
               },
               "single-gaussian": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.1665625000023283,
+                "medianMsPerUnit": 0.6834374999743886,
                 "runMsPerUnit": [
-                  0.18259765623952262, 0.1572265625, 0.1665625000023283
+                  0.6719531250419095, 0.6882812499534339, 0.6834374999743886
                 ]
               },
               "single-binomial": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.6948437500395812,
+                "medianMsPerUnit": 0.7942187499720603,
                 "runMsPerUnit": [
-                  0.6948437500395812, 0.6908593749976717, 0.7090624999254942
+                  0.7942187499720603, 0.795781250053551, 0.7837499999441206
                 ]
               },
               "single-determinant": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.16630859374708962,
+                "medianMsPerUnit": 0.6060156250023283,
                 "runMsPerUnit": [
-                  0.1788281250046566, 0.16630859374708962, 0.16445312497671694
+                  0.6060156250023283, 0.604765625030268, 0.6125781249720603
                 ]
               },
               "single-derivative": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.2071484375046566,
+                "medianMsPerUnit": 0.7607812499627471,
                 "runMsPerUnit": [
-                  0.2071484375046566, 0.2032421875046566, 0.20785156250349246
+                  0.8484375000116415, 0.7407812500023283, 0.7607812499627471
                 ]
               }
             }
@@ -781,66 +956,98 @@
         "formulaCount": 3,
         "caseCount": 3,
         "metrics": {
-          "mathml": {
-            "msPerFormula": 0.13744466145241555,
+          "html": {
+            "msPerFormula": 0.4262239583282887,
             "runMsPerFormula": [
-              0.13830729166511446, 0.13744466145241555, 0.13720052082984088
+              0.42537760417326353, 0.44514322915347293, 0.4262239583282887
             ],
-            "minimumRunMs": 0.13720052082984088,
-            "maximumRunMs": 0.13830729166511446,
-            "formulasPerSecond": 7275.655448765525,
+            "minimumRunMs": 0.42537760417326353,
+            "maximumRunMs": 0.44514322915347293,
+            "formulasPerSecond": 2346.184395457597,
             "cases": {
               "long-aligned": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.18246093750349246,
+                "medianMsPerUnit": 0.6034375000162981,
                 "runMsPerUnit": [
-                  0.18246093750349246, 0.18742187498719431, 0.17707031249301508
+                  0.5871874999720603, 0.6500781250069849, 0.6034375000162981
                 ]
               },
               "long-cases": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.09011718750116415,
+                "medianMsPerUnit": 0.2838671875069849,
                 "runMsPerUnit": [
-                  0.09011718750116415, 0.0946386718787835, 0.07556640624534339
+                  0.28457031250582077, 0.2838671875069849, 0.280624999984866
                 ]
               },
               "long-maxwell": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.14234374999068677,
+                "medianMsPerUnit": 0.40148437494644895,
                 "runMsPerUnit": [
-                  0.14234374999068677, 0.13027343749126885, 0.15896484375116415
+                  0.4043750000419095, 0.40148437494644895, 0.39460937498370185
+                ]
+              }
+            }
+          },
+          "mathml": {
+            "msPerFormula": 0.12546223958634073,
+            "runMsPerFormula": [
+              0.1253320312486418, 0.12664713541501746, 0.12546223958634073
+            ],
+            "minimumRunMs": 0.1253320312486418,
+            "maximumRunMs": 0.12664713541501746,
+            "formulasPerSecond": 7970.525660127556,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.1717578124953434,
+                "runMsPerUnit": [
+                  0.1717578124953434, 0.1737695312476717, 0.17136718750407454
+                ]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.07419921875407454,
+                "runMsPerUnit": [
+                  0.07419921875407454, 0.07335937499738066, 0.07496093749796273
+                ]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.13005859375698492,
+                "runMsPerUnit": [
+                  0.13003906249650754, 0.1328125, 0.13005859375698492
                 ]
               }
             }
           },
           "dom": {
-            "msPerFormula": 2.684270833230888,
+            "msPerFormula": 3.6491666665921607,
             "runMsPerFormula": [
-              2.684270833230888, 2.5319791665921607, 2.8479166666511446
+              3.627812499878928, 3.735416666682189, 3.6491666665921607
             ],
-            "minimumRunMs": 2.5319791665921607,
-            "maximumRunMs": 2.8479166666511446,
-            "formulasPerSecond": 372.5406496319758,
+            "minimumRunMs": 3.627812499878928,
+            "maximumRunMs": 3.735416666682189,
+            "formulasPerSecond": 274.0351678521354,
             "cases": {
               "long-aligned": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 3.0518749998882413,
+                "medianMsPerUnit": 5.083124999888241,
                 "runMsPerUnit": [
-                  3.3196874998975545, 2.979374999878928, 3.0518749998882413
+                  5.056874999776483, 5.272499999962747, 5.083124999888241
                 ]
               },
               "long-cases": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 2.3559375000186265,
+                "medianMsPerUnit": 2.715624999953434,
                 "runMsPerUnit": [
-                  2.4621874999720603, 2.3559375000186265, 1.9118749999906868
+                  2.699062499916181, 2.775312500074506, 2.715624999953434
                 ]
               },
               "long-maxwell": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 2.2709374998230487,
+                "medianMsPerUnit": 3.1487499999348074,
                 "runMsPerUnit": [
-                  2.2709374998230487, 2.260624999878928, 3.580000000074506
+                  3.1274999999441206, 3.1584375000093132, 3.1487499999348074
                 ]
               }
             }
@@ -851,65 +1058,97 @@
         "formulaCount": 27,
         "caseCount": 3,
         "metrics": {
-          "mathml": {
-            "msPerFormula": 0.003663013599617881,
+          "html": {
+            "msPerFormula": 0.04494646990658819,
             "runMsPerFormula": [
-              0.003911132812491915, 0.003663013599617881, 0.0036572265624407146
+              0.046140046296555, 0.04494646990658819, 0.04426938657329797
             ],
-            "minimumRunMs": 0.0036572265624407146,
-            "maximumRunMs": 0.003911132812491915,
-            "formulasPerSecond": 272999.25943608786,
+            "minimumRunMs": 0.04426938657329797,
+            "maximumRunMs": 0.046140046296555,
+            "formulasPerSecond": 22248.68831920038,
             "cases": {
               "page-algebra": {
                 "formulaCount": 10,
-                "medianMsPerUnit": 0.026132812497962732,
+                "medianMsPerUnit": 0.421875,
                 "runMsPerUnit": [
-                  0.02662109374978172, 0.0255126953125, 0.026132812497962732
+                  0.4521093750372529, 0.421875, 0.41195312497438863
                 ]
               },
               "page-calculus": {
                 "formulaCount": 9,
-                "medianMsPerUnit": 0.03187011718910071,
+                "medianMsPerUnit": 0.43007812497671694,
                 "runMsPerUnit": [
-                  0.03329589843633585, 0.03187011718910071, 0.031035156251164153
+                  0.43343749997438863, 0.43007812497671694, 0.42109374998835847
                 ]
               },
               "page-physics": {
                 "formulaCount": 8,
-                "medianMsPerUnit": 0.041577148436772404,
+                "medianMsPerUnit": 0.36160156250116415,
                 "runMsPerUnit": [
-                  0.04568359375116415, 0.04151855468808208, 0.041577148436772404
+                  0.3602343749953434, 0.36160156250116415, 0.36222656251629815
+                ]
+              }
+            }
+          },
+          "mathml": {
+            "msPerFormula": 0.013586516203725262,
+            "runMsPerFormula": [
+              0.013396267360938643, 0.013586516203725262, 0.01381944444384081
+            ],
+            "minimumRunMs": 0.013396267360938643,
+            "maximumRunMs": 0.01381944444384081,
+            "formulasPerSecond": 73602.38526236857,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 0.13457031249708962,
+                "runMsPerUnit": [
+                  0.13125000000582077, 0.13486328124417923, 0.13457031249708962
+                ]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 0.12742187500407454,
+                "runMsPerUnit": [
+                  0.12716796874883585, 0.12742187500407454, 0.13501953124068677
+                ]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 0.10353515624592546,
+                "runMsPerUnit": [
+                  0.10328124999068677, 0.1045507812523283, 0.10353515624592546
                 ]
               }
             }
           },
           "dom": {
-            "msPerFormula": 0.17951388888630188,
+            "msPerFormula": 0.5560879629381277,
             "runMsPerFormula": [
-              0.19520833333781748, 0.1774537037083603, 0.17951388888630188
+              0.5560879629381277, 0.5607407407283231, 0.55502314813849
             ],
-            "minimumRunMs": 0.1774537037083603,
-            "maximumRunMs": 0.19520833333781748,
-            "formulasPerSecond": 5570.599613233084,
+            "minimumRunMs": 0.55502314813849,
+            "maximumRunMs": 0.5607407407283231,
+            "formulasPerSecond": 1798.2766516225843,
             "cases": {
               "page-algebra": {
                 "formulaCount": 10,
-                "medianMsPerUnit": 1.6359374998137355,
-                "runMsPerUnit": [1.6796875, 1.5390625, 1.6359374998137355]
+                "medianMsPerUnit": 5.150624999776483,
+                "runMsPerUnit": [
+                  5.150624999776483, 5.195624999701977, 5.143124999944121
+                ]
               },
               "page-calculus": {
                 "formulaCount": 9,
-                "medianMsPerUnit": 1.5306250000139698,
+                "medianMsPerUnit": 5.233124999795109,
                 "runMsPerUnit": [
-                  1.7365625000093132, 1.5306250000139698, 1.4112500000046566
+                  5.182499999646097, 5.247499999590218, 5.233124999795109
                 ]
               },
               "page-physics": {
                 "formulaCount": 8,
-                "medianMsPerUnit": 1.7996875001117587,
-                "runMsPerUnit": [
-                  1.8543750001117587, 1.7215625001117587, 1.7996875001117587
-                ]
+                "medianMsPerUnit": 4.681249999906868,
+                "runMsPerUnit": [4.681249999906868, 4.696875000372529, 4.609375]
               }
             }
           }
@@ -921,111 +1160,168 @@
         "formulaCount": 6,
         "caseCount": 6,
         "metrics": {
-          "mathml": {
-            "msPerFormula": 0.01397216796885914,
+          "html": {
+            "msPerFormula": 0.04454345702955228,
             "runMsPerFormula": [
-              0.01397216796885914, 0.013603515625391083, 0.013995564778497283
+              0.04454345702955228, 0.04394287109365299, 0.04519205729078143
             ],
-            "minimumRunMs": 0.013603515625391083,
-            "maximumRunMs": 0.013995564778497283,
-            "formulasPerSecond": 71570.85444640931,
+            "minimumRunMs": 0.04394287109365299,
+            "maximumRunMs": 0.04519205729078143,
+            "formulasPerSecond": 22449.98629847144,
             "cases": {
               "single-energy": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.004689941406468279,
+                "medianMsPerUnit": 0.014042968750800355,
                 "runMsPerUnit": [
-                  0.004689941406468279, 0.00451904296869543, 0.00484985351567957
+                  0.01419433593764552, 0.013862304687791038,
+                  0.014042968750800355
                 ]
               },
               "single-quadratic": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.010895996092585847,
+                "medianMsPerUnit": 0.04444335937296273,
                 "runMsPerUnit": [
-                  0.01096923828117724, 0.010651855469404836,
-                  0.010895996092585847
+                  0.04444335937296273, 0.041552734379365575, 0.04466796874476131
                 ]
               },
               "single-gaussian": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.016647949218167923,
+                "medianMsPerUnit": 0.05124023437383585,
                 "runMsPerUnit": [
-                  0.016647949218167923, 0.016552734376091394,
-                  0.017426757813154836
+                  0.05124023437383585, 0.050576171874126885, 0.05144531249970896
                 ]
               },
               "single-binomial": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.01647216796845896,
+                "medianMsPerUnit": 0.06028320312179858,
                 "runMsPerUnit": [
-                  0.01647216796845896, 0.016074218750873115, 0.01663574218764552
+                  0.05845703124941792, 0.06028320312179858, 0.06106445312616415
                 ]
               },
               "single-determinant": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.018278808594914153,
+                "medianMsPerUnit": 0.04557617187310825,
                 "runMsPerUnit": [
-                  0.018278808594914153, 0.01831787109404104,
-                  0.017939453124199645
+                  0.04557617187310825, 0.04500976562849246, 0.04727539062150754
                 ]
               },
               "single-derivative": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.01622558593771828,
+                "medianMsPerUnit": 0.05265625000174623,
                 "runMsPerUnit": [
-                  0.01677490234396828, 0.015505371093240683, 0.01622558593771828
+                  0.05334960937034339, 0.05237304687034339, 0.05265625000174623
+                ]
+              }
+            }
+          },
+          "mathml": {
+            "msPerFormula": 0.012741495768523237,
+            "runMsPerFormula": [
+              0.012576395670976126, 0.012842610676671029, 0.012741495768523237
+            ],
+            "minimumRunMs": 0.012576395670976126,
+            "maximumRunMs": 0.012842610676671029,
+            "formulasPerSecond": 78483.72107695656,
+            "cases": {
+              "single-energy": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.004204101562208962,
+                "runMsPerUnit": [
+                  0.00445129394529431, 0.004204101562208962,
+                  0.004201660156013531
+                ]
+              },
+              "single-quadratic": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.011507568359775178,
+                "runMsPerUnit": [
+                  0.011097412109847937, 0.01164062499992724,
+                  0.011507568359775178
+                ]
+              },
+              "single-gaussian": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.015356445313955192,
+                "runMsPerUnit": [
+                  0.015356445313955192, 0.015253906249199645,
+                  0.015366210936917923
+                ]
+              },
+              "single-binomial": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.014104003907050355,
+                "runMsPerUnit": [
+                  0.013588867188445874, 0.015988769529940328,
+                  0.014104003907050355
+                ]
+              },
+              "single-determinant": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.016093750000436557,
+                "runMsPerUnit": [
+                  0.016398925781686557, 0.01572021484389552,
+                  0.016093750000436557
+                ]
+              },
+              "single-derivative": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.014565429686626885,
+                "runMsPerUnit": [
+                  0.014565429686626885, 0.01424804687485448,
+                  0.015175781250945874
                 ]
               }
             }
           },
           "dom": {
-            "msPerFormula": 0.6444335937461195,
+            "msPerFormula": 0.5933919270949749,
             "runMsPerFormula": [
-              0.6535872396004075, 0.6444335937461195, 0.6306119791503685
+              0.5899869791852931, 0.5933919270949749, 0.6062109375052387
             ],
-            "minimumRunMs": 0.6306119791503685,
-            "maximumRunMs": 0.6535872396004075,
-            "formulasPerSecond": 1551.7502652010396,
+            "minimumRunMs": 0.5899869791852931,
+            "maximumRunMs": 0.6062109375052387,
+            "formulasPerSecond": 1685.2268363265848,
             "cases": {
               "single-energy": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.22199218749301508,
+                "medianMsPerUnit": 0.1997656250023283,
                 "runMsPerUnit": [
-                  0.24730468750931323, 0.22199218749301508, 0.21492187498370185
+                  0.1997656250023283, 0.1890234375023283, 0.2092968750221189
                 ]
               },
               "single-quadratic": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.6928906249813735,
+                "medianMsPerUnit": 0.6115625000093132,
                 "runMsPerUnit": [
-                  0.8173437500372529, 0.6796093750162981, 0.6928906249813735
+                  0.6115625000093132, 0.6309374999837019, 0.583984375
                 ]
               },
               "single-gaussian": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.6770312499720603,
+                "medianMsPerUnit": 0.6197656249860302,
                 "runMsPerUnit": [
-                  0.6706250000279397, 0.6770312499720603, 0.6942187499953434
+                  0.6197656249860302, 0.6183593749883585, 0.6285156249650754
                 ]
               },
               "single-binomial": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.8468750000465661,
+                "medianMsPerUnit": 0.7762499999953434,
                 "runMsPerUnit": [
-                  0.8468750000465661, 0.90234375, 0.8254687499720603
+                  0.7470312500372529, 0.7959375000791624, 0.7762499999953434
                 ]
               },
               "single-determinant": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.6066406249883585,
+                "medianMsPerUnit": 0.561796875030268,
                 "runMsPerUnit": [
-                  0.5947656249627471, 0.6419531249557622, 0.6066406249883585
+                  0.561796875030268, 0.5580468750558794, 0.5650000000023283
                 ]
               },
               "single-derivative": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.7446093750186265,
+                "medianMsPerUnit": 0.8000000000465661,
                 "runMsPerUnit": [
-                  0.7446093750186265, 0.7436718750395812, 0.7495312499813735
+                  0.8000000000465661, 0.7680468749604188, 0.8742187500465661
                 ]
               }
             }
@@ -1036,66 +1332,98 @@
         "formulaCount": 3,
         "caseCount": 3,
         "metrics": {
-          "mathml": {
-            "msPerFormula": 0.11759114583401242,
+          "html": {
+            "msPerFormula": 0.43178385417559184,
             "runMsPerFormula": [
-              0.11815755208711683, 0.11759114583401242, 0.1119401041699651
+              0.43178385417559184, 0.48898437498913455, 0.4175130208313931
             ],
-            "minimumRunMs": 0.1119401041699651,
-            "maximumRunMs": 0.11815755208711683,
-            "formulasPerSecond": 8504.041634321391,
+            "minimumRunMs": 0.4175130208313931,
+            "maximumRunMs": 0.48898437498913455,
+            "formulasPerSecond": 2315.9735833784416,
             "cases": {
               "long-aligned": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.14273437499650754,
+                "medianMsPerUnit": 0.6988281250232831,
                 "runMsPerUnit": [
-                  0.15451171874883585, 0.14273437499650754, 0.13935546875291038
+                  0.6988281250232831, 0.8046875, 0.6501562499906868
                 ]
               },
               "long-cases": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.07513671875494765,
+                "medianMsPerUnit": 0.26988281251396984,
                 "runMsPerUnit": [
-                  0.07599609375029104, 0.07513671875494765, 0.07443359374883585
+                  0.26816406249417923, 0.2757031249930151, 0.26988281251396984
                 ]
               },
               "long-maxwell": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 0.12396484376222361,
+                "medianMsPerUnit": 0.3324999999895226,
                 "runMsPerUnit": [
-                  0.12396484376222361, 0.13490234375058208, 0.12203125000814907
+                  0.3283593750093132, 0.38656249997438863, 0.3324999999895226
+                ]
+              }
+            }
+          },
+          "mathml": {
+            "msPerFormula": 0.09473307292015913,
+            "runMsPerFormula": [
+              0.09465169271182579, 0.09669921875320142, 0.09473307292015913
+            ],
+            "minimumRunMs": 0.09465169271182579,
+            "maximumRunMs": 0.09669921875320142,
+            "formulasPerSecond": 10555.975533938377,
+            "cases": {
+              "long-aligned": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.1255468750023283,
+                "runMsPerUnit": [
+                  0.125312500007567, 0.13044921874825377, 0.1255468750023283
+                ]
+              },
+              "long-cases": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.056865234379074536,
+                "runMsPerUnit": [
+                  0.056865234379074536, 0.05730468749970896, 0.05648437500349246
+                ]
+              },
+              "long-maxwell": {
+                "formulaCount": 1,
+                "medianMsPerUnit": 0.10216796875465661,
+                "runMsPerUnit": [
+                  0.10177734374883585, 0.10234375001164153, 0.10216796875465661
                 ]
               }
             }
           },
           "dom": {
-            "msPerFormula": 4.196458333327125,
+            "msPerFormula": 3.538854166554908,
             "runMsPerFormula": [
-              4.221875000124176, 4.196458333327125, 4.096874999891345
+              3.538854166554908, 3.625833333314707, 3.5153125000651926
             ],
-            "minimumRunMs": 4.096874999891345,
-            "maximumRunMs": 4.221875000124176,
-            "formulasPerSecond": 238.29618229693202,
+            "minimumRunMs": 3.5153125000651926,
+            "maximumRunMs": 3.625833333314707,
+            "formulasPerSecond": 282.5773408384062,
             "cases": {
               "long-aligned": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 5.481874999590218,
+                "medianMsPerUnit": 4.920624999795109,
                 "runMsPerUnit": [
-                  5.5981250000186265, 5.314375000074506, 5.481874999590218
+                  4.920624999795109, 4.955624999944121, 4.838750000111759
                 ]
               },
               "long-cases": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 3.6600000001490116,
+                "medianMsPerUnit": 2.6212499998509884,
                 "runMsPerUnit": [
-                  3.6600000001490116, 3.709999999962747, 3.5971874999813735
+                  2.6212499998509884, 2.584062500158325, 2.6306249999906868
                 ]
               },
               "long-maxwell": {
                 "formulaCount": 1,
-                "medianMsPerUnit": 3.407500000204891,
+                "medianMsPerUnit": 3.0765625000931323,
                 "runMsPerUnit": [
-                  3.407500000204891, 3.5649999999441206, 3.2115625001024455
+                  3.0746875000186265, 3.337812499841675, 3.0765625000931323
                 ]
               }
             }
@@ -1106,65 +1434,95 @@
         "formulaCount": 27,
         "caseCount": 3,
         "metrics": {
-          "mathml": {
-            "msPerFormula": 0.011664858217517138,
+          "html": {
+            "msPerFormula": 0.04071759259332558,
             "runMsPerFormula": [
-              0.011298828124752079, 0.011664858217517138, 0.012122757523482304
+              0.039140625000948566, 0.04071759259332558, 0.04074218749883585
             ],
-            "minimumRunMs": 0.011298828124752079,
-            "maximumRunMs": 0.012122757523482304,
-            "formulasPerSecond": 85727.57433933472,
+            "minimumRunMs": 0.039140625000948566,
+            "maximumRunMs": 0.04074218749883585,
+            "formulasPerSecond": 24559.408754532305,
             "cases": {
               "page-algebra": {
                 "formulaCount": 10,
-                "medianMsPerUnit": 0.11699218749708962,
+                "medianMsPerUnit": 0.3714062499930151,
                 "runMsPerUnit": [
-                  0.10562499999650754, 0.11699218749708962, 0.12085937500523869
+                  0.3624218750046566, 0.3757812499825377, 0.3714062499930151
                 ]
               },
               "page-calculus": {
                 "formulaCount": 9,
-                "medianMsPerUnit": 0.11314453124941792,
+                "medianMsPerUnit": 0.3915625000372529,
                 "runMsPerUnit": [
-                  0.11023437499534339, 0.11392578124650754, 0.11314453124941792
+                  0.36820312502095476, 0.3915625000372529, 0.39320312498603016
                 ]
               },
               "page-physics": {
                 "formulaCount": 8,
-                "medianMsPerUnit": 0.08920898437645519,
+                "medianMsPerUnit": 0.33203125,
+                "runMsPerUnit": [0.326171875, 0.33203125, 0.3354296874895226]
+              }
+            }
+          },
+          "mathml": {
+            "msPerFormula": 0.01016601562501078,
+            "runMsPerFormula": [
+              0.010125868055318413, 0.010354817708570475, 0.01016601562501078
+            ],
+            "minimumRunMs": 0.010125868055318413,
+            "maximumRunMs": 0.010354817708570475,
+            "formulasPerSecond": 98366.9548510004,
+            "cases": {
+              "page-algebra": {
+                "formulaCount": 10,
+                "medianMsPerUnit": 0.10055664062383585,
                 "runMsPerUnit": [
-                  0.08920898437645519, 0.08403320312936557, 0.09331054687936557
+                  0.10055664062383585, 0.10175781250291038, 0.0980566406287835
+                ]
+              },
+              "page-calculus": {
+                "formulaCount": 9,
+                "medianMsPerUnit": 0.09776367187441792,
+                "runMsPerUnit": [
+                  0.09563476562470896, 0.09937500000523869, 0.09776367187441792
+                ]
+              },
+              "page-physics": {
+                "formulaCount": 8,
+                "medianMsPerUnit": 0.07844726562325377,
+                "runMsPerUnit": [
+                  0.07720703124505235, 0.07844726562325377, 0.07866210937208962
                 ]
               }
             }
           },
           "dom": {
-            "msPerFormula": 0.5615509259342043,
+            "msPerFormula": 0.5143981481453886,
             "runMsPerFormula": [
-              0.5615509259342043, 0.5828472222201526, 0.5534722222256716
+              0.5158796296282498, 0.5143981481453886, 0.5100231481612556
             ],
-            "minimumRunMs": 0.5534722222256716,
-            "maximumRunMs": 0.5828472222201526,
-            "formulasPerSecond": 1780.7823900145572,
+            "minimumRunMs": 0.5100231481612556,
+            "maximumRunMs": 0.5158796296282498,
+            "formulasPerSecond": 1944.0194402048307,
             "cases": {
               "page-algebra": {
                 "formulaCount": 10,
-                "medianMsPerUnit": 5.230000000447035,
+                "medianMsPerUnit": 4.74625000031665,
                 "runMsPerUnit": [
-                  5.174374999944121, 5.611250000074506, 5.230000000447035
+                  4.74625000031665, 4.810624999925494, 4.724375000223517
                 ]
               },
               "page-calculus": {
                 "formulaCount": 9,
-                "medianMsPerUnit": 5.249374999664724,
-                "runMsPerUnit": [
-                  5.284375000279397, 5.249374999664724, 5.201249999925494
-                ]
+                "medianMsPerUnit": 4.734375,
+                "runMsPerUnit": [4.674374999944121, 4.764374999795109, 4.734375]
               },
               "page-physics": {
                 "formulaCount": 8,
-                "medianMsPerUnit": 4.703125,
-                "runMsPerUnit": [4.703125, 4.876250000204891, 4.512499999720603]
+                "medianMsPerUnit": 4.313750000204891,
+                "runMsPerUnit": [
+                  4.508124999701977, 4.313750000204891, 4.311875000130385
+                ]
               }
             }
           }
@@ -1174,55 +1532,55 @@
   },
   "cppManifest": {
     "schemaVersion": 2,
-    "startedUtc": "2026-10-20T08:25:46.2563829+00:00",
-    "endedUtc": "2026-10-20T08:26:15.9327951+00:00",
+    "startedUtc": "2026-10-21T08:05:15.7645287+00:00",
+    "endedUtc": "2026-10-21T08:05:45.1751235+00:00",
     "note": "Supplemental pure C++ public-ABI campaign, run sequentially after the four-host rotated campaign; same frozen corpus and native DLL.",
     "compiler": "MSVC /O2 /DNDEBUG /MT /std:c++20",
-    "nativeDllSha256": "ab9300bb9b215135c69e4a914188635ab268505475074d00da0a279bc37b9747",
+    "nativeDllSha256": "00213b73f7abde3e04a575932fe857e435e04076a90847e32eacf1c2e361b116",
     "fileSha256": {
       "benchmarks/native-core.cpp": "d2a3f38b5f2e73740b3e3e5e9c72b71b9c25e712f535c0c9a13187c3939a4ff6",
       "benchmarks/build-native-benchmark.ps1": "9d04340aade50a1f0b970596ad842f741f9b1446ee01962fa02dffde441f2aba",
       "benchmarks/run-cpp-benchmark.ps1": "704fc92e875664fa8fd3723adbfd898a1bdba937b6ff043d509ad676936d4538",
-      "artifacts/benchmarks-cpp/native-core.exe": "e8ace3e9984f5883cf716e2beae3bbfbb4558a0733db260e2fd0a3909acca7d8",
+      "artifacts/benchmarks-cpp/native-core.exe": "a128c40fdba28ddf6be9880c1a5da77a5ae00a5a9baef351eb62f9afbe72c3f9",
       "artifacts/benchmarks-cpp/native-workloads.inc": "5921337c80d5db3462e02cdd685980882ca5f7acb537e4c924d70d9d4e9b1b01"
     }
   },
   "routes": {
-    "single-energy-0": "cpp-fast",
-    "single-quadratic-0": "cpp-fast",
-    "single-gaussian-0": "cpp-fast",
-    "single-binomial-0": "full-core-fallback",
-    "single-determinant-0": "cpp-fast",
-    "single-derivative-0": "cpp-fast",
-    "long-aligned-0": "full-core-fallback",
-    "long-cases-0": "full-core-fallback",
-    "long-maxwell-0": "full-core-fallback",
-    "page-algebra-0": "cpp-fast",
-    "page-algebra-1": "cpp-fast",
-    "page-algebra-2": "cpp-fast",
-    "page-algebra-3": "cpp-fast",
-    "page-algebra-4": "cpp-fast",
-    "page-algebra-5": "cpp-fast",
-    "page-algebra-6": "cpp-fast",
-    "page-algebra-7": "cpp-fast",
-    "page-algebra-8": "cpp-fast",
-    "page-algebra-9": "cpp-fast",
-    "page-calculus-0": "cpp-fast",
-    "page-calculus-1": "cpp-fast",
-    "page-calculus-2": "cpp-fast",
-    "page-calculus-3": "cpp-fast",
-    "page-calculus-4": "cpp-fast",
-    "page-calculus-5": "cpp-fast",
-    "page-calculus-6": "cpp-fast",
-    "page-calculus-7": "cpp-fast",
-    "page-calculus-8": "cpp-fast",
-    "page-physics-0": "cpp-fast",
-    "page-physics-1": "cpp-fast",
-    "page-physics-2": "cpp-fast",
-    "page-physics-3": "cpp-fast",
-    "page-physics-4": "full-core-fallback",
-    "page-physics-5": "cpp-fast",
-    "page-physics-6": "cpp-fast",
-    "page-physics-7": "cpp-fast"
+    "single-energy-0": "katex-html-wasm",
+    "single-quadratic-0": "katex-html-wasm",
+    "single-gaussian-0": "katex-html-wasm",
+    "single-binomial-0": "katex-html-wasm",
+    "single-determinant-0": "katex-html-wasm",
+    "single-derivative-0": "katex-html-wasm",
+    "long-aligned-0": "katex-html-wasm",
+    "long-cases-0": "katex-html-wasm",
+    "long-maxwell-0": "katex-html-wasm",
+    "page-algebra-0": "katex-html-wasm",
+    "page-algebra-1": "katex-html-wasm",
+    "page-algebra-2": "katex-html-wasm",
+    "page-algebra-3": "katex-html-wasm",
+    "page-algebra-4": "katex-html-wasm",
+    "page-algebra-5": "katex-html-wasm",
+    "page-algebra-6": "katex-html-wasm",
+    "page-algebra-7": "katex-html-wasm",
+    "page-algebra-8": "katex-html-wasm",
+    "page-algebra-9": "katex-html-wasm",
+    "page-calculus-0": "katex-html-wasm",
+    "page-calculus-1": "katex-html-wasm",
+    "page-calculus-2": "katex-html-wasm",
+    "page-calculus-3": "katex-html-wasm",
+    "page-calculus-4": "katex-html-wasm",
+    "page-calculus-5": "katex-html-wasm",
+    "page-calculus-6": "katex-html-wasm",
+    "page-calculus-7": "katex-html-wasm",
+    "page-calculus-8": "katex-html-wasm",
+    "page-physics-0": "katex-html-wasm",
+    "page-physics-1": "katex-html-wasm",
+    "page-physics-2": "katex-html-wasm",
+    "page-physics-3": "katex-html-wasm",
+    "page-physics-4": "katex-html-wasm",
+    "page-physics-5": "katex-html-wasm",
+    "page-physics-6": "katex-html-wasm",
+    "page-physics-7": "katex-html-wasm"
   }
 }

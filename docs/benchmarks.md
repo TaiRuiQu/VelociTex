@@ -1,70 +1,73 @@
-# 性能基准：1.0.0-preview6（历史）
+# HTML/CSS benchmarks · 2026-10-21
 
-> 本页记录 preview6 的 MathML 快速路径。当前默认浏览器路径已改为与 KaTeX 0.19.0
-> 逐字节相同的 HTML + CSS WebAssembly 引擎；3,659 个有效核心样例的 HTML/MathML
-> 逐字节一致性见 `tests/wasm/katex-parity.mjs`。下表的原生与历史 WASM 数据保留作
-> 回归参考，不再代表当前默认 HTML 路径。
+## Performance
 
-## 性能
+2026-10-21 · Windows x64 · Release · KaTeX 0.19.0 · µs/formula (lower is better).
 
-本机三类完整负载中，C++ WASM（含自动回退）的浏览器渲染工作吞吐为 KaTeX 的 **1.6–3.1 倍**；原生 C++ Core 的普通公式 MathML 生成为 **24.6 µs/公式（约 40,667 公式/秒）**，无需窗口，不受屏幕刷新率限制。
+Both browser engines generate default HTML with accessibility MathML, using the same locked KaTeX CSS and fonts. Every benchmark formula is checked for byte-identical markup before timing.
 
-2026-10-20 · Windows x64 · Release · KaTeX 0.19.0 · µs/formula (lower is better).
+Correctness validation passed for 3,659 valid core HTML/MathML fixtures and 46 browser integration formulas, including bundled stylesheet and font loading.
 
-| MathML generation | Native C++ ABI | C++ WASM + fallback | KaTeX | WASM relative throughput |
-| ----------------- | -------------: | ------------------: | ----: | -----------------------: |
-| Common formulas   |           24.6 |                 7.7 |  14.0 |                    1.81× |
-| Complex formulas  |          208.6 |               137.4 | 117.6 |                    0.86× |
-| Mixed pages       |           20.2 |                 3.7 |  11.7 |                    3.18× |
+| Workload         | WASM HTML generation | KaTeX HTML generation | WASM DOM + layout | KaTeX DOM + layout |
+| ---------------- | -------------------: | --------------------: | ----------------: | -----------------: |
+| Common formulas  |                 43.4 |                  44.5 |             615.4 |              593.4 |
+| Complex formulas |                426.2 |                 431.8 |            3649.2 |             3538.9 |
+| Mixed pages      |                 44.9 |                  40.7 |             556.1 |              514.4 |
 
-| Render work      | Native WinUI / Direct2D | WASM DOM + layout | KaTeX DOM + layout |
-| ---------------- | ----------------------: | ----------------: | -----------------: |
-| Common formulas  |                  1174.7 |             248.8 |              644.4 |
-| Complex formulas |                 16228.2 |            2684.3 |             4196.5 |
-| Mixed pages      |                   368.8 |             179.5 |              561.6 |
+WASM/KaTeX relative throughput is **0.91–1.03×** for HTML generation and **0.93–0.97×** for DOM render work on this machine. Ratios below 1 mean WASM is slower.
 
-The complex-formula MathML workload takes 1.17× KaTeX time in WASM because fallback remains included. Native WinUI is slower than KaTeX on single/complex render work; its window/surface diagnostics can include graphics-queue backpressure and are separate from pure C++ engine performance. There is no claim of a universal speedup.
+![HTML generation](benchmarks/benchmark-comparison.png)
 
-![Render-work throughput benchmark](benchmarks/benchmark-render-work.png)
+![Browser render work](benchmarks/benchmark-render-work.png)
 
-All 36 formula occurrences are included, including automatic fallback. Three fresh processes × 15 calibrated batches per case; medians of batch averages, with actual page formula counts. No explicit frame waits or document cache. Startup/download excluded. Render work measures native surface submission or browser DOM + forced layout, with different output backends; it excludes a GPU completion fence, browser rasterization, and screen presentation. Results are specific to this hardware and corpus.
+All 36 formula occurrences are retained: 6 common, 3 complex, and 27 across three mixed pages. Three fresh processes × 15 calibrated batches per case; each case warms for at least 200 ms. Public async WASM API overhead is included. DOM timing forces layout after every formula. Startup, download, browser rasterization, GPU completion and screen presentation are excluded. Native C++/.NET/WinUI results and MathML serialization are separate diagnostics; the C++ Core does not expose this HTML generator.
 
-[Methodology, all cases, raw batches and reproduction commands](../benchmarks/README.md).
+[Methodology and reproduction](../benchmarks/README.md).
 
-![无帧等待的渲染工作](benchmarks/benchmark-render-work.png)
+![Mixed-page throughput](benchmarks/benchmark-page-throughput.png)
 
-![图文页面工作吞吐](benchmarks/benchmark-page-throughput.png)
+## Rendering comparison
 
-## 渲染效果对比
+Actual output at 32 px math em and 2× capture resolution. The WASM column uses the current default HTML/CSS renderer and bundled fonts. All four previews have matching computed styles and dimensions in their visible HTML trees. Three have byte-identical markup; the combined color example differs in CSS declaration order and a redundant inherited color declaration. Captures are not asserted pixel-identical. Cells in each row share a canvas and scale. Native uses DirectWrite/Direct2D.
 
-Actual output at 32 px math em, captured at 2× resolution. Each row uses equal-scale canvases; table display scales them together. The historical WASM columns used the preview6 C++ MathML route. Native and KaTeX use their own font rendering; identical pixels are not claimed.
-
-| Formula                | Windows native / Direct2D                                                                             | VelociTex WASM                                                                                    | KaTeX 0.19.0                                                                                        |
+| Formula                | Windows native / Direct2D                                                                             | VelociTex HTML/CSS WASM                                                                           | KaTeX 0.19.0                                                                                        |
 | ---------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | Algebra                | <img src="benchmarks/rendering/algebra-native.png" width="280" alt="Algebra: native">                 | <img src="benchmarks/rendering/algebra-wasm.png" width="280" alt="Algebra: wasm">                 | <img src="benchmarks/rendering/algebra-katex.png" width="280" alt="Algebra: katex">                 |
 | Calculus               | <img src="benchmarks/rendering/calculus-native.png" width="280" alt="Calculus: native">               | <img src="benchmarks/rendering/calculus-wasm.png" width="280" alt="Calculus: wasm">               | <img src="benchmarks/rendering/calculus-katex.png" width="280" alt="Calculus: katex">               |
 | Piecewise & matrices   | <img src="benchmarks/rendering/structures-native.png" width="280" alt="Piecewise & matrices: native"> | <img src="benchmarks/rendering/structures-wasm.png" width="280" alt="Piecewise & matrices: wasm"> | <img src="benchmarks/rendering/structures-katex.png" width="280" alt="Piecewise & matrices: katex"> |
 | Color, accents & fonts | <img src="benchmarks/rendering/color-native.png" width="280" alt="Color, accents & fonts: native">    | <img src="benchmarks/rendering/color-wasm.png" width="280" alt="Color, accents & fonts: wasm">    | <img src="benchmarks/rendering/color-katex.png" width="280" alt="Color, accents & fonts: katex">    |
 
-preview6 的 C++ WASM MathML 快速路径命中 **31/36** 条公式出现位置；其余全部自动回退并计入。逐项路由见 [原始汇总](benchmarks/benchmark-summary.json)。完整方法、软硬件、统计口径、局限和复现步骤见 [benchmark guide](../benchmarks/README.md)。旧版含帧等待的数据保留在旧结果目录，不再用于本版性能结论。
+Source: `475c5d75fb699ec26419838ba5a9876076d3dc6e` plus the hashed harness changes in the [campaign manifest](../benchmarks/results/2026-10-21-html-css/manifest.json). [All raw batches and summary](../benchmarks/results/2026-10-21-html-css/benchmark-summary.json). Historical preview6 MathML-path results remain in `benchmarks/results/2026-10-20-preview6`.
 
-测试环境：12th Gen Intel(R) Core(TM) i5-12400F，31.8 GiB 内存；Windows_NT 10.0.26200 x64；.NET 10.0.13。浏览器为 `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36`，DPR 1；原生宿主为 Release x64 JIT，浏览器回退为 Release WASM AOT。页面正文和宿主创建在计时之外，原生用图文行、浏览器用可换行段落，因此整页数据衡量其中的公式工作，不代表完整文档构建或正文排版。
+[Rendering validation, including the color serialization difference](../benchmarks/results/2026-10-21-html-css/rendering-validation.json). [Combined rendering preview](benchmarks/rendering/comparison-preview.png).
 
-## 逐项结果
+Environment: 12th Gen Intel(R) Core(TM) i5-12400F, 31.8 GiB RAM; Windows_NT 10.0.26200 x64; `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36`.
 
-单位为 µs/完整公式或完整页；本表的页值尚未除以公式数。每项先取进程内批次均值的中位数，再取三个进程的中位数。
+## Native and MathML diagnostics
 
-| Input              | Formulas | C++ ABI MathML | .NET MathML | WASM MathML | KaTeX MathML | Native UI work | WASM render work | KaTeX render work |
-| ------------------ | -------: | -------------: | ----------: | ----------: | -----------: | -------------: | ---------------: | ----------------: |
-| single-energy      |        1 |            6.1 |         7.5 |         1.5 |          4.7 |          218.0 |             71.1 |             222.0 |
-| single-quadratic   |        1 |           22.4 |        23.0 |         3.3 |         10.9 |         4631.3 |            205.0 |             692.9 |
-| single-gaussian    |        1 |           31.3 |        30.9 |         5.0 |         16.6 |          441.2 |            166.6 |             677.0 |
-| single-binomial    |        1 |           31.1 |        31.8 |        29.2 |         16.5 |          530.5 |            694.8 |             846.9 |
-| single-determinant |        1 |           26.7 |        27.7 |         3.4 |         18.3 |          427.9 |            166.3 |             606.6 |
-| single-derivative  |        1 |           30.3 |        30.1 |         4.3 |         16.2 |          687.8 |            207.1 |             744.6 |
-| long-aligned       |        1 |          285.9 |       272.7 |       182.5 |        142.7 |        30848.3 |           3051.9 |            5481.9 |
-| long-cases         |        1 |          128.5 |       134.0 |        90.1 |         75.1 |        21973.0 |           2355.9 |            3660.0 |
-| long-maxwell       |        1 |          209.3 |       219.4 |       142.3 |        124.0 |         2214.1 |           2270.9 |            3407.5 |
-| page-algebra       |       10 |          171.0 |       185.3 |        26.1 |        117.0 |         3798.1 |           1635.9 |            5230.0 |
-| page-calculus      |        9 |          189.3 |       191.8 |        31.9 |        113.1 |         3575.8 |           1530.6 |            5249.4 |
-| page-physics       |        8 |          184.4 |       192.0 |        41.6 |         89.2 |         3083.0 |           1799.7 |            4703.1 |
+Native output contracts remain MathML, laid-out documents and SVG/Direct2D. These are not HTML-generation comparisons. All values are µs/formula.
+
+| Workload         | C++ ABI MathML | .NET MathML | WASM MathML | KaTeX MathML | Native WinUI work |
+| ---------------- | -------------: | ----------: | ----------: | -----------: | ----------------: |
+| Common formulas  |           22.4 |        23.5 |        17.2 |         12.7 |            1228.3 |
+| Complex formulas |          188.3 |       189.2 |       125.5 |         94.7 |           10624.9 |
+| Mixed pages      |           18.0 |        19.3 |        13.6 |         10.2 |             365.2 |
+
+## Per-case browser results
+
+Units: µs/complete formula or complete page (page values are not divided by formula count).
+
+| Input              | Formulas | WASM HTML | KaTeX HTML | WASM DOM + layout | KaTeX DOM + layout |
+| ------------------ | -------: | --------: | ---------: | ----------------: | -----------------: |
+| single-energy      |        1 |      14.5 |       14.0 |             221.4 |              199.8 |
+| single-quadratic   |        1 |      41.3 |       44.4 |             641.3 |              611.6 |
+| single-gaussian    |        1 |      51.2 |       51.2 |             683.4 |              619.8 |
+| single-binomial    |        1 |      55.4 |       60.3 |             794.2 |              776.2 |
+| single-determinant |        1 |      46.5 |       45.6 |             606.0 |              561.8 |
+| single-derivative  |        1 |      51.1 |       52.7 |             760.8 |              800.0 |
+| long-aligned       |        1 |     603.4 |      698.8 |            5083.1 |             4920.6 |
+| long-cases         |        1 |     283.9 |      269.9 |            2715.6 |             2621.2 |
+| long-maxwell       |        1 |     401.5 |      332.5 |            3148.7 |             3076.6 |
+| page-algebra       |       10 |     421.9 |      371.4 |            5150.6 |             4746.3 |
+| page-calculus      |        9 |     430.1 |      391.6 |            5233.1 |             4734.4 |
+| page-physics       |        8 |     361.6 |      332.0 |            4681.2 |             4313.8 |

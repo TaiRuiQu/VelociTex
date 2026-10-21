@@ -96,7 +96,7 @@ const chrome = spawn(
     ...(headless ? ['--headless=new'] : []),
     pageUrl,
   ],
-  { stdio: 'ignore' }
+  { stdio: 'ignore', windowsHide: true }
 );
 let exited = false;
 chrome.on('exit', () => {
@@ -146,6 +146,8 @@ try {
   };
   await send('Page.enable');
   for (let attempt = 0; attempt < 300; attempt++) {
+    const pageError = await evaluate('window.__comparisonError ?? null');
+    if (pageError) throw new Error(pageError);
     try {
       if (await evaluate('window.__ready === true')) break;
     } catch {
@@ -155,6 +157,10 @@ try {
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   await evaluate('document.fonts.ready.then(() => true)');
+  await writeFile(
+    path.join(outDir, 'browser-validation.json'),
+    JSON.stringify(await evaluate('window.comparisonValidation'), null, 2)
+  );
   const formulas = JSON.parse(await readFile(path.join(root, 'benchmarks/comparison.json'), 'utf8'));
   for (const formula of formulas) {
     for (const engine of ['wasm', 'katex']) {

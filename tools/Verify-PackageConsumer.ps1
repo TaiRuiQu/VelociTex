@@ -1,7 +1,7 @@
 param(
     [string]$Feed = 'artifacts/packages/release',
     [string]$Output = 'artifacts/tests/package-consumer',
-    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '1.0.0-preview6',
+    [ValidatePattern('^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')][string]$Version = '1.0.0-preview7',
     [switch]$UpdateLocks,
     # Store locks for the exact package version being tested.
     [string]$LockDirectory
