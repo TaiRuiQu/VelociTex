@@ -6,10 +6,11 @@ import velocitex, {
   ParseError,
   type RenderOptions,
   type RenderAllResult,
+  stylesheetUrl,
 } from 'velocitex';
 
-const options: RenderOptions = { displayMode: true, macros: { '\\RR': '\\mathbb{R}' }, strict: 'warn' };
-await init({ assetBaseUrl: '/velocitex/' });
+const options: RenderOptions = { displayMode: true, macros: { '\\RR': '\\mathbb{R}' }, strict: 'warn', fastHtml: true };
+await init({ assetBaseUrl: '/velocitex/', injectStyles: false });
 await render('x', document.body, options);
 const svg: string = await renderToString('x', { output: 'svg' });
 const report: RenderAllResult = await renderAll(document.body, {
@@ -21,4 +22,4 @@ try {
 } catch (error) {
   if (error instanceof ParseError) console.log(error.code, error.range.start);
 }
-console.log(report.rendered);
+console.log(report.rendered, stylesheetUrl());

@@ -2,10 +2,13 @@
 
 The browser/npm adapter is separate from these native
 NuGet contracts. Its asynchronous JS API, static-asset setup and known font
-limitations are specified in [the npm guide](../npm/velocitex/README.md). It
-uses a standalone C++ MathML fast path for supported formulas and only loads
-Core through .NET WASM AOT for fallback or explicit `fastMathml:false`; native
-packages do not depend on it.
+limitations are specified in [the npm guide](../npm/velocitex/README.md). Its
+default path is a standalone WebAssembly engine that emits byte-identical KaTeX
+0.19.0 HTML and MathML and uses the locked KaTeX stylesheet and fonts, including
+KaTeX's CJK/script fallback classes. It only
+loads Core through .NET WASM AOT for the explicit SVG/legacy contract
+(`fastHtml:false`, `fastMathml:false` or `output:'svg'`); native packages do not
+depend on it.
 
 `VelociTex.Core` is .NET 10 and embeds the 20 unchanged, private KaTeX fonts.
 `VelociTex.Rendering.Direct2D` adds Windows-only native preparation, drawing, PNG
@@ -48,9 +51,10 @@ the managed writer; callers that need the exact managed bytes must use
 `MathEngine.TryCompileToMathMl` directly. The native adapter finds
 `VelociTex.NativeMath.dll` beside the app or via `VELOCITEX_NATIVE_DIR`.
 
-The npm `RenderOptions.fastMathml` defaults to true. Fast `html`/`mathml` output is
-browser-native MathML, not the C# SVG DOM; `fastMathml:false` forces the exact
-C# contract.
+The npm `RenderOptions.fastHtml` (legacy alias `fastMathml`) defaults to true.
+Fast `html` output is the byte-identical KaTeX HTML/CSS contract; `output:'svg'`
+or `fastHtml:false` forces the exact C# SVG contract. The bundled KaTeX CSS is
+injected on first use and can be linked manually instead.
 
 `MathView` reuses its renderer, WARP device and graphics device across result and
 DPI changes. Views on the same UI thread share those device resources, and the

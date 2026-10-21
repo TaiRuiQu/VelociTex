@@ -8,4 +8,6 @@
 *.ps1 text eol=lf
 *.ttf binary
 *.woff2 binary
+*.woff binary
+*.wasm binary
 *.png binary

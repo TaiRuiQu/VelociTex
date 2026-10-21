@@ -1,6 +1,8 @@
 export interface InitOptions {
-  /** Directory containing dotnet.js and its sibling runtime assets. Defaults to ./runtime/ beside the module. */
+  /** Directory containing vt-katex-html.wasm, dotnet.js and sibling runtime assets. Defaults to ./runtime/ beside the module. */
   assetBaseUrl?: string | URL;
+  /** Inject the bundled KaTeX stylesheet on first use. Default true. */
+  injectStyles?: boolean;
 }
 export interface RenderOptions {
   displayMode?: boolean;
@@ -10,11 +12,12 @@ export interface RenderOptions {
   /** Default true for render/renderToString; false for renderAll. */
   throwOnError?: boolean;
   errorColor?: string;
-  /** html includes SVG plus visually hidden semantic MathML. Default html. */
+  /** Default html returns KaTeX htmlAndMathml; 'html' returns HTML-only and 'mathml' returns KaTeX's MathML wrapper. */
   output?: 'html' | 'svg' | 'mathml';
-  /** Use the standalone C++ MathML fast path for supported formulas. Default true.
-   *  Fast html/mathml output is native browser MathML, not SVG; set false to force
-   *  the exact C#/KaTeX-compatible SVG contract. Unsupported formulas fall back. */
+  /** Use the standalone KaTeX-compatible HTML/CSS engine. Default true.
+   *  Set false to force the full-Core SVG plus visually hidden MathML contract. */
+  fastHtml?: boolean;
+  /** Legacy alias for fastHtml. Default true. */
   fastMathml?: boolean;
   strict?: 'ignore' | 'warn' | 'error' | boolean;
   maxExpand?: number;
@@ -53,6 +56,8 @@ export interface RenderAllResult {
   errors: Array<{ source: string; error: ParseError; element: Element }>;
 }
 export function init(options?: InitOptions): Promise<void>;
+/** URL of the KaTeX-compatible stylesheet injected by the fast renderer, if any. */
+export function stylesheetUrl(): string | undefined;
 export function render(source: string, element: Element, options?: RenderOptions): Promise<void>;
 export function renderToString(source: string, options?: RenderOptions): Promise<string>;
 export function renderAll(
@@ -65,5 +70,6 @@ declare const velocitex: {
   renderToString: typeof renderToString;
   renderAll: typeof renderAll;
   ParseError: typeof ParseError;
+  stylesheetUrl: typeof stylesheetUrl;
 };
 export default velocitex;

@@ -24,6 +24,10 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'TypeScript consumer failed.' }
     & node tools/reference/wasm-browser.mjs $installedPath $staticPath
     if ($LASTEXITCODE -ne 0) { throw 'Installed npm package browser verification failed.' }
+    & node tests/wasm/katex-parity.mjs
+    if ($LASTEXITCODE -ne 0) { throw 'KaTeX HTML/MathML parity failed.' }
+    & node tests/wasm/katex-browser-parity.mjs (Join-Path $installedPath 'dist')
+    if ($LASTEXITCODE -ne 0) { throw 'KaTeX browser parity failed.' }
     Write-Host "WASM/npm verification passed. Isolated consumer: $consumerPath"
 }
 finally { Pop-Location }

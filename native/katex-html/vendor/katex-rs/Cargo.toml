@@ -1,0 +1,39 @@
+[package]
+name = "katex-rs"
+version = "0.3.0"
+edition = "2024"
+license = "MIT"
+
+description = "A Rust implementation of KaTeX - Fast math typesetting for anywhere, more than just the web."
+categories = ["mathematics", "wasm", "parsing"]
+keywords = ["latex", "math", "katex", "wasm", "parsing"]
+[lib]
+name = "katex"
+
+[dependencies]
+# Core dependencies
+thiserror = "2.0.20"
+phf = { version = "0.14.0", features = ["macros"] }
+strum_macros = "0.28.0"
+strum = { version = "0.28.0", features = ["derive"] }
+bon = "3.10.0"
+rapidhash = "4.5.1"
+
+# WebAssembly support
+wasm-bindgen = { version = "0.2.128", optional = true }
+js-sys = { version = "0.3.105", optional = true }
+web-sys = { version = "0.3.105", features = ["Document", "DocumentFragment", "Node", "Element", "Window", "Text"], optional = true }
+console_error_panic_hook = { version = "0.1.7", optional = true }
+
+[features]
+default = []
+backtrace = []
+wasm = ["dep:wasm-bindgen", "dep:js-sys", "dep:web-sys", "dep:console_error_panic_hook"]
+
+[build-dependencies]
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.151"
+unicode-normalization = "0.1.25"
+phf = { version = "0.14.0", features = ["macros"] }
+phf_codegen = "0.14.0"
+

@@ -6,6 +6,7 @@
 *.pyc
 artifacts/
 build/
+native/katex-html/target/
 .vs/
 *.user
 *.suo

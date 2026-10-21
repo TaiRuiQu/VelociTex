@@ -1,4 +1,9 @@
-# 性能基准：1.0.0-preview6
+# 性能基准：1.0.0-preview6（历史）
+
+> 本页记录 preview6 的 MathML 快速路径。当前默认浏览器路径已改为与 KaTeX 0.19.0
+> 逐字节相同的 HTML + CSS WebAssembly 引擎；3,659 个有效核心样例的 HTML/MathML
+> 逐字节一致性见 `tests/wasm/katex-parity.mjs`。下表的原生与历史 WASM 数据保留作
+> 回归参考，不再代表当前默认 HTML 路径。
 
 ## 性能
 
@@ -32,7 +37,7 @@ All 36 formula occurrences are included, including automatic fallback. Three fre
 
 ## 渲染效果对比
 
-Actual output at 32 px math em, captured at 2× resolution. Each row uses equal-scale canvases; table display scales them together. WASM uses the default C++ MathML route with automatic full-Core fallback. Native and KaTeX use their own font rendering; identical pixels are not claimed.
+Actual output at 32 px math em, captured at 2× resolution. Each row uses equal-scale canvases; table display scales them together. The historical WASM columns used the preview6 C++ MathML route. Native and KaTeX use their own font rendering; identical pixels are not claimed.
 
 | Formula                | Windows native / Direct2D                                                                             | VelociTex WASM                                                                                    | KaTeX 0.19.0                                                                                        |
 | ---------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
@@ -41,7 +46,7 @@ Actual output at 32 px math em, captured at 2× resolution. Each row uses equal-
 | Piecewise & matrices   | <img src="benchmarks/rendering/structures-native.png" width="280" alt="Piecewise & matrices: native"> | <img src="benchmarks/rendering/structures-wasm.png" width="280" alt="Piecewise & matrices: wasm"> | <img src="benchmarks/rendering/structures-katex.png" width="280" alt="Piecewise & matrices: katex"> |
 | Color, accents & fonts | <img src="benchmarks/rendering/color-native.png" width="280" alt="Color, accents & fonts: native">    | <img src="benchmarks/rendering/color-wasm.png" width="280" alt="Color, accents & fonts: wasm">    | <img src="benchmarks/rendering/color-katex.png" width="280" alt="Color, accents & fonts: katex">    |
 
-C++ WASM 快速路径命中 **31/36** 条公式出现位置；其余全部自动回退并计入。逐项路由见 [原始汇总](benchmarks/benchmark-summary.json)。完整方法、软硬件、统计口径、局限和复现步骤见 [benchmark guide](../benchmarks/README.md)。旧版含帧等待的数据保留在旧结果目录，不再用于本版性能结论。
+preview6 的 C++ WASM MathML 快速路径命中 **31/36** 条公式出现位置；其余全部自动回退并计入。逐项路由见 [原始汇总](benchmarks/benchmark-summary.json)。完整方法、软硬件、统计口径、局限和复现步骤见 [benchmark guide](../benchmarks/README.md)。旧版含帧等待的数据保留在旧结果目录，不再用于本版性能结论。
 
 测试环境：12th Gen Intel(R) Core(TM) i5-12400F，31.8 GiB 内存；Windows_NT 10.0.26200 x64；.NET 10.0.13。浏览器为 `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36`，DPR 1；原生宿主为 Release x64 JIT，浏览器回退为 Release WASM AOT。页面正文和宿主创建在计时之外，原生用图文行、浏览器用可换行段落，因此整页数据衡量其中的公式工作，不代表完整文档构建或正文排版。
 

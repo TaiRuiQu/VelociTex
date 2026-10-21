@@ -9,42 +9,19 @@ Direct2D, without a browser or JavaScript runtime.
 
 <!-- benchmark:start -->
 
-## Performance
+## KaTeX-identical browser HTML
 
-C++ WASM + fallback delivers **1.6–3.1× KaTeX browser render-work throughput** across these three workloads. The native C++ Core generates common-formula MathML in **24.6 µs/formula (~40,667 formulas/s)** on this machine, without a window or refresh-rate limit.
+The npm package's default browser path is a standalone WebAssembly engine that
+emits the same HTML and MathML markup as KaTeX 0.19.0 for the supported core
+formula set, with no MathML-as-rendering shortcut. It uses the locked KaTeX 0.19.0 stylesheet and the
+unchanged KaTeX fonts. The parity gate covers all **3,659 valid core fixtures**
+(byte-identical HTML and MathML) plus the browser integration suite.
 
-2026-10-20 · Windows x64 · Release · KaTeX 0.19.0 · µs/formula (lower is better).
-
-| MathML generation | Native C++ ABI | C++ WASM + fallback | KaTeX | WASM relative throughput |
-| ----------------- | -------------: | ------------------: | ----: | -----------------------: |
-| Common formulas   |           24.6 |                 7.7 |  14.0 |                    1.81× |
-| Complex formulas  |          208.6 |               137.4 | 117.6 |                    0.86× |
-| Mixed pages       |           20.2 |                 3.7 |  11.7 |                    3.18× |
-
-| Render work      | Native WinUI / Direct2D | WASM DOM + layout | KaTeX DOM + layout |
-| ---------------- | ----------------------: | ----------------: | -----------------: |
-| Common formulas  |                  1174.7 |             248.8 |              644.4 |
-| Complex formulas |                 16228.2 |            2684.3 |             4196.5 |
-| Mixed pages      |                   368.8 |             179.5 |              561.6 |
-
-The complex-formula MathML workload takes 1.17× KaTeX time in WASM because fallback remains included. Native WinUI is slower than KaTeX on single/complex render work; its window/surface diagnostics can include graphics-queue backpressure and are separate from pure C++ engine performance. There is no claim of a universal speedup.
-
-![Render-work throughput benchmark](docs/benchmarks/benchmark-render-work.png)
-
-All 36 formula occurrences are included, including automatic fallback. Three fresh processes × 15 calibrated batches per case; medians of batch averages, with actual page formula counts. No explicit frame waits or document cache. Startup/download excluded. Render work measures native surface submission or browser DOM + forced layout, with different output backends; it excludes a GPU completion fence, browser rasterization, and screen presentation. Results are specific to this hardware and corpus.
-
-[Methodology, all cases, raw batches and reproduction commands](benchmarks/README.md).
-
-## Rendering comparison
-
-Actual output at 32 px math em, captured at 2× resolution. Each row uses equal-scale canvases; table display scales them together. WASM uses the default C++ MathML route with automatic full-Core fallback. Native and KaTeX use their own font rendering; identical pixels are not claimed.
-
-| Formula                | Windows native / Direct2D                                                                                  | VelociTex WASM                                                                                         | KaTeX 0.19.0                                                                                             |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| Algebra                | <img src="docs/benchmarks/rendering/algebra-native.png" width="280" alt="Algebra: native">                 | <img src="docs/benchmarks/rendering/algebra-wasm.png" width="280" alt="Algebra: wasm">                 | <img src="docs/benchmarks/rendering/algebra-katex.png" width="280" alt="Algebra: katex">                 |
-| Calculus               | <img src="docs/benchmarks/rendering/calculus-native.png" width="280" alt="Calculus: native">               | <img src="docs/benchmarks/rendering/calculus-wasm.png" width="280" alt="Calculus: wasm">               | <img src="docs/benchmarks/rendering/calculus-katex.png" width="280" alt="Calculus: katex">               |
-| Piecewise & matrices   | <img src="docs/benchmarks/rendering/structures-native.png" width="280" alt="Piecewise & matrices: native"> | <img src="docs/benchmarks/rendering/structures-wasm.png" width="280" alt="Piecewise & matrices: wasm"> | <img src="docs/benchmarks/rendering/structures-katex.png" width="280" alt="Piecewise & matrices: katex"> |
-| Color, accents & fonts | <img src="docs/benchmarks/rendering/color-native.png" width="280" alt="Color, accents & fonts: native">    | <img src="docs/benchmarks/rendering/color-wasm.png" width="280" alt="Color, accents & fonts: wasm">    | <img src="docs/benchmarks/rendering/color-katex.png" width="280" alt="Color, accents & fonts: katex">    |
+The engine remains a native WebAssembly fast path: generation is measured at
+roughly **0.8–2.2× KaTeX API throughput** across six representative formulas in
+Chromium on the development machine, depending on formula shape and hardware.
+This replaces the earlier fast MathML path; native Direct2D/WinUI performance is
+unchanged and documented separately in `benchmarks/README.md`.
 
 <!-- benchmark:end -->
 
@@ -101,6 +78,10 @@ await init({ assetBaseUrl: '/velocitex/' });
 await renderAll();
 ```
 
+The default path emits KaTeX-identical HTML and uses the bundled KaTeX
+stylesheet/fonts; the stylesheet is injected automatically. `output: 'svg'` or
+`fastHtml: false` selects the full-Core SVG contract instead.
+
 ## Documentation
 
 - [Native usage](docs/native-usage.md) · [中文](docs/native-usage.zh-CN.md)
@@ -113,8 +94,9 @@ await renderAll();
 
 VelociTex handles one complete formula at a time. It does not compile full LaTeX
 documents, load arbitrary TeX packages, edit formulas, or wrap surrounding body
-text. Unsupported syntax returns diagnostics. Browser font fallback is limited;
-see the browser guide before using text outside the bundled mathematical fonts.
+text. Unsupported syntax returns diagnostics. The KaTeX-compatible HTML path matches
+KaTeX's browser font fallback; the legacy SVG path has no browser DirectWrite
+shaper, so see the browser guide before using text outside the bundled fonts there.
 
 Code is MIT. The bundled KaTeX fonts and extracted contours retain **OFL-1.1**
 and Reserved Font Name terms; the fonts are not MIT.

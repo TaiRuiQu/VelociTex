@@ -2,9 +2,16 @@
 
 VelociTex source code uses the MIT license in `LICENSE`.
 
-KaTeX 0.19.0 code, extracted mathematical rules and generated metrics originate
-from KaTeX, copyright Khan Academy and other contributors. Its MIT license is
-preserved in `licenses/KaTeX-LICENSE.txt`.
+KaTeX 0.19.0 code, extracted mathematical rules, the bundled `katex.min.css`
+stylesheet and generated metrics originate from KaTeX, copyright Khan Academy
+and other contributors. Its MIT license is preserved in
+`licenses/KaTeX-LICENSE.txt`.
+
+The browser HTML engine in `native/katex-html` is a vendored, patched copy of
+`katex-rs` (https://github.com/katex-rs/katex-rs), copyright the katex-rs
+contributors, used under the MIT license. The upstream MIT text is preserved in
+`licenses/katex-rs-LICENSE.txt` (also vendored beside the source); the local parity patches are listed
+in `native/katex-html/README.md`.
 
 The 20 unchanged KaTeX TrueType fonts bundled in `VelociTex.Core`, and font
 outlines used by SVG and browser outputs, retain the SIL Open Font License 1.1.

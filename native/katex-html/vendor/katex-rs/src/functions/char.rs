@@ -1,0 +1,81 @@
+//! Implementation of the \@char function in KaTeX
+//!
+//! This module implements the \@char LaTeX command, which converts a decimal
+//! number to the corresponding Unicode character. It is used internally by
+//! the \char macro to create symbols from code points.
+
+use crate::context::KatexContext;
+use crate::define_function::{FunctionDefSpec, FunctionPropSpec};
+use crate::parser::parse_node::{AnyParseNode, NodeType, ParseNode, ParseNodeTextOrd};
+use crate::types::{ParseError, ParseErrorKind, TokenText};
+
+/// Register the \@char function
+pub fn define_char(ctx: &mut KatexContext) {
+    ctx.define_function(FunctionDefSpec {
+        node_type: Some(NodeType::TextOrd),
+        names: &["\\@char"],
+        props: FunctionPropSpec {
+            num_args: 1,
+            allowed_in_text: true,
+            ..Default::default()
+        },
+        handler: Some(
+            |context, args: Vec<ParseNode>, _opt_args: Vec<Option<ParseNode>>| {
+                // Extract the first argument, which should be an ordgroup
+                let arg = &args[0];
+                let ParseNode::OrdGroup(ordgroup) = arg else {
+                    return Err(ParseError::new(ParseErrorKind::CharArgumentMustBeOrdGroup));
+                };
+
+                // Accept only plain textord characters, as upstream does.
+                let mut number_str = String::new();
+                for node in &ordgroup.body {
+                    match node {
+                        AnyParseNode::TextOrd(textord) => {
+                            number_str.push_str(&textord.text);
+                        }
+                        _ => {
+                            return Err(ParseError::with_token(
+                                ParseErrorKind::CharOrdGroupContentInvalid,
+                                arg,
+                            ));
+                        }
+                    }
+                }
+
+                // Parse the number
+                let code_point: u32 = match number_str.parse() {
+                    Ok(n) => n,
+                    Err(_) => {
+                        return Err(ParseError::new(ParseErrorKind::CharNonNumericArgument {
+                            value: number_str.clone(),
+                        }));
+                    }
+                };
+
+                // Validate the code point range
+                if code_point > 0x10FFFF {
+                    return Err(ParseError::new(ParseErrorKind::InvalidCharCodePoint {
+                        code: number_str.clone(),
+                    }));
+                }
+
+                // Convert code point to character(s)
+                let text = char::from_u32(code_point).ok_or_else(|| {
+                    ParseError::new(ParseErrorKind::InvalidCharCodePoint {
+                        code: number_str.clone(),
+                    })
+                })?;
+
+                // Return a textord node with the character
+                Ok(ParseNode::TextOrd(ParseNodeTextOrd {
+                    mode: context.parser.mode,
+                    loc: context.loc(),
+                    text: TokenText::from(text.to_string()),
+                }))
+            },
+        ),
+        html_builder: None,
+        mathml_builder: None,
+    });
+}

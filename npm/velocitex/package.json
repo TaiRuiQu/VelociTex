@@ -1,7 +1,7 @@
 {
   "name": "velocitex",
   "version": "1.0.0-preview6",
-  "description": "C++-accelerated TeX rendering: a compact MathML WASM fast path with full native-Core fallback and measured performance comparisons",
+  "description": "C++-accelerated TeX rendering: a KaTeX-identical HTML/CSS WebAssembly fast path with full native-Core fallback and measured performance comparisons",
   "type": "module",
   "license": "MIT AND OFL-1.1",
   "publishConfig": {

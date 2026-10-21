@@ -1,11 +1,13 @@
 # WASM / JS 网页绑定
 
-浏览器适配器优先使用独立的 C++ WASM 路径输出 MathML，不支持的语法回退到
+浏览器适配器默认使用独立的 WebAssembly 引擎输出与 **KaTeX 0.19.0 逐字节相同**的
+HTML + CSS，并直接使用锁定的 KaTeX 样式表和原字体。显式请求 SVG 或旧契约时回退到
 .NET WASM AOT 数学核心。无需 Blazor，也不要求访客安装 .NET。
 数学规则仍固定在 KaTeX 0.19.0。
 
-`1.0.0-preview6` 已发布到 npm 的 `next` 通道，包内 README 和 `images/`
-包含三轮独立进程的性能数据、无刷新等待的图表，以及原生 / WASM / KaTeX 0.19.0 的渲染对比表格（四组代表性公式）。
+`tests/wasm/katex-parity.mjs` 对全部 3,659 个有效核心样例同时校验 HTML 与 MathML，
+`tests/wasm/katex-browser-parity.mjs` 在 Chromium 中重复校验；生成吞吐约为 KaTeX
+API 的 0.8–2.2 倍（六条代表性公式，具体取决于公式和硬件），不声称普遍加速。
 
 ## 安装和调用
 
@@ -52,9 +54,14 @@ const svg = await renderToString('x^2', { output: 'svg' });
 const mathml = await renderToString('x^2', { output: 'mathml' });
 ```
 
-所有入口返回 Promise，首次调用自动初始化并复用同一个运行时。默认 HTML 可由浏览器原生 MathML 快速路径生成。设置 `fastMathml: false` 使用
-C# 输出：SVG 配合视觉隐藏的 MathML，SVG 内嵌字形轮廓，无需另行引入 CSS 或字体。
-`fontSize` 是公式自身的 CSS 像素字号，默认 24。
+所有入口返回 Promise，首次调用自动初始化并复用同一个运行时。默认 HTML 由
+KaTeX 兼容的 WebAssembly 引擎生成；首次使用时自动注入随包分发的
+`runtime/katex.min.css`（可用 `init({ injectStyles: false })` 关闭，并自行通过
+`stylesheetUrl()` 获取地址）。设置 `fastHtml: false`（兼容旧名
+`fastMathml: false`）或 `output: 'svg'` 使用 C# 输出：SVG 配合视觉隐藏的 MathML，
+SVG 内嵌字形轮廓，无需另行引入 CSS 或字体。
+`fontSize` 是公式自身的 CSS 像素字号，默认 24；KaTeX HTML 本身使用 em，字号由外层
+CSS 控制。
 
 `renderAll()` 默认处理 `[data-math]` 和 `$$…$$`、`\[…\]`、`\(…\)`。
 普通 `$…$` 需要通过 `delimiters` 显式启用，以免误识别金额。它跳过代码、脚本、
@@ -72,10 +79,12 @@ KaTeX 数学选项，详见包内 TypeScript 声明。
 
 ## 当前边界
 
-- 浏览器尚无 Windows DirectWrite 字体回退；中文数学文字及其他依赖缺失字体或
-  上下文塑形的输入返回 `UnknownSymbol`。普通正文中文不受影响。
-- C++ MathML 快速路径暂不处理 `cases` 等需要伸缩围栏的环境，会回退到精确的
-  C# 输出；`fastMathml: false` 可强制使用 C# 路径。
+- KaTeX 兼容 HTML 路径使用未修改的 KaTeX 字体和样式表，包含 KaTeX 的 CJK /
+  阿拉伯文等回退类；浏览器中 `\text{}` 的普通中文与 KaTeX 一致。旧版
+  C# SVG 路径（`fastHtml: false`）没有 DirectWrite 塑形器，缺失字形返回
+  `UnknownSymbol`。
+- 默认 HTML 使用 KaTeX 的样式表和字体，因此必须加载 `runtime/katex.min.css`；
+  快速路径会自动注入。`fastHtml: false` / `output: 'svg'` 不需要 CSS。
 - 这是浏览器端 API，`renderToString()` 也需要浏览器；尚未实现 Node.js SSR。
 - 不包含 KaTeX contrib、HTML 注入、链接、外部图片、自动公式换行和公式编辑功能。
 - 代码为 MIT；KaTeX 原字体及提取轮廓保留 OFL-1.1 / RFN，分发包包含独立许可证。

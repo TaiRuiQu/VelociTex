@@ -1,5 +1,10 @@
 # Refresh-independent benchmarks
 
+> **Historical note:** these preview6 numbers describe the old MathML fast path.
+> The current default browser path emits byte-identical KaTeX 0.19.0 HTML/CSS and
+> is verified by `tests/wasm/katex-parity.mjs`; use that parity gate for current
+> HTML correctness claims. Native C++/Direct2D measurements remain relevant.
+
 The preview6 benchmark measures the work the library performs. No headline
 metric waits for `requestAnimationFrame`, `CompositionTarget.Rendering`, vsync,
 or a monitor refresh. Native WinUI surface diagnostics can still include graphics

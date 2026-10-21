@@ -1,3 +1,5 @@
+import { initKatexMath, renderKatexMath, katexStylesheetUrl } from './katexmath.mjs';
+
 const defaultRuntimeUrl = new URL('./runtime/', import.meta.url);
 let runtimeUrl = defaultRuntimeUrl;
 let initialization;
@@ -10,18 +12,13 @@ let compilerSvgSharedSimple;
 let serial = 0;
 let fastInitialization;
 let fastReady = false;
-let fastRender;
+let injectStyles = true;
 
 async function ensureFast() {
   if (!fastInitialization) {
     fastInitialization = (async () => {
-      try {
-        const mod = await import('./fastmath.mjs');
-        fastReady = await mod.initFastMath(new URL('./runtime/fastmath.js', import.meta.url).href);
-        if (fastReady) fastRender = mod.renderFastMath;
-      } catch {
-        fastReady = false;
-      }
+      fastReady = await initKatexMath(new URL('vt-katex-html.wasm', runtimeUrl).href, { injectStyles });
+      return fastReady;
     })();
   }
   await fastInitialization;
@@ -65,7 +62,18 @@ export function init(options = {}) {
     throw new Error('VelociTex is already initializing with a different assetBaseUrl.');
   if (!initialization) {
     runtimeUrl = requested;
-    initialization = (async () => {
+    injectStyles = options.injectStyles !== false;
+    // The KaTeX-compatible engine is the default path. Load it eagerly, but
+    // defer the much larger .NET runtime until the SVG/legacy contract is used.
+    initialization = ensureFast().then(() => undefined);
+  }
+  return initialization;
+}
+
+let dotnetInitialization;
+async function ensureDotnet() {
+  if (!dotnetInitialization) {
+    dotnetInitialization = (async () => {
       if (typeof globalThis.document === 'undefined')
         throw new Error('VelociTex WASM requires a browser. renderToString is not a Node.js SSR API.');
       const { dotnet } = await import(/* @vite-ignore */ new URL('dotnet.js', runtimeUrl).href);
@@ -78,14 +86,14 @@ export function init(options = {}) {
       compilerMathmlSimple = exports.VelociTex.Wasm.BrowserBindings.CompileMathMlSimple;
       compilerSvgSharedSimple = exports.VelociTex.Wasm.BrowserBindings.CompileSharedSimple;
     })().catch((error) => {
-      initialization = undefined;
+      dotnetInitialization = undefined;
       throw new Error(
         `Unable to initialize VelociTex WASM at ${runtimeUrl.href}. Serve the complete runtime directory over HTTP(S). ${error.message}`,
         { cause: error }
       );
     });
   }
-  return initialization;
+  return dotnetInitialization;
 }
 
 export class ParseError extends Error {
@@ -148,20 +156,31 @@ function compileOptions(options) {
     if (!['html', 'svg', 'mathml'].includes(options.output)) throw new TypeError('output must be html, svg or mathml.');
     result.output = options.output;
   }
+  result.throwOnError = options.throwOnError !== false;
+  if (options.errorColor != null) {
+    if (
+      typeof options.errorColor !== 'string' ||
+      !/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(options.errorColor)
+    )
+      throw new TypeError('errorColor must be a hexadecimal color.');
+    result.errorColor = options.errorColor;
+  }
   return JSON.stringify(result);
 }
 
 function canUseSimpleOptions(options) {
   for (const key of Object.keys(options)) {
-    if (!['displayMode', 'output', 'throwOnError', 'trust', '__shared', 'fastMathml'].includes(key)) return false;
+    if (!['displayMode', 'output', 'throwOnError', 'trust', '__shared', 'fastMathml', 'fastHtml'].includes(key))
+      return false;
   }
   return true;
 }
 
 function canUseFastOptions(options) {
-  for (const key of Object.keys(options)) {
-    if (!['displayMode', 'output', 'throwOnError', 'fastMathml', '__shared'].includes(key)) return false;
-  }
+  // The standalone engine has no host display width and does not enforce the
+  // legacy node/nesting/token budgets; keep the exact Core path for those.
+  if (options.displayWidth != null) return false;
+  if (options.maxNodes != null || options.maxNesting != null || options.maxTokens != null) return false;
   return true;
 }
 
@@ -178,11 +197,39 @@ async function compile(source, options) {
       length: source.length - limit,
     });
   }
-  if (options.output !== 'svg' && options.fastMathml !== false && canUseFastOptions(options) && (await ensureFast())) {
-    const mathml = fastRender(source, !!options.displayMode);
-    if (mathml) return { success: true, mathml, __fast: true };
+  if (
+    options.output !== 'svg' &&
+    options.fastMathml !== false &&
+    options.fastHtml !== false &&
+    canUseFastOptions(options) &&
+    (await ensureFast())
+  ) {
+    const output = options.output === 'mathml' ? 2 : options.output === 'html' ? 1 : 0;
+    const raw = renderKatexMath(source, json, output);
+    if (raw) {
+      if (raw[0] === 'O')
+        return options.output === 'mathml'
+          ? { success: true, mathml: raw.slice(1), __fast: true }
+          : { success: true, html: raw.slice(1), __fast: true };
+      let diagnostic;
+      try {
+        diagnostic = JSON.parse(raw.slice(1));
+      } catch {
+        diagnostic = { code: 'UnexpectedToken', message: 'Unable to render formula.', start: 0, length: source.length };
+      }
+      if (options.throwOnError === false)
+        return {
+          success: true,
+          __fast: true,
+          __soft: true,
+          diagnostic,
+          html: diagnostic.html ?? '',
+          mathml: diagnostic.html ?? '',
+        };
+      throw new ParseError(source, diagnostic);
+    }
   }
-  await init();
+  await ensureDotnet();
   const prefix = instanceId + ++serial;
   if (options.__shared === true && canUseSimpleOptions(options)) {
     const raw = compilerSvgSharedSimple(source, !!options.displayMode, instanceId, prefix);
@@ -221,15 +268,10 @@ async function compile(source, options) {
 }
 
 function markup(result, options) {
+  if (result.__fast) return options.output === 'mathml' ? result.mathml : result.html;
   if (options.output === 'mathml') return result.mathml;
   if (options.output === 'svg') return result.svg;
   if (options.output != null && options.output !== 'html') throw new TypeError('output must be html, svg or mathml.');
-  if (result.__fast) {
-    const formula = `<span class="velocitex velocitex-fast" style="display:inline-block;line-height:normal">${result.mathml}</span>`;
-    return options.displayMode
-      ? `<span class="velocitex-display" style="display:block;text-align:center;margin:1em 0">${formula}</span>`
-      : formula;
-  }
   const svg = result.svg.replace('<svg ', '<svg aria-hidden="true" style="display:block" ');
   const formula = `<span class="velocitex" style="position:relative;display:inline-block;line-height:0;vertical-align:${result.baseline - result.height}px"><span style="${hidden}">${result.mathml}</span>${svg}</span>`;
   return options.displayMode
@@ -244,7 +286,7 @@ function errorMarkup(error, options) {
   return `<span class="velocitex velocitex-error" style="color:${color}" title="${escapeHtml(error.message)}">${escapeHtml(error.source)}</span>`;
 }
 
-/** Return self-contained HTML, SVG or MathML. No CSS or web-font installation is required. */
+/** Return KaTeX-compatible HTML (with the bundled stylesheet), SVG or MathML. */
 export async function renderToString(source, options = {}) {
   try {
     return markup(await compile(source, options), options);
@@ -343,6 +385,10 @@ export async function renderAll(root = globalThis.document?.body, options = {}) 
     if (++count > max) throw new RangeError(`renderAll exceeded maxFormulas (${max}).`);
     try {
       const result = await compile(source, { ...settings, displayMode });
+      if (result.__soft) {
+        report.errors.push({ source, error: new ParseError(source, result.diagnostic), element });
+        return markup(result, { ...settings, displayMode });
+      }
       report.rendered++;
       return markup(result, { ...settings, displayMode });
     } catch (error) {
@@ -392,4 +438,9 @@ export async function renderAll(root = globalThis.document?.body, options = {}) 
   return report;
 }
 
-export default { init, render, renderToString, renderAll, ParseError };
+/** KaTeX-compatible stylesheet URL injected by the fast renderer, when available. */
+export function stylesheetUrl() {
+  return katexStylesheetUrl();
+}
+
+export default { init, render, renderToString, renderAll, ParseError, stylesheetUrl };

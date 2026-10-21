@@ -8,42 +8,17 @@ VelociTex 是独立的 TeX 数学排版与渲染组件，数学规则固定为 *
 
 <!-- benchmark:start -->
 
-## 性能
+## 与 KaTeX 完全一致的浏览器 HTML
 
-本机三类完整负载中，C++ WASM（含自动回退）的浏览器渲染工作吞吐为 KaTeX 的 **1.6–3.1 倍**；原生 C++ Core 的普通公式 MathML 生成为 **24.6 µs/公式（约 40,667 公式/秒）**，无需窗口，不受屏幕刷新率限制。
+npm 包的默认浏览器路径是一个独立的 WebAssembly 引擎，对受支持的核心公式输出与
+**KaTeX 0.19.0 逐字节相同**的 HTML 和 MathML，不再以 MathML 代替排版。它使用锁定的
+KaTeX 0.19.0 样式表和未修改的 KaTeX 字体。校验门覆盖全部 **3,659 个有效核心
+样例**（HTML 与 MathML 逐字节一致）以及浏览器集成测试。
 
-2026-10-20 · Windows x64 · Release · KaTeX 0.19.0 · µs/formula (lower is better).
-
-| MathML generation | Native C++ ABI | C++ WASM + fallback | KaTeX | WASM relative throughput |
-| ----------------- | -------------: | ------------------: | ----: | -----------------------: |
-| Common formulas   |           24.6 |                 7.7 |  14.0 |                    1.81× |
-| Complex formulas  |          208.6 |               137.4 | 117.6 |                    0.86× |
-| Mixed pages       |           20.2 |                 3.7 |  11.7 |                    3.18× |
-
-| Render work      | Native WinUI / Direct2D | WASM DOM + layout | KaTeX DOM + layout |
-| ---------------- | ----------------------: | ----------------: | -----------------: |
-| Common formulas  |                  1174.7 |             248.8 |              644.4 |
-| Complex formulas |                 16228.2 |            2684.3 |             4196.5 |
-| Mixed pages      |                   368.8 |             179.5 |              561.6 |
-
-The complex-formula MathML workload takes 1.17× KaTeX time in WASM because fallback remains included. Native WinUI is slower than KaTeX on single/complex render work; its window/surface diagnostics can include graphics-queue backpressure and are separate from pure C++ engine performance. There is no claim of a universal speedup.
-
-![Render-work throughput benchmark](docs/benchmarks/benchmark-render-work.png)
-
-All 36 formula occurrences are included, including automatic fallback. Three fresh processes × 15 calibrated batches per case; medians of batch averages, with actual page formula counts. No explicit frame waits or document cache. Startup/download excluded. Render work measures native surface submission or browser DOM + forced layout, with different output backends; it excludes a GPU completion fence, browser rasterization, and screen presentation. Results are specific to this hardware and corpus.
-
-[Methodology, all cases, raw batches and reproduction commands](benchmarks/README.md).
-
-## 渲染效果对比
-
-Actual output at 32 px math em, captured at 2× resolution. Each row uses equal-scale canvases; table display scales them together. WASM uses the default C++ MathML route with automatic full-Core fallback. Native and KaTeX use their own font rendering; identical pixels are not claimed.
-
-| Formula                | Windows native / Direct2D                                                                                  | VelociTex WASM                                                                                         | KaTeX 0.19.0                                                                                             |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| Algebra                | <img src="docs/benchmarks/rendering/algebra-native.png" width="280" alt="Algebra: native">                 | <img src="docs/benchmarks/rendering/algebra-wasm.png" width="280" alt="Algebra: wasm">                 | <img src="docs/benchmarks/rendering/algebra-katex.png" width="280" alt="Algebra: katex">                 |
-| Calculus               | <img src="docs/benchmarks/rendering/calculus-native.png" width="280" alt="Calculus: native">               | <img src="docs/benchmarks/rendering/calculus-wasm.png" width="280" alt="Calculus: wasm">               | <img src="docs/benchmarks/rendering/calculus-katex.png" width="280" alt="Calculus: katex">               |
-| Piecewise & matrices   | <img src="docs/benchmarks/rendering/structures-native.png" width="280" alt="Piecewise & matrices: native"> | <img src="docs/benchmarks/rendering/structures-wasm.png" width="280" alt="Piecewise & matrices: wasm"> | <img src="docs/benchmarks/rendering/structures-katex.png" width="280" alt="Piecewise & matrices: katex"> |
-| Color, accents & fonts | <img src="docs/benchmarks/rendering/color-native.png" width="280" alt="Color, accents & fonts: native">    | <img src="docs/benchmarks/rendering/color-wasm.png" width="280" alt="Color, accents & fonts: wasm">    | <img src="docs/benchmarks/rendering/color-katex.png" width="280" alt="Color, accents & fonts: katex">    |
+该引擎仍是原生 WebAssembly 快速路径：在本机 Chromium 中，六条代表性公式的生成
+吞吐约为 KaTeX API 的 **0.8–2.2 倍**，具体取决于公式形状和硬件。它取代了旧的
+MathML 快速路径；原生 Direct2D/WinUI 性能未变，单独记录在
+`benchmarks/README.md`。
 
 <!-- benchmark:end -->
 
@@ -110,8 +85,9 @@ await renderAll();
 - [输入安全](SECURITY.md) · [第三方许可](THIRD-PARTY-NOTICES.md)
 
 每次处理一条完整公式，不承担完整 LaTeX 文档编译、任意 TeX 宏包加载、公式编辑
-或正文自动换行。不支持的语法返回诊断。浏览器字体回退有限，使用捆绑数学字体
-以外的文字前请阅读网页指南。
+或正文自动换行。不支持的语法返回诊断。KaTeX 兼容 HTML 路径与 KaTeX 的浏览器
+字体回退一致；旧版 SVG 路径没有浏览器 DirectWrite 塑形器，使用捆绑数学字体以外
+的文字前请阅读网页指南。
 
 代码使用 MIT 许可；KaTeX 原字体及提取轮廓保留 **OFL-1.1** 和保留字体名称条款，
 字体不属于 MIT 许可范围。

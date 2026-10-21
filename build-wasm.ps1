@@ -41,6 +41,15 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'C++ MathML WASM build failed.' }
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'artifacts/wasm/fastmath/fastmath.js') -Destination (Join-Path $distPath 'runtime')
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'artifacts/wasm/fastmath/fastmath.wasm') -Destination (Join-Path $distPath 'runtime')
+    # Build the KaTeX-compatible HTML/CSS engine. The prebuilt module is used
+    # when the build host has no Rust toolchain.
+    & (Join-Path $PSScriptRoot 'native/build-katex-html.ps1') -Out 'artifacts/wasm/katex-html'
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'artifacts/wasm/katex-html/vt-katex-html.wasm') -Destination (Join-Path $distPath 'runtime')
+    # Ship the locked KaTeX stylesheet and unchanged fonts beside the runtime.
+    Copy-Item -LiteralPath (Join-Path $packagePath 'assets/katex.min.css') -Destination (Join-Path $distPath 'runtime/katex.min.css')
+    Copy-Item -LiteralPath (Join-Path $packagePath 'assets/katex.min.css') -Destination (Join-Path $distPath 'katex.min.css')
+    Copy-Item -LiteralPath (Join-Path $packagePath 'assets/fonts') -Destination (Join-Path $distPath 'runtime') -Recurse
+    Copy-Item -LiteralPath (Join-Path $packagePath 'assets/fonts') -Destination $distPath -Recurse
     Copy-Item -Path (Join-Path $packagePath 'src/*') -Destination $distPath
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'LICENSE') -Destination $packagePath
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'THIRD-PARTY-NOTICES.md') -Destination $packagePath
