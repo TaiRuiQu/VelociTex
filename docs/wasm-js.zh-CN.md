@@ -9,7 +9,7 @@
 `native/core` 的 C++ 核心，与 .NET 端点共用同一份解析与渲染代码。
 
 `tests/native/katex-html-parity.mjs` 与 `tests/native/katex-mathml-parity.mjs`
-在原生侧逐字节校验 5,411 条公式的 HTML 与 MathML（真实世界语料、精选功能语料、
+在原生侧逐字节校验 5,416 条公式的 HTML 与 MathML（真实世界语料、精选功能语料、
 冻结的基准工作负载与仓库自带的 fixture 语料）；
 `tests/wasm/katex-browser-parity.mjs` 在 Chromium 中对其中 1,651 条重复同样的逐字节
 比对。在 36 条公式的浏览器基准中，C++ WebAssembly 核心比 KaTeX 0.19.0

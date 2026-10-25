@@ -16,7 +16,7 @@ approximation: the WebAssembly module produces KaTeX's `.katex` HTML, hidden
 semantic MathML, inline styles and SVG fragments byte for byte. The module is
 the VelociTex C++ core, the same code the .NET endpoint uses; the package
 contains no separate JavaScript or Rust formula parser. The parity gate
-compares **5,411 formulas** byte for byte against KaTeX 0.19.0 — in
+compares **5,416 formulas** byte for byte against KaTeX 0.19.0 — in
 `tests/native/katex-html-parity.mjs` and
 `tests/native/katex-mathml-parity.mjs` natively, and in
 `tests/wasm/katex-browser-parity.mjs` in Chromium.

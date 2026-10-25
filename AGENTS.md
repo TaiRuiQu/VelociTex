@@ -90,7 +90,7 @@ VELOCITEX_NATIVE_DIR=$PWD/native VELOCITEX_BUILD_DIR=/tmp/vtbuild \
 workloads), `fixtures` (the repository's own `tests/fixtures/core.json`, 3710
 registered symbols, functions, macros and environments) or `all`.
 
-Current state: **HTML 5411/5411 and MathML 5411/5411** byte identical to KaTeX
+Current state: **HTML 5416/5416 and MathML 5416/5416** byte identical to KaTeX
 0.19.0 across all four corpora. The browser gate
 (`node tests/wasm/katex-browser-parity.mjs`) repeats 1651 of them inside
 Chromium and also compares the MathML output.
@@ -223,7 +223,7 @@ task.Last;`) and it has to read the old value first.
   (`CopyToNodeArena`). The build with `-DVELOCITEX_CHECK_CLASS_NAMES` keeps a
   copy of every name and compares it with the bytes of the view when the name
   is written, so a dangling name is reported instead of written out; the whole
-  corpus (5411 cases) runs clean with it.
+  corpus (5416 cases) runs clean with it.
 - C++: **a node of the arena owns no heap memory.** The nodes are owned by the
   arena and are never destructed, so a `std::string` inside a node never
   releases its buffer — the SVG path data used to leak that way and a page ran
@@ -948,7 +948,7 @@ whole WebAssembly build by 6% — the largest single step since the `_u16`
 suffixes.
 
 What has already been done to the core (all of it parity neutral, HTML and
-MathML stay 5411/5411):
+MathML stay 5416/5416):
 
 - The class list of a node (2026-10-24): the list is an array of the names
   themselves and not a joined text with a 16 bit mask of the known classes

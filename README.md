@@ -29,8 +29,8 @@ produced by the same code the .NET endpoint uses.
 The npm package's default browser path emits the same HTML and MathML markup
 as KaTeX 0.19.0 for the supported core formula set, with no
 MathML-as-rendering shortcut. It uses the locked KaTeX 0.19.0 stylesheet and the
-unchanged KaTeX fonts. The native parity gate compares **5,411 formulas**
-byte for byte against KaTeX — 1,605 real world formulas, the 60 formula curated
+unchanged KaTeX fonts. The native parity gate compares **5,416 formulas**
+byte for byte against KaTeX — 1,605 real world formulas, the 65 formula curated
 feature corpus, the 36 frozen benchmark workloads and the repository's own
 `tests/fixtures/core.json` (3,710 registered symbols, functions, macros and
 environments) — for **both** the HTML and the MathML output, and the browser

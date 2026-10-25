@@ -37,8 +37,8 @@ markup is compared byte for byte before timing.
 
 | Check            | Result                                                |
 | ---------------- | ----------------------------------------------------- |
-| Native HTML      | 5,411 / 5,411                                         |
-| Native MathML    | 5,411 / 5,411                                         |
+| Native HTML      | 5,416 / 5,416                                         |
+| Native MathML    | 5,416 / 5,416                                         |
 | WASM documents   | 3,660 / 3,660 valid, 49 error documents, 41/41 ranges |
 | Chromium         | 1,651 / 1,651                                         |
 | Benchmark corpus | 36 / 36 byte identical                                |
