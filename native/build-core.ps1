@@ -29,12 +29,18 @@ if ($onWindows) {
     $outputPath = if ([IO.Path]::IsPathRooted($Out)) { [IO.Path]::GetFullPath($Out) } else { [IO.Path]::GetFullPath((Join-Path $repoRoot $Out)) }
     New-Item -ItemType Directory -Force $outputPath | Out-Null
 
-    $files = @('types.cpp', 'lexer.cpp', 'macros.cpp', 'parser.cpp', 'cache.cpp', 'layout.cpp', 'geometry.cpp', 'mathml.cpp', 'svg.cpp', 'core.cpp', 'api.cpp', 'generated/data.cpp', 'generated/svg_data.cpp', 'html/domtree.cpp', 'html/options.cpp', 'html/build_common.cpp', 'html/build_html.cpp', 'html/svg.cpp', 'html/delimiter.cpp', 'html/accent.cpp', 'html/array.cpp', 'html/enclose.cpp', 'generated/html_paths.cpp', 'generated/html_sqrt_paths.cpp')
+    $files = @('types.cpp', 'lexer.cpp', 'macros.cpp', 'parser.cpp', 'cache.cpp', 'layout.cpp', 'geometry.cpp', 'mathml.cpp', 'svg.cpp', 'core.cpp', 'api.cpp', 'generated/data.cpp', 'generated/svg_data.cpp', 'html/domtree.cpp', 'html/options.cpp', 'html/build_common.cpp', 'html/build_html.cpp', 'html/svg.cpp', 'html/delimiter.cpp', 'html/accent.cpp', 'html/array.cpp', 'html/enclose.cpp', 'generated/html_paths.cpp', 'generated/html_sqrt_paths.cpp', 'pool_alloc.cpp')
     $sources = ($files | ForEach-Object { '"' + (Join-Path $PSScriptRoot "core/$_") + '"' }) -join ' '
     $flags = if ($Configuration -eq 'Release') { '/O2 /DNDEBUG' } else { '/Od /Zi' }
     $dll = Join-Path $outputPath 'VelociTex.Core.Native.dll'
     $objectPath = $outputPath.Replace('\', '/') + '/'
-    $command = "call `"$VcVars`" >nul && cl /nologo /utf-8 /std:c++20 /EHsc /W4 /fp:precise /MT $flags /LD $sources /Fo:`"$objectPath`" /Fe:`"$dll`" /link /NOLOGO"
+    # The include root is `native/core`, so a header is reachable as
+    # `html/markup.hpp` from every translation unit.  The CMake build and both
+    # WebAssembly scripts pass the same root; without it here the headers
+    # under `native/core/html` fail to resolve `#include "html/markup.hpp"`,
+    # because MSVC looks for it next to the including file first.
+    $coreDir = Join-Path $PSScriptRoot 'core'
+    $command = "call `"$VcVars`" >nul && cl /nologo /utf-8 /std:c++20 /EHsc /W4 /fp:precise /MT $flags /LD /I`"$coreDir`" $sources /Fo:`"$objectPath`" /Fe:`"$dll`" /link /NOLOGO"
     & cmd.exe /d /s /c $command
     if ($LASTEXITCODE -ne 0) { throw "Native Core build failed with exit code $LASTEXITCODE." }
     Write-Host "Native Core built at $dll"
