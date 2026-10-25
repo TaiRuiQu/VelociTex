@@ -238,5 +238,25 @@
   {
     "tex": "\\binom{n}{k}",
     "displayMode": true
+  },
+  {
+    "tex": "\\operatorname*{argmax}_x",
+    "display": false
+  },
+  {
+    "tex": "\\operatorname*{argmax}_x",
+    "display": true
+  },
+  {
+    "tex": "\\operatorname*{argmax}\\limits_x",
+    "display": false
+  },
+  {
+    "tex": "\\operatorname*{argmax}\\nolimits_x",
+    "display": false
+  },
+  {
+    "tex": "\\operatorname{argmax}_x",
+    "display": false
   }
 ]

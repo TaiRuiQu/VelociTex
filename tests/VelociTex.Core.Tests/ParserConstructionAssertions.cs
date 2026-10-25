@@ -29,7 +29,11 @@ internal static class ParserConstructionAssertions
         Require(!One("\\int", NodeKind.Operator).Limits, "integral defaults to side scripts");
         Require(One("\\int\\limits_0^1", NodeKind.Operator).AlwaysLimits, "explicit limits retained");
         Require(One("\\sum\\nolimits_i", NodeKind.Operator).NeverLimits, "explicit nolimits retained");
-        Require(One("\\operatorname*{argmax}_x", NodeKind.Operator).Limits, "starred operator name retains limits");
+        // KaTeX gives an `operatorname` the flag `limits: false` and marks the
+        // star with `alwaysHandleSupSub` (`src/functions/operatorname.ts`), so
+        // the core keeps the star in `Text2` and the renderers read it there.
+        Require(One("\\operatorname*{argmax}_x", NodeKind.Operator).Text2 == "star", "starred operator name retains its star");
+        Require(One("\\operatorname{argmax}_x", NodeKind.Operator).Text2 is null, "plain operator name carries no star");
         Require(One("\\operatorname{rank}", NodeKind.Operator).Text == "\\operatorname", "operator name retains semantic source kind");
         Require(!One("\\binom nk", NodeKind.Fraction).HasBar, "binomial suppresses fraction bar");
         var generalized = One("\\genfrac{[}{]}{1pt}{0}{a}{b}", NodeKind.Fraction);

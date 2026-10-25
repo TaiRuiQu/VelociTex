@@ -169,7 +169,10 @@ function curatedCorpus() {
   const goldenPath = path.join(root, 'tests/native/katex-html-corpus.json');
   if (fs.existsSync(goldenPath)) {
     for (const entry of JSON.parse(fs.readFileSync(goldenPath, 'utf8'))) {
-      cases.push({ tex: entry.tex, display: !!entry.displayMode });
+      // The corpus writes the flag under either name; `displayMode` wins when
+      // both are present, so a `display: true` entry is not silently run in
+      // text mode.
+      cases.push({ tex: entry.tex, display: !!(entry.displayMode ?? entry.display) });
     }
   }
   return cases;
