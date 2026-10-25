@@ -12,15 +12,16 @@
 在原生侧逐字节校验 5,411 条公式的 HTML 与 MathML（真实世界语料、精选功能语料、
 冻结的基准工作负载与仓库自带的 fixture 语料）；
 `tests/wasm/katex-browser-parity.mjs` 在 Chromium 中对其中 1,651 条重复同样的逐字节
-比对；`tests/wasm/katex-browser-benchmark.mjs` 测量与 KaTeX JavaScript 渲染器的
-吞吐对比，当前数据记录在 `benchmarks/README.md`。
+比对。在 36 条公式的浏览器基准中，C++ WebAssembly 核心比 KaTeX 0.19.0
+**快 3.9 倍**（42.8 µs vs 165.8 µs/公式），完整数据与复现方法见
+[性能基准](benchmarks.md)。
 
 ## 安装和调用
 
-从 npm 安装预览通道：
+从 npm 安装：
 
 ```sh
-npm install velocitex@next
+npm install velocitex@1.0.0
 ```
 
 Vite 等打包应用需要把运行时复制到静态资源目录：

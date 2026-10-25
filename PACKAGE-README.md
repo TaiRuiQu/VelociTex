@@ -33,9 +33,11 @@ workloads and the repository's own fixture corpus) byte for byte against KaTeX
 for both the HTML and the MathML output, and the browser gate repeats 1,651 of
 them inside Chromium.
 
-The measured throughput against KaTeX's own JavaScript renderer is reported by
-`tests/wasm/katex-browser-benchmark.mjs`; see `benchmarks/README.md` for the
-current numbers and the methodology.
+The browser package renders **3.9x faster than KaTeX 0.19.0** in Chromium on
+the 36-formula benchmark: **about 43 µs vs 165 µs per formula** (three-run
+median, 120 paired rounds). The native C++ core renders the same corpus in
+**29.2 µs per formula**. See `docs/benchmarks.md` for the full tables,
+environment and reproduction steps.
 
 <!-- benchmark:end -->
 
@@ -54,7 +56,7 @@ C++ MathML adapter.
 Native packages require .NET 10. Windows rendering targets Windows 10 build
 19041 or later, x64. WinUI apps supply their own Windows App SDK host. Native AOT
 and trimming are supported. Browser rendering ships its own WebAssembly assets.
-Use the version available from your package feed; the npm preview uses `next`.
+Use the version available from your package feed; the stable npm release uses `latest`.
 
 ## Compile and export
 

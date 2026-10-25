@@ -37,36 +37,13 @@ environments) — for **both** the HTML and the MathML output, and the browser
 gate repeats 1,651 of them (the real world corpus, the benchmark workloads and
 the curated samples) inside Chromium.
 
-The measured throughput against KaTeX's own JavaScript renderer is reported by
-`tests/wasm/katex-browser-benchmark.mjs`: the C++ WebAssembly core is
-**3.8x faster** on the 2 core reference machine (recent readings:
-3.73x–3.94x), which is
-**short of the 5x target** of the project brief. The harness warms both
-engines up for 25 rounds, measures 120 paired rounds and reports the median
-of the per-round ratios, so the number does not depend on which round caught
-the quietest moment. The **C++ core itself is
-already about 5x faster than KaTeX when it runs natively** (26.6 µs versus
-156–189 µs per formula in the browser on the same corpus, measured with the
-same harness) —
-the remaining gap is the WebAssembly and browser boundary, not the algorithm.
-Quote the runtime of the KaTeX reference with every ratio: the same
-`katex.mjs` runs ~40% slower in Node (232–288 µs per formula) than in
-Chromium (156–244 µs), so the native core is 8.7x–10.8x against the Node
-reading and 5.9x–7.1x against the Chromium one.
-These are clang 20 numbers; the GCC 11.4 build of the same source is
-12% slower (32.2 µs per formula, same harness and corpus),
-and the WebAssembly build uses clang — so the WebAssembly tax,
-measured against a like-for-like native build, is +44% and sits entirely in
-the renderer, not in the parser.
-The browser path is `native core x 1.37 (the WebAssembly tax) x 1.11-1.19
-(the browser over Node) + 6 µs (the JavaScript layer)`, and the JavaScript
-layer is only 12–15% of the whole path (measured: the public API against a
-bare `vt_render` is 1.146), so **5x in the browser needs a native core of
-about 16–20 µs** — 32–45% below the current one, and more than a rewrite of
-all three stages delivers (that lands at ~4.5x, ~4.7x if the rewrite also
-brings the WebAssembly tax down, and ~5.4x if the JavaScript layer is down to
-the decode alone). `docs/benchmarks.md` has the
-factors, the current numbers, the gap analysis and the optimization roadmap.
+The browser package renders **3.9x faster than KaTeX 0.19.0** in Chromium on
+the 36-formula benchmark: **about 43 µs vs 165 µs per formula** (three-run
+median, 120 paired rounds). The native C++ core renders the same corpus in
+**29.2 µs per formula** — about 5.7x faster than KaTeX in the browser and 9.9x
+faster than KaTeX in Node. All 36 benchmark formulas are byte identical to
+KaTeX before timing. See [the benchmark guide](docs/benchmarks.md) for the full
+tables, environment and reproduction steps.
 
 <!-- benchmark:end -->
 
@@ -85,7 +62,7 @@ C++ MathML adapter.
 Native packages require .NET 10. Windows rendering targets Windows 10 build
 19041 or later, x64. WinUI apps supply their own Windows App SDK host. Native AOT
 and trimming are supported. Browser rendering ships its own WebAssembly assets.
-Use the version available from your package feed; the npm preview uses `next`.
+Use the version available from your package feed; the stable npm release uses `latest`.
 
 ## Compile and export
 
@@ -113,7 +90,7 @@ else
 ## Browser
 
 ```sh
-npm install velocitex@next
+npm install velocitex@1.0.0
 npx velocitex-copy-assets public/velocitex
 ```
 

@@ -1,6 +1,6 @@
 {
   "name": "velocitex",
-  "version": "1.0.0-preview7",
+  "version": "1.0.0",
   "description": "C++-accelerated TeX rendering: a KaTeX-identical HTML/CSS WebAssembly fast path with full native-Core fallback and measured performance comparisons",
   "type": "module",
   "license": "MIT AND OFL-1.1",

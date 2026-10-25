@@ -4,7 +4,8 @@ Render math with the VelociTex C++ core compiled to WebAssembly. It emits the
 **same HTML and MathML as KaTeX 0.19.0** for the supported core formula set and
 uses the locked KaTeX stylesheet and fonts. The API
 is inspired by KaTeX, with asynchronous initialization. It is not a drop-in
-replacement for all KaTeX options or extensions. This is an early browser preview.
+replacement for all KaTeX options or extensions. This is the stable 1.0.0
+release.
 
 <!-- benchmark:start -->
 
@@ -22,19 +23,20 @@ compares **5,411 formulas** byte for byte against KaTeX 0.19.0 — in
 
 The bundled stylesheet is the unchanged KaTeX 0.19.0 `katex.min.css`, together
 with the unchanged KaTeX fonts. The fast path injects that stylesheet on first
-use; callers can also link it manually. The throughput against KaTeX's own
-JavaScript renderer is measured by
-`tests/wasm/katex-browser-benchmark.mjs`; the current numbers and the
-methodology live in `benchmarks/README.md`.
+use; callers can also link it manually. On the 36-formula browser benchmark the
+C++ WebAssembly core renders **3.9x faster than KaTeX 0.19.0** in Chromium:
+about **43 µs vs 165 µs per formula** (three-run median, 120 paired rounds). See
+`docs/benchmarks.md` in the repository for the tables, environment and
+reproduction steps.
 
 <!-- benchmark:end -->
 
 ## Install and use
 
-Install the browser preview from npm:
+Install the browser package from npm:
 
 ```sh
-npm install velocitex@next
+npm install velocitex@1.0.0
 ```
 
 For Vite or another bundler, copy the runtime as static assets:
