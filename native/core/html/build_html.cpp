@@ -19,7 +19,7 @@
 #include "jsnum.hpp"
 #include "module_api.hpp"
 #include "options.hpp"
-#include "svg.hpp"
+#include "sqrt_image.hpp"
 
 #include "../parser.hpp"
 

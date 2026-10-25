@@ -68,7 +68,7 @@ New-Item -ItemType Directory -Force $objects | Out-Null
 $sources = @(
     'types', 'lexer', 'macros', 'parser', 'cache', 'layout', 'geometry', 'mathml', 'svg', 'core',
     'generated/data', 'generated/svg_data', 'api',
-    'html/domtree', 'html/options', 'html/build_common', 'html/build_html', 'html/svg',
+    'html/domtree', 'html/options', 'html/build_common', 'html/build_html', 'html/sqrt_image',
     'html/delimiter', 'html/accent', 'html/array', 'html/enclose',
     'generated/html_paths', 'generated/html_sqrt_paths', 'pool_alloc'
 )

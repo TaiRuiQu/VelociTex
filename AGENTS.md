@@ -52,7 +52,7 @@ native/core/            the C++ core
     options.*           Options, Style, font metrics
     build_common.*      makeSymbol/makeOrd/makeSpan/makeVList/tryCombineChars
     build_html.*        buildExpression/buildGroup and the group dispatch
-    accent.cpp array.cpp enclose.cpp delimiter.cpp svg.cpp
+    accent.cpp array.cpp enclose.cpp delimiter.cpp sqrt_image.cpp
   generated/            generated tables (symbols, SVG paths, HTML paths)
 native/wasm/            standalone WebAssembly entry points for the npm package
   katex.pgo             the profile of the core that the wasm build reads

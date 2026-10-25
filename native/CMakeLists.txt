@@ -6,7 +6,7 @@ add_library(velocitex_core STATIC
     core/layout.cpp core/geometry.cpp core/mathml.cpp core/svg.cpp core/core.cpp
     core/generated/data.cpp core/generated/svg_data.cpp
     core/html/domtree.cpp core/html/options.cpp core/html/build_common.cpp
-    core/html/build_html.cpp core/html/svg.cpp core/html/delimiter.cpp
+    core/html/build_html.cpp core/html/sqrt_image.cpp core/html/delimiter.cpp
     core/html/accent.cpp core/html/array.cpp core/html/enclose.cpp
     core/generated/html_paths.cpp core/generated/html_sqrt_paths.cpp
     core/pool_alloc.cpp)

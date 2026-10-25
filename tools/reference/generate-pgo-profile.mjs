@@ -52,7 +52,7 @@ const sources = [
   'html/options.cpp',
   'html/build_common.cpp',
   'html/build_html.cpp',
-  'html/svg.cpp',
+  'html/sqrt_image.cpp',
   'html/delimiter.cpp',
   'html/accent.cpp',
   'html/array.cpp',

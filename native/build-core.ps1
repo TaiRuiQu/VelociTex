@@ -29,7 +29,16 @@ if ($onWindows) {
     $outputPath = if ([IO.Path]::IsPathRooted($Out)) { [IO.Path]::GetFullPath($Out) } else { [IO.Path]::GetFullPath((Join-Path $repoRoot $Out)) }
     New-Item -ItemType Directory -Force $outputPath | Out-Null
 
-    $files = @('types.cpp', 'lexer.cpp', 'macros.cpp', 'parser.cpp', 'cache.cpp', 'layout.cpp', 'geometry.cpp', 'mathml.cpp', 'svg.cpp', 'core.cpp', 'api.cpp', 'generated/data.cpp', 'generated/svg_data.cpp', 'html/domtree.cpp', 'html/options.cpp', 'html/build_common.cpp', 'html/build_html.cpp', 'html/svg.cpp', 'html/delimiter.cpp', 'html/accent.cpp', 'html/array.cpp', 'html/enclose.cpp', 'generated/html_paths.cpp', 'generated/html_sqrt_paths.cpp', 'pool_alloc.cpp')
+    $files = @('types.cpp', 'lexer.cpp', 'macros.cpp', 'parser.cpp', 'cache.cpp', 'layout.cpp', 'geometry.cpp', 'mathml.cpp', 'svg.cpp', 'core.cpp', 'api.cpp', 'generated/data.cpp', 'generated/svg_data.cpp', 'html/domtree.cpp', 'html/options.cpp', 'html/build_common.cpp', 'html/build_html.cpp', 'html/sqrt_image.cpp', 'html/delimiter.cpp', 'html/accent.cpp', 'html/array.cpp', 'html/enclose.cpp', 'generated/html_paths.cpp', 'generated/html_sqrt_paths.cpp', 'pool_alloc.cpp')
+    # MSVC derives the object file name from the source file name and writes
+    # every object into the same directory, so two sources that share a base
+    # name overwrite each other and the linker silently drops one of them
+    # (LNK4042), which surfaces later as an unrelated unresolved symbol.
+    $duplicates = @($files | Group-Object { [IO.Path]::GetFileNameWithoutExtension($_) } | Where-Object { $_.Count -gt 1 })
+    if ($duplicates.Count -gt 0) {
+        $names = ($duplicates | ForEach-Object { $_.Name }) -join ', '
+        throw "Sources with the same object file name: $names. Rename one of them."
+    }
     $sources = ($files | ForEach-Object { '"' + (Join-Path $PSScriptRoot "core/$_") + '"' }) -join ' '
     $flags = if ($Configuration -eq 'Release') { '/O2 /DNDEBUG' } else { '/Od /Zi' }
     $dll = Join-Path $outputPath 'VelociTex.Core.Native.dll'

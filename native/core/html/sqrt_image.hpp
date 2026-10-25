@@ -1,4 +1,4 @@
-// KaTeX-compatible SVG images for the HTML renderer.
+// KaTeX-compatible square root image for the HTML renderer.
 //
 // Port of the square root image construction from KaTeX 0.19.0
 // `src/delimiter.ts` (`makeSqrtImage`).

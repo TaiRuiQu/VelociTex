@@ -1,8 +1,14 @@
-// KaTeX-compatible SVG images for the HTML renderer.
+// KaTeX-compatible square root image for the HTML renderer.
 //
 // Port of the square root image construction from KaTeX 0.19.0
 // `src/delimiter.ts` (`makeSqrtImage`).
-#include "svg.hpp"
+//
+// The module is named after the image it builds rather than after SVG: the
+// legacy `native/core/svg.cpp` writes the SVG path of the .NET endpoint, and
+// MSVC derives the object file name from the source file name, so two
+// translation units called `svg.cpp` would overwrite each other in the
+// object directory of the Windows build.
+#include "sqrt_image.hpp"
 
 #include <algorithm>
 #include <cmath>
