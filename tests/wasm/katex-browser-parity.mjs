@@ -3,15 +3,19 @@
 // Playwright Chromium installation.
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
+import fsSync from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { chromium } from '../../tools/reference/node_modules/playwright/index.mjs';
 
 const root = path.resolve(fileURLToPath(new URL('../../', import.meta.url)));
-const dist = path.resolve(process.argv[2] ?? path.join(root, 'npm/velocitex/dist'));
+const arguments_ = process.argv.slice(2);
+const limitFlag = arguments_.indexOf('--limit');
+const positional = arguments_.filter((value, index) => !value.startsWith('--') && index !== limitFlag + 1);
+const dist = path.resolve(positional[0] ?? path.join(root, 'npm/velocitex/dist'));
 const katexDist = path.join(root, 'tools/reference/node_modules/katex/dist');
-await fs.access(path.join(dist, 'runtime/vt-katex-html.wasm'));
+await fs.access(path.join(dist, 'runtime/velocitex-core.wasm'));
 
 const workloads = JSON.parse(await fs.readFile(path.join(root, 'benchmarks/workloads.json'), 'utf8')).workloads;
 const formulas = [];
@@ -34,6 +38,19 @@ for (const tex of [
   String.raw`\oiint_A B+\oiiint_C D`,
 ])
   formulas.push({ tex, display: false });
+
+// The real world corpus is the acceptance corpus: every formula must render
+// to the same bytes as KaTeX in the browser.
+const limitIndex = process.argv.indexOf('--limit');
+const limit = limitIndex >= 0 ? Number(process.argv[limitIndex + 1]) : 0;
+const corpusPath = path.join(root, 'tests/native/katex-realworld-corpus.json');
+if (fsSync.existsSync(corpusPath)) {
+  const corpus = JSON.parse(fsSync.readFileSync(corpusPath, 'utf8'));
+  for (const tex of corpus) {
+    if (limit > 0 && formulas.length >= limit) break;
+    formulas.push({ tex, display: false });
+  }
+}
 
 const server = http.createServer(async (request, response) => {
   try {
@@ -109,8 +126,25 @@ try {
     const mismatches = [];
     for (const formula of formulas) {
       const options = { displayMode: formula.display };
-      const actual = await window.vt.renderToString(formula.tex, options);
-      const expected = window.katex.renderToString(formula.tex, { ...options, strict: 'ignore' });
+      let expected = null;
+      let expectedError = null;
+      try {
+        expected = window.katex.renderToString(formula.tex, { ...options, strict: 'ignore' });
+      } catch (error) {
+        expectedError = error.message;
+      }
+      let actual = null;
+      let actualError = null;
+      try {
+        actual = await window.vt.renderToString(formula.tex, options);
+      } catch (error) {
+        actualError = error.message;
+      }
+      if (expectedError || actualError) {
+        // Both engines have to agree on whether the formula renders at all.
+        if (Boolean(expectedError) !== Boolean(actualError)) mismatches.push({ kind: 'error', tex: formula.tex });
+        continue;
+      }
       if (actual !== expected) mismatches.push({ kind: 'html', tex: formula.tex });
       const actualMathml = await window.vt.renderToString(formula.tex, { ...options, output: 'mathml' });
       const expectedMathml = window.katex.renderToString(formula.tex, {

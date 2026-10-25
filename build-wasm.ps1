@@ -41,10 +41,11 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'C++ MathML WASM build failed.' }
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'artifacts/wasm/fastmath/fastmath.js') -Destination (Join-Path $distPath 'runtime')
     Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'artifacts/wasm/fastmath/fastmath.wasm') -Destination (Join-Path $distPath 'runtime')
-    # Build the KaTeX-compatible HTML/CSS engine. The prebuilt module is used
-    # when the build host has no Rust toolchain.
-    & (Join-Path $PSScriptRoot 'native/build-katex-html.ps1') -Out 'artifacts/wasm/katex-html'
-    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'artifacts/wasm/katex-html/vt-katex-html.wasm') -Destination (Join-Path $distPath 'runtime')
+    # Build the KaTeX-compatible HTML/CSS engine from the C++ core.  The
+    # browser package loads this module directly; it is the same core the
+    # .NET endpoint uses.
+    & (Join-Path $PSScriptRoot 'native/build-wasm-katex.ps1') -Out 'artifacts/wasm/core'
+    Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'artifacts/wasm/core/velocitex-core.wasm') -Destination (Join-Path $distPath 'runtime')
     # Ship the locked KaTeX stylesheet and unchanged fonts beside the runtime.
     Copy-Item -LiteralPath (Join-Path $packagePath 'assets/katex.min.css') -Destination (Join-Path $distPath 'runtime/katex.min.css')
     Copy-Item -LiteralPath (Join-Path $packagePath 'assets/katex.min.css') -Destination (Join-Path $distPath 'katex.min.css')

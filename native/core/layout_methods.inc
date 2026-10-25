@@ -842,7 +842,7 @@ return (Length(value, context, options) / context.Scale);
 }}
 double Layout::MathMlSizeScale(int size) { return SizeMultipliers[(size - 1)]; }
 MathTransform Layout::Then(MathTransform local, MathTransform outer) { return MathTransform{((local.M11 * outer.M11) + (local.M12 * outer.M21)),((local.M11 * outer.M12) + (local.M12 * outer.M22)),((local.M21 * outer.M11) + (local.M22 * outer.M21)),((local.M21 * outer.M12) + (local.M22 * outer.M22)),(((local.Dx * outer.M11) + (local.Dy * outer.M21)) + outer.Dx),(((local.Dx * outer.M12) + (local.Dy * outer.M22)) + outer.Dy)}; }
-LayoutOutput Layout::Build(std::span<const SemanticNode> nodes, int root, const MathOptions& options){ MathColor explicitColor{};int existing{};{
+LayoutOutput Layout::Build(std::span<const SemanticNode> nodes, int root, const MathOptions& options){ MathColor explicitColor{};{
 int count = (int)nodes.size();
 ScratchLease lease;
 auto& scratch=lease.Get();

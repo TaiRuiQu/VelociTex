@@ -63,7 +63,7 @@ internal static unsafe partial class NativeInterop
         internal int DisplayMode, MaxInputLength, MaxNodes, MaxNesting, MaxExpansion, MaxTokens;
         internal double MaxSize, MinRuleThickness;
         internal int ColorIsTextColor, GlobalGroup, Leqno, Fleqn;
-        internal double DisplayWidth; internal int EquationNumber, StrictMode;
+        internal double DisplayWidth; internal int EquationNumber, StrictMode, ThrowOnError;
         internal Macro* Macros; internal int MacroCount; internal nint Session, CallbackContext;
         internal delegate* unmanaged[Cdecl]<nint, Warning*, int> StrictHandler;
         internal delegate* unmanaged[Cdecl]<nint, int, int, Shape*, int> ShapeHandler;
@@ -179,7 +179,7 @@ internal static unsafe partial class NativeInterop
             _managed = options;
             try
             {
-                Options = new() { StructSize = (uint)sizeof(Options), FontSize = options.FontSize, DisplayMode = options.DisplayMode ? 1 : 0, MaxInputLength = options.MaxInputLength, MaxNodes = options.MaxNodes, MaxNesting = options.MaxNesting, MaxExpansion = options.MaxExpansion, MaxTokens = options.MaxTokens, MaxSize = options.MaxSize, MinRuleThickness = options.MinRuleThickness, ColorIsTextColor = options.ColorIsTextColor ? 1 : 0, GlobalGroup = options.GlobalGroup ? 1 : 0, Leqno = options.Leqno ? 1 : 0, Fleqn = options.Fleqn ? 1 : 0, DisplayWidth = options.DisplayWidth, EquationNumber = options.EquationNumber, StrictMode = (int)options.StrictMode, Session = options.Session?.NativeHandle.DangerousGetHandle() ?? 0 };
+                Options = new() { StructSize = (uint)sizeof(Options), FontSize = options.FontSize, DisplayMode = options.DisplayMode ? 1 : 0, MaxInputLength = options.MaxInputLength, MaxNodes = options.MaxNodes, MaxNesting = options.MaxNesting, MaxExpansion = options.MaxExpansion, MaxTokens = options.MaxTokens, MaxSize = options.MaxSize, MinRuleThickness = options.MinRuleThickness, ColorIsTextColor = options.ColorIsTextColor ? 1 : 0, GlobalGroup = options.GlobalGroup ? 1 : 0, Leqno = options.Leqno ? 1 : 0, Fleqn = options.Fleqn ? 1 : 0, DisplayWidth = options.DisplayWidth, EquationNumber = options.EquationNumber, StrictMode = (int)options.StrictMode, ThrowOnError = 1, Session = options.Session?.NativeHandle.DangerousGetHandle() ?? 0 };
                 if (options.Macros is { Count: > 0 } macros)
                 {
                     var entries = new Macro[macros.Count];

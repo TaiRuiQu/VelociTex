@@ -69,7 +69,7 @@ typedef struct vt_options {
     double MaxSize, MinRuleThickness;
     int32_t ColorIsTextColor, GlobalGroup, Leqno, Fleqn;
     double DisplayWidth;
-    int32_t EquationNumber, StrictMode;
+    int32_t EquationNumber, StrictMode, ThrowOnError;
     const vt_macro* Macros;
     int32_t MacroCount;
     void* Session;
@@ -161,6 +161,7 @@ VT_CORE_API int32_t vt_core_result_text_run(void* result, int32_t index, vt_text
 VT_CORE_API int32_t vt_core_result_warning(void* result, int32_t index, vt_warning* warning);
 VT_CORE_API int32_t vt_core_result_node(void* result, int32_t index, vt_node* node);
 VT_CORE_API int32_t vt_core_result_mathml(void* result, int32_t include_annotation, vt_string8* output);
+VT_CORE_API int32_t vt_core_result_html(void* result, vt_string8* output);
 VT_CORE_API int32_t vt_core_parse_color(vt_string16 text, uint32_t* rgba);
 #ifdef __cplusplus
 }

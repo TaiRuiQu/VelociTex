@@ -6,7 +6,6 @@
 *.pyc
 artifacts/
 build/
-native/katex-html/target/
 .vs/
 *.user
 *.suo
@@ -19,6 +18,8 @@ npm/velocitex/licenses/
 npm/velocitex/THIRD-PARTY-NOTICES.md
 *.tgz
 
+# Local tool state (session scratch, learned preferences).
+.commandcode/
 # Native build temporary files
 native/**/*.tmp
 native/**/migrate/

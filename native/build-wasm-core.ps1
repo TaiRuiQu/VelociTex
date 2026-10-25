@@ -67,7 +67,10 @@ New-Item -ItemType Directory -Force $objects | Out-Null
 
 $sources = @(
     'types', 'lexer', 'macros', 'parser', 'cache', 'layout', 'geometry', 'mathml', 'svg', 'core',
-    'generated/data', 'generated/svg_data', 'api'
+    'generated/data', 'generated/svg_data', 'api',
+    'html/domtree', 'html/options', 'html/build_common', 'html/build_html', 'html/svg',
+    'html/delimiter', 'html/accent', 'html/array', 'html/enclose',
+    'generated/html_paths', 'generated/html_sqrt_paths', 'pool_alloc'
 )
 # Every C ABI entry point declared in api.h is imported by the managed side, so a
 # missing one fails the SDK's link. Collect them to verify the archive afterwards.
@@ -75,7 +78,10 @@ $abi = @(Select-String -LiteralPath (Join-Path $coreDir 'api.h') -Pattern 'vt_co
         ForEach-Object { $_.Matches } | ForEach-Object { $_.Value } | Sort-Object -Unique)
 if ($abi.Count -lt 19) { throw "Expected at least 19 C ABI exports in api.h, found $($abi.Count)." }
 
-$optimization = if ($Configuration -eq 'Release') { '-O2' } else { '-O0' }
+# Link time optimisation lets the compiler inline across the twenty translation
+# units of the core, which the browser module needs to keep up with KaTeX's
+# JavaScript renderer.
+$optimization = if ($Configuration -eq 'Release') { @('-O3', '-flto') } else { @('-O0') }
 $produced = [Collections.Generic.List[string]]::new()
 foreach ($source in $sources) {
     $object = Join-Path $objects (($source -replace '/', '_') + '.o')

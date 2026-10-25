@@ -1,5 +1,5 @@
 export interface InitOptions {
-  /** Directory containing vt-katex-html.wasm, dotnet.js and sibling runtime assets. Defaults to ./runtime/ beside the module. */
+  /** Directory containing velocitex-core.wasm, dotnet.js and sibling runtime assets. Defaults to ./runtime/ beside the module. */
   assetBaseUrl?: string | URL;
   /** Inject the bundled KaTeX stylesheet on first use. Default true. */
   injectStyles?: boolean;

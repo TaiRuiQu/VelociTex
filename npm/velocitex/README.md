@@ -1,46 +1,31 @@
 # VelociTex for the web
 
-Render math with a standalone WebAssembly engine that emits the **same HTML and
-MathML as KaTeX 0.19.0** for the supported core formula set and uses the locked KaTeX stylesheet and fonts. The API
+Render math with the VelociTex C++ core compiled to WebAssembly. It emits the
+**same HTML and MathML as KaTeX 0.19.0** for the supported core formula set and
+uses the locked KaTeX stylesheet and fonts. The API
 is inspired by KaTeX, with asynchronous initialization. It is not a drop-in
 replacement for all KaTeX options or extensions. This is an early browser preview.
 
 <!-- benchmark:start -->
 
-## Performance
+## KaTeX-identical output
 
-2026-10-21 · Windows x64 · Release · KaTeX 0.19.0 · µs/formula (lower is better).
+The default `html` output is not native MathML and not a browser-math-font
+approximation: the WebAssembly module produces KaTeX's `.katex` HTML, hidden
+semantic MathML, inline styles and SVG fragments byte for byte. The module is
+the VelociTex C++ core, the same code the .NET endpoint uses; the package
+contains no separate JavaScript or Rust formula parser. The parity gate
+compares **5,411 formulas** byte for byte against KaTeX 0.19.0 — in
+`tests/native/katex-html-parity.mjs` and
+`tests/native/katex-mathml-parity.mjs` natively, and in
+`tests/wasm/katex-browser-parity.mjs` in Chromium.
 
-Both browser engines generate default HTML with accessibility MathML, using the same locked KaTeX CSS and fonts. Every benchmark formula is checked for byte-identical markup before timing.
-
-Correctness validation passed for 3,659 valid core HTML/MathML fixtures and 46 browser integration formulas, including bundled stylesheet and font loading.
-
-| Workload         | WASM HTML generation | KaTeX HTML generation | WASM DOM + layout | KaTeX DOM + layout |
-| ---------------- | -------------------: | --------------------: | ----------------: | -----------------: |
-| Common formulas  |                 43.4 |                  44.5 |             615.4 |              593.4 |
-| Complex formulas |                426.2 |                 431.8 |            3649.2 |             3538.9 |
-| Mixed pages      |                 44.9 |                  40.7 |             556.1 |              514.4 |
-
-WASM/KaTeX relative throughput is **0.91–1.03×** for HTML generation and **0.93–0.97×** for DOM render work on this machine. Ratios below 1 mean WASM is slower.
-
-![HTML generation](images/benchmark-comparison.png)
-
-![Browser render work](images/benchmark-render-work.png)
-
-All 36 formula occurrences are retained: 6 common, 3 complex, and 27 across three mixed pages. Three fresh processes × 15 calibrated batches per case; each case warms for at least 200 ms. Public async WASM API overhead is included. DOM timing forces layout after every formula. Startup, download, browser rasterization, GPU completion and screen presentation are excluded. Native C++/.NET/WinUI results and MathML serialization are separate diagnostics; the C++ Core does not expose this HTML generator.
-
-[Methodology and reproduction](https://github.com/TaiRuiQu/VelociTex/blob/v1.0.0-preview7/benchmarks/README.md).
-
-## Rendering comparison
-
-Actual output at 32 px math em and 2× capture resolution. The WASM column uses the current default HTML/CSS renderer and bundled fonts. All four previews have matching computed styles and dimensions in their visible HTML trees. Three have byte-identical markup; the combined color example differs in CSS declaration order and a redundant inherited color declaration. Captures are not asserted pixel-identical. Cells in each row share a canvas and scale. Native uses DirectWrite/Direct2D.
-
-| Formula                | Windows native / Direct2D                                                                         | VelociTex HTML/CSS WASM                                                                       | KaTeX 0.19.0                                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Algebra                | <img src="images/rendering/algebra-native.png" width="280" alt="Algebra: native">                 | <img src="images/rendering/algebra-wasm.png" width="280" alt="Algebra: wasm">                 | <img src="images/rendering/algebra-katex.png" width="280" alt="Algebra: katex">                 |
-| Calculus               | <img src="images/rendering/calculus-native.png" width="280" alt="Calculus: native">               | <img src="images/rendering/calculus-wasm.png" width="280" alt="Calculus: wasm">               | <img src="images/rendering/calculus-katex.png" width="280" alt="Calculus: katex">               |
-| Piecewise & matrices   | <img src="images/rendering/structures-native.png" width="280" alt="Piecewise & matrices: native"> | <img src="images/rendering/structures-wasm.png" width="280" alt="Piecewise & matrices: wasm"> | <img src="images/rendering/structures-katex.png" width="280" alt="Piecewise & matrices: katex"> |
-| Color, accents & fonts | <img src="images/rendering/color-native.png" width="280" alt="Color, accents & fonts: native">    | <img src="images/rendering/color-wasm.png" width="280" alt="Color, accents & fonts: wasm">    | <img src="images/rendering/color-katex.png" width="280" alt="Color, accents & fonts: katex">    |
+The bundled stylesheet is the unchanged KaTeX 0.19.0 `katex.min.css`, together
+with the unchanged KaTeX fonts. The fast path injects that stylesheet on first
+use; callers can also link it manually. The throughput against KaTeX's own
+JavaScript renderer is measured by
+`tests/wasm/katex-browser-benchmark.mjs`; the current numbers and the
+methodology live in `benchmarks/README.md`.
 
 <!-- benchmark:end -->
 
@@ -76,6 +61,11 @@ hashed sibling from the same build together. Serve `.wasm` as `application/wasm`
 and `.js` as JavaScript. No COOP/COEP headers are required: this build uses one
 thread. Use HTTP(S), not `file://`.
 
+The WebAssembly module uses the non-trapping float to int conversion of the
+WebAssembly specification, so it needs a browser of 2021 or later (Chrome 74,
+Firefox 62, Safari 15). An older browser cannot instantiate the module; the
+package reports that it is unavailable and the .NET runtime path takes over.
+
 When serving the package's `dist/` directory directly, initialization finds the
 adjacent `runtime/` automatically:
 
@@ -86,7 +76,7 @@ adjacent `runtime/` automatically:
 </script>
 ```
 
-The default HTML path downloads `runtime/vt-katex-html.wasm` (about 1.2 MB) and
+The default HTML path downloads `runtime/velocitex-core.wasm` (about 2.1 MB) and
 `runtime/katex.min.css` plus the bundled fonts. It does **not** start the .NET
 runtime. The stylesheet is injected automatically on first use unless
 `init({ injectStyles: false })` is passed; `stylesheetUrl()` returns the injected
@@ -178,8 +168,9 @@ Other inputs load the bundled .NET WASM AOT runtime. End users need neither the
 SDK nor Node.js in the browser. Deploy all runtime assets together when
 upgrading the package.
 
-Code is MIT. The HTML engine vendors a patched `katex-rs` under MIT; see
-`licenses/katex-rs-LICENSE.txt`. Bundled unchanged KaTeX fonts and their extracted
+Code is MIT. The HTML engine is the VelociTex C++ core, whose KaTeX-compatible
+renderer is a port of KaTeX 0.19.0 under MIT; see `licenses/KaTeX-LICENSE.txt`.
+Bundled unchanged KaTeX fonts and their extracted
 contours retain OFL-1.1 and Reserved Font Name terms; see
 `licenses/KaTeX-FONTS-OFL.txt`. .NET runtime third-party notices are retained with
 the distribution.

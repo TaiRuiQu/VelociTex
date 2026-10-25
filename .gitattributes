@@ -10,4 +10,5 @@
 *.woff2 binary
 *.woff binary
 *.wasm binary
+*.pgo binary
 *.png binary

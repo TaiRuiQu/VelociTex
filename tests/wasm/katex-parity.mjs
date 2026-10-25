@@ -1,6 +1,6 @@
 // Byte-for-byte parity between the standalone WASM HTML renderer and KaTeX
-// 0.19.0. Run after `native/build-katex-html.ps1` or with the committed
-// prebuilt module. This test is intentionally browser-free so it can run in CI.
+// 0.19.0. Run after `native/build-wasm-katex.ps1`. This test is intentionally
+// browser-free so it can run in CI.
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -9,11 +9,22 @@ import katex from '../../tools/reference/node_modules/katex/dist/katex.mjs';
 
 const root = path.resolve(fileURLToPath(new URL('../../', import.meta.url)));
 const wasmPath = [
-  path.join(root, 'artifacts/wasm/katex-html/vt-katex-html.wasm'),
-  path.join(root, 'native/katex-html/prebuilt/vt-katex-html.wasm'),
+  path.join(root, 'artifacts/wasm/core/velocitex-core.wasm'),
+  path.join(root, 'npm/velocitex/dist/runtime/velocitex-core.wasm'),
 ].find((file) => fs.existsSync(file));
-if (!wasmPath) throw new Error('KaTeX HTML WASM is missing; run native/build-katex-html.ps1.');
-const { instance } = await WebAssembly.instantiate(fs.readFileSync(wasmPath), {});
+if (!wasmPath) throw new Error('VelociTex core WASM is missing; run native/build-wasm-katex.ps1.');
+const { instance } = await WebAssembly.instantiate(fs.readFileSync(wasmPath), {
+  env: { emscripten_notify_memory_growth: () => {} },
+  wasi_snapshot_preview1: {
+    proc_exit: (code) => {
+      throw new Error(`VelociTex core exited with code ${code}.`);
+    },
+  },
+});
+// Emscripten emits the module as a "reactor": the static initializers run
+// from the WASI `_initialize` entry point, which the standalone loader has to
+// call because no JavaScript glue ships with the module.
+if (typeof instance.exports._initialize === 'function') instance.exports._initialize();
 const wasm = instance.exports;
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -88,12 +99,17 @@ for (const fixture of corpus.cases) {
     try {
       const expectedSoft = katex.renderToString(fixture.latex, { ...options, throwOnError: false });
       const soft = render(fixture.latex, { ...options, throwOnError: false });
-      if (soft[0] !== 'E') failures.push(`${fixture.id}: soft error did not return a diagnostic`);
-      else {
+      if (soft[0] === 'E') {
+        // The module reports the failure and carries KaTeX's error markup.
         const diagnostic = JSON.parse(soft.slice(1));
         if (!diagnostic.html || !diagnostic.html.startsWith('<span'))
           failures.push(`${fixture.id}: soft error markup is missing`);
         else if (diagnostic.html !== expectedSoft) softErrorDifferences++;
+      } else if (soft[0] === 'O') {
+        // The core rendered KaTeX's error markup itself.
+        if (soft.slice(1) !== expectedSoft) softErrorDifferences++;
+      } else {
+        failures.push(`${fixture.id}: soft error did not return a diagnostic`);
       }
     } catch {
       /* KaTeX itself cannot produce readable output for this fixture. */

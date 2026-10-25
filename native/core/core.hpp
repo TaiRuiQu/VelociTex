@@ -1,5 +1,6 @@
 #pragma once
 #include "parser.hpp"
+#include "html/markup.hpp"
 
 #include <atomic>
 #include <mutex>
@@ -23,8 +24,15 @@ struct MathDocument {
     LayoutOutput Layout;
     std::vector<MathWarning> Warnings;
     bool HasLayout{};
-    std::once_flag MathMlOnce, UnannotatedOnce;
-    std::string AnnotatedMathMl, UnannotatedMathMl;
+    // The HTML and the two MathML variants are built on demand and then
+    // cached.  The cache is guarded by a mutex so that a document can be
+    // shared between threads.  A document that is reused for another formula
+    // resets the flags together with the markup.
+    std::mutex MarkupMutex;
+    bool MathMlReady{false}, UnannotatedReady{false}, HtmlReady{false};
+    html::MarkupBuffer AnnotatedMathMl, UnannotatedMathMl;
+    // The HTML markup is written into a buffer that is reused between renders.
+    html::MarkupBuffer Html;
 };
 void retain_document(MathDocument* document) noexcept;
 void release_document(MathDocument* document) noexcept;
@@ -34,5 +42,13 @@ bool try_compile(std::u16string_view source, const MathOptions& options, MathWor
 bool try_compile_presentation(std::u16string_view source, const MathOptions& options, MathWorkspace& workspace,
                               bool render_errors, MathColor error_color, std::unique_ptr<MathDocument>& document,
                               MathDiagnostic& diagnostic, bool& error_fallback);
-const std::string& document_mathml(MathDocument& document, bool include_annotation = true);
+std::string_view document_mathml(MathDocument& document, bool include_annotation = true);
+std::string_view document_html(MathDocument& document);
+// Renders the HTML markup of the document into `out` instead of into the
+// cached buffer of the document.  A caller that collects the parts of one
+// response in a single buffer does not need the copy of the cached markup.
+void document_html_into(MathDocument& document, html::MarkupBuffer& out);
+// Renders the MathML markup of the document into `out` instead of into the
+// cached buffer of the document.
+void document_mathml_into(MathDocument& document, html::MarkupBuffer& out, bool include_annotation);
 } // namespace velocitex

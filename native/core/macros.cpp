@@ -1,10 +1,14 @@
 #include "generated/data.hpp"
 #include "parser.hpp"
+#include "state.hpp"
 
 #include <array>
 #include <charconv>
 #include <cmath>
 #include <cstdlib>
+#include <cstring>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace velocitex {
 namespace {
@@ -21,12 +25,47 @@ int Count(const T& c) {
 bool OneOf(std::u16string_view value, std::initializer_list<std::u16string_view> candidates) {
     return std::find(candidates.begin(), candidates.end(), value) != candidates.end();
 }
+// The symbol table holds more than two thousand entries, so the hot paths
+// look names up in a hash set instead of scanning the table linearly.  The
+// views point into the generated table, which outlives the sets.
+const std::unordered_set<std::u16string_view>& SymbolNames() {
+    static const auto names = [] {
+        std::unordered_set<std::u16string_view> result;
+        result.reserve(SymbolData::Symbols.size() * 2);
+        for (const auto& symbol : SymbolData::Symbols)
+            result.insert(symbol.Name);
+        return result;
+    }();
+    return names;
+}
+// The math-mode binary and relation symbols, which KaTeX centers a `\dots`
+// on when they follow it.
+const std::unordered_set<std::u16string_view>& CenteredSymbols() {
+    static const auto names = [] {
+        std::unordered_set<std::u16string_view> result;
+        result.reserve(64);
+        for (const auto& symbol : SymbolData::Symbols)
+            if (!symbol.TextMode && (symbol.Atom == MathAtom::Bin || symbol.Atom == MathAtom::Rel))
+                result.insert(symbol.Name);
+        return result;
+    }();
+    return names;
+}
 LexToken Pop(W& w) {
     auto token = std::move(w.Pending.back());
     w.Pending.pop_back();
     return token;
 }
 void Push(W& w, LexToken token, int max) {
+    if (Count(w.Pending) >= max)
+        Fail(MathDiagnosticCode::TokenLimit, token, "Pending token budget exceeded.");
+    w.Pending.push_back(std::move(token));
+}
+
+// The token is moved into the stack of the pending tokens, so that the
+// reference count of its source is not touched.  The token must not be used
+// after it was pushed.
+void PushMoved(W& w, LexToken& token, int max) {
     if (Count(w.Pending) >= max)
         Fail(MathDiagnosticCode::TokenLimit, token, "Pending token budget exceeded.");
     w.Pending.push_back(std::move(token));
@@ -38,9 +77,9 @@ void SkipSpaces(W& w) {
 int CountArguments(const std::vector<LexToken>& body) {
     int parameters = 0;
     for (int i = 0; i < Count(body); i++) {
-        if (!body[i].Is(u"#") || i + 1 >= Count(body))
+        if (!body[i].Is(u"#"_u16) || i + 1 >= Count(body))
             continue;
-        if (body[i + 1].Is(u"#")) {
+        if (body[i + 1].Is(u"#"_u16)) {
             i++;
             continue;
         }
@@ -53,42 +92,327 @@ int CountArguments(const std::vector<LexToken>& body) {
         count++;
     return count;
 }
-const MacroDefinitions& BuiltIns() {
-    static const auto result = [] {
-        MacroDefinitions m;
-        for (const auto& [name, body] : SymbolData::Macros) {
+// The built-in macros are immutable, so the table is keyed by views into the
+// generated data.  Returning a pointer instead of a copy keeps the token
+// vector of every macro definition out of the expansion loop.  The byte-wise
+// hash of the standard containers misses the cache on almost every lookup, so
+// the names are hashed with a mixing function that reads the code units in 64
+// bit chunks and looked up in an open addressing table.
+inline uint64_t HashName(std::u16string_view name) {
+    uint64_t hash = 0x9e3779b97f4a7c15ull ^ (uint64_t)name.size();
+    const char16_t* data = name.data();
+    size_t size = name.size();
+    while (size >= 4) {
+        uint64_t chunk = 0;
+        std::memcpy(&chunk, data, sizeof(chunk));
+        hash = (hash ^ chunk) * 0x100000001b3ull;
+        data += 4;
+        size -= 4;
+    }
+    if (size > 0) {
+        uint64_t tail = 0;
+        std::memcpy(&tail, data, size * sizeof(char16_t));
+        hash = (hash ^ tail) * 0x100000001b3ull;
+    }
+    hash ^= hash >> 33;
+    hash *= 0xff51afd7ed558ccdull;
+    hash ^= hash >> 29;
+    return hash;
+}
+
+struct BuiltInMacro {
+    std::u16string_view Name;
+    MacroDefinition Definition;
+};
+
+class BuiltInMacroTable {
+  public:
+    BuiltInMacroTable() {
+        size_t capacity = 16;
+        while (capacity < SymbolData::Macros.size() * 2)
+            capacity <<= 1;
+        mask_ = capacity - 1;
+        slots_.assign(capacity, 0);
+        macros_.reserve(SymbolData::Macros.size());
+        for (const auto& macro : SymbolData::Macros) {
             std::vector<LexToken> tokens;
-            Tokenize(std::u16string(body), tokens, 65536, {});
+            Tokenize(std::u16string(macro.Body), tokens, 65536, {});
             int arity = CountArguments(tokens);
-            m.emplace(name, MacroDefinition{std::move(tokens), arity, true});
+            macros_.push_back({macro.Name, MacroDefinition{std::move(tokens), arity, true}});
+            size_t slot = (size_t)HashName(macro.Name) & mask_;
+            while (slots_[slot] != 0) {
+                // The first macro with a name wins, like `emplace` does.
+                if (macros_[slots_[slot] - 1].Name == macro.Name)
+                    break;
+                slot = (slot + 1) & mask_;
+            }
+            if (slots_[slot] == 0)
+                slots_[slot] = (uint32_t)macros_.size();
         }
-        return m;
+    }
+    const MacroDefinition* Find(std::u16string_view name) const {
+        size_t slot = (size_t)HashName(name) & mask_;
+        while (true) {
+            uint32_t index = slots_[slot];
+            if (index == 0)
+                return nullptr;
+            const BuiltInMacro& macro = macros_[index - 1];
+            if (macro.Name == name)
+                return &macro.Definition;
+            slot = (slot + 1) & mask_;
+        }
+    }
+
+  private:
+    std::vector<BuiltInMacro> macros_;
+    std::vector<uint32_t> slots_;
+    size_t mask_ = 0;
+};
+
+const BuiltInMacroTable& BuiltIns() {
+    static const auto result = [] {
+        return BuiltInMacroTable();
     }();
     return result;
 }
-bool TryGetDefinition(W& w, std::u16string_view name, MacroDefinition& macro) {
-    auto key = std::u16string(name);
+
+// The expander dispatches on the name of the token it is looking at.  The
+// names the expander handles itself are few, so they live in one table that is
+// looked up once per token.  Scanning a dozen short lists per token, which is
+// what the expander used to do, costs more than the rest of the expansion.
+enum ExpandCommand : uint32_t {
+    kCmdDollar = 1u << 0,
+    kCmdBraceOpen = 1u << 1,
+    kCmdBraceClose = 1u << 2,
+    kCmdAmpersand = 1u << 3,
+    kCmdMathOpen = 1u << 4,
+    kCmdMathClose = 1u << 5,
+    kCmdBraKet = 1u << 6,
+    kCmdNoExpand = 1u << 7,
+    kCmdGlobalLong = 1u << 8,
+    kCmdLet = 1u << 9,
+    kCmdFirstOfTwo = 1u << 10,
+    kCmdChar = 1u << 11,
+    kCmdMessage = 1u << 12,
+    kCmdDots = 1u << 13,
+    kCmdDef = 1u << 14,
+    kCmdNewCommand = 1u << 15,
+    kCmdGroup = 1u << 16,
+    kCmdRowBreak = 1u << 17,
+    kCmdRaiseBox = 1u << 18,
+    kCmdTextArgument = 1u << 19,
+    kCmdBegin = 1u << 20,
+    kCmdEnd = 1u << 21,
+};
+
+// The characters that the expander treats like commands.
+constexpr uint32_t kCmdActiveCharacters = kCmdDollar | kCmdBraceOpen | kCmdBraceClose | kCmdAmpersand;
+
+struct ExpandCommandEntry {
+    std::u16string_view Name;
+    uint32_t Flags;
+};
+
+class ExpandCommandTable {
+  public:
+    ExpandCommandTable() {
+        static constexpr ExpandCommandEntry kEntries[] = {
+            {u"$", kCmdDollar},
+            {u"{", kCmdBraceOpen},
+            {u"}", kCmdBraceClose},
+            // The ampersand ends a row and is also an active character.
+            {u"&", kCmdAmpersand | kCmdRowBreak},
+            {u"\\(", kCmdMathOpen},
+            {u"\\)", kCmdMathClose},
+            {u"\\bra@ket", kCmdBraKet},
+            {u"\\bra@set", kCmdBraKet},
+            {u"\\noexpand", kCmdNoExpand},
+            {u"\\expandafter", kCmdNoExpand},
+            {u"\\global", kCmdGlobalLong},
+            {u"\\long", kCmdGlobalLong},
+            {u"\\let", kCmdLet},
+            {u"\\\\globallet", kCmdLet},
+            {u"\\futurelet", kCmdLet},
+            {u"\\\\globalfuture", kCmdLet},
+            {u"\\@firstoftwo", kCmdFirstOfTwo},
+            {u"\\@secondoftwo", kCmdFirstOfTwo},
+            {u"\\@ifnextchar", kCmdFirstOfTwo},
+            {u"\\TextOrMath", kCmdFirstOfTwo},
+            {u"\\char", kCmdChar},
+            {u"\\message", kCmdMessage},
+            {u"\\errmessage", kCmdMessage},
+            {u"\\show", kCmdMessage},
+            {u"\\dots", kCmdDots},
+            {u"\\dotso", kCmdDots},
+            {u"\\dotsc", kCmdDots},
+            {u"\\cdots", kCmdDots},
+            {u"\\def", kCmdDef},
+            {u"\\gdef", kCmdDef},
+            {u"\\edef", kCmdDef},
+            {u"\\xdef", kCmdDef},
+            {u"\\newcommand", kCmdNewCommand},
+            {u"\\renewcommand", kCmdNewCommand},
+            {u"\\providecommand", kCmdNewCommand},
+            {u"\\begingroup", kCmdGroup},
+            {u"\\endgroup", kCmdGroup},
+            {u"\\\\", kCmdRowBreak},
+            {u"\\cr", kCmdRowBreak},
+            {u"\\raisebox", kCmdRaiseBox},
+            {u"\\colorbox", kCmdRaiseBox},
+            {u"\\fcolorbox", kCmdRaiseBox},
+            {u"\\text", kCmdTextArgument},
+            {u"\\textrm", kCmdTextArgument},
+            {u"\\textnormal", kCmdTextArgument},
+            {u"\\textbf", kCmdTextArgument},
+            {u"\\textmd", kCmdTextArgument},
+            {u"\\textit", kCmdTextArgument},
+            {u"\\textup", kCmdTextArgument},
+            {u"\\textsf", kCmdTextArgument},
+            {u"\\texttt", kCmdTextArgument},
+            {u"\\emph", kCmdTextArgument},
+            {u"\\hbox", kCmdTextArgument},
+            {u"\\reflectbox", kCmdTextArgument},
+            {u"\\fbox", kCmdTextArgument},
+            {u"\\angl", kCmdTextArgument},
+            {u"\\begin", kCmdBegin},
+            {u"\\end", kCmdEnd},
+        };
+        size_t capacity = 16;
+        while (capacity < sizeof(kEntries) / sizeof(kEntries[0]) * 2)
+            capacity <<= 1;
+        mask_ = capacity - 1;
+        slots_.assign(capacity, 0);
+        entries_.assign(std::begin(kEntries), std::end(kEntries));
+        for (size_t i = 0; i < entries_.size(); ++i) {
+            size_t slot = (size_t)HashName(entries_[i].Name) & mask_;
+            while (slots_[slot] != 0)
+                slot = (slot + 1) & mask_;
+            slots_[slot] = (uint32_t)i + 1;
+            // The single characters get a direct table, so that the common
+            // token of a formula does not need a hash.
+            if (entries_[i].Name.size() == 1) {
+                const char16_t c = entries_[i].Name[0];
+                if (c < 128) {
+                    if (single_[c] == 0)
+                        single_[c] = entries_[i].Flags;
+                } else if (singleOther_.empty() || singleOther_.back().first != c) {
+                    singleOther_.emplace_back(c, entries_[i].Flags);
+                }
+            }
+        }
+    }
+    uint32_t Flags(std::u16string_view name) const {
+        if (name.empty())
+            return 0;
+        // The table holds the single characters "$", "{", "}" and "&" and the
+        // control sequences.  A symbol of a formula is usually a single
+        // character, so the single characters are answered from a direct
+        // table and a longer name that does not start with a backslash is
+        // rejected without a hash.
+        if (name.size() == 1) {
+            const char16_t c = name[0];
+            if (c < 128)
+                return single_[c];
+            for (const auto& entry : singleOther_)
+                if (entry.first == c)
+                    return entry.second;
+            return 0;
+        }
+        if (name[0] != u'\\')
+            return 0;
+        size_t slot = (size_t)HashName(name) & mask_;
+        while (true) {
+            uint32_t index = slots_[slot];
+            if (index == 0)
+                return 0;
+            if (entries_[index - 1].Name == name)
+                return entries_[index - 1].Flags;
+            slot = (slot + 1) & mask_;
+        }
+    }
+
+  private:
+    std::vector<ExpandCommandEntry> entries_;
+    std::vector<uint32_t> slots_;
+    size_t mask_ = 0;
+    // The flags of the single character entries, so that a symbol does not
+    // need a hash.
+    std::array<uint32_t, 128> single_{};
+    // The single character entries outside the ASCII range.
+    std::vector<std::pair<char16_t, uint32_t>> singleOther_;
+};
+
+const ExpandCommandTable& ExpandCommands() {
+    static const auto result = ExpandCommandTable();
+    return result;
+}
+
+// The number of user defined macros up to which the workspace table is
+// scanned directly.  A scan of a few definitions is cheaper than a hash
+// lookup, and it needs no temporary key.
+constexpr size_t UserMacroScanLimit = 8;
+
+// The user defined macros are rare, so their lookup stays in its own function
+// and the common path of the expander stays small enough to inline.
+// The scratch key of the macro lookup.  It is reused between the lookups, so
+// that a lookup does not allocate a key of its own.  It lives in a namespace
+// scope object, so that an access to it does not pay for the initialization
+// guard of a `thread_local`.
+VELOCITEX_REUSED_STATE(std::u16string, g_macro_lookup_key);
+
+const MacroDefinition* FindUserDefinition(W& w, std::u16string_view name) {
+    if (w.Definitions.size() <= UserMacroScanLimit) {
+        for (const auto& [key, definition] : w.Definitions)
+            if (std::u16string_view(key) == name)
+                return &definition;
+        return nullptr;
+    }
+    // A larger table is searched through a scratch key, which reuses its
+    // buffer instead of allocating one for every lookup.
+    auto& key = g_macro_lookup_key;
+    if (name.empty())
+        key.clear();
+    else
+        key.assign(name.data(), name.size());
     auto it = w.Definitions.find(key);
-    if (it != w.Definitions.end()) {
-        macro = it->second;
-        return true;
+    if (it == w.Definitions.end())
+        return nullptr;
+    return &it->second;
+}
+
+const MacroDefinition* FindBuiltIn(std::u16string_view name) {
+    // The built-in macros are the control sequences and the single active
+    // characters, so a longer name that does not start with a backslash is
+    // not in the table.  The check saves the hash for the symbols of a
+    // formula, which are most of the tokens.
+    if (name.size() > 1 && name[0] != u'\\')
+        return nullptr;
+    return BuiltIns().Find(name);
+}
+
+inline const MacroDefinition* TryGetDefinition(W& w, std::u16string_view name) {
+    // User defined macros are rare, so the workspace table is only consulted
+    // when the workspace actually holds any.  A macro that the user did not
+    // define does not hide the built-in one, so the table of the workspace is
+    // searched first and the built-in table second.
+    if (!w.Definitions.empty()) {
+        if (const MacroDefinition* user = FindUserDefinition(w, name))
+            return user;
     }
     if (name.size() == 1 && name[0] < 0x80 && name[0] != u'~')
-        return false;
-    auto found = BuiltIns().find(key);
-    if (found == BuiltIns().end())
-        return false;
-    macro = found->second;
-    return true;
+        return nullptr;
+    return FindBuiltIn(name);
 }
+
 bool HasDefinition(W& w, std::u16string_view name) {
-    MacroDefinition m;
-    return TryGetDefinition(w, name, m);
+    return TryGetDefinition(w, name) != nullptr;
 }
 void ValidateName(std::u16string_view name, SourceRange range) {
+    // KaTeX checks the name of a macro with `checkControlSequence`
+    // (`src/functions/def.ts`).
     if (name.empty() || OneOf(name, {u"\\", u"{", u"}", u"$", u"&", u"#", u"^", u"_"}))
         throw CompileFailure({MathDiagnosticCode::InvalidMacroDefinition, range,
-                              u"Expected a valid control sequence or active character."});
+                              u"Expected a control sequence"});
 }
 void OpenScope(W& w, const O& options, const LexToken& token, int kind) {
     if ((kind == 1 || kind == 4) && std::count_if(w.ScopeKinds.begin(), w.ScopeKinds.end(),
@@ -125,15 +449,15 @@ void Assign(W& w, const std::u16string& name, MacroDefinition value, bool global
             }
     w.Definitions[name] = std::move(value);
 }
-void RestoreBraketDefinition(W& w, const std::u16string& name) {
+void RestoreBraketDefinition(W& w, std::u16string_view name) {
     for (int i = Count(w.Undo) - 1; i >= 0; i--) {
         const auto& undo = w.Undo[i];
-        if (undo.Name != name)
+        if (std::u16string_view(undo.Name) != name)
             continue;
         if (undo.Existed)
-            w.Definitions[name] = undo.Previous;
+            w.Definitions[undo.Name] = undo.Previous;
         else
-            w.Definitions.erase(name);
+            w.Definitions.erase(undo.Name);
         return;
     }
 }
@@ -142,7 +466,7 @@ bool IsParameterReference(const std::vector<LexToken>& body, int index) {
     if (index == 0 || t.size() != 1 || t[0] < u'1' || t[0] > u'9')
         return false;
     int hashes = 0;
-    for (int i = index - 1; i >= 0 && body[i].Is(u"#"); i--)
+    for (int i = index - 1; i >= 0 && body[i].Is(u"#"_u16); i--)
         hashes++;
     return (hashes & 1) != 0;
 }
@@ -195,12 +519,15 @@ void ValidatePersistentBudget(const MacroDefinitions& definitions, const O& opti
 Range ConsumeArgument(W& w, const O& options, const LexToken& command, const CancellationToken& cancel) {
     SkipSpaces(w);
     if (w.Pending.empty())
-        Fail(MathDiagnosticCode::MissingArgument, command, "Missing macro argument.");
+        // KaTeX scans the argument of a macro before it expands the macro
+        // (`src/MacroExpander.ts`, `consumeArg`).
+        throw CompileFailure({MathDiagnosticCode::MissingArgument, SourceRange{w.SourceLength, 0},
+                              u"Unexpected end of input in a macro argument, expected '}'"});
     int start = Count(w.Arguments);
     auto token = Pop(w);
-    if (!token.Is(u"{")) {
-        if (token.Is(u"}"))
-            Fail(MathDiagnosticCode::MissingArgument, token, "Missing macro argument.");
+    if (!token.Is(u"{"_u16)) {
+        if (token.Is(u"}"_u16))
+            throw CompileFailure({MathDiagnosticCode::UnexpectedGroupEnd, token.Origin, u"Extra }"});
         if (Count(w.Arguments) >= options.MaxTokens)
             Fail(MathDiagnosticCode::TokenLimit, token, "Macro argument token budget exceeded.");
         w.Arguments.push_back(token);
@@ -210,16 +537,17 @@ Range ConsumeArgument(W& w, const O& options, const LexToken& command, const Can
     while (!w.Pending.empty()) {
         cancel.ThrowIfCancellationRequested();
         token = Pop(w);
-        if (token.Is(u"{")) {
+        if (token.Is(u"{"_u16)) {
             if (++depth > options.MaxNesting)
                 Fail(MathDiagnosticCode::NestingLimit, token, "Macro argument nesting budget exceeded.");
-        } else if (token.Is(u"}") && --depth == 0)
+        } else if (token.Is(u"}"_u16) && --depth == 0)
             return {start, Count(w.Arguments) - start};
         if (Count(w.Arguments) >= options.MaxTokens)
             Fail(MathDiagnosticCode::TokenLimit, token, "Macro argument token budget exceeded.");
         w.Arguments.push_back(token);
     }
-    Fail(MathDiagnosticCode::UnclosedGroup, command, "Unclosed macro argument.");
+    throw CompileFailure({MathDiagnosticCode::UnclosedGroup, SourceRange{w.SourceLength, 0},
+                          u"Unexpected end of input in a macro argument, expected '}'"});
 }
 Range ConsumeDelimitedArgument(W& w, const O& options, const LexToken& command, const std::vector<LexToken>& delimiter,
                                const CancellationToken& cancel) {
@@ -230,17 +558,17 @@ Range ConsumeDelimitedArgument(W& w, const O& options, const LexToken& command, 
         if (Count(w.Arguments) >= options.MaxTokens)
             Fail(MathDiagnosticCode::TokenLimit, token, "Delimited argument token budget exceeded.");
         w.Arguments.push_back(token);
-        if (token.Is(u"{")) {
+        if (token.Is(u"{"_u16)) {
             if (++depth > options.MaxNesting)
                 Fail(MathDiagnosticCode::NestingLimit, token, "Delimited argument nesting budget exceeded.");
-        } else if (token.Is(u"}") && --depth < 0)
+        } else if (token.Is(u"}"_u16) && --depth < 0)
             Fail(MathDiagnosticCode::UnexpectedGroupEnd, token,
                  "Unexpected closing brace in a delimited macro argument.");
-        if ((depth == 0 || (depth == 1 && delimiter[match].Is(u"{"))) && token.Text() == delimiter[match].Text()) {
+        if ((depth == 0 || (depth == 1 && delimiter[match].Is(u"{"_u16))) && token.Text() == delimiter[match].Text()) {
             if (++match == Count(delimiter)) {
                 w.Arguments.resize(w.Arguments.size() - match);
                 int length = Count(w.Arguments) - start;
-                if (length >= 2 && w.Arguments[start].Is(u"{") && w.Arguments.back().Is(u"}"))
+                if (length >= 2 && w.Arguments[start].Is(u"{"_u16) && w.Arguments.back().Is(u"}"_u16))
                     return {start + 1, length - 2};
                 return {start, length};
             }
@@ -252,81 +580,86 @@ Range ConsumeDelimitedArgument(W& w, const O& options, const LexToken& command, 
 std::vector<LexToken> ReadDefinitionBody(W& w, const O& options, const LexToken& command,
                                          const CancellationToken& cancel) {
     SkipSpaces(w);
-    if (w.Pending.empty() || !Pop(w).Is(u"{"))
+    if (w.Pending.empty() || !Pop(w).Is(u"{"_u16))
         Fail(MathDiagnosticCode::InvalidMacroDefinition, command, "Expected braced macro replacement.");
     std::vector<LexToken> body;
     int depth = 1;
     while (!w.Pending.empty()) {
         cancel.ThrowIfCancellationRequested();
         auto token = Pop(w);
-        if (token.Is(u"{")) {
+        if (token.Is(u"{"_u16)) {
             if (++depth > options.MaxNesting)
                 Fail(MathDiagnosticCode::NestingLimit, token, "Macro replacement nesting budget exceeded.");
-        } else if (token.Is(u"}") && --depth == 0)
+        } else if (token.Is(u"}"_u16) && --depth == 0)
             return body;
         if (Count(body) >= options.MaxTokens)
             Fail(MathDiagnosticCode::TokenLimit, token, "Macro replacement token budget exceeded.");
         body.push_back(token);
     }
-    Fail(MathDiagnosticCode::InvalidMacroDefinition, command, "Unclosed macro replacement.");
+    // KaTeX scans the replacement text of a macro definition as an argument
+    // (`src/functions/def.ts`).
+    throw CompileFailure({MathDiagnosticCode::InvalidMacroDefinition, SourceRange{w.SourceLength, 0},
+                          u"Unexpected end of input in a macro argument, expected '}'"});
 }
 void ExpandOne(W& w, const O& options, int& expansions, const CancellationToken& cancel) {
     if (w.Pending.empty())
         return;
     auto token = Pop(w);
     if (token.NoExpand) {
-        Push(w, token, options.MaxTokens);
+        PushMoved(w, token, options.MaxTokens);
         return;
     }
-    if (token.Is(u"\\expandafter")) {
+    if (token.Is(u"\\expandafter"_u16)) {
         std::vector<LexToken> deferred;
-        while (token.Is(u"\\expandafter")) {
+        while (token.Is(u"\\expandafter"_u16)) {
             if (w.Pending.size() < 2)
                 Fail(MathDiagnosticCode::MissingArgument, token, "Expandafter requires two tokens.");
             if (++expansions > options.MaxExpansion)
-                Fail(MathDiagnosticCode::ExpansionLimit, token, "Macro expansion budget exceeded.");
+                throw CompileFailure({MathDiagnosticCode::ExpansionLimit, SourceRange{-1, 0},
+                              u"Too many expansions: infinite loop or need to increase maxExpand setting"});
             deferred.push_back(Pop(w));
             token = Pop(w);
         }
-        Push(w, token, options.MaxTokens);
+        PushMoved(w, token, options.MaxTokens);
         ExpandOne(w, options, expansions, cancel);
         for (int i = Count(deferred) - 1; i >= 0; i--)
-            Push(w, deferred[i], options.MaxTokens);
+            PushMoved(w, deferred[i], options.MaxTokens);
         return;
     }
-    if (token.Is(u"\\noexpand")) {
+    if (token.Is(u"\\noexpand"_u16)) {
         if (w.Pending.empty())
             Fail(MathDiagnosticCode::MissingArgument, token, "Noexpand requires a token.");
         auto part = Pop(w);
         part.NoExpand = true;
-        Push(w, part, options.MaxTokens);
+        PushMoved(w, part, options.MaxTokens);
         return;
     }
-    MacroDefinition macro;
-    if (!TryGetDefinition(w, token.Text(), macro)) {
-        Push(w, token, options.MaxTokens);
+    const MacroDefinition* macro = TryGetDefinition(w, token.Text());
+    if (macro == nullptr) {
+        PushMoved(w, token, options.MaxTokens);
         return;
     }
     if (++expansions > options.MaxExpansion)
-        Fail(MathDiagnosticCode::ExpansionLimit, token, "Macro expansion budget exceeded.");
+        throw CompileFailure({MathDiagnosticCode::ExpansionLimit, SourceRange{-1, 0},
+                              u"Too many expansions: infinite loop or need to increase maxExpand setting"});
     std::array<Range, 9> args{};
-    if (!macro.Delimiters.empty())
-        for (const auto& prefix : macro.Delimiters[0])
+    if (!macro->Delimiters.empty())
+        for (const auto& prefix : macro->Delimiters[0])
             if (w.Pending.empty() || Pop(w).Text() != prefix.Text())
                 Fail(MathDiagnosticCode::MissingArgument, token, "Macro invocation does not match its prefix.");
-    for (int a = 0; a < macro.Arguments; a++)
-        args[a] = !macro.Delimiters.empty() && !macro.Delimiters[a + 1].empty()
-                      ? ConsumeDelimitedArgument(w, options, token, macro.Delimiters[a + 1], cancel)
+    for (int a = 0; a < macro->Arguments; a++)
+        args[a] = !macro->Delimiters.empty() && !macro->Delimiters[a + 1].empty()
+                      ? ConsumeDelimitedArgument(w, options, token, macro->Delimiters[a + 1], cancel)
                       : ConsumeArgument(w, options, token, cancel);
-    for (int i = Count(macro.Body) - 1; i >= 0; i--) {
-        auto part = macro.Body[i];
-        if (macro.Arguments > 0 && i > 0 && macro.Body[i - 1].Is(u"#") && part.Is(u"#")) {
+    for (int i = Count(macro->Body) - 1; i >= 0; i--) {
+        auto part = macro->Body[i];
+        if (macro->Arguments > 0 && i > 0 && macro->Body[i - 1].Is(u"#"_u16) && part.Is(u"#"_u16)) {
             part.Origin = token.Origin;
-            Push(w, part, options.MaxTokens);
+            PushMoved(w, part, options.MaxTokens);
             i--;
-        } else if (macro.Arguments > 0 && IsParameterReference(macro.Body, i)) {
+        } else if (macro->Arguments > 0 && IsParameterReference(macro->Body, i)) {
             int index = part.Text()[0] - u'1';
-            if (index >= macro.Arguments)
+            if (index >= macro->Arguments)
                 Fail(MathDiagnosticCode::InvalidMacroDefinition, token, "Macro argument outside declared arity.");
             auto [start, length] = args[index];
             for (int j = length - 1; j >= 0; j--)
@@ -334,7 +667,7 @@ void ExpandOne(W& w, const O& options, int& expansions, const CancellationToken&
             i--;
         } else {
             part.Origin = token.Origin;
-            Push(w, part, options.MaxTokens);
+            PushMoved(w, part, options.MaxTokens);
         }
     }
 }
@@ -348,7 +681,7 @@ std::vector<LexToken> ExpandDefinition(W& w, const O& options, const std::vector
     while (Count(w.Pending) > boundary) {
         cancel.ThrowIfCancellationRequested();
         auto token = w.Pending.back();
-        if (!token.NoExpand && (token.Is(u"\\noexpand") || HasDefinition(w, token.Text()))) {
+        if (!token.NoExpand && (token.Is(u"\\noexpand"_u16) || HasDefinition(w, token.Text()))) {
             ExpandOne(w, options, expansions, cancel);
             continue;
         }
@@ -369,22 +702,26 @@ void Define(W& w, const O& options, bool global, const LexToken& command, int& e
             const CancellationToken& cancel) {
     SkipSpaces(w);
     if (w.Pending.empty())
-        Fail(MathDiagnosticCode::InvalidMacroDefinition, command, "Expected a macro name.");
+        // KaTeX reports the missing name of the macro with the same words it
+        // uses for a name that is not a control sequence
+        // (`src/functions/def.ts`, `checkControlSequence`).
+        throw CompileFailure({MathDiagnosticCode::InvalidMacroDefinition,
+                              SourceRange{w.SourceLength, 0}, u"Expected a control sequence"});
     auto nameToken = Pop(w);
     std::u16string name(nameToken.Text());
     ValidateName(name, nameToken.Origin);
     int count = 0;
     std::vector<std::vector<LexToken>> delimiters(1);
     std::optional<LexToken> insert;
-    while (!w.Pending.empty() && !w.Pending.back().Is(u"{")) {
+    while (!w.Pending.empty() && !w.Pending.back().Is(u"{"_u16)) {
         auto hash = Pop(w);
-        if (!hash.Is(u"#")) {
+        if (!hash.Is(u"#"_u16)) {
             delimiters[count].push_back(hash);
             continue;
         }
         if (w.Pending.empty())
             Fail(MathDiagnosticCode::InvalidMacroDefinition, hash, "Expected a macro parameter number.");
-        if (w.Pending.back().Is(u"{")) {
+        if (w.Pending.back().Is(u"{"_u16)) {
             insert = w.Pending.back();
             delimiters[count].push_back(*insert);
             break;
@@ -397,7 +734,7 @@ void Define(W& w, const O& options, bool global, const LexToken& command, int& e
     auto body = ReadDefinitionBody(w, options, command, cancel);
     if (insert)
         body.push_back(*insert);
-    if (command.Is(u"\\edef") || command.Is(u"\\xdef"))
+    if (command.Is(u"\\edef"_u16) || command.Is(u"\\xdef"_u16))
         body = ExpandDefinition(w, options, body, expansions, cancel);
     bool has = std::any_of(delimiters.begin(), delimiters.end(), [](const auto& d) { return !d.empty(); });
     if (has)
@@ -410,26 +747,30 @@ void Define(W& w, const O& options, bool global, const LexToken& command, int& e
 void NewCommand(W& w, const O& options, const LexToken& command, int& expansions, const CancellationToken& cancel) {
     SkipSpaces(w);
     if (w.Pending.empty())
-        Fail(MathDiagnosticCode::InvalidMacroDefinition, command, "Expected a macro name.");
+        // KaTeX's `\newcommand` is a macro, so a missing name is an argument
+        // that runs out (`src/macros.ts`).
+        throw CompileFailure({MathDiagnosticCode::MissingArgument, SourceRange{w.SourceLength, 0},
+                              u"Unexpected end of input in a macro argument, expected '}'"});
     auto nameToken = Pop(w);
-    bool braced = nameToken.Is(u"{");
+    bool braced = nameToken.Is(u"{"_u16);
     if (braced) {
         SkipSpaces(w);
         if (w.Pending.empty())
-            Fail(MathDiagnosticCode::InvalidMacroDefinition, command, "Expected a macro name.");
+            throw CompileFailure({MathDiagnosticCode::MissingArgument, SourceRange{w.SourceLength, 0},
+                                  u"Unexpected end of input in a macro argument, expected '}'"});
         nameToken = Pop(w);
         SkipSpaces(w);
-        if (w.Pending.empty() || !Pop(w).Is(u"}"))
+        if (w.Pending.empty() || !Pop(w).Is(u"}"_u16))
             Fail(MathDiagnosticCode::InvalidMacroDefinition, command, "Expected closing brace after macro name.");
     }
     std::u16string name(nameToken.Text());
     ValidateName(name, nameToken.Origin);
     SkipSpaces(w);
     int count = 0;
-    if (!w.Pending.empty() && w.Pending.back().Is(u"[")) {
+    if (!w.Pending.empty() && w.Pending.back().Is(u"["_u16)) {
         Pop(w);
         std::u16string arity;
-        while (!w.Pending.empty() && !w.Pending.back().Is(u"]")) {
+        while (!w.Pending.empty() && !w.Pending.back().Is(u"]"_u16)) {
             if (!w.Pending.back().NoExpand && HasDefinition(w, w.Pending.back().Text())) {
                 ExpandOne(w, options, expansions, cancel);
                 continue;
@@ -447,7 +788,7 @@ void NewCommand(W& w, const O& options, const LexToken& command, int& expansions
         } catch (...) {
             valid = false;
         }
-        if (w.Pending.empty() || !Pop(w).Is(u"]") || !valid || count < 0 || count > 9)
+        if (w.Pending.empty() || !Pop(w).Is(u"]"_u16) || !valid || count < 0 || count > 9)
             Fail(MathDiagnosticCode::InvalidMacroDefinition, command,
                  "Macro arity must be a bounded integer from zero through nine.");
     }
@@ -459,16 +800,12 @@ void NewCommand(W& w, const O& options, const LexToken& command, int& expansions
                 exists = true;
                 break;
             }
-    if (!exists)
-        for (const auto& symbol : SymbolData::Symbols)
-            if (symbol.Name == name) {
-                exists = true;
-                break;
-            }
-    if ((command.Is(u"\\newcommand") && exists) || (command.Is(u"\\renewcommand") && !exists))
+    if (!exists && SymbolNames().contains(name))
+        exists = true;
+    if ((command.Is(u"\\newcommand"_u16) && exists) || (command.Is(u"\\renewcommand"_u16) && !exists))
         Fail(MathDiagnosticCode::InvalidMacroDefinition, nameToken,
              "Macro declaration conflicts with its existing definition.");
-    if (!command.Is(u"\\providecommand") || !exists)
+    if (!command.Is(u"\\providecommand"_u16) || !exists)
         Assign(w, name, {Compact(body, command.Origin, options.MaxTokens), count}, false);
 }
 void PushExpansion(W& w, const std::u16string& value, const LexToken& origin, const O& options,
@@ -477,7 +814,20 @@ void PushExpansion(W& w, const std::u16string& value, const LexToken& origin, co
     Tokenize(value, parts, options.MaxTokens, cancel, origin.Origin, options.StrictMode, &w.Warnings,
              options.StrictHandler);
     for (int i = Count(parts) - 1; i >= 0; i--)
-        Push(w, parts[i], options.MaxTokens);
+        PushMoved(w, parts[i], options.MaxTokens);
+}
+// The commands that KaTeX expands even though they are not macros.  The
+// command table holds several hundred entries, so the lookup uses a hash set
+// instead of scanning the table for every token.
+const std::unordered_set<std::u16string_view>& ExpandableCommands() {
+    static const auto names = [] {
+        std::unordered_set<std::u16string_view> result;
+        for (const auto& command : CommandData::Definitions)
+            if (!command.Primitive)
+                result.insert(command.Name);
+        return result;
+    }();
+    return names;
 }
 bool IsExpandable(W& w, std::u16string_view name) {
     if (HasDefinition(w, name))
@@ -486,18 +836,20 @@ bool IsExpandable(W& w, std::u16string_view name) {
                      u"\\TextOrMath", u"\\char", u"\\message", u"\\errmessage", u"\\show", u"\\dots", u"\\dotso",
                      u"\\dotsc", u"\\cdots", u"\\bra@ket", u"\\bra@set", u"\\tag@literal"}))
         return true;
-    for (const auto& command : CommandData::Definitions)
-        if (!command.Primitive && name == command.Name)
-            return true;
-    return false;
-}
-bool IsTextArgumentCommand(std::u16string_view name) {
-    return OneOf(name, {u"\\text", u"\\textrm", u"\\textnormal", u"\\textbf", u"\\textmd", u"\\textit", u"\\textup",
-                        u"\\textsf", u"\\texttt", u"\\emph", u"\\hbox", u"\\reflectbox", u"\\fbox", u"\\angl"});
+    return ExpandableCommands().count(name) != 0;
 }
 bool IsDirectSpacing(std::u16string_view name) {
-    return OneOf(name, {u"\\,", u"\\:", u"\\;", u"\\!", u"\\quad", u"\\qquad", u"\\operatorname", u"\\liminf",
-                        u"\\limsup", u"\\bm", u"\\tag", u"\\notag", u"\\nonumber"});
+    static const auto names = [] {
+        // The commands that the core implements directly instead of expanding
+        // the KaTeX macro.  `\liminf` and `\limsup` are *not* part of the
+        // list: KaTeX expands them to `\DOTSB\operatorname*{lim\,inf}` and
+        // `\DOTSB\operatorname*{lim\,sup}`.
+        std::unordered_set<std::u16string_view> result{
+            u"\\,", u"\\:", u"\\;", u"\\!", u"\\quad", u"\\qquad", u"\\operatorname",
+            u"\\bm", u"\\tag", u"\\notag", u"\\nonumber"};
+        return result;
+    }();
+    return names.count(name) != 0;
 }
 const auto CellScopeMarker = std::make_shared<const std::u16string>(1, u'\0');
 const auto TextModeMarker = std::make_shared<const std::u16string>(2, u'\0');
@@ -510,13 +862,13 @@ void MarkTextArgument(W& w, const LexToken& command, const O& options, int prece
     while (preceding-- > 0) {
         if (begin < 0)
             return;
-        if (w.Pending[begin].Is(u"{")) {
+        if (w.Pending[begin].Is(u"{"_u16)) {
             int depth = 1;
             begin--;
             while (begin >= 0) {
-                if (w.Pending[begin].Is(u"{"))
+                if (w.Pending[begin].Is(u"{"_u16))
                     depth++;
-                else if (w.Pending[begin].Is(u"}") && --depth == 0) {
+                else if (w.Pending[begin].Is(u"}"_u16) && --depth == 0) {
                     begin--;
                     break;
                 }
@@ -530,12 +882,12 @@ void MarkTextArgument(W& w, const LexToken& command, const O& options, int prece
     if (begin < 0)
         return;
     int end = begin;
-    if (w.Pending[begin].Is(u"{")) {
+    if (w.Pending[begin].Is(u"{"_u16)) {
         int depth = 1;
         for (end = begin - 1; end >= 0; end--) {
-            if (w.Pending[end].Is(u"{"))
+            if (w.Pending[end].Is(u"{"_u16))
                 depth++;
-            else if (w.Pending[end].Is(u"}") && --depth == 0)
+            else if (w.Pending[end].Is(u"}"_u16) && --depth == 0)
                 break;
         }
         if (end < 0)
@@ -560,7 +912,7 @@ int ReadCharacter(W& w, const LexToken& command) {
     if (w.Pending.empty())
         Fail(MathDiagnosticCode::MissingArgument, command, "Character command requires a code.");
     auto token = Pop(w);
-    if (token.Is(u"`")) {
+    if (token.Is(u"`"_u16)) {
         if (w.Pending.empty())
             Fail(MathDiagnosticCode::MissingArgument, command, "Backtick character command requires a character.");
         token = Pop(w);
@@ -571,7 +923,7 @@ int ReadCharacter(W& w, const LexToken& command) {
             Fail(MathDiagnosticCode::UnexpectedToken, token, "Expected a character after backtick.");
         return RuneAt(text);
     }
-    int radix = token.Is(u"'") ? 8 : token.Is(u"\"") ? 16 : 10;
+    int radix = token.Is(u"'"_u16) ? 8 : token.Is(u"\""_u16) ? 16 : 10;
     if (radix != 10) {
         if (w.Pending.empty())
             Fail(MathDiagnosticCode::MissingArgument, command, "Character command requires digits.");
@@ -597,6 +949,7 @@ int ReadCharacter(W& w, const LexToken& command) {
 
 void Expand(const std::u16string& source, const MathOptions& options, ParserWorkspace& w,
             const CancellationToken& cancel) {
+    w.SourceLength = (int)source.size();
     if (options.Session)
         options.Session->CopyTo(w.Definitions);
     ValidatePersistentBudget(w.Definitions, options);
@@ -619,8 +972,13 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
     ValidatePersistentBudget(w.Definitions, options);
     Tokenize(source, w.Pending, options.MaxTokens, cancel, {}, options.StrictMode, &w.Warnings, options.StrictHandler);
     std::reverse(w.Pending.begin(), w.Pending.end());
-    if (!options.GlobalGroup)
-        OpenScope(w, options, LexToken(source, 0, 0, {}), 6);
+    if (!options.GlobalGroup) {
+        // The root scope carries no text of its own: the token only has to be
+        // one that is not a marker, so a shared empty string serves as its
+        // source.  A copy of the whole source would be made for nothing.
+        static const auto root_scope_source = std::make_shared<const std::u16string>();
+        OpenScope(w, options, LexToken(root_scope_source, 0, 0, {}), 6);
+    }
     if (options.ColorIsTextColor)
         Assign(w, u"\\color", {{LexToken(u"\\textcolor", 0, 10, {})}, 0}, false);
     bool textMode = false;
@@ -629,12 +987,13 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
     std::array<Range, 9> arguments{};
     auto expansionBudget = [&](const LexToken& t) {
         if (++expansions > options.MaxExpansion)
-            Fail(MathDiagnosticCode::ExpansionLimit, t, "Macro expansion budget exceeded.");
+            throw CompileFailure({MathDiagnosticCode::ExpansionLimit, SourceRange{-1, 0},
+                              u"Too many expansions: infinite loop or need to increase maxExpand setting"});
     };
-    auto emit = [&](const LexToken& t) {
+    auto emit = [&](LexToken&& t) {
         if (Count(w.Expanded) >= options.MaxTokens)
             Fail(MathDiagnosticCode::TokenLimit, t, "Expanded token budget exceeded.");
-        w.Expanded.push_back(t);
+        w.Expanded.push_back(std::move(t));
     };
     while (!w.Pending.empty()) {
         cancel.ThrowIfCancellationRequested();
@@ -657,14 +1016,18 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
             w.ExpansionModes.pop_back();
             continue;
         }
-        MacroDefinition macro;
-        bool isMacro = !token.NoExpand && !token.Text().empty() && TryGetDefinition(w, token.Text(), macro);
-        if (token.Length != 0 && !isMacro && !token.TreatAsRelax && token.Text()[0] != u'\\' &&
-            !OneOf(token.Text(), {u"$", u"{", u"}", u"&"})) {
-            emit(token);
+        const std::u16string_view text = token.Text();
+        // The names the expander handles itself are looked up once, so that the
+        // dispatch below costs a single hash instead of a dozen scans.
+        const uint32_t flags = ExpandCommands().Flags(text);
+        const MacroDefinition* macro = (!token.NoExpand && !text.empty()) ? TryGetDefinition(w, text) : nullptr;
+        bool isMacro = macro != nullptr;
+        if (token.Length != 0 && !isMacro && !token.TreatAsRelax && text[0] != u'\\' &&
+            !(flags & kCmdActiveCharacters)) {
+            emit(std::move(token));
             continue;
         }
-        if (token.Is(u"$") && (textMode || (!mathSwitches.empty() && mathSwitches.back() == 1))) {
+        if ((flags & kCmdDollar) && (textMode || (!mathSwitches.empty() && mathSwitches.back() == 1))) {
             if (textMode) {
                 mathSwitches.push_back(1);
                 textMode = false;
@@ -672,35 +1035,39 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
                 mathSwitches.pop_back();
                 textMode = true;
             }
-        } else if (token.Is(u"\\(") && textMode) {
+        } else if ((flags & kCmdMathOpen) && textMode) {
             mathSwitches.push_back(2);
             textMode = false;
-        } else if (token.Is(u"\\)") && !mathSwitches.empty() && mathSwitches.back() == 2) {
+        } else if ((flags & kCmdMathClose) && !mathSwitches.empty() && mathSwitches.back() == 2) {
             mathSwitches.pop_back();
             textMode = true;
         }
-        bool customOverride = isMacro && !macro.BuiltIn;
-        if (isMacro && macro.Callback >= 1 && macro.Callback <= 4) {
+        bool customOverride = isMacro && !macro->BuiltIn;
+        if (isMacro && macro->Callback >= 1 && macro->Callback <= 4) {
             expansionBudget(token);
-            bool doubled = macro.Callback == 2 || macro.Callback == 4;
-            if (!doubled && !macro.Delimiters.empty() && !macro.Delimiters[0].empty() && !w.Pending.empty() &&
-                w.Pending.back().Is(u"|")) {
+            bool doubled = macro->Callback == 2 || macro->Callback == 4;
+            if (!doubled && !macro->Delimiters.empty() && !macro->Delimiters[0].empty() && !w.Pending.empty() &&
+                w.Pending.back().Is(u"|"_u16)) {
                 Pop(w);
                 doubled = true;
             }
-            if (macro.Callback == 3 || macro.Callback == 4) {
-                RestoreBraketDefinition(w, u"|");
-                RestoreBraketDefinition(w, u"\\|");
+            // The expansion is copied before the definition is restored:
+            // restoring it replaces the entry in the definition map and would
+            // leave `macro` dangling.
+            const std::vector<LexToken> chosen =
+                doubled && !macro->Delimiters.empty() ? macro->Delimiters[0] : macro->Body;
+            if (macro->Callback == 3 || macro->Callback == 4) {
+                RestoreBraketDefinition(w, u"|"_u16);
+                RestoreBraketDefinition(w, u"\\|"_u16);
             }
-            const auto& chosen = doubled && !macro.Delimiters.empty() ? macro.Delimiters[0] : macro.Body;
             for (int i = Count(chosen) - 1; i >= 0; i--) {
                 auto p = chosen[i];
                 p.Origin = token.Origin;
-                Push(w, p, options.MaxTokens);
+                PushMoved(w, p, options.MaxTokens);
             }
             continue;
         }
-        if (!customOverride && OneOf(token.Text(), {u"\\bra@ket", u"\\bra@set"})) {
+        if (!customOverride && (flags & kCmdBraKet)) {
             expansionBudget(token);
             std::array<Range, 5> ranges;
             for (auto& r : ranges)
@@ -711,7 +1078,7 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
             };
             auto left = part(0), middle = part(1), middleDouble = part(2), right = part(3), body = part(4);
             OpenScope(w, options, token, 5);
-            bool one = token.Is(u"\\bra@set");
+            bool one = token.Is(u"\\bra@set"_u16);
             Assign(w, u"|", {middle, 0, false, {middleDouble}, uint8_t(one ? 3 : 1)}, false);
             if (!middleDouble.empty())
                 Assign(w, u"\\|", {middleDouble, 0, false, {middleDouble}, uint8_t(one ? 4 : 2)}, false);
@@ -725,15 +1092,15 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
             PushExpansion(w, u"\\relax", token, options, cancel);
             continue;
         }
-        if (!token.NoExpand && !customOverride && OneOf(token.Text(), {u"\\noexpand", u"\\expandafter"})) {
+        if (!token.NoExpand && !customOverride && (flags & kCmdNoExpand)) {
             expansionBudget(token);
             if (w.Pending.empty())
                 Fail(MathDiagnosticCode::MissingArgument, token, "Expansion control requires a following token.");
             auto deferred = Pop(w);
-            if (token.Is(u"\\noexpand")) {
+            if (token.Is(u"\\noexpand"_u16)) {
                 deferred.NoExpand = true;
                 deferred.TreatAsRelax = IsExpandable(w, deferred.Text());
-                Push(w, deferred, options.MaxTokens);
+                PushMoved(w, deferred, options.MaxTokens);
             } else {
                 if (w.Pending.empty())
                     Fail(MathDiagnosticCode::MissingArgument, token, "Expandafter requires two following tokens.");
@@ -742,30 +1109,42 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
             }
             continue;
         }
-        if (!customOverride && OneOf(token.Text(), {u"\\global", u"\\long"})) {
+        if (!customOverride && (flags & kCmdGlobalLong)) {
             SkipSpaces(w);
             if (w.Pending.empty())
                 Fail(MathDiagnosticCode::MissingArgument, token, "Macro prefix requires an assignment.");
             auto next = Pop(w);
             std::u16string value;
-            if (token.Is(u"\\long"))
+            if (token.Is(u"\\long"_u16)) {
+                // KaTeX ignores `\long`, so only a macro prefix may follow it
+                // (`src/functions/def.ts`, `globalMap`).
+                if (!OneOf(next.Text(), {u"\\global", u"\\long", u"\\def", u"\\gdef", u"\\edef", u"\\xdef", u"\\let",
+                                         u"\\futurelet"}))
+                    Fail(MathDiagnosticCode::UnexpectedToken, next, "Invalid token after macro prefix");
                 value = next.Text();
-            else if (OneOf(next.Text(), {u"\\def", u"\\gdef"}))
-                value = u"\\gdef";
-            else if (OneOf(next.Text(), {u"\\edef", u"\\xdef"}))
-                value = u"\\xdef";
-            else if (next.Is(u"\\let"))
-                value = u"\\\\globallet";
-            else if (next.Is(u"\\futurelet"))
-                value = u"\\\\globalfuture";
-            else if (OneOf(next.Text(), {u"\\global", u"\\long"}))
-                value = u"\\global";
+            } else {
+                if (OneOf(next.Text(), {u"\\def", u"\\gdef"}))
+                    value = u"\\gdef";
+                else if (OneOf(next.Text(), {u"\\edef", u"\\xdef"}))
+                    value = u"\\xdef";
+                else if (next.Is(u"\\let"_u16))
+                    value = u"\\\\globallet";
+                else if (next.Is(u"\\futurelet"_u16))
+                    value = u"\\\\globalfuture";
+                else if (next.Is(u"\\long"_u16))
+                    // KaTeX ignores the `\long` after a `\global` as well.
+                    value = u"\\long";
+                else if (next.Is(u"\\global"_u16))
+                    value = u"\\global";
+            }
             if (value.empty())
-                Fail(MathDiagnosticCode::UnexpectedToken, next, "Invalid assignment after a macro prefix.");
+                // KaTeX names the token that does not follow the prefix
+                // (`src/functions/def.ts`).
+                Fail(MathDiagnosticCode::UnexpectedToken, next, "Invalid token after macro prefix");
             Push(w, LexToken(value, 0, Count(value), next.Origin), options.MaxTokens);
             continue;
         }
-        if (!customOverride && OneOf(token.Text(), {u"\\let", u"\\\\globallet", u"\\futurelet", u"\\\\globalfuture"})) {
+        if (!customOverride && (flags & kCmdLet)) {
             SkipSpaces(w);
             if (w.Pending.empty())
                 Fail(MathDiagnosticCode::InvalidMacroDefinition, token, "Let requires a control sequence.");
@@ -774,11 +1153,11 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
             ValidateName(name, target.Origin);
             SkipSpaces(w);
             std::optional<LexToken> middle;
-            if (token.Is(u"\\futurelet") || token.Is(u"\\\\globalfuture")) {
+            if (token.Is(u"\\futurelet"_u16) || token.Is(u"\\\\globalfuture"_u16)) {
                 if (w.Pending.empty())
                     Fail(MathDiagnosticCode::MissingArgument, token, "Futurelet requires two tokens.");
                 middle = Pop(w);
-            } else if (!w.Pending.empty() && w.Pending.back().Is(u"=")) {
+            } else if (!w.Pending.empty() && w.Pending.back().Is(u"="_u16)) {
                 Pop(w);
                 SkipSpaces(w);
             }
@@ -786,27 +1165,27 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
                 Fail(MathDiagnosticCode::MissingArgument, token, "Let requires a right-hand token.");
             auto rhs = Pop(w);
             MacroDefinition value;
-            if (TryGetDefinition(w, rhs.Text(), value))
+            if (const MacroDefinition* found = TryGetDefinition(w, rhs.Text())) {
+                value = *found;
                 value.BuiltIn = false;
-            else {
+            } else {
                 auto p = rhs;
                 p.NoExpand = true;
                 value = {{p}, 0};
             }
-            Assign(w, name, value, token.Is(u"\\\\globallet") || token.Is(u"\\\\globalfuture"));
+            Assign(w, name, value, token.Is(u"\\\\globallet"_u16) || token.Is(u"\\\\globalfuture"_u16));
             if (middle) {
                 Push(w, rhs, options.MaxTokens);
                 Push(w, *middle, options.MaxTokens);
             }
             continue;
         }
-        if (!customOverride &&
-            OneOf(token.Text(), {u"\\@firstoftwo", u"\\@secondoftwo", u"\\@ifnextchar", u"\\TextOrMath"})) {
+        if (!customOverride && (flags & kCmdFirstOfTwo)) {
             expansionBudget(token);
-            int count = token.Is(u"\\@ifnextchar") ? 3 : 2;
+            int count = token.Is(u"\\@ifnextchar"_u16) ? 3 : 2;
             for (int a = 0; a < count; a++)
                 arguments[a] = ConsumeArgument(w, options, token, cancel);
-            int selected = token.Is(u"\\@secondoftwo") || (token.Is(u"\\TextOrMath") && !textMode) ? 1 : 0;
+            int selected = token.Is(u"\\@secondoftwo"_u16) || (token.Is(u"\\TextOrMath"_u16) && !textMode) ? 1 : 0;
             if (count == 3) {
                 SkipSpaces(w);
                 auto first = arguments[0];
@@ -820,15 +1199,15 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
                 Push(w, w.Arguments[start + i], options.MaxTokens);
             continue;
         }
-        if (!customOverride && token.Is(u"\\char")) {
+        if (!customOverride && (flags & kCmdChar)) {
             expansionBudget(token);
             PushExpansion(w, u"\\@char{" + utf16(std::to_string(ReadCharacter(w, token))) + u"}", token, options,
                           cancel);
             continue;
         }
-        if (!customOverride && OneOf(token.Text(), {u"\\message", u"\\errmessage", u"\\show"})) {
+        if (!customOverride && (flags & kCmdMessage)) {
             expansionBudget(token);
-            if (token.Is(u"\\show")) {
+            if (token.Is(u"\\show"_u16)) {
                 if (w.Pending.empty())
                     Fail(MathDiagnosticCode::MissingArgument, token, "Show requires a token.");
                 Pop(w);
@@ -836,12 +1215,12 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
                 ConsumeArgument(w, options, token, cancel);
             continue;
         }
-        if (!customOverride && OneOf(token.Text(), {u"\\dots", u"\\dotso", u"\\dotsc", u"\\cdots"})) {
+        if (!customOverride && (flags & kCmdDots)) {
             expansionBudget(token);
-            if (token.Is(u"\\dots") && !w.Pending.empty())
+            if (token.Is(u"\\dots"_u16) && !w.Pending.empty())
                 ExpandOne(w, options, expansions, cancel);
             auto next = w.Pending.empty() ? std::u16string_view{} : w.Pending.back().Text();
-            if (token.Is(u"\\dots")) {
+            if (token.Is(u"\\dots"_u16)) {
                 bool centered =
                     OneOf(next,
                           {u"+",           u"=",          u"<",        u">",         u"-",           u"*",
@@ -849,20 +1228,18 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
                            u"\\bigcap",    u"\\bigcup",   u"\\prod",   u"\\sum",     u"\\bigotimes", u"\\bigoplus",
                            u"\\bigodot",   u"\\bigsqcup", u"\\And",    u"\\mathbin", u"\\mathrel",   u"\\xrightarrow",
                            u"\\xleftarrow"}) ||
-                    next.starts_with(u"\\not");
-                if (!centered)
-                    for (const auto& symbol : SymbolData::Symbols)
-                        if (!symbol.TextMode && symbol.Name == next &&
-                            (symbol.Atom == MathAtom::Bin || symbol.Atom == MathAtom::Rel)) {
-                            centered = true;
-                            break;
-                        }
+                    next.starts_with(u"\\not"_u16);
+                if (!centered && CenteredSymbols().contains(next))
+                    centered = true;
                 bool integral =
                     OneOf(next, {u"\\DOTSI", u"\\int", u"\\oint", u"\\iint", u"\\iiint", u"\\iiiint", u"\\idotsint"});
+                // KaTeX's `dotsByToken` maps a following comma to `\dotsc`,
+                // which does not insert the extra thin space.
                 PushExpansion(w,
                               integral             ? u"\\dotsi"
+                              : next == u","_u16        ? u"\\dotsc"
                               : centered           ? u"\\dotsb"
-                              : next == u"\\DOTSX" ? u"\\dotsx"
+                              : next == u"\\DOTSX"_u16 ? u"\\dotsx"
                                                    : u"\\dotso",
                               token, options, cancel);
                 continue;
@@ -870,22 +1247,22 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
             bool extra = OneOf(next, {u")", u"]", u"\\rbrack", u"\\}", u"\\rbrace", u"\\rangle", u"\\rceil",
                                       u"\\rfloor", u"\\rgroup", u"\\rmoustache", u"\\right", u"\\bigr", u"\\biggr",
                                       u"\\Bigr", u"\\Biggr", u"$", u";", u".", u","});
-            if (token.Is(u"\\dotsc") && next == u",")
+            if (token.Is(u"\\dotsc"_u16) && next == u","_u16)
                 extra = false;
-            PushExpansion(w, std::u16string(token.Is(u"\\cdots") ? u"\\@cdots" : u"\\ldots") + (extra ? u"\\," : u""),
+            PushExpansion(w, std::u16string(token.Is(u"\\cdots"_u16) ? u"\\@cdots" : u"\\ldots") + (extra ? u"\\," : u""),
                           token, options, cancel);
             continue;
         }
-        if (!customOverride && OneOf(token.Text(), {u"\\def", u"\\gdef", u"\\edef", u"\\xdef"})) {
-            Define(w, options, token.Is(u"\\gdef") || token.Is(u"\\xdef"), token, expansions, cancel);
+        if (!customOverride && (flags & kCmdDef)) {
+            Define(w, options, token.Is(u"\\gdef"_u16) || token.Is(u"\\xdef"_u16), token, expansions, cancel);
             continue;
         }
-        if (!customOverride && OneOf(token.Text(), {u"\\newcommand", u"\\renewcommand", u"\\providecommand"})) {
+        if (!customOverride && (flags & kCmdNewCommand)) {
             NewCommand(w, options, token, expansions, cancel);
             continue;
         }
-        if (!customOverride && OneOf(token.Text(), {u"\\begingroup", u"\\endgroup"})) {
-            if (token.Is(u"\\begingroup"))
+        if (!customOverride && (flags & kCmdGroup)) {
+            if (token.Is(u"\\begingroup"_u16))
                 OpenScope(w, options, token, 4);
             else {
                 if (w.ScopeKinds.empty() || w.ScopeKinds.back() != 4)
@@ -893,30 +1270,30 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
                 CloseScope(w);
             }
         }
-        if (token.Is(u"{"))
+        if (flags & kCmdBraceOpen)
             OpenScope(w, options, token, 1);
-        else if (token.Is(u"}") && !w.Scopes.empty() && w.ScopeKinds.back() == 1)
+        else if ((flags & kCmdBraceClose) && !w.Scopes.empty() && w.ScopeKinds.back() == 1)
             CloseScope(w);
-        if (isMacro && !(macro.BuiltIn && IsDirectSpacing(token.Text()))) {
+        if (isMacro && !(macro->BuiltIn && IsDirectSpacing(token.Text()))) {
             expansionBudget(token);
-            if (!macro.Delimiters.empty())
-                for (const auto& prefix : macro.Delimiters[0])
+            if (!macro->Delimiters.empty())
+                for (const auto& prefix : macro->Delimiters[0])
                     if (w.Pending.empty() || Pop(w).Text() != prefix.Text())
                         Fail(MathDiagnosticCode::MissingArgument, token,
                              "Macro invocation does not match its parameter prefix.");
-            for (int a = 0; a < macro.Arguments; a++)
-                arguments[a] = !macro.Delimiters.empty() && !macro.Delimiters[a + 1].empty()
-                                   ? ConsumeDelimitedArgument(w, options, token, macro.Delimiters[a + 1], cancel)
+            for (int a = 0; a < macro->Arguments; a++)
+                arguments[a] = !macro->Delimiters.empty() && !macro->Delimiters[a + 1].empty()
+                                   ? ConsumeDelimitedArgument(w, options, token, macro->Delimiters[a + 1], cancel)
                                    : ConsumeArgument(w, options, token, cancel);
-            for (int i = Count(macro.Body) - 1; i >= 0; i--) {
-                auto part = macro.Body[i];
-                if (macro.Arguments > 0 && i > 0 && macro.Body[i - 1].Is(u"#") && part.Is(u"#")) {
+            for (int i = Count(macro->Body) - 1; i >= 0; i--) {
+                auto part = macro->Body[i];
+                if (macro->Arguments > 0 && i > 0 && macro->Body[i - 1].Is(u"#"_u16) && part.Is(u"#"_u16)) {
                     part.Origin = token.Origin;
                     Push(w, part, options.MaxTokens);
                     i--;
-                } else if (macro.Arguments > 0 && IsParameterReference(macro.Body, i)) {
+                } else if (macro->Arguments > 0 && IsParameterReference(macro->Body, i)) {
                     int index = part.Text()[0] - u'1';
-                    if (index >= macro.Arguments)
+                    if (index >= macro->Arguments)
                         Fail(MathDiagnosticCode::InvalidMacroDefinition, token,
                              "Macro parameter is outside its declared arity.");
                     auto [start, length] = arguments[index];
@@ -930,10 +1307,9 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
             }
             continue;
         }
-        if (token.Is(u"\\begin")) {
-            MacroDefinition stretchDefinition;
-            if (TryGetDefinition(w, u"\\arraystretch", stretchDefinition)) {
-                auto expanded = ExpandDefinition(w, options, stretchDefinition.Body, expansions, cancel);
+        if (flags & kCmdBegin) {
+            if (const MacroDefinition* stretchDefinition = TryGetDefinition(w, u"\\arraystretch"_u16)) {
+                auto expanded = ExpandDefinition(w, options, stretchDefinition->Body, expansions, cancel);
                 std::u16string value;
                 for (const auto& p : expanded)
                     value += p.Text();
@@ -948,34 +1324,41 @@ void Expand(const std::u16string& source, const MathOptions& options, ParserWork
                 auto marker = token;
                 marker.Length = 0;
                 marker.InternalArrayStretch = stretch == 0 ? NAN : stretch;
-                emit(marker);
+                // The text of the stretch factor, so that the parser can
+                // report the value that KaTeX rejects.
+                marker.Source = std::make_shared<const std::u16string>(value);
+                // The token caches the characters of its source.
+                marker.Data = marker.Source->data();
+                marker.Start = 0;
+                marker.Length = (int)value.size();
+                emit(std::move(marker));
             }
             OpenScope(w, options, token, 2);
             int depth = 0;
             for (int i = Count(w.Pending) - 1; i >= 0; i--) {
-                if (w.Pending[i].Is(u"{"))
+                if (w.Pending[i].Is(u"{"_u16))
                     depth++;
-                else if (w.Pending[i].Is(u"}") && --depth == 0) {
+                else if (w.Pending[i].Is(u"}"_u16) && --depth == 0) {
                     if (Count(w.Pending) >= options.MaxTokens)
                         Fail(MathDiagnosticCode::TokenLimit, token, "Pending token budget exceeded.");
                     w.Pending.insert(w.Pending.begin() + i, LexToken(CellScopeMarker, 0, 0, token.Origin));
                     break;
                 }
             }
-        } else if (token.Is(u"\\end")) {
+        } else if (flags & kCmdEnd) {
             if (!w.ScopeKinds.empty() && w.ScopeKinds.back() == 3)
                 CloseScope(w);
             if (!w.ScopeKinds.empty() && w.ScopeKinds.back() == 2)
                 CloseScope(w);
-        } else if (OneOf(token.Text(), {u"&", u"\\\\", u"\\cr"}) && !w.ScopeKinds.empty() && w.ScopeKinds.back() == 3) {
+        } else if ((flags & kCmdRowBreak) && !w.ScopeKinds.empty() && w.ScopeKinds.back() == 3) {
             CloseScope(w);
             OpenScope(w, options, token, 3);
         }
-        if (IsTextArgumentCommand(token.Text()))
+        if (flags & kCmdTextArgument)
             MarkTextArgument(w, token, options);
-        else if (OneOf(token.Text(), {u"\\raisebox", u"\\colorbox", u"\\fcolorbox"}))
-            MarkTextArgument(w, token, options, token.Is(u"\\fcolorbox") ? 2 : 1);
-        emit(token);
+        else if (flags & kCmdRaiseBox)
+            MarkTextArgument(w, token, options, token.Is(u"\\fcolorbox"_u16) ? 2 : 1);
+        emit(std::move(token));
     }
     if (std::find(w.ScopeKinds.begin(), w.ScopeKinds.end(), 4) != w.ScopeKinds.end())
         throw CompileFailure({MathDiagnosticCode::UnclosedGroup, {Count(source), 0}, u"Unclosed begingroup."});

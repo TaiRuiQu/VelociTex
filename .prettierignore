@@ -2,9 +2,6 @@
 node_modules/
 **/node_modules/
 
-# Vendored Rust implementation.
-native/katex-html/vendor/
-
 # Build products.
 bin/
 obj/

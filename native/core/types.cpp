@@ -70,6 +70,47 @@ std::u16string utf16(std::string_view source) {
     }
     return result;
 }
+// KaTeX's `scriptFromCodepoint` (`src/unicodeScripts.ts`).  The name marks
+// the symbol with a `<script>_fallback` class, and a character outside every
+// block is a character KaTeX does not support.
+namespace {
+struct ScriptBlock {
+    int Start, End;
+    const char* Name;
+    // The class of a symbol of the script, "<script>_fallback".  The name is
+    // an entry of a table, so that a class list can hold it without a string
+    // of its own.
+    const char* Fallback;
+};
+constexpr ScriptBlock kScriptBlocks[] = {
+    {0x0100, 0x024F, "latin", "latin_fallback"},           // Latin Extended-A and -B
+    {0x0300, 0x036F, "latin", "latin_fallback"},           // Combining diacritical marks
+    {0x0400, 0x04FF, "cyrillic", "cyrillic_fallback"},     // Cyrillic
+    {0x0530, 0x058F, "armenian", "armenian_fallback"},      // Armenian
+    {0x0900, 0x109F, "brahmic", "brahmic_fallback"},        // Brahmic scripts
+    {0x10A0, 0x10FF, "georgian", "georgian_fallback"},     // Georgian
+    {0x3000, 0x30FF, "cjk", "cjk_fallback"},                // CJK symbols, Hiragana, Katakana
+    {0x4E00, 0x9FAF, "cjk", "cjk_fallback"},                // CJK ideograms
+    {0xFF00, 0xFF60, "cjk", "cjk_fallback"},                // Fullwidth punctuation
+    {0xAC00, 0xD7AF, "hangul", "hangul_fallback"},          // Korean
+};
+}  // namespace
+
+const char* UnicodeScriptFamily(int codepoint) {
+    for (const auto& block : kScriptBlocks) {
+        if (codepoint >= block.Start && codepoint <= block.End)
+            return block.Name;
+    }
+    return nullptr;
+}
+
+const char* UnicodeScriptFallbackClass(int codepoint) {
+    for (const auto& block : kScriptBlocks) {
+        if (codepoint >= block.Start && codepoint <= block.End)
+            return block.Fallback;
+    }
+    return nullptr;
+}
 bool try_parse_color(std::u16string_view source, MathColor& result) {
     result = {0, 0, 0, 0};
     if (source.empty())
@@ -106,8 +147,8 @@ bool try_parse_color(std::u16string_view source, MathColor& result) {
     for (auto& c : normalized)
         if (c >= u'A' && c <= u'Z')
             c += u'a' - u'A';
-    for (size_t pos = 0; (pos = normalized.find(u"grey", pos)) != std::u16string::npos; pos += 4)
-        normalized.replace(pos, 4, u"gray");
+    for (size_t pos = 0; (pos = normalized.find(u"grey"_u16, pos)) != std::u16string::npos; pos += 4)
+        normalized.replace(pos, 4, u"gray"_u16);
     struct Named {
         std::u16string_view Name;
         uint32_t Rgb;
@@ -253,7 +294,7 @@ bool try_parse_color(std::u16string_view source, MathColor& result) {
                                        {u"whitesmoke", 0xf5f5f5},
                                        {u"yellow", 0xffff00},
                                        {u"yellowgreen", 0x9acd32}};
-    if (normalized == u"transparent") {
+    if (normalized == u"transparent"_u16) {
         result = {255, 255, 255, 0};
         return true;
     }

@@ -8,7 +8,7 @@ for (const file of [
   'dist/runtime/dotnet.js',
   'dist/runtime/fastmath.js',
   'dist/runtime/fastmath.wasm',
-  'dist/runtime/vt-katex-html.wasm',
+  'dist/runtime/velocitex-core.wasm',
   'dist/runtime/katex.min.css',
   'dist/runtime/fonts/KaTeX_Main-Regular.woff2',
   'dist/katex.min.css',
@@ -24,7 +24,6 @@ for (const file of [
   ),
   'LICENSE',
   'licenses/KaTeX-FONTS-OFL.txt',
-  'licenses/katex-rs-LICENSE.txt',
   'THIRD-PARTY-NOTICES.md',
 ]) {
   await fs.access(new URL(`../${file}`, import.meta.url));

@@ -7,40 +7,35 @@ Direct2D, without a browser or JavaScript runtime.
 
 <!-- benchmark:start -->
 
-## Performance
+## One C++ core, two endpoints
 
-2026-10-21 · Windows x64 · Release · KaTeX 0.19.0 · µs/formula (lower is better).
+There is exactly **one** formula parser and renderer in this repository: the
+C++ core in `native/core`. Both public endpoints call it, and nothing else
+parses formulas.
 
-Both browser engines generate default HTML with accessibility MathML, using the same locked KaTeX CSS and fonts. Every benchmark formula is checked for byte-identical markup before timing.
+| Endpoint                  | Reaches the core through                         |
+| ------------------------- | ------------------------------------------------ |
+| .NET (`VelociTex.Core`)   | the C ABI in `native/core/api.cpp`               |
+| Browser (npm `velocitex`) | `native/core`, compiled to `velocitex-core.wasm` |
 
-Correctness validation passed for 3,659 valid core HTML/MathML fixtures and 46 browser integration formulas, including bundled stylesheet and font loading.
+The browser package ships no JavaScript formula parser and no Rust formula
+parser: the WebAssembly module is the C++ core, and its HTML and MathML are
+produced by the same code the .NET endpoint uses.
 
-| Workload         | WASM HTML generation | KaTeX HTML generation | WASM DOM + layout | KaTeX DOM + layout |
-| ---------------- | -------------------: | --------------------: | ----------------: | -----------------: |
-| Common formulas  |                 43.4 |                  44.5 |             615.4 |              593.4 |
-| Complex formulas |                426.2 |                 431.8 |            3649.2 |             3538.9 |
-| Mixed pages      |                 44.9 |                  40.7 |             556.1 |              514.4 |
+## KaTeX-identical browser HTML
 
-WASM/KaTeX relative throughput is **0.91–1.03×** for HTML generation and **0.93–0.97×** for DOM render work on this machine. Ratios below 1 mean WASM is slower.
+The npm package's default browser path emits the same HTML and MathML markup
+as KaTeX 0.19.0 for the supported core formula set, with no
+MathML-as-rendering shortcut. It uses the locked KaTeX 0.19.0 stylesheet and the
+unchanged KaTeX fonts. The native parity gate compares **5,411 formulas**
+(1,605 real world formulas, the curated feature corpus, the frozen benchmark
+workloads and the repository's own fixture corpus) byte for byte against KaTeX
+for both the HTML and the MathML output, and the browser gate repeats 1,651 of
+them inside Chromium.
 
-![HTML generation](https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/benchmark-comparison.png)
-
-![Browser render work](https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/benchmark-render-work.png)
-
-All 36 formula occurrences are retained: 6 common, 3 complex, and 27 across three mixed pages. Three fresh processes × 15 calibrated batches per case; each case warms for at least 200 ms. Public async WASM API overhead is included. DOM timing forces layout after every formula. Startup, download, browser rasterization, GPU completion and screen presentation are excluded. Native C++/.NET/WinUI results and MathML serialization are separate diagnostics; the C++ Core does not expose this HTML generator.
-
-[Methodology and reproduction](https://github.com/TaiRuiQu/VelociTex/blob/v1.0.0-preview7/benchmarks/README.md).
-
-## Rendering comparison
-
-Actual output at 32 px math em and 2× capture resolution. The WASM column uses the current default HTML/CSS renderer and bundled fonts. All four previews have matching computed styles and dimensions in their visible HTML trees. Three have byte-identical markup; the combined color example differs in CSS declaration order and a redundant inherited color declaration. Captures are not asserted pixel-identical. Cells in each row share a canvas and scale. Native uses DirectWrite/Direct2D.
-
-| Formula                | Windows native / Direct2D                                                                                                                                                       | VelociTex HTML/CSS WASM                                                                                                                                                     | KaTeX 0.19.0                                                                                                                                                                  |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Algebra                | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/algebra-native.png" width="280" alt="Algebra: native">                 | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/algebra-wasm.png" width="280" alt="Algebra: wasm">                 | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/algebra-katex.png" width="280" alt="Algebra: katex">                 |
-| Calculus               | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/calculus-native.png" width="280" alt="Calculus: native">               | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/calculus-wasm.png" width="280" alt="Calculus: wasm">               | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/calculus-katex.png" width="280" alt="Calculus: katex">               |
-| Piecewise & matrices   | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/structures-native.png" width="280" alt="Piecewise & matrices: native"> | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/structures-wasm.png" width="280" alt="Piecewise & matrices: wasm"> | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/structures-katex.png" width="280" alt="Piecewise & matrices: katex"> |
-| Color, accents & fonts | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/color-native.png" width="280" alt="Color, accents & fonts: native">    | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/color-wasm.png" width="280" alt="Color, accents & fonts: wasm">    | <img src="https://raw.githubusercontent.com/TaiRuiQu/VelociTex/v1.0.0-preview7/docs/benchmarks/rendering/color-katex.png" width="280" alt="Color, accents & fonts: katex">    |
+The measured throughput against KaTeX's own JavaScript renderer is reported by
+`tests/wasm/katex-browser-benchmark.mjs`; see `benchmarks/README.md` for the
+current numbers and the methodology.
 
 <!-- benchmark:end -->
 

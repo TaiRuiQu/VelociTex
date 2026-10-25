@@ -29,7 +29,7 @@ if ($onWindows) {
     $outputPath = if ([IO.Path]::IsPathRooted($Out)) { [IO.Path]::GetFullPath($Out) } else { [IO.Path]::GetFullPath((Join-Path $repoRoot $Out)) }
     New-Item -ItemType Directory -Force $outputPath | Out-Null
 
-    $files = @('types.cpp', 'lexer.cpp', 'macros.cpp', 'parser.cpp', 'cache.cpp', 'layout.cpp', 'geometry.cpp', 'mathml.cpp', 'svg.cpp', 'core.cpp', 'api.cpp', 'generated/data.cpp', 'generated/svg_data.cpp')
+    $files = @('types.cpp', 'lexer.cpp', 'macros.cpp', 'parser.cpp', 'cache.cpp', 'layout.cpp', 'geometry.cpp', 'mathml.cpp', 'svg.cpp', 'core.cpp', 'api.cpp', 'generated/data.cpp', 'generated/svg_data.cpp', 'html/domtree.cpp', 'html/options.cpp', 'html/build_common.cpp', 'html/build_html.cpp', 'html/svg.cpp', 'html/delimiter.cpp', 'html/accent.cpp', 'html/array.cpp', 'html/enclose.cpp', 'generated/html_paths.cpp', 'generated/html_sqrt_paths.cpp')
     $sources = ($files | ForEach-Object { '"' + (Join-Path $PSScriptRoot "core/$_") + '"' }) -join ' '
     $flags = if ($Configuration -eq 'Release') { '/O2 /DNDEBUG' } else { '/Od /Zi' }
     $dll = Join-Path $outputPath 'VelociTex.Core.Native.dll'

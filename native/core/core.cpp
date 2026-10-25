@@ -2,6 +2,7 @@
 
 #include "layout.hpp"
 #include "mathml.hpp"
+#include "html/build_html.hpp"
 
 #include <charconv>
 
@@ -14,12 +15,28 @@ void trim(std::vector<T>& values, size_t limit) {
         std::vector<T>().swap(values);
 }
 MathOptions detached_options(const MathOptions& original) {
-    MathOptions result = original;
-    result.Macros.clear();
-    result.Session = nullptr;
-    result.TextShaper = nullptr;
-    result.StrictHandler = {};
-    result.CheckCancellation = {};
+    // The macro table, the session and the callbacks are not part of the
+    // detached copy.  Building the copy field by field keeps the macro table
+    // out of it, and a copy of the table would allocate for every formula.
+    MathOptions result;
+    result.FontSize = original.FontSize;
+    result.DisplayMode = original.DisplayMode;
+    result.MaxInputLength = original.MaxInputLength;
+    result.MaxNodes = original.MaxNodes;
+    result.MaxNesting = original.MaxNesting;
+    result.MaxExpansion = original.MaxExpansion;
+    result.MaxTokens = original.MaxTokens;
+    result.MaxSize = original.MaxSize;
+    result.MinRuleThickness = original.MinRuleThickness;
+    result.ColorIsTextColor = original.ColorIsTextColor;
+    result.GlobalGroup = original.GlobalGroup;
+    result.Leqno = original.Leqno;
+    result.Fleqn = original.Fleqn;
+    result.DisplayWidth = original.DisplayWidth;
+    result.EquationNumber = original.EquationNumber;
+    result.ThrowOnError = original.ThrowOnError;
+    result.ErrorColor = original.ErrorColor;
+    result.StrictMode = original.StrictMode;
     return result;
 }
 struct WorkspaceScope {
@@ -77,6 +94,11 @@ bool valid_options(const MathOptions& o) {
 }
 bool try_compile(std::u16string_view source, const MathOptions& options, MathWorkspace& workspace,
                  std::unique_ptr<MathDocument>& document, MathDiagnostic& diagnostic, bool layout) {
+    // The document of the previous formula is reused when the caller hands one
+    // in.  Reusing it keeps the node arena, the source buffer and the cached
+    // markup alive, so a steady stream of formulas does not allocate and free
+    // them over and over again.
+    std::unique_ptr<MathDocument> reused = std::move(document);
     document.reset();
     diagnostic = {};
     if (!valid_options(options)) {
@@ -104,12 +126,38 @@ bool try_compile(std::u16string_view source, const MathOptions& options, MathWor
             }
             scope.Session = options.Session;
         }
-        auto result = std::make_unique<MathDocument>();
-        result->Source = source;
+        auto result = reused ? std::move(reused) : std::make_unique<MathDocument>();
+        result->Source.assign(source);
+        result->Warnings.clear();
+        {
+            // The cached markup belongs to the previous formula.
+            std::lock_guard<std::mutex> lock(result->MarkupMutex);
+            result->MathMlReady = false;
+            result->UnannotatedReady = false;
+            result->HtmlReady = false;
+        }
         const CancellationToken cancellation(options.CheckCancellation);
         Expand(result->Source, options, workspace.Parser, cancellation);
-        result->Root = Parse(result->Source, options, workspace.Parser, cancellation);
-        result->Nodes = workspace.Parser.Nodes;
+        // The parser writes into the arena of the workspace.  The two arenas
+        // are swapped so that the parser fills the buffer the document already
+        // owns while the workspace keeps a buffer of its own, and neither side
+        // has to allocate a new arena for every formula.
+        result->Nodes.swap(workspace.Parser.Nodes);
+        workspace.Parser.Nodes.clear();
+        // The semantic node arena grows with every node the parser creates.
+        // Reserving it up front avoids the repeated reallocation of a vector
+        // whose elements are several hundred bytes large.
+        workspace.Parser.Nodes.reserve(
+            std::min<size_t>(size_t(options.MaxNodes), workspace.Parser.Expanded.size() * 2 + 8));
+        int root = 0;
+        try {
+            root = Parse(result->Source, options, workspace.Parser, cancellation);
+        } catch (...) {
+            result->Nodes.swap(workspace.Parser.Nodes);
+            throw;
+        }
+        result->Nodes.swap(workspace.Parser.Nodes);
+        result->Root = root;
         if (layout) {
             result->Layout = build_layout(result->Nodes, result->Root, options);
             result->HasLayout = true;
@@ -215,12 +263,32 @@ bool try_compile_presentation(std::u16string_view source, const MathOptions& opt
         return false;
     }
 }
-const std::string& document_mathml(MathDocument& document, bool include_annotation) {
-    auto& once = include_annotation ? document.MathMlOnce : document.UnannotatedOnce;
-    auto& output = include_annotation ? document.AnnotatedMathMl : document.UnannotatedMathMl;
-    std::call_once(once, [&] {
-        output = write_mathml(document.Source, document.Options, document.Nodes, document.Root, include_annotation);
-    });
-    return output;
+std::string_view document_html(MathDocument& document) {
+    std::lock_guard<std::mutex> lock(document.MarkupMutex);
+    if (!document.HtmlReady) {
+        document.Html.Clear();
+        html::BuildHtmlMarkup(document.Nodes, document.Root, document.Options, document.Html);
+        document.HtmlReady = true;
+    }
+    return document.Html.view();
+}
+std::string_view document_mathml(MathDocument& document, bool include_annotation) {
+    std::lock_guard<std::mutex> lock(document.MarkupMutex);
+    bool& ready = include_annotation ? document.MathMlReady : document.UnannotatedReady;
+    html::MarkupBuffer& output = include_annotation ? document.AnnotatedMathMl : document.UnannotatedMathMl;
+    if (!ready) {
+        output.Clear();
+        write_mathml(document.Source, document.Options, document.Nodes, document.Root, include_annotation, output);
+        ready = true;
+    }
+    return output.view();
+}
+void document_html_into(MathDocument& document, html::MarkupBuffer& out) {
+    std::lock_guard<std::mutex> lock(document.MarkupMutex);
+    html::BuildHtmlMarkup(document.Nodes, document.Root, document.Options, out);
+}
+void document_mathml_into(MathDocument& document, html::MarkupBuffer& out, bool include_annotation) {
+    std::lock_guard<std::mutex> lock(document.MarkupMutex);
+    write_mathml(document.Source, document.Options, document.Nodes, document.Root, include_annotation, out);
 }
 } // namespace velocitex

@@ -1,13 +1,19 @@
 # WASM / JS 网页绑定
 
-浏览器适配器默认使用独立的 WebAssembly 引擎输出与 **KaTeX 0.19.0 逐字节相同**的
-HTML + CSS，并直接使用锁定的 KaTeX 样式表和原字体。显式请求 SVG 或旧契约时回退到
-.NET WASM AOT 数学核心。无需 Blazor，也不要求访客安装 .NET。
-数学规则仍固定在 KaTeX 0.19.0。
+浏览器适配器直接调用 C++ 核心编译出的 `velocitex-core.wasm`，输出与
+**KaTeX 0.19.0 逐字节相同**的 HTML + CSS 与 MathML，并直接使用锁定的 KaTeX 样式表和
+原字体。显式请求 SVG 或旧契约时回退到 .NET WASM AOT 数学核心。无需 Blazor，也不
+要求访客安装 .NET。数学规则仍固定在 KaTeX 0.19.0。
 
-`tests/wasm/katex-parity.mjs` 对全部 3,659 个有效核心样例同时校验 HTML 与 MathML，
-`tests/wasm/katex-browser-parity.mjs` 在 Chromium 中重复校验；生成吞吐约为 KaTeX
-API 的 0.8–2.2 倍（六条代表性公式，具体取决于公式和硬件），不声称普遍加速。
+浏览器包里没有 JavaScript 公式解析器，也没有 Rust 公式解析器：WebAssembly 模块就是
+`native/core` 的 C++ 核心，与 .NET 端点共用同一份解析与渲染代码。
+
+`tests/native/katex-html-parity.mjs` 与 `tests/native/katex-mathml-parity.mjs`
+在原生侧逐字节校验 5,411 条公式的 HTML 与 MathML（真实世界语料、精选功能语料、
+冻结的基准工作负载与仓库自带的 fixture 语料）；
+`tests/wasm/katex-browser-parity.mjs` 在 Chromium 中对其中 1,651 条重复同样的逐字节
+比对；`tests/wasm/katex-browser-benchmark.mjs` 测量与 KaTeX JavaScript 渲染器的
+吞吐对比，当前数据记录在 `benchmarks/README.md`。
 
 ## 安装和调用
 

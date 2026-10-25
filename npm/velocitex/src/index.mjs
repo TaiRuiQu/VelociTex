@@ -17,7 +17,7 @@ let injectStyles = true;
 async function ensureFast() {
   if (!fastInitialization) {
     fastInitialization = (async () => {
-      fastReady = await initKatexMath(new URL('vt-katex-html.wasm', runtimeUrl).href, { injectStyles });
+      fastReady = await initKatexMath(new URL('velocitex-core.wasm', runtimeUrl).href, { injectStyles });
       return fastReady;
     })();
   }
@@ -110,62 +110,101 @@ function escapeHtml(value) {
   return value.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 }
 
+// The option record is serialized straight into JSON.  Every formula goes
+// through this function, so the intermediate object and the generic
+// stringifier are worth avoiding.  The quoted key names are precomputed
+// because they never change.
+const booleanOptions = [
+  ['displayMode', '"displayMode"'],
+  ['colorIsTextColor', '"colorIsTextColor"'],
+  ['leqno', '"leqno"'],
+  ['fleqn', '"fleqn"'],
+];
+const numberOptions = [
+  ['fontSize', '"fontSize"'],
+  ['maxInputLength', '"maxInputLength"'],
+  ['maxNodes', '"maxNodes"'],
+  ['maxNesting', '"maxNesting"'],
+  ['maxTokens', '"maxTokens"'],
+  ['maxExpand', '"maxExpand"'],
+  ['maxSize', '"maxSize"'],
+  ['minRuleThickness', '"minRuleThickness"'],
+  ['displayWidth', '"displayWidth"'],
+];
+const strictValues = new Map([
+  [true, '"error"'],
+  [false, '"ignore"'],
+  ['ignore', '"ignore"'],
+  ['warn', '"warn"'],
+  ['error', '"error"'],
+]);
+const outputValues = new Map([
+  ['html', '"html"'],
+  ['svg', '"svg"'],
+  ['mathml', '"mathml"'],
+]);
+
 function compileOptions(options) {
-  const result = {};
-  const booleans = ['displayMode', 'colorIsTextColor', 'leqno', 'fleqn'];
-  const numbers = [
-    'fontSize',
-    'maxInputLength',
-    'maxNodes',
-    'maxNesting',
-    'maxTokens',
-    'maxExpand',
-    'maxSize',
-    'minRuleThickness',
-    'displayWidth',
-  ];
-  for (const key of booleans) {
-    if (options[key] == null) continue;
-    if (typeof options[key] !== 'boolean') throw new TypeError(`${key} must be a boolean.`);
-    result[key] = options[key];
+  // The JSON is built in place.  Every formula goes through this function, so
+  // the intermediate array and the join are worth avoiding.
+  let json = '{';
+  let separator = '';
+  for (let i = 0; i < booleanOptions.length; i++) {
+    const key = booleanOptions[i][0];
+    const value = options[key];
+    if (value == null) continue;
+    if (typeof value !== 'boolean') throw new TypeError(`${key} must be a boolean.`);
+    json += separator + booleanOptions[i][1] + ':' + (value ? 'true' : 'false');
+    separator = ',';
   }
-  for (const key of numbers) {
-    if (options[key] == null) continue;
-    if (key === 'maxSize' && options[key] === Infinity) continue;
-    if (typeof options[key] !== 'number' || !Number.isFinite(options[key]))
-      throw new TypeError(`${key} must be a finite number.`);
-    if (key.startsWith('max') && key !== 'maxSize' && !Number.isInteger(options[key]))
+  for (let i = 0; i < numberOptions.length; i++) {
+    const key = numberOptions[i][0];
+    const value = options[key];
+    if (value == null) continue;
+    if (key === 'maxSize' && value === Infinity) continue;
+    if (typeof value !== 'number' || !Number.isFinite(value)) throw new TypeError(`${key} must be a finite number.`);
+    if (key.startsWith('max') && key !== 'maxSize' && !Number.isInteger(value))
       throw new TypeError(`${key} must be an integer.`);
-    result[key] = options[key];
+    json += separator + numberOptions[i][1] + ':' + JSON.stringify(value);
+    separator = ',';
   }
   if (options.strict != null) {
-    result.strict = options.strict === true ? 'error' : options.strict === false ? 'ignore' : options.strict;
-    if (!['ignore', 'warn', 'error'].includes(result.strict))
-      throw new TypeError('strict must be ignore, warn, error, true or false.');
+    const strict = strictValues.get(options.strict);
+    if (strict === undefined) throw new TypeError('strict must be ignore, warn, error, true or false.');
+    json += separator + '"strict":' + strict;
+    separator = ',';
   }
   if (options.macros != null) {
     if (typeof options.macros !== 'object' || Array.isArray(options.macros))
       throw new TypeError('macros must be a record of string definitions.');
-    result.macros = Object.create(null);
-    for (const [name, definition] of Object.entries(options.macros)) {
+    let macros = '';
+    let macroSeparator = '';
+    for (const name of Object.keys(options.macros)) {
+      const definition = options.macros[name];
       if (typeof definition !== 'string') throw new TypeError(`Macro ${name} must be a string.`);
-      result.macros[name] = definition;
+      macros += macroSeparator + JSON.stringify(name) + ':' + JSON.stringify(definition);
+      macroSeparator = ',';
     }
+    json += separator + '"macros":{' + macros + '}';
+    separator = ',';
   }
   if (options.output != null) {
-    if (!['html', 'svg', 'mathml'].includes(options.output)) throw new TypeError('output must be html, svg or mathml.');
-    result.output = options.output;
+    const output = outputValues.get(options.output);
+    if (output === undefined) throw new TypeError('output must be html, svg or mathml.');
+    json += separator + '"output":' + output;
+    separator = ',';
   }
-  result.throwOnError = options.throwOnError !== false;
+  json += separator + '"throwOnError":' + (options.throwOnError !== false ? 'true' : 'false');
+  separator = ',';
   if (options.errorColor != null) {
     if (
       typeof options.errorColor !== 'string' ||
       !/^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(options.errorColor)
     )
       throw new TypeError('errorColor must be a hexadecimal color.');
-    result.errorColor = options.errorColor;
+    json += separator + '"errorColor":' + JSON.stringify(options.errorColor);
   }
-  return JSON.stringify(result);
+  return json + '}';
 }
 
 function canUseSimpleOptions(options) {
@@ -184,7 +223,10 @@ function canUseFastOptions(options) {
   return true;
 }
 
-async function compile(source, options) {
+// The checks every request goes through before the engine is asked to render
+// anything.  They are kept apart from the rendering itself, so that the hot
+// path can run them without a promise in between.
+function prepare(source, options) {
   if (typeof source !== 'string') throw new TypeError('Formula source must be a string.');
   const json = compileOptions(options);
   // Validate before starting a large download for a malformed request.
@@ -197,37 +239,65 @@ async function compile(source, options) {
       length: source.length - limit,
     });
   }
+  return json;
+}
+
+// The standalone engine serves every request but the legacy SVG contract and
+// the budgets of the full Core.
+function canUseFast(options) {
+  return (
+    options.output !== 'svg' && options.fastMathml !== false && options.fastHtml !== false && canUseFastOptions(options)
+  );
+}
+
+// Renders with the standalone engine.  Returns null when the module is not
+// available, so that the caller can fall back to the .NET runtime.
+function renderFast(source, options, json) {
+  const output = options.output === 'mathml' ? 2 : options.output === 'html' ? 1 : 0;
+  const raw = renderKatexMath(source, json, output);
+  if (!raw) return null;
+  if (raw.status === 'O')
+    return options.output === 'mathml'
+      ? { success: true, mathml: raw.text, __fast: true }
+      : { success: true, html: raw.text, __fast: true };
+  let diagnostic;
+  try {
+    diagnostic = JSON.parse(raw.text);
+  } catch {
+    diagnostic = { code: 'UnexpectedToken', message: 'Unable to render formula.', start: 0, length: source.length };
+  }
+  if (options.throwOnError === false)
+    return {
+      success: true,
+      __fast: true,
+      __soft: true,
+      diagnostic,
+      html: diagnostic.html ?? '',
+      mathml: diagnostic.html ?? '',
+    };
+  throw new ParseError(source, diagnostic);
+}
+
+// The synchronous fast path.  It returns null when the standalone engine
+// cannot serve the request; the caller then takes the asynchronous path.
+// Nothing here builds a promise: the request goes into the module and the
+// markup comes back in the same tick.
+function compileFast(source, options, json) {
+  if (!fastReady || !canUseFast(options)) return null;
+  return renderFast(source, options, json);
+}
+
+// The asynchronous path: it waits for the module, then falls back to the
+// .NET runtime for the contracts the standalone engine does not serve.
+async function compileSlow(source, options, json) {
   if (
-    options.output !== 'svg' &&
-    options.fastMathml !== false &&
-    options.fastHtml !== false &&
-    canUseFastOptions(options) &&
-    (await ensureFast())
+    canUseFast(options) &&
+    // The module is loaded once; the wait is only needed while it is still
+    // loading, so the hot path does not await a settled promise.
+    (fastReady || (await ensureFast()))
   ) {
-    const output = options.output === 'mathml' ? 2 : options.output === 'html' ? 1 : 0;
-    const raw = renderKatexMath(source, json, output);
-    if (raw) {
-      if (raw[0] === 'O')
-        return options.output === 'mathml'
-          ? { success: true, mathml: raw.slice(1), __fast: true }
-          : { success: true, html: raw.slice(1), __fast: true };
-      let diagnostic;
-      try {
-        diagnostic = JSON.parse(raw.slice(1));
-      } catch {
-        diagnostic = { code: 'UnexpectedToken', message: 'Unable to render formula.', start: 0, length: source.length };
-      }
-      if (options.throwOnError === false)
-        return {
-          success: true,
-          __fast: true,
-          __soft: true,
-          diagnostic,
-          html: diagnostic.html ?? '',
-          mathml: diagnostic.html ?? '',
-        };
-      throw new ParseError(source, diagnostic);
-    }
+    const result = renderFast(source, options, json);
+    if (result) return result;
   }
   await ensureDotnet();
   const prefix = instanceId + ++serial;
@@ -289,7 +359,13 @@ function errorMarkup(error, options) {
 /** Return KaTeX-compatible HTML (with the bundled stylesheet), SVG or MathML. */
 export async function renderToString(source, options = {}) {
   try {
-    return markup(await compile(source, options), options);
+    // The standalone engine is the hot path.  When it is loaded the request
+    // is rendered without a promise in between: the markup is ready in the
+    // first tick of the caller instead of the third.
+    const json = prepare(source, options);
+    const fast = compileFast(source, options, json);
+    if (fast) return markup(fast, options);
+    return markup(await compileSlow(source, options, json), options);
   } catch (error) {
     if (!(error instanceof ParseError) || options.throwOnError !== false) throw error;
     return errorMarkup(error, options);
@@ -299,9 +375,12 @@ export async function renderToString(source, options = {}) {
 /** Replace one element with a complete formula. Original source remains available for copying. */
 export async function render(source, element, options = {}) {
   if (!element || element.nodeType !== 1) throw new TypeError('render requires a target Element.');
+  const settings = { ...options, __shared: true };
   let result;
   try {
-    result = await compile(source, { ...options, __shared: true });
+    const json = prepare(source, settings);
+    const fast = compileFast(source, settings, json);
+    result = fast ?? (await compileSlow(source, settings, json));
   } catch (error) {
     if (!(error instanceof ParseError) || options.throwOnError !== false) throw error;
     element.innerHTML = errorMarkup(error, options);
@@ -378,19 +457,22 @@ export async function renderAll(root = globalThis.document?.body, options = {}) 
   if (!Number.isInteger(max) || max <= 0 || max > 10000)
     throw new TypeError('maxFormulas must be an integer between 1 and 10000.');
   const selector = options.selector ?? '[data-math]';
-  const settings = { throwOnError: false, ...options };
+  const base = { throwOnError: false, ...options };
   const report = { rendered: 0, errors: [] };
   let count = 0;
   async function one(source, displayMode, element) {
     if (++count > max) throw new RangeError(`renderAll exceeded maxFormulas (${max}).`);
+    const settings = { ...base, displayMode };
     try {
-      const result = await compile(source, { ...settings, displayMode });
+      const json = prepare(source, settings);
+      const fast = compileFast(source, settings, json);
+      const result = fast ?? (await compileSlow(source, settings, json));
       if (result.__soft) {
         report.errors.push({ source, error: new ParseError(source, result.diagnostic), element });
-        return markup(result, { ...settings, displayMode });
+        return markup(result, settings);
       }
       report.rendered++;
-      return markup(result, { ...settings, displayMode });
+      return markup(result, settings);
     } catch (error) {
       if (!(error instanceof ParseError) || settings.throwOnError) throw error;
       report.errors.push({ source, error, element });
@@ -405,7 +487,7 @@ export async function renderAll(root = globalThis.document?.body, options = {}) 
     const source = element.getAttribute('data-math') ?? element.textContent;
     const displayMode = element.hasAttribute('data-display-mode')
       ? element.getAttribute('data-display-mode') !== 'false'
-      : !!settings.displayMode;
+      : !!base.displayMode;
     element.innerHTML = await one(source, displayMode, element);
     element.setAttribute('data-velocitex-rendered', '');
     element.setAttribute('data-velocitex-source', source);

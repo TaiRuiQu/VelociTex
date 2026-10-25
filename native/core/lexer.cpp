@@ -3,10 +3,6 @@
 #include <algorithm>
 
 namespace velocitex {
-bool IsWhiteSpace(char16_t c) {
-    return (c >= 9 && c <= 13) || c == 32 || c == 0x85 || c == 0xa0 || c == 0x1680 || (c >= 0x2000 && c <= 0x200a) ||
-           c == 0x2028 || c == 0x2029 || c == 0x202f || c == 0x205f || c == 0x3000;
-}
 static bool Letter(char16_t c) {
     return (c >= u'a' && c <= u'z') || (c >= u'A' && c <= u'Z') || c == u'@';
 }
@@ -25,6 +21,16 @@ std::u16string FromScalar(int scalar) {
         return std::u16string(1, (char16_t)scalar);
     scalar -= 0x10000;
     return {char16_t(0xd800 + (scalar >> 10)), char16_t(0xdc00 + (scalar & 1023))};
+}
+std::u16string_view ToScalar(int scalar, char16_t* buffer) {
+    if (scalar <= 0xffff) {
+        buffer[0] = (char16_t)scalar;
+        return std::u16string_view(buffer, 1);
+    }
+    scalar -= 0x10000;
+    buffer[0] = char16_t(0xd800 + (scalar >> 10));
+    buffer[1] = char16_t(0xdc00 + (scalar & 1023));
+    return std::u16string_view(buffer, 2);
 }
 void Tokenize(const std::u16string& source, std::vector<LexToken>& output, int maxTokens,
               const CancellationToken& cancellationToken, std::optional<SourceRange> origin, MathStrictMode strictMode,
@@ -46,30 +52,38 @@ void Tokenize(const std::u16string& source, std::vector<LexToken>& output, int m
                 i++;
             else {
                 auto range = origin.value_or(SourceRange{start, n - start});
-                MathWarning warning{u"commentAtEnd", range, u"Comment has no terminating newline."};
+                // KaTeX raises this error without a token (`src/Lexer.ts`), so
+                // the error carries no position and no context.
+                MathWarning warning{u"commentAtEnd", range,
+                                     u"% comment has no terminating newline; LaTeX would fail because of commenting "
+                                     u"the end of math mode (e.g. $)"};
                 auto behavior = strictHandler ? strictHandler(warning) : strictMode;
                 if (behavior == MathStrictMode::Error)
-                    fail(MathDiagnosticCode::StrictViolation, range,
-                         "Unterminated comment at the end of the formula. [commentAtEnd]");
+                    fail(MathDiagnosticCode::StrictViolation, SourceRange{-1, 0},
+                         "LaTeX-incompatible input and strict mode is set to 'error': % comment has no terminating "
+                         "newline; LaTeX would fail because of commenting the end of math mode (e.g. $) [commentAtEnd]");
                 if (behavior == MathStrictMode::Warn && warnings && (int)warnings->size() < std::min(maxTokens, 1024))
                     warnings->push_back(warning);
             }
             continue;
         }
-        if (c == u'\\' && std::u16string_view(source).substr(start).starts_with(u"\\verb") && start + 5 < n &&
+        if (c == u'\\' && std::u16string_view(source).substr(start).starts_with(u"\\verb"_u16) && start + 5 < n &&
             !Letter(source[start + 5])) {
             int delimiter = start + 5;
             if (source[delimiter] == u'*')
                 delimiter++;
             if (delimiter >= n)
-                fail(MathDiagnosticCode::UnclosedGroup, origin.value_or(SourceRange{start, n - start}),
-                     "Verbatim text requires a matching delimiter.");
+                // KaTeX cannot match the two delimiters of a `\verb` and
+                // reports the same error as an unterminated one
+                // (`src/functions/verb.ts`).
+                fail(MathDiagnosticCode::UnclosedGroup, SourceRange{-1, 0},
+                     "\\verb ended by end of line instead of matching delimiter");
             int end = delimiter + 1;
             while (end < n && source[end] != source[delimiter] && source[end] != u'\r' && source[end] != u'\n')
                 end++;
             if (end == n || source[end] != source[delimiter])
-                fail(MathDiagnosticCode::UnclosedGroup, origin.value_or(SourceRange{start, end - start}),
-                     "Verbatim text ended before its matching delimiter.");
+                fail(MathDiagnosticCode::UnclosedGroup, SourceRange{-1, 0},
+                     "\\verb ended by end of line instead of matching delimiter");
             i = end + 1;
         } else if (c == u'\\' && i < n) {
             if (IsWhiteSpace(source[i])) {
@@ -88,6 +102,22 @@ void Tokenize(const std::u16string& source, std::vector<LexToken>& output, int m
             if (Letter(source[i])) {
                 while (i < n && Letter(source[i]))
                     i++;
+                auto wordEnd = i;
+                // KaTeX's lexer attaches the whitespace that follows a
+                // control word to the location of the token
+                // (`src/Lexer.ts`, `controlWordWhitespaceRegexString`), so the
+                // error ranges have to cover it as well.
+                auto originEnd = wordEnd;
+                while (originEnd < n && (source[originEnd] == u' ' || source[originEnd] == u'\r' ||
+                                         source[originEnd] == u'\n' || source[originEnd] == u'\t'))
+                    originEnd++;
+                while (i < n && IsWhiteSpace(source[i]))
+                    i++;
+                auto range = origin.value_or(SourceRange{start, originEnd - start});
+                if ((int)output.size() >= maxTokens)
+                    fail(MathDiagnosticCode::TokenLimit, range, "Token budget exceeded.");
+                output.emplace_back(owned, start, wordEnd - start, range);
+                continue;
             } else if (source[i] >= 0xd800 && source[i] <= 0xdbff && i + 1 < n && source[i + 1] >= 0xdc00 &&
                        source[i + 1] <= 0xdfff)
                 i += 2;

@@ -396,6 +396,16 @@
       }
     },
     {
+      "id": "macro-keeps-builtins",
+      "category": "macros",
+      "latex": "\\RR+\\limsup_{n}a_n",
+      "displayMode": false,
+      "expectation": "valid",
+      "macros": {
+        "\\RR": "x"
+      }
+    },
+    {
       "id": "macro-arg",
       "category": "macros",
       "latex": "\\sq{x+1}",

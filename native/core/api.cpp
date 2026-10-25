@@ -141,6 +141,7 @@ MathOptions convert(const vt_options& o, HostShaper& shaper, int source_length) 
     result.DisplayWidth = o.DisplayWidth;
     result.EquationNumber = o.EquationNumber;
     result.StrictMode = MathStrictMode(o.StrictMode);
+    result.ThrowOnError = o.ThrowOnError != 0;
     result.Session = static_cast<MacroSession*>(o.Session);
     if (o.ShapeHandler || o.RunHandler)
         result.TextShaper = &shaper;
@@ -196,6 +197,7 @@ void vt_core_default_options(vt_options* o) {
     o->MaxSize = std::numeric_limits<double>::infinity();
     o->EquationNumber = 1;
     o->StrictMode = 1;
+    o->ThrowOnError = 1;
 }
 void* vt_core_workspace_create() {
     try {
@@ -410,6 +412,15 @@ int32_t vt_core_result_mathml(void* p, int32_t annotation, vt_string8* output) {
         return 2;
     return guard([&] {
         const auto& value = document_mathml(*static_cast<MathDocument*>(p), annotation != 0);
+        *output = {value.data(), int32_t(value.size())};
+        return 0;
+    });
+}
+int32_t vt_core_result_html(void* p, vt_string8* output) {
+    if (!p || !output)
+        return 2;
+    return guard([&] {
+        const auto& value = document_html(*static_cast<MathDocument*>(p));
         *output = {value.data(), int32_t(value.size())};
         return 0;
     });

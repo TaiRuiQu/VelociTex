@@ -1,0 +1,242 @@
+[
+  {
+    "tex": "x",
+    "display": false
+  },
+  {
+    "tex": "E = mc^2",
+    "display": false
+  },
+  {
+    "tex": "x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}",
+    "display": false
+  },
+  {
+    "tex": "\\int_{-\\infty}^{\\infty} e^{-x^2}\\,dx = \\sqrt{\\pi}",
+    "display": false
+  },
+  {
+    "tex": "\\sum_{k=0}^{n}\\binom{n}{k}",
+    "display": false
+  },
+  {
+    "tex": "\\lim_{h\\to 0}\\frac{f(x+h)-f(x)}{h}",
+    "display": false
+  },
+  {
+    "tex": "\\mathbf{x}+\\mathbb{R}+\\mathcal{H}+\\mathfrak{g}+\\mathscr{L}+\\mathsf{A}+\\mathtt{B}+\\boldsymbol{v}+\\bm{q}",
+    "display": false
+  },
+  {
+    "tex": "\\text{hello world}",
+    "display": false
+  },
+  {
+    "tex": "\\color{red}{x}+\\color{blue}{y}",
+    "display": false
+  },
+  {
+    "tex": "\\widehat{ABC}+\\overrightarrow{xyz}+\\bar{z}+\\vec{v}",
+    "display": false
+  },
+  {
+    "tex": "\\left\\{\\frac{x}{y}\\right\\}",
+    "display": false
+  },
+  {
+    "tex": "\\left\\langle\\frac{x}{y}\\right\\rangle",
+    "display": false
+  },
+  {
+    "tex": "\\begin{pmatrix}a&b\\\\c&d\\end{pmatrix}",
+    "display": false
+  },
+  {
+    "tex": "\\begin{bmatrix}1&2\\\\3&4\\end{bmatrix}",
+    "display": false
+  },
+  {
+    "tex": "\\begin{cases}a&b\\\\c&d\\end{cases}",
+    "display": false
+  },
+  {
+    "tex": "\\begin{aligned}a&=b\\\\c&=d\\end{aligned}",
+    "display": false
+  },
+  {
+    "tex": "\\sqrt[3]{x+1}",
+    "display": false
+  },
+  {
+    "tex": "a_{b}^{c}",
+    "display": false
+  },
+  {
+    "tex": "\\operatorname{sin}(x)",
+    "display": false
+  },
+  {
+    "tex": "\\lim_{x\\to\\infty}",
+    "display": false
+  },
+  {
+    "tex": "\\frac{1}{2}",
+    "display": false
+  },
+  {
+    "tex": "\\dfrac{1}{2}+\\tfrac{1}{2}",
+    "display": false
+  },
+  {
+    "tex": "\\mathrel{\\mathop{=}}",
+    "display": false
+  },
+  {
+    "tex": "\\overset{a}{b}+\\underset{a}{b}",
+    "display": false
+  },
+  {
+    "tex": "\\xrightarrow{abc}",
+    "display": false
+  },
+  {
+    "tex": "\\underbrace{a+b}_{c}",
+    "display": false
+  },
+  {
+    "tex": "\\overbrace{a+b}^{c}",
+    "display": false
+  },
+  {
+    "tex": "\\cancel{x}+\\bcancel{y}+\\xcancel{z}",
+    "display": false
+  },
+  {
+    "tex": "\\phantom{x}+\\hphantom{y}+\\vphantom{z}",
+    "display": false
+  },
+  {
+    "tex": "\\href{https://example.com}{link}",
+    "display": false
+  },
+  {
+    "tex": "\\htmlClass{foo}{x}",
+    "display": false
+  },
+  {
+    "tex": "\\rule{1em}{1em}",
+    "display": false
+  },
+  {
+    "tex": "\\kern1em+\\mkern18mu+\\hspace{1em}",
+    "display": false
+  },
+  {
+    "tex": "x\\!y",
+    "display": false
+  },
+  {
+    "tex": "\\begin{smallmatrix}a&b\\\\c&d\\end{smallmatrix}",
+    "display": false
+  },
+  {
+    "tex": "\\tag{1} x=y",
+    "display": false
+  },
+  {
+    "tex": "\\raisebox{0.5em}{x}",
+    "display": false
+  },
+  {
+    "tex": "\\smash{x}+\\vcenter{\\big\\uparrow}",
+    "display": false
+  },
+  {
+    "tex": "\\stackrel{a}{=}",
+    "display": false
+  },
+  {
+    "tex": "\\not=",
+    "display": false
+  },
+  {
+    "tex": "\\mathchoice{D}{T}{S}{SS}",
+    "display": false
+  },
+  {
+    "tex": "\\enclose{circle}{x}",
+    "display": false
+  },
+  {
+    "tex": "\\reflectbox{x}",
+    "display": false
+  },
+  {
+    "tex": "\\overbrace{a}^{b}",
+    "display": false
+  },
+  {
+    "tex": "\\underset{\\sum}{\\sum}",
+    "display": false
+  },
+  {
+    "tex": "\\iint\\limits_{i}",
+    "display": false
+  },
+  {
+    "tex": "\\overline{AB}+\\underline{CD}",
+    "display": false
+  },
+  {
+    "tex": "\\xrightarrow[under]{over}",
+    "display": false
+  },
+  {
+    "tex": "\\begin{array}{c|c}a&b\\\\c&d\\end{array}",
+    "display": false
+  },
+  {
+    "tex": "\\int_0^\\infty e^{-x^2}\\,dx=\\frac{\\sqrt{\\pi}}{2}",
+    "displayMode": null
+  },
+  {
+    "tex": "\\widehat{ABC}+\\overrightarrow{xyz}",
+    "displayMode": null
+  },
+  {
+    "tex": "\\phantom{x}+\\cancel{y}",
+    "displayMode": null
+  },
+  {
+    "tex": "\\sqrt{\\frac{a+b}{c+d}}",
+    "displayMode": null
+  },
+  {
+    "tex": "\\reflectbox{abc}",
+    "displayMode": null
+  },
+  {
+    "tex": "\\overlinesegment{AB}+\\underlinesegment{CD}",
+    "displayMode": null
+  },
+  {
+    "tex": "\\oiint_A B+\\oiiint_C D",
+    "displayMode": null
+  },
+  {
+    "tex": "\\mathit{ABC123}",
+    "displayMode": false
+  },
+  {
+    "tex": "\\sum_{k=1}^{n}\\frac1{k^2}",
+    "displayMode": true
+  },
+  {
+    "tex": "\\limsup_{n\\to\\infty}a_n",
+    "displayMode": true
+  },
+  {
+    "tex": "\\binom{n}{k}",
+    "displayMode": true
+  }
+]

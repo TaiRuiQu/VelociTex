@@ -3,6 +3,7 @@
 #include <atomic>
 #include <cmath>
 #include <cstdint>
+#include <cstring>
 #include <functional>
 #include <limits>
 #include <memory>
@@ -192,6 +193,11 @@ struct MathOptions {
     bool ColorIsTextColor{}, GlobalGroup{}, Leqno{}, Fleqn{};
     double DisplayWidth{};
     int EquationNumber{1};
+    // KaTeX's `throwOnError`: when it is false an unsupported command is
+    // rendered in the error colour instead of failing the compilation.
+    bool ThrowOnError{true};
+    // KaTeX's `errorColor`: the colour of the unsupported command text.
+    std::u16string ErrorColor{u"#cc0000"};
     MathStrictMode StrictMode{MathStrictMode::Warn};
     std::function<MathStrictMode(const MathWarning&)> StrictHandler;
     std::function<void()> CheckCancellation;
@@ -210,6 +216,10 @@ struct SemanticNode {
     TexLength Length1, Length2, Length3;
     int LeftDelimiter{}, RightDelimiter{}, ColumnCount{}, RuleAbove{}, RuleBelow{};
     bool HasBar{true}, Limits{}, AlwaysLimits{}, NeverLimits{}, IsMathOrd{};
+    // KaTeX's `resetFont` flag on a "styling" group.  The "hbox" argument
+    // type creates such a group (`src/Parser.ts`), and the group keeps the
+    // "mord" span of the argument instead of flattening it.
+    bool ResetFont{};
     SemanticNode() = default;
     SemanticNode(NodeKind kind, SourceRange range) : Kind(kind), Range(range) {}
 };
@@ -237,6 +247,79 @@ inline void check_cancel(const MathOptions& options) {
 inline std::u16string_view text(const std::optional<std::u16string>& value) {
     return value ? std::u16string_view(*value) : std::u16string_view{};
 }
+// True when an optional text equals the given name.
+//
+// The comparison of an optional against a string literal would build a
+// temporary string first, and the parser asks this question for every
+// command that takes an argument.
+inline bool text_is(const std::optional<std::u16string>& value, std::u16string_view expected) {
+    return value && std::u16string_view(*value) == expected;
+}
+// Compares two short texts without calling into the C library.
+//
+// The comparison of two `string_view`s asks `memcmp` for the bytes, and the
+// length it asks for is the shorter of the two lengths — a value that is only
+// known at run time.  The call into the C library therefore stays, and in
+// WebAssembly a call costs several times more than the comparison itself.
+//
+// The renderer asks the question for every atom of a formula: the class of a
+// node decides the spacing of its neighbours and whether a binary operator is
+// cancelled, and the tag of a MathML node decides how it is written.
+//
+// A comparison against a *literal* is different: the length of the literal is
+// known at compile time, so the comparison is a load and a compare, with no
+// call at all.  The literal is therefore taken as an array and not as a view,
+// and the `_u16` suffix is not used with it: the suffix builds a view, and the
+// view hides the length of the literal from the compiler.
+//
+// The bytes are compared four at a time by hand, because **the WebAssembly
+// target does not expand a `memcmp` of a known length into loads**: the
+// DataLayout of the target does not allow an unaligned access, so the
+// expansion of the intrinsic is skipped and every comparison of the renderer
+// becomes a call into the C library.  The renderer asks the question for
+// every atom of a formula, so the calls add up.
+//
+// The copy of four bytes reads exactly the four bytes of the text, so nothing
+// outside of the text is touched; the same holds for the last bytes, which are
+// compared one at a time.
+template <size_t N>
+inline bool same_text(std::string_view a, const char (&b)[N]) {
+    constexpr size_t kLength = N - 1;
+    if (a.size() != kLength)
+        return false;
+    const char* data = a.data();
+    size_t i = 0;
+    for (; i + 4 <= kLength; i += 4) {
+        uint32_t left, right;
+        std::memcpy(&left, data + i, 4);
+        std::memcpy(&right, b + i, 4);
+        if (left != right)
+            return false;
+    }
+    for (; i < kLength; ++i)
+        if (data[i] != b[i])
+            return false;
+    return true;
+}
+template <size_t N>
+inline bool same_text(std::u16string_view a, const char16_t (&b)[N]) {
+    constexpr size_t kLength = N - 1;
+    if (a.size() != kLength)
+        return false;
+    const char16_t* data = a.data();
+    size_t i = 0;
+    for (; i + 2 <= kLength; i += 2) {
+        uint32_t left, right;
+        std::memcpy(&left, data + i, 4);
+        std::memcpy(&right, b + i, 4);
+        if (left != right)
+            return false;
+    }
+    for (; i < kLength; ++i)
+        if (data[i] != b[i])
+            return false;
+    return true;
+}
 inline bool is_high_surrogate(char16_t c) {
     return c >= 0xd800 && c <= 0xdbff;
 }
@@ -261,7 +344,30 @@ inline void append_scalar(std::u16string& out, int cp) {
         out.push_back(char16_t(0xdc00 + (cp & 1023)));
     }
 }
+
+// A view of a UTF-16 string literal whose length is known at compile time.
+//
+// `std::u16string_view(const char16_t*)` asks `char_traits<char16_t>::length`
+// for the length of the string, and that is a loop over the characters.  GCC
+// has no constant folding pass for `char16_t`, so every comparison against a
+// bare literal walks the literal at run time: the parser alone spent more
+// than a third of its time in that loop.  The length of a literal is known at
+// compile time, so the suffix turns the comparison into a length check
+// followed by a straight line comparison of the code units.
+//
+//     name == u"display"_u16
+constexpr std::u16string_view operator""_u16(const char16_t* text, size_t length) {
+    return std::u16string_view(text, length);
+}
 std::string utf8(std::u16string_view source);
 std::u16string utf16(std::string_view source);
 bool try_parse_color(std::u16string_view source, MathColor& color);
+
+// KaTeX's `scriptFromCodepoint` (`src/unicodeScripts.ts`): the name of the
+// script the character belongs to.  The name marks the symbol with a
+// `<script>_fallback` class, and a character outside every block is a
+// character KaTeX does not support.
+const char* UnicodeScriptFamily(int codepoint);
+// The class of a symbol whose script has no metrics, "<script>_fallback".
+const char* UnicodeScriptFallbackClass(int codepoint);
 } // namespace velocitex

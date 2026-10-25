@@ -3,9 +3,10 @@
 The browser/npm adapter is separate from these native
 NuGet contracts. Its asynchronous JS API, static-asset setup and known font
 limitations are specified in [the npm guide](../npm/velocitex/README.md). Its
-default path is a standalone WebAssembly engine that emits byte-identical KaTeX
-0.19.0 HTML and MathML and uses the locked KaTeX stylesheet and fonts, including
-KaTeX's CJK/script fallback classes. It only
+default path is the C++ core itself, compiled to WebAssembly: it emits
+byte-identical KaTeX 0.19.0 HTML and MathML and uses the locked KaTeX stylesheet
+and fonts, including KaTeX's CJK/script fallback classes. The browser package
+contains no separate JavaScript or Rust formula parser. It only
 loads Core through .NET WASM AOT for the explicit SVG/legacy contract
 (`fastHtml:false`, `fastMathml:false` or `output:'svg'`); native packages do not
 depend on it.

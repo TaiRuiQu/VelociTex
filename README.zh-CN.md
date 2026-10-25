@@ -8,40 +8,47 @@ VelociTex 是独立的 TeX 数学排版与渲染组件，数学规则固定为 *
 
 <!-- benchmark:start -->
 
-## Performance
+## 一个 C++ 核心，两个端点
 
-2026-10-21 · Windows x64 · Release · KaTeX 0.19.0 · µs/formula (lower is better).
+仓库里只有**一套**公式解析与渲染实现：`native/core` 中的 C++ 核心。两个对外端点
+都调用它，没有任何其他代码解析公式。
 
-Both browser engines generate default HTML with accessibility MathML, using the same locked KaTeX CSS and fonts. Every benchmark formula is checked for byte-identical markup before timing.
+| 端点                      | 接入方式                                     |
+| ------------------------- | -------------------------------------------- |
+| .NET（`VelociTex.Core`）  | `native/core/api.cpp` 的 C ABI               |
+| 浏览器（npm `velocitex`） | `native/core` 编译出的 `velocitex-core.wasm` |
 
-Correctness validation passed for 3,659 valid core HTML/MathML fixtures and 46 browser integration formulas, including bundled stylesheet and font loading.
+浏览器包不再包含 JavaScript 公式解析器，也不再包含 Rust 公式解析器：WebAssembly
+模块就是 C++ 核心，输出的 HTML 与 MathML 与 .NET 端点来自同一份代码。
 
-| Workload         | WASM HTML generation | KaTeX HTML generation | WASM DOM + layout | KaTeX DOM + layout |
-| ---------------- | -------------------: | --------------------: | ----------------: | -----------------: |
-| Common formulas  |                 43.4 |                  44.5 |             615.4 |              593.4 |
-| Complex formulas |                426.2 |                 431.8 |            3649.2 |             3538.9 |
-| Mixed pages      |                 44.9 |                  40.7 |             556.1 |              514.4 |
+## 与 KaTeX 完全一致的浏览器 HTML
 
-WASM/KaTeX relative throughput is **0.91–1.03×** for HTML generation and **0.93–0.97×** for DOM render work on this machine. Ratios below 1 mean WASM is slower.
+npm 包的默认浏览器路径对受支持的核心公式输出与 **KaTeX 0.19.0 逐字节相同**的
+HTML 和 MathML，不再以 MathML 代替排版。它使用锁定的 KaTeX 0.19.0 样式表和未修改的
+KaTeX 字体。原生校验门逐字节比对 **5,411 条公式**——1,605 条真实世界公式、60 条精选
+功能语料、36 条冻结的基准工作负载，以及仓库自带的 `tests/fixtures/core.json`
+（3,710 条已注册符号／函数／宏／环境）——**HTML 与 MathML 两路都逐字节比对**；
+浏览器校验门在 Chromium 中重复其中 1,651 条（真实世界语料、基准工作负载与精选样本）。
 
-![HTML generation](docs/benchmarks/benchmark-comparison.png)
+与 KaTeX 自带 JavaScript 渲染器的吞吐对比由
+`tests/wasm/katex-browser-benchmark.mjs` 测量：当前 C++ WASM 在 2 核参考机上
+**快约 3.8 倍**（近期读数 3.73×–3.94×），**尚未达到项目要求的 5 倍**（基准脚本对两个引擎同样预热 25 轮，
+再测 120 轮配对样本，报告逐轮比值的中位数，读数不受负载波动影响）。但 **C++ Core 本身在原生构建下
+已经比 KaTeX 快约 5–6 倍**（同一语料、同一套测量口径下 26.6 µs/公式 vs
+浏览器里的 156–189 µs/公式）——剩下的差距来自 WebAssembly 与浏览器这一层，而不是算法本身。
+引用倍数时必须写清 KaTeX 跑在哪个运行时里：同一份 `katex.mjs` 在 Node 里比在
+Chromium 里慢约 40%（232–288 µs/公式 vs 156–244 µs/公式），原生内核对 Node 读数
+是 8.7–10.8 倍，对 Chromium 读数是 5.9–7.1 倍。
+这里的 26.6 µs 是 clang 20 的读数：同一份源码用 GCC 11.4 编译慢 12%
+（同一语料、同一套口径下 32.2 µs/公式），而 WASM 构建用的正是 clang——按同编译器
+口径衡量，WebAssembly 这一层的税是 +44%，且全部落在渲染器上，不在解析器。
+浏览器路径 = 原生内核 × 1.37（WASM 的税）× 1.11–1.19（浏览器相对 Node）
 
-![Browser render work](docs/benchmarks/benchmark-render-work.png)
-
-All 36 formula occurrences are retained: 6 common, 3 complex, and 27 across three mixed pages. Three fresh processes × 15 calibrated batches per case; each case warms for at least 200 ms. Public async WASM API overhead is included. DOM timing forces layout after every formula. Startup, download, browser rasterization, GPU completion and screen presentation are excluded. Native C++/.NET/WinUI results and MathML serialization are separate diagnostics; the C++ Core does not expose this HTML generator.
-
-[Methodology and reproduction](benchmarks/README.md).
-
-## Rendering comparison
-
-Actual output at 32 px math em and 2× capture resolution. The WASM column uses the current default HTML/CSS renderer and bundled fonts. All four previews have matching computed styles and dimensions in their visible HTML trees. Three have byte-identical markup; the combined color example differs in CSS declaration order and a redundant inherited color declaration. Captures are not asserted pixel-identical. Cells in each row share a canvas and scale. Native uses DirectWrite/Direct2D.
-
-| Formula                | Windows native / Direct2D                                                                                  | VelociTex HTML/CSS WASM                                                                                | KaTeX 0.19.0                                                                                             |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
-| Algebra                | <img src="docs/benchmarks/rendering/algebra-native.png" width="280" alt="Algebra: native">                 | <img src="docs/benchmarks/rendering/algebra-wasm.png" width="280" alt="Algebra: wasm">                 | <img src="docs/benchmarks/rendering/algebra-katex.png" width="280" alt="Algebra: katex">                 |
-| Calculus               | <img src="docs/benchmarks/rendering/calculus-native.png" width="280" alt="Calculus: native">               | <img src="docs/benchmarks/rendering/calculus-wasm.png" width="280" alt="Calculus: wasm">               | <img src="docs/benchmarks/rendering/calculus-katex.png" width="280" alt="Calculus: katex">               |
-| Piecewise & matrices   | <img src="docs/benchmarks/rendering/structures-native.png" width="280" alt="Piecewise & matrices: native"> | <img src="docs/benchmarks/rendering/structures-wasm.png" width="280" alt="Piecewise & matrices: wasm"> | <img src="docs/benchmarks/rendering/structures-katex.png" width="280" alt="Piecewise & matrices: katex"> |
-| Color, accents & fonts | <img src="docs/benchmarks/rendering/color-native.png" width="280" alt="Color, accents & fonts: native">    | <img src="docs/benchmarks/rendering/color-wasm.png" width="280" alt="Color, accents & fonts: wasm">    | <img src="docs/benchmarks/rendering/color-katex.png" width="280" alt="Color, accents & fonts: katex">    |
+- 6 µs（JS 那一层，实测只占整条路径的 12–15%：公开 API 对裸 `vt_render` 的比值是 1.146），
+  因此**浏览器里的 5 倍需要原生内核约 15.5–19.5 µs**，比现在还快 30–45%——这比"三段都重写一遍"
+  还要多：三段重写只能到 ~4.5 倍，若重写顺带把 WASM 的税压到 +35% 是 ~4.7 倍，
+  若 JS 那一层只剩下解码那 0.42 µs 才是 ~5.4 倍。当前数据、各因子的拆解、差距分析与后续
+  优化路线记录在 `docs/benchmarks.md`。
 
 <!-- benchmark:end -->
 
