@@ -63,7 +63,16 @@ if ($ltoCache -and (Test-Path -LiteralPath $ltoCache)) {
     # `bool(os.getenv('FROZEN_CACHE', 'True'))` of the SDK config treats any
     # non-empty value as true, and Windows does not keep an empty environment
     # variable, so the frozen cache is turned off in a config of our own.
-    $env:EM_CACHE = Join-Path $root 'artifacts/wasm/emcache'
+    #
+    # Emscripten builds the system libraries that the frozen cache does not
+    # carry into the cache directory, and it relates the sources of the frozen
+    # cache to that directory with a relative path.  Windows refuses to relate
+    # two paths that live on different drives, and the repository is on
+    # another drive than the SDK on the build agent, so the cache goes beside
+    # the SDK, on the drive of the SDK.
+    $emCache = Join-Path $dotnetRoot 'velocitex-emscripten-cache'
+    New-Item -ItemType Directory -Force $emCache | Out-Null
+    $env:EM_CACHE = $emCache
     $configDir = Join-Path $root 'artifacts/wasm'
     New-Item -ItemType Directory -Force $configDir | Out-Null
     $configPath = Join-Path $configDir 'emscripten-config.py'

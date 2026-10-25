@@ -384,6 +384,14 @@ task.Last;`) and it has to read the old value first.
   the call fails with "Cannot convert 'System.Object[]' to the type
   'System.String'". Concatenate the flags instead of nesting them:
   `$arguments = $optimization + @('-std=c++20', ...)`.
+- PowerShell: **the writable Emscripten cache of the standalone module has to
+  live on the drive of the SDK.** Emscripten builds the system libraries that
+  the frozen cache does not carry into the cache directory and relates the
+  sources of the frozen cache to that directory with a relative path;
+  Windows refuses to relate two paths on different drives, and the
+  repository is on another drive than the SDK on the build agent. The cache
+  therefore goes beside the SDK, under the .NET root
+  (`native/build-wasm-katex.ps1`).
 - C#: the `vt_options` struct in `native/core/api.h` is mirrored by
   `NativeInterop.Options` in `src/VelociTex.Core/NativeInterop.cs`. The mirror
   is exact, including `StructSize`; change one, change the other.
