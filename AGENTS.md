@@ -366,6 +366,24 @@ task.Last;`) and it has to read the old value first.
   costs no heap allocation. The old code built three or four `std::string`
   per call and then copied them into the pool. The core now makes **2.94 heap
   allocations per formula** (HTML and MathML together).
+- PowerShell: **the Windows build of the core has two rules that the CMake build
+  and the WebAssembly scripts do not enforce.** MSVC derives the object file
+  name from the source file name and writes every object of the build into one
+  directory, so two translation units with the same base name overwrite each
+  other and the linker drops one of them without a word (LNK4042); the build
+  refuses to start when the source list holds a duplicate. And MSVC resolves a
+  quoted include next to the including file before it looks at the include
+  search path, so the build passes `native/core` as the include root, the same
+  root the CMake build and both WebAssembly scripts pass: a header under
+  `native/core/html` is reachable as `html/markup.hpp` from every translation
+  unit. A change to the source list has to keep the four lists in sync:
+  `native/CMakeLists.txt`, `native/build-core.ps1`, `native/build-wasm-core.ps1`,
+  `native/build-wasm-katex.ps1` and `tools/reference/generate-pgo-profile.mjs`.
+- PowerShell: **`Start-Process` binds `-ArgumentList` to a `string[]`, so the
+  list has to stay flat.** A nested array cannot be converted to a string and
+  the call fails with "Cannot convert 'System.Object[]' to the type
+  'System.String'". Concatenate the flags instead of nesting them:
+  `$arguments = $optimization + @('-std=c++20', ...)`.
 - C#: the `vt_options` struct in `native/core/api.h` is mirrored by
   `NativeInterop.Options` in `src/VelociTex.Core/NativeInterop.cs`. The mirror
   is exact, including `StructSize`; change one, change the other.

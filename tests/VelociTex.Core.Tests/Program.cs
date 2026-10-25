@@ -80,7 +80,14 @@ foreach (JsonElement fixture in corpus.RootElement.GetProperty("cases").Enumerat
         invalid++;
     if (!success)
     {
-        Assert(diagnostic.Range.Start >= 0 && diagnostic.Range.Length >= 0 && diagnostic.Range.Start + diagnostic.Range.Length <= latex.Length, $"{id}: diagnostic source bounds");
+        // A violation that KaTeX raises without a token names no place in the
+        // source: the core reports the range (-1, 0) and the API passes it
+        // through, so the bounds of the source only bind a diagnostic that
+        // carries a position.
+        Assert(diagnostic.Range.Start == -1
+                ? diagnostic.Range.Length == 0
+                : diagnostic.Range.Start >= 0 && diagnostic.Range.Length >= 0 && diagnostic.Range.Start + diagnostic.Range.Length <= latex.Length,
+            $"{id}: diagnostic source bounds");
         results.Add((id, category, "24dip-100pct-light", null, diagnostic));
         if (fixture.TryGetProperty("presentationFallback", out var literalFallback) && literalFallback.GetBoolean())
         {

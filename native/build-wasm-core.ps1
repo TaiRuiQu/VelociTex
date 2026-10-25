@@ -92,10 +92,13 @@ foreach ($source in $sources) {
     # Windows PowerShell 5.1 promotes native stderr to a terminating error when
     # $ErrorActionPreference is Stop. Emscripten writes warnings to stderr, so
     # capture the stream and fail only on the actual exit code.
-    $process = Start-Process -FilePath $emcc -ArgumentList @(
-        $optimization, '-std=c++20', '-fwasm-exceptions', '-fno-rtti', '-I', $coreDir,
+    # The list has to stay flat: `Start-Process` binds `-ArgumentList` to a
+    # `string[]`, and a nested array cannot be converted to a string.
+    $arguments = $optimization + @(
+        '-std=c++20', '-fwasm-exceptions', '-fno-rtti', '-I', $coreDir,
         '-c', (Join-Path $coreDir "$source.cpp"), '-o', $object
-    ) -NoNewWindow -Wait -PassThru -RedirectStandardError $stderrPath
+    )
+    $process = Start-Process -FilePath $emcc -ArgumentList $arguments -NoNewWindow -Wait -PassThru -RedirectStandardError $stderrPath
     if ($process.ExitCode -ne 0) {
         if (Test-Path -LiteralPath $stderrPath) { Get-Content -LiteralPath $stderrPath | Write-Host }
         throw "emcc failed for $source.cpp."

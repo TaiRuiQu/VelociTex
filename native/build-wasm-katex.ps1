@@ -125,8 +125,10 @@ $optimization = if ($Configuration -eq 'Release') { @('-O3', '-flto') } else { @
 $profile = Join-Path $PSScriptRoot 'wasm/katex.pgo'
 $profileArguments = if (Test-Path -LiteralPath $profile) { @("-fprofile-use=$profile") } else { @() }
 
-$arguments = @(
-    $optimization, '-std=c++20', '-fwasm-exceptions', '-mnontrapping-fptoint', '-fno-rtti', '--no-entry',
+# The list has to stay flat: `Start-Process` binds `-ArgumentList` to a
+# `string[]`, and a nested array cannot be converted to a string.
+$arguments = $optimization + @(
+    '-std=c++20', '-fwasm-exceptions', '-mnontrapping-fptoint', '-fno-rtti', '--no-entry',
     '-sWASM=1', '-sENVIRONMENT=web', '-sFILESYSTEM=0', '-sASSERTIONS=0',
     '-sEXPORTED_FUNCTIONS=_vt_alloc,_vt_free,_vt_render,_vt_result_len,_vt_free_result,_vt_version',
     '-sEXPORTED_RUNTIME_METHODS=HEAPU8',

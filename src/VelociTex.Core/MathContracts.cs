@@ -5,7 +5,7 @@
 namespace VelociTex;
 
 /// <summary>A UTF-16 source slice; no source string is borrowed by this value.</summary>
-/// <param name="Start">Zero-based UTF-16 offset.</param><param name="Length">UTF-16 code unit count.</param>
+/// <param name="Start">Zero-based UTF-16 offset, or -1 when the diagnostic names no place in the source.</param><param name="Length">UTF-16 code unit count.</param>
 public readonly record struct SourceRange(int Start, int Length);
 /// <summary>Logical dimensions of a complete formula in DIP.</summary>
 /// <param name="Width">Natural horizontal advance.</param><param name="Height">Logical ascent plus depth.</param>
